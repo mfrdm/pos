@@ -19,7 +19,7 @@ function Users() {
 	};
 
 	this.readOneUserById = function(req, res) {
-
+		dbHelper.findOneById(req, res, UserModel, 'uid')
 	};
 
 	this.createOneUser = function(req, res) {
@@ -27,7 +27,7 @@ function Users() {
 	};
 
 	this.updateOneUserById = function(req, res) {
-
+		dbHelper.updateOneById(req, res, UserModel, 'uid')
 	};
 
 };
