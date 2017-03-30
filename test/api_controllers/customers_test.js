@@ -1,7 +1,5 @@
 // var assert = require("assert"); // node.js core module
 // require('../../app_api/models/db');
-// var mongoose = require('mongoose');
-// var UserModel = mongoose.model('users');
 // var request = require('request');
 
 // suite('User Api test', function() {
@@ -34,7 +32,7 @@
 // 		});
 // 	});
 
-// 	suite('create user', function(done) {
+// 	suite('create customers', function(done) {
 // 		test('should create new customers', function(done) {
 // 			request({
 // 				method:'POST',
