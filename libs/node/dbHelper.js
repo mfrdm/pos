@@ -1,8 +1,6 @@
 // interact with database: mongodb
 var mongoose = require('mongoose');
 var request = require('request');
-require('../../app_api/models/db');
-var UserModel = mongoose.model('users');
 var requestHelper = require('./requestHelper');
 
 module.exports = new function (){

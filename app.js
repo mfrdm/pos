@@ -40,7 +40,7 @@ app.use(passport.session()); // persistent login sessions
 
 //Use routes
 app.use('/', routes);
-app.use('api', routesApi);
+app.use('/api', routesApi);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

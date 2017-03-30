@@ -62,22 +62,23 @@ module.exports = new function () {
 	};
 
 	this.stdExec = function (res, query) {
+		var thisObj = this;
 		try {
 			query.exec(function (err, data){	
 				if (err){
-					this.sendJsonRes(res, 404, {message: err});
+					thisObj.sendJsonRes(res, 404, {message: err});
 					return
 				}
 
 				if (!data) {
-					this.sendJsonRes(res, 404, {
+					thisObj.sendJsonRes(res, 404, {
 						message: 'empty results'
 					});
 
 					return
 				}
 				
-				this.sendJsonRes (res, 200, {message: 'success', data: data});
+				thisObj.sendJsonRes (res, 200, {message: 'success', data: data});
 			});
 		}
 		catch (err) {

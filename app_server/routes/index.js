@@ -13,7 +13,6 @@ var companiesCtrl = require("../controllers/companies");
 var othersCtrl = require("../controllers/others");
 var deptsCtrl = require("../controllers/depts");
 
-
 router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
 router.get('/auth/google/callback',
 	passport.authenticate('google', {
