@@ -12,14 +12,13 @@ var costsCtrl = require("../controllers/costs");
 var bookingCtrl = require("../controllers/booking");
 var assetsCtrl = require("../controllers/assets");
 
-
 router.get('/users', usersCtrl.readSomeUsers);
 router.get('/users/user/:uid', usersCtrl.readOneUserById);
 router.post('/users/create', usersCtrl.createOneUser);
 router.post('/users/user/:uid/edit', usersCtrl.updateOneUserById);
 
 router.get('/customers/', customersCtrl.readSomeCustomers);
-router.get('/customers/customer/:uid', customersCtrl.readOneCustomerById);
+router.get('/customers/customer/:cusid', customersCtrl.readOneCustomerById);
 router.post('/customers/create', customersCtrl.createOneCustomer);
 router.post('/customers/customer/:cusid/edit', customersCtrl.updateOneCustomerById);
 
