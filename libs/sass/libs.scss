@@ -1,0 +1,430 @@
+@import "bourbon/bourbon";
+@import "googleIcons";
+@import "mixins";
+
+//////////////////// Variables
+$size-10: .625rem;
+$size-12: 0.75rem;
+$size-13: 0.8125rem;
+$size-14: 0.875rem;
+$size-15: .9375rem;
+$size-16: 1rem;
+$size-20: 1.25rem;
+$size-100: 6.25rem;
+
+$container-max-width: 77.5rem;
+
+$myBorderColor-grey: #e6e6e6;
+
+$title-font-size: 1.25rem;
+
+//////////////////// Utilities
+.myInlineBlockGroup > input {
+	display: inline-block;
+};
+
+//////////////////// Foundation built-in Components
+.column, .columns {
+	@include padding (null $size-10)
+};
+
+.row {
+	max-width: $container-max-width;
+};
+
+.columns.card.column-block.myCard, .column.card.column-block.myCard {
+	@include myBasicBorder (full, null, null, none);
+};
+
+.myCard .card-divider {
+	@include padding (null $size-10);
+};
+
+.myCard .card-section {
+	@include padding (null $size-10);
+};
+
+.myCard .card-section {
+	@include padding (null null $size-10 null);
+}
+
+.dropdown.menu>li.is-dropdown-submenu-parent>a.myNoneAfter {
+	@include padding(null $size-16);
+}
+
+.dropdown.menu>li.is-dropdown-submenu-parent>a.myFirstChild {
+	@include padding(null null null 0);
+};
+
+.dropdown.menu>li.is-dropdown-submenu-parent>a.myNoneAfter:after {
+	content: none;
+}
+
+.menu > li > .mySubList {
+	@include padding ($size-10 1rem);
+};
+
+.menu > li > .myLeftPadding-0 {
+	padding-left: 0;
+};
+
+.menu > li > .myRightPadding-0 {
+	padding-right: 0;
+};
+
+//////////////////// Margin
+$myMargin-15: .625rem;
+$myMargin-16: 1rem;
+
+.myTopMargin-100{
+	@include margin ($size-100 null null null);
+};
+
+.myTopMargin-20{
+	@include margin ($size-20 null null null);
+};
+
+.myTopMargin-15{
+	@include margin ($size-15 null null null);
+};
+
+.myBottomMargin-100 {
+	@include margin (null null $size-100 null);
+};
+
+.myTopBottomMargin-100{
+	@include myTopBottomMargin (100px);
+};
+
+.myChildTopBottomMargin-15 > div {
+	@include myTopBottomMargin ($myMargin-15);
+};
+
+.myChildLeftMargin-15 > div {
+	@include margin (null null null $myMargin-15 !important);
+};
+
+.myLeftMargin-15 {
+	@include margin (null null null $myMargin-15 !important);
+};
+
+.myTopBottomMargin-15{
+	@include margin($size-15 null);
+}
+
+.myTopBottomMargin-20{
+	@include margin($size-20 null);
+}
+
+.myBottomMargin-10 {
+	margin-bottom: $size-10 !important;
+};
+
+.myBottomMargin-20 {
+	margin-bottom: $size-20;
+};
+
+
+///////////////////// Padding
+$myPadding-15: .625rem;
+
+.myRightLeftPadding {
+	@include myRightLeftPadding($myPadding-15 !important, $myPadding-15 !important);
+};
+
+.myChildRightLeftPadding > div {
+	@include myRightLeftPadding($myPadding-15 !important, $myPadding-15 !important);
+};
+
+.myFirstLastChildNoLeftRightPadding > div:first-child {
+	@include padding(null null null 0 !important);
+}
+
+.myFirstLastChildNoLeftRightPadding > div:last-child {
+	@include padding(null 0 !important null null);
+}
+
+.myChildNoRightPadding > div {
+	@include padding(null 0 !important null null);
+}
+
+.myBottomPadding-15{
+	@include padding (null null $myPadding-15 null);
+};	
+
+.myTopPadding-15{
+	@include padding ($myPadding-15 null null null);
+};	
+
+.myTopBottomPadding-15{
+	@include padding ($myPadding-15 null);
+};
+
+.myPadding-15 {
+	@include padding ($myPadding-15);
+};
+
+
+///////////////////// Text
+.myFontSize-16 {
+	font-size: $size-16;
+}
+
+.myFontSize-14 {
+	font-size: $size-14;
+}
+
+.myFontSize-12 {
+	font-size: $size-12;
+}
+
+///////////////////// Other
+.myBasicBorder {
+	@include myBasicBorder();
+};
+
+.myChildBasicBorder > div {
+	@include myBasicBorder();
+};
+
+.myClearFix {
+	@include clearfix;
+}
+
+////////////////////// section
+.mySection {
+	@include myBasicBorder;
+	@include margin (null null $size-15 null);
+};
+
+.mySection.mySectionNoBorder {
+	@include myBasicBorder (full, null, null, none);
+};
+
+.mySection > .mySectionHeader > .mySeeMore {
+	margin: 0;
+	margin-left: $size-10;
+	margin-right: $size-10;
+	margin-top: $size-20;
+	font-weight: 600;	
+}
+
+.mySection > .mySectionHeader > .mySectionTitle {
+	font-size: $title-font-size;
+	text-transform: uppercase;	
+};
+
+.mySection > .mySectionBody {
+	@include padding ($size-10);
+};
+
+.mySection > .mySectionBody.mySectionNoLeftRightPadding {
+	@include padding (null 0);
+};
+
+.mySection > .mySectionBody.myStack > div {
+	@include margin ($myMargin-15, null);
+};
+
+.mySection > .mySectionBody.myStack > div:first-child {
+	@include margin (0 null null null);
+};
+
+.mySection > .mySectionBody.myStack > div:last-child {
+	@include margin (null null 0 null);
+};
+
+// assume title is h2,h3, ..., or p elements
+.mySection .mySectionTitle {
+	margin: 0;
+	margin-left: $size-10;
+	margin-bottom: $size-10;
+	margin-top: $size-16;
+	font-weight: 600;
+	text-transform: uppercase;
+	font-size: $title-font-size;
+};
+
+
+////////////////////// Box
+// a box is often placed within a mySectionBody
+.myBoxGroup {
+	
+};
+
+.myBoxGroup > .myBox {
+	@include padding ($size-10 null);
+	@include myBasicBorder (bottom);
+};
+
+.myBoxGroup > .myBox:first-child {
+	@include padding (0 null null null);
+};
+
+.myBoxGroup > .myBox:last-child {
+	@include padding (null null 0 null);
+	@include myBasicBorder (none);
+};
+
+.myBox .myBoxTitle {
+	margin: 0;
+	margin-left: $size-10;
+	margin-bottom: $size-10;
+	font-size: $size-16;	
+};
+
+.myBox .myBoxBody {
+	margin: 0;
+	margin-left: $size-10;
+	margin-bottom: $size-10;
+	margin-top: $size-16;	
+}
+
+////////////////////// Nav
+.myNav {
+	max-width: none;
+	font-size: $size-14;	
+};
+
+.myNav .myNavFirstChild {
+	padding-top: $size-10;
+}
+
+/////////////////////// Header: the header of a section
+.myHeader > .myHeaderTitle {
+	margin: 0;
+	margin-bottom: $size-15;
+	margin-top: $size-15;
+	font-weight: 600;
+	text-transform: uppercase;
+	font-size: $title-font-size;
+};
+
+.mySeeMore {
+	margin: 0;
+	margin-top: $size-20;
+	font-weight: 600;	
+}
+
+/////////////////////// Card
+.myCard > .myWrapper {
+	@include myBasicBorder;
+}
+
+////////////////////// NO
+
+.myTopMargin-0{
+	@include margin(0 null null null);
+};
+
+.myBottomMargin-0{
+	@include margin(null null 0 null);
+};
+
+.myTopBottomMargin-0{
+	@include margin(0 null);
+};
+
+.myLeftRightPadding-0 {
+	@include padding (null 0);
+};
+
+.myLeftPadding-0{
+	padding-left: 0;
+};
+
+.myRightPadding-0{
+	padding-right: 0;
+};
+
+.myLeftMargin-0{
+	margin-left: 0;
+};
+
+.myMargin-0 {
+	margin: 0 !important;
+};
+
+
+
+///////////////////// Media Query
+
+// Small only 
+@media screen and (max-width: 39.9375em) {
+
+};
+
+// Medium and up
+@media screen and (min-width: 40em) {
+	$myPadding-15: .9375rem;
+	$myMargin-15: .9375rem;
+	$title-font-size: 1.25rem;
+
+	.myBottomPadding-15{
+		@include padding (null null $myPadding-15 null);
+	};	
+
+	.myTopPadding-15{
+		@include padding ($myPadding-15 null null null);
+	};	
+
+	.myTopBottomPadding-15{
+		@include padding ($myPadding-15 null);
+	};
+
+	.myRightLeftPadding {
+		@include myRightLeftPadding($myPadding-15 !important, $myPadding-15 !important);
+	};
+
+	.myChildRightLeftPadding > div {
+		@include myRightLeftPadding($myPadding-15 !important, $myPadding-15 !important);
+	};
+
+	.myChildTopBottomMargin-15 > div {
+		@include myTopBottomMargin ($myMargin-15);
+	};	
+
+	.myPadding-15 {
+		@include padding ($myPadding-15);
+	};
+
+	.myChildLeftMargin-15 > div {
+		@include margin (null, null, null, $myMargin-15 !important);
+	};
+
+	.myLeftMargin-15 {
+		margin-left: $myMargin-15 !important;
+	};
+
+	////// mySection
+	.mySection > .mySectionBody.myStack > div {
+		@include margin ($size-15, null);
+	};
+
+	.mySection > .mySectionTitle {
+		font-size: $title-font-size;
+	};
+
+	.myLeftRightPadding-0 > div {
+		@include padding (0 !important);
+	};	
+}
+
+// Medium only
+@media screen and (min-width: 40em) and (max-width: 63.9375em) {
+	
+}
+
+// Large and up
+@media screen and (min-width: 64em) {
+	.row .row {
+		margin-left: -$size-10;
+		margin-right: -$size-10;
+	}
+}
+
+// Large only
+@media screen and (min-width: 64em) and (max-width: 74.9375em) {
+	
+}
+

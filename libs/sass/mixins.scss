@@ -1,0 +1,39 @@
+@import "bourbon/bourbon";
+
+@mixin myTopMargin($size){
+	@include margin ($size null null null);
+};
+
+@mixin myBottomMargin($size){
+	@include margin (null null $size null);
+};
+
+@mixin myTopBottomMargin($top, $bottom: null){
+	@if $bottom == null {
+		@include margin ($top null);
+	} 
+	@else {
+		@include margin ($top null $bottom null);
+	}
+};
+
+@mixin myRightLeftPadding($right, $left){
+	@include padding (null $right null $left);
+};
+
+// one have one value for each style
+@mixin myBasicBorder($type: full, $color: #e6e6e6, $width: 1px, $style: solid){
+	@if $type == full {
+		@include border-style($style);
+		@include border-color($color);
+		@include border-width($width);	
+	}
+	@else if $type == bottom{
+		border-bottom: $width $style $color;
+	}
+	@else if $type == none{
+		border: none;
+	}
+
+
+};
