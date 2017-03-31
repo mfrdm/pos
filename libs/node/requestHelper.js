@@ -61,25 +61,24 @@ module.exports = new function () {
 		try {
 			query.exec(function (err, data) {	
 				if (err){
-					console.log (err);
+					// console.log (err);
 					thisObj.sendJsonRes(res, 400, {message: err});
-					return
 				}
 
-				if (!data) {
-					console.log ('empty results');
+				else if (!data) {
+					// console.log ('empty results');
 					thisObj.sendJsonRes(res, 404, {
 						message: 'empty results'
 					});
-
-					return
+				}
+				else {
+					thisObj.sendJsonRes (res, 200, {message: 'success', data: data});
 				}
 				
-				thisObj.sendJsonRes (res, 200, {message: 'success', data: data});
 			});
 		}
 		catch (err) {
-			console.log (err);
+			// console.log (err);
 			this.sendJsonRes(res, 500, {
 				message: err,
 			});

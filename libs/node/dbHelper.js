@@ -64,7 +64,6 @@ module.exports = new function (){
 	};
 
 	this.findOneById = function(req, res, Model) {
-		console.log (req.params)
 
 		if (req.params && req.params[req.query.idName]){
 			var idValue = req.params[req.query.idName];
