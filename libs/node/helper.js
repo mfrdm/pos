@@ -5,13 +5,14 @@ module.exports = new function() {
     // importing
     this.getAPIOption = function() {
         var defaultPort = 3000;
-        var defaultHost = "http://localhost";
+        // var defaultHost = "http://localhost";
+        var defaultHost = 'http://104.199.160.180';
         var apiOptions = {
             server: defaultHost + ":" + defaultPort,
         };
 
         if (process.env.NODE_ENV === 'production') {
-            apiOptions.server = "https://xxx.com"; // FIX: CHANGE later
+            apiOptions.server = "http://104.199.160.180"; // FIX: CHANGE later
         }
         return apiOptions
     };

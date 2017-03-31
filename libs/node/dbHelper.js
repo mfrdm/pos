@@ -14,12 +14,12 @@ module.exports = new function (){
 					requestHelper.sendJsonRes(res, 404, err);
 					return
 				}
-				requestHelper.sendJsonRes (res, 201, {status: 'success', data: data});			
+				requestHelper.sendJsonRes (res, 201, {data: data});			
 			});	
 		}
 		catch(ex){
 			console.log(ex)
-			requestHelper.sendJsonRes (res, 500, {status: 'failure', message: ex});
+			requestHelper.sendJsonRes (res, 500, {message: ex});
 		}
 	};
 
@@ -32,12 +32,12 @@ module.exports = new function (){
 					return
 				}
 
-				requestHelper.sendJsonRes (res, 201, {status: 'success', data: data.insertedCount + ' documents being inserted'});			
+				requestHelper.sendJsonRes (res, 201, {data: data.insertedCount + ' documents being inserted'});			
 			});
 		}
 		catch (ex){
 			console.log(ex)
-			requestHelper.sendJsonRes (res, 500, {status: 'failure', message: ex});		
+			requestHelper.sendJsonRes (res, 500, {message: ex});		
 		}
 	};
 
@@ -80,15 +80,14 @@ module.exports = new function (){
 		}	 	 
 	};
 
-	this.findSome = function(req, res, Model, paramFunc) {
+	this.findSome = function(req, res, Model) {
 		try{
-			var queryParams = paramFunc (req.query);
-			var query = Model.find(queryParams.conditions, queryParams.projection, queryParams.opts);
+			var query = Model.find(req.query.conditions, req.query.projection, req.query.opts);
 			requestHelper.stdExec (res, query);
 		}
 		catch(ex){
 			console.log(ex)
-			requestHelper.sendJsonRes (res, 500, {status: 'failure', message: ex});
+			requestHelper.sendJsonRes (res, 500, {message: ex});
 		}
 	};
 }();

@@ -40,7 +40,7 @@ module.exports = new function () {
 		var method = 'GET';
 		var returnJson = true;
 		var body = {};
-		send = send ? send : (req, res,view, data, cb)=>{res.render(view, data, cb)};
+		send = send ? send : function (){res.render (view, data, cb)};
 		this.callApi (req, res, apiUrl, method, returnJson, view, qs, body, dataFilter, send, otherAction, cb);
 	}
 
