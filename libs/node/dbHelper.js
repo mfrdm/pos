@@ -11,9 +11,10 @@ module.exports = new function (){
 			query.save (function (err, data){
 				if (err){
 					console.log(err)
-					requestHelper.sendJsonRes(res, 404, err);
+					requestHelper.sendJsonRes(res, 500, err);
 					return
 				}
+
 				requestHelper.sendJsonRes (res, 201, {data: data});			
 			});	
 		}
@@ -28,7 +29,7 @@ module.exports = new function (){
 			Model.collection.insert(req.body, {}, function (err, data){
 				if (err){
 					console.log(err)
-					requestHelper.sendJsonRes(res, 404, err);
+					requestHelper.sendJsonRes(res, 500, err);
 					return
 				}
 
@@ -41,18 +42,18 @@ module.exports = new function (){
 		}
 	};
 
-	this.updateOneById = function (req, res, Model, idName){
+	this.updateOneById = function (req, res, Model){
 		try {
-			if (req.params && req.params[idName]){
-				var idValue = req.params[idName];
+			if (req.params && req.params[req.query.idName]){
+				var idValue = req.params[req.query.idName];
 				var update = req.body;	
 				var query = Model
 					.findByIdAndUpdate (mongoose.Types.ObjectId(idValue), {$set: update}, {runValidators: true});
 				requestHelper.stdExec (res, query);
 			}
 			else{
-				requestHelper.sendJsonRes(res, 404, {
-					message: 'no passed params'			
+				requestHelper.sendJsonRes(res, 400, {
+					message: 'No input'			
 				});
 			}
 		} 
@@ -74,8 +75,8 @@ module.exports = new function (){
 			requestHelper.stdExec (res, query);
 		}
 		else{
-			requestHelper.sendJsonRes(res, 404, {
-				message: 'no passed params'			
+			requestHelper.sendJsonRes(res, 400, {
+				message: 'No input'			
 			});
 		}	 	 
 	};
