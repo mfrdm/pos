@@ -1,16 +1,162 @@
-var assert = require("assert"); // node.js core module
-var request = require('request');
-var helper = require('../../libs/node/helper');
+var assert = require ("assert"); // node.js core module
+var request = require ('request');
+var helper = require ('../../libs/node/helper');
 
-suite('Test booking API.', function() {
-	suite('Find some booking given criteria.', function(done) {
+suite ('Test booking API.', function() {
+	// setup
+	var server = helper.getAPIOption().server;
+
+	suite ('Update a booking', function (){
+		var route = '/api/bookings/booking';
+		var bookingId = 'xxxx';
+		var url = server + route + '/' + bookingId + '/edit';
+		var body = {
+			userId: 'xxxxxx',
+			checkinTime: '2017-04-10 10:11:20',
+		};
+
+		test ('Should detect user id is not provided', function (done){
+			var oldUserId = body.userId;
+			body.userId = '';
+
+			request ({
+				method: 'POST',
+				url: url,
+				json: true,
+				body: body,
+			}, function (err, res, body){
+				assert.equal (res.statusCode, 400);
+				done();				
+			});
+
+			body.userId = oldUserId;
+
+		});
+
+		test ('Should detect a user has no permission to update a booking', function (done){
+			var oldUserId = body.userId;
+			body.userId = 'invalid value';
+
+			request ({
+				method: 'POST',
+				url: url,
+				json: true,
+				body: body,
+			}, function (err, res, body){
+				assert.equal (res.statusCode, 403);
+				done();				
+			});
+
+			body.userId = oldUserId;
+		});
+
+
+		test ('Should detect checkinTime is invalid', function (done){
+			var oldCheckinTime = body.checkinTime;
+			body.checkinTime = 'invalid value';
+
+			request ({
+				method: 'POST',
+				url: url,
+				json: true,
+				body: body,
+			}, function (err, res, body){
+				assert.equal (res.statusCode, 400);
+				done();				
+			});
+
+			body.checkinTime = oldCheckinTime;
+		});
+
+	});
+
+
+	suite ('Create a booking', function (){
+		var route = '/api/bookings/create';
+		var url = server + route;
+		var body = {
+
+		};
+
+		test ('Should detect required input is not provided', function (done){
+			var oldCheckinTime = body.checkinTime;
+			body.checkinTime = '';
+
+			request ({
+				method: 'POST',
+				url: url,
+				json: true,
+				body: body,
+			}, function (err, res, body){
+				assert.equal (res.statusCode, 400);
+				done();				
+			});
+
+			body.checkinTime = oldCheckinTime;
+		});
+
+		test ('Should detect input is in incorrect format', function (done){
+			var oldCheckinTime = body.checkinTime;
+			body.checkinTime = 'invalid value';
+
+			request ({
+				method: 'POST',
+				url: url,
+				json: true,
+				body: body,
+			}, function (err, res, body){
+				assert.equal (res.statusCode, 400);
+				done();				
+			});		
+
+			body.checkinTime = oldCheckinTime;	
+		});
+
+		test ('Should detect invalid input', function (done){
+			assert.equal (true, false);
+			done();
+		});
+	});
+
+
+	suite ('Find one booking by its ID.', function(){
+		var route = '/api/bookings/booking';
+		var url = server + route;	
+		var bookingid = '/x';
+
+		var qs = {};
+		
+		test ('Should detect booking id is not found', function (done){
+			request ({
+				method:'GET',
+				url: url + bookingid,
+				json: true,
+				qs: qs,
+			}, function (err, res, body) {
+				assert.equal(res.statusCode, 500);
+				done();
+			});			
+		});
+
+		test ('Should detect required input is not provided', function (done){
+			assert.equal(true, false);
+			done()		
+		});
+
+	});
+
+
+	suite ('Find some booking given criteria.', function() {
 		var qs = {
 			customerId: 2312312,
-			service: 1,
+			product: 1,
 			location: 1,
 			start: '2017-03-31 10:20:00',
 			end: '2017-03-31 12:20:00',
 		}
+
+		var route = '/api/bookings';
+		var url = server + route;
 
 		test ('Should detect empty required input', function (done){
 			var oldStart = qs.start;
@@ -18,7 +164,7 @@ suite('Test booking API.', function() {
 
 			request({
 				method:'GET',
-				url: helper.getAPIOption().server + '/api/bookings',
+				url: url,
 				json: true,
 				qs: qs,
 			}, function(err, res, body){
@@ -27,6 +173,25 @@ suite('Test booking API.', function() {
 			});
 
 			qs.start = oldStart;
+		});
+
+
+		test('Should detect start and end dates are not in correct format', function (done){
+			var oldEnd = qs.end;
+			qs.end = 'invalid value';
+			// qs.end = 'xxx';
+
+			request({
+				method:'GET',
+				url: url,
+				json: true,
+				qs: qs,
+			}, function(err, res, body){
+				assert.equal(res.statusCode, 400);
+				done();
+			});	
+
+			qs.end = oldEnd;	
 		});
 
 
@@ -40,7 +205,7 @@ suite('Test booking API.', function() {
 
 			request({
 				method:'GET',
-				url: helper.getAPIOption().server + '/api/bookings',
+				url: url,
 				json: true,
 				qs: qs,
 			}, function(err, res, body){
@@ -54,27 +219,17 @@ suite('Test booking API.', function() {
 
 		});
 
-		test('Should return bookings in given input date', function(done) {
+		// Need to get actual data from db to test
+		test('Should return bookings on given input date', function(done) {
 			request({
 				method:'GET',
-				url: helper.getAPIOption().server + '/api/bookings',
+				url: url,
 				json: true,
 				qs: qs,
 			}, function(err, res, body){
+
 				assert.equal (new Date (body.bookings[0].checkinTime) >= new Date(qs.start), true);
 				assert.equal (new Date (body.bookings[0].checkinTime) <= new Date(qs.end), true);
-				done();
-			});
-		});
-
-		test('Should return successful code', function(done) {
-			request({
-				method:'GET',
-				url: helper.getAPIOption().server + '/api/bookings',
-				json: true,
-				qs: qs,
-			}, function(err, res, body){
-				assert.equal(res.statusCode, 200);
 				done();
 			});
 		});

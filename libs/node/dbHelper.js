@@ -64,9 +64,9 @@ module.exports = new function (){
 		}
 	};
 
-	this.findOneById = function(req, res, Model, idName) {
-		if (req.params && req.params[idName]){
-			var idValue = req.params[idName];
+	this.findOneById = function(req, res, Model) {
+		if (req.params && req.params[req.query.idName]){
+			var idValue = req.params[req.query.idName];
 			var attrs = req.query.attrs;		
 			var query = Model
 				.findById(idValue)
