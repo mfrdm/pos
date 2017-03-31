@@ -1,5 +1,4 @@
 // var assert = require("assert"); // node.js core module
-// require('../../app_api/models/db');
 // var request = require('request');
 
 // suite('User Api test', function() {
@@ -8,9 +7,6 @@
 // 			request({
 // 				method:'GET',
 // 				url:'http://localhost:3000/api/customers?firstname=tuan',
-// 				body: {
-// 					name:'cuong'
-// 				},
 // 				json: true
 // 			}, function(err, res, body){
 // 				console.log(body.data);

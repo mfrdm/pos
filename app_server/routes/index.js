@@ -20,8 +20,6 @@ router.get('/auth/google/callback',
 		failureRedirect : '/login'
 	}));
 router.get('/', othersCtrl.readHome);
-router.get('/auth/google', passport.authenticate);
-router.get('/auth/google/callback', passport.authenticate);
 
 router.get('/checkin', checkinCtrl.readCheckin);
 router.post('/checkin/:cusid', checkinCtrl.checkin);
@@ -53,4 +51,11 @@ router.get('/company', companiesCtrl.readOneCompById);
 router.get('/company/depts', deptsCtrl.readSomeDepts);
 router.post('/company/depts/dept/:deptid', deptsCtrl.readOneDeptById);
 
+// function isLoggedIn(req, res, next) {
+// 	// if user is authenticated in the session, carry on
+// 	if (req.isAuthenticated())
+// 		return next();
+// 	// if they aren't redirect them to the home page
+// 	res.redirect('/');
+// }
 module.exports = router;

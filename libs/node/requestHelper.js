@@ -40,7 +40,7 @@ module.exports = new function () {
 		var method = 'GET';
 		var returnJson = true;
 		var body = {};
-		send = send ? send : this.render;
+		send = send ? send : (req, res,view, data, cb)=>{res.render(view, data, cb)};
 		this.callApi (req, res, apiUrl, method, returnJson, view, qs, body, dataFilter, send, otherAction, cb);
 	}
 
@@ -50,11 +50,6 @@ module.exports = new function () {
 		var qs = {};
 		this.callApi (req, res, apiUrl, method, returnJson, view, qs, body, dataFilter, send, otherAction, cb);
 	}
-
-	this.render = function (req, res, view, data, status, cb) {
-		res.status (status ? status : 200);
-		res.render(view, data, cb);
-	};
 
 	this.sendJsonRes = function (res, status, content){
 		res.status(status);
