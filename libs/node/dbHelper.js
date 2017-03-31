@@ -10,16 +10,15 @@ module.exports = new function (){
 			var query = new Model (req.body);
 			query.save (function (err, data){
 				if (err){
-					console.log(err)
-					requestHelper.sendJsonRes(res, 500, err);
-					return
+					// console.log(err)
+					requestHelper.sendJsonRes(res, 400, err);
 				}
 
 				requestHelper.sendJsonRes (res, 201, {data: data});			
 			});	
 		}
 		catch(ex){
-			console.log(ex)
+			// console.log(ex)
 			requestHelper.sendJsonRes (res, 500, {message: ex});
 		}
 	};
@@ -28,16 +27,15 @@ module.exports = new function (){
 		try {
 			Model.collection.insert(req.body, {}, function (err, data){
 				if (err){
-					console.log(err)
-					requestHelper.sendJsonRes(res, 500, err);
-					return
+					// console.log(err)
+					requestHelper.sendJsonRes(res, 400, err);
 				}
 
 				requestHelper.sendJsonRes (res, 201, {data: data.insertedCount + ' documents being inserted'});			
 			});
 		}
 		catch (ex){
-			console.log(ex)
+			// console.log(ex)
 			requestHelper.sendJsonRes (res, 500, {message: ex});		
 		}
 	};
@@ -58,7 +56,7 @@ module.exports = new function (){
 			}
 		} 
 		catch (ex){
-			console.log(ex)
+			// console.log(ex)
 			requestHelper.sendJsonRes(res, 500, {
 				message: 'internal error'		
 			});		
@@ -66,6 +64,8 @@ module.exports = new function (){
 	};
 
 	this.findOneById = function(req, res, Model) {
+		console.log (req.params)
+
 		if (req.params && req.params[req.query.idName]){
 			var idValue = req.params[req.query.idName];
 			var attrs = req.query.attrs;		
@@ -87,7 +87,7 @@ module.exports = new function (){
 			requestHelper.stdExec (res, query);
 		}
 		catch(ex){
-			console.log(ex)
+			// console.log(ex)
 			requestHelper.sendJsonRes (res, 500, {message: ex});
 		}
 	};

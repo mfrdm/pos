@@ -40,8 +40,8 @@ function Booking() {
 
 	this.readOneBookingById = function(req, res) {
 
-		req.query.attrs = 'CheckinTime checkoutTime userId storeId';
-		req.query.idName = 'BookingId';
+		req.query.attrs = 'checkinTime checkoutTime userId storeId';
+		req.query.idName = 'bookingId';
 
 		dbHelper.findOneById (req, res, BookingModel);
 	};

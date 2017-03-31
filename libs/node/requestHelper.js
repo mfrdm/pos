@@ -59,16 +59,16 @@ module.exports = new function () {
 	this.stdExec = function (res, query) {
 		var thisObj = this;
 		try {
-			query.exec(function (err, data){	
+			query.exec(function (err, data) {	
 				if (err){
 					console.log (err);
-					thisObj.sendJsonRes(res, 500, {message: err});
+					thisObj.sendJsonRes(res, 400, {message: err});
 					return
 				}
 
 				if (!data) {
 					console.log ('empty results');
-					thisObj.sendJsonRes(res, 400, {
+					thisObj.sendJsonRes(res, 404, {
 						message: 'empty results'
 					});
 
