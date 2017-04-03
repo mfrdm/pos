@@ -4,6 +4,9 @@ var customersSchema = mongoose.Schema({
 	firstname:{type:String},
 	order:[
 		{orderId:{type:mongoose.Schema.Types.ObjectId}}
+	],
+	booking:[
+		{bookingId:{type:mongoose.Schema.Types.ObjectId}}
 	]
 });
 

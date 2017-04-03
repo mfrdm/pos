@@ -26,9 +26,9 @@ router.post('/checkin/:cusid', checkinCtrl.checkin);
 router.post('/checkin/:cusid/edit', checkinCtrl.updateCheckin);//cusid is order id
 router.get('/checkout/invoice/:cusid', checkoutCtrl.readInvoice);
 router.post('/checkout/', checkoutCtrl.checkout);
-router.get('/booking', bookingCtrl.readBooking);
-router.post('/booking/:cusid', bookingCtrl.booking);
-router.post('/booking/:cusid/edit', bookingCtrl.updateBooking);
+router.get('/bookings', bookingCtrl.readBooking);
+router.post('/bookings/:cusid', bookingCtrl.booking);
+router.post('/bookings/:cusid/edit', bookingCtrl.updateBooking);
 router.get('/hr', hrCtrl.readOverview);
 
 router.get('/search/hr', hrCtrl.searchHr);
