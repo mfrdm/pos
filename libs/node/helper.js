@@ -3,16 +3,20 @@ var request = require('request');
 
 module.exports = new function() {
     // importing
-    this.getAPIOption = function() {
+    // NEED TO FIX
+    this.getAPIOption = function(host, port) {
         var defaultPort = 3000;
-        // var defaultHost = "http://localhost";
-        var defaultHost = 'http://localhost';
+
+        var defaultHost = "http://localhost";
+
         var apiOptions = {
             server: defaultHost + ":" + defaultPort,
         };
 
         if (process.env.NODE_ENV === 'production') {
-            apiOptions.server = "http://104.199.160.180"; // FIX: CHANGE later
+            host = host ? host : "http://104.199.160.180";
+            port = port ? port : defaultPort;
+            apiOptions.server = host + ":" + port; // FIX: CHANGE later
         }
         return apiOptions
     };

@@ -43,18 +43,18 @@ router.post('/orders/create', ordersCtrl.createOneOrder);
 router.post('/orders/order/:orderid/edit', ordersCtrl.updateOneOrderById);
 
 router.get('/costs/', costsCtrl.readSomeCosts);
-router.get('/costs/cost/:costid', costsCtrl.readOneCostById);
+router.get('/costs/cost/:costId', costsCtrl.readOneCostById);
 router.post('/costs/create', costsCtrl.createOneCost);
-router.post('/costs/cost/:costid/edit', costsCtrl.updateOneCostById);
+router.post('/costs/cost/:costId/edit', costsCtrl.updateOneCostById);
 
 router.get('/bookings/', bookingCtrl.readSomeBookings);
-router.get('/bookings/booking/:bookingid', bookingCtrl.readOneBookingById);
+router.get('/bookings/booking/:bookingId', bookingCtrl.readOneBookingById);
 router.post('/bookings/create', bookingCtrl.createOneBooking);
-router.post('/bookings/booking/:bookingid/edit', bookingCtrl.updateOneBookingById);
+router.post('/bookings/booking/:bookingId/edit', bookingCtrl.updateOneBookingById);
 
 router.get('/assets/', assetsCtrl.readSomeAssets);
-router.get('/assets/asset/:assetid', assetsCtrl.readOneAssetById);
+router.get('/assets/asset/:assetId', assetsCtrl.readOneAssetById);
 router.post('/assets/create', assetsCtrl.createOneAsset);
-router.post('/assets/asset/:assetid/edit', assetsCtrl.updateOneAssetById);
+router.post('/assets/asset/:assetId/edit', assetsCtrl.updateOneAssetById);
 
 module.exports = router;

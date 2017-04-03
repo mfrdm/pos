@@ -57,25 +57,27 @@ module.exports = new function () {
 	this.stdExec = function (res, query) {
 		var thisObj = this;
 		try {
-			query.exec(function (err, data){	
+			query.exec(function (err, data) {	
 				if (err){
-					thisObj.sendJsonRes(res, 404, {message: err});
-					return
+					// console.log (err);
+					thisObj.sendJsonRes(res, 400, {message: err});
 				}
 
-				if (!data) {
+				else if (!data) {
+					// console.log ('empty results');
 					thisObj.sendJsonRes(res, 404, {
 						message: 'empty results'
 					});
-
-					return
+				}
+				else {
+					thisObj.sendJsonRes (res, 200, {message: 'success', data: data});
 				}
 				
-				thisObj.sendJsonRes (res, 200, {message: 'success', data: data});
 			});
 		}
 		catch (err) {
-			this.sendJsonRes(res, 404, {
+			// console.log (err);
+			this.sendJsonRes(res, 500, {
 				message: err,
 			});
 		}				
