@@ -47,7 +47,7 @@ module.exports = new function (){
 				var idValue = req.params[idName];
 				var update = req.body;	
 				var query = Model
-					.findByIdAndUpdate (mongoose.Types.ObjectId(idValue), {$set: update}, {runValidators: true});
+					.findByIdAndUpdate (mongoose.Types.ObjectId(idValue), {update}, {runValidators: true});
 				requestHelper.stdExec (res, query);
 			}
 			else{
@@ -82,7 +82,7 @@ module.exports = new function (){
 
 	this.findSome = function(req, res, Model) {
 		try{
-			var query = Model.find(req.query.conditions, req.query.projection, req.query.opts);
+			var query = Model.find(req.query, req.query.projection, req.query.opts);
 			requestHelper.stdExec (res, query);
 		}
 		catch(ex){

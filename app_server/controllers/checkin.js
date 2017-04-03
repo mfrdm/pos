@@ -11,7 +11,7 @@ function Checkin() {
 	this.readCheckin = function(req, res) {
 		var apiUrl = apiOptions.server + "/api/customers";
 		var view = 'checkin';
-		var qs = {name:"tuan"};
+		var qs = {firstname:"tuan"};
 		var dataFilter = function(dataList){
 			var data = {
 				user: {
@@ -25,17 +25,28 @@ function Checkin() {
 			return data;
 		};
 		var send = function(req, res, view, data, cb){
-			console.log(data)
-			res.render(view, data, cb)
+			requestHelper.sendJsonRes(res, 200, data)
 		}
 		requestHelper.readApi(req, res, apiUrl, view, qs, dataFilter, send);
 	};
 
 	this.checkin = function(req, res) {
-		var apiUrl = apiOptions.server + "/api/customers?firstname=tuan";
-		var view = 'checkin';
-		var qs = req.query;
-
+		var apiUrl = apiOptions.server + "/api/orders/create";
+		var view = null;
+		var body = req.body;
+		var dataFilter = null;
+		body.customerId = req.params.cusid;
+		var send = function(req, res, view, data, cb){
+			var apiUrl = apiOptions.server + '/customers/customer/' + data.customerId + '/edit';
+			var view = null;
+			var dataFilter = null;
+			var body = {$push: {"order":{"orderId":data._id}}};
+			var send = function(req, res, view, data, cb){
+				requestHelper.sendJsonRes(res, 200, data)
+			}
+			requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
+		}
+		requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
 	};
 
 	this.updateCheckin = function(req, res) {

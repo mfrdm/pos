@@ -9,13 +9,7 @@ module.exports = new Customers();
 function Customers() {
 
 	this.readSomeCustomers = function(req, res) {
-		var func = function(q){
-			q.conditions = {
-				firstname: "tuan"
-			}
-			return q;
-		}
-		dbHelper.findSome(req, res, CustomersModel, func)
+		dbHelper.findSome(req, res, CustomersModel)
 	};
 
 	this.readOneCustomerById = function(req, res) {

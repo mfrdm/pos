@@ -6,7 +6,7 @@ module.exports = new function() {
     this.getAPIOption = function() {
         var defaultPort = 3000;
         // var defaultHost = "http://localhost";
-        var defaultHost = 'http://104.199.160.180';
+        var defaultHost = 'http://localhost';
         var apiOptions = {
             server: defaultHost + ":" + defaultPort,
         };
