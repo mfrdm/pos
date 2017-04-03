@@ -50,7 +50,16 @@ function Checkin() {
 	};
 
 	this.updateCheckin = function(req, res) {
-
+		//cusid is id of the order
+		var apiUrl = apiOptions.server + "/api/orders/order/"+req.params.cusid+"/edit";
+		var view = null;
+		var body = req.body;
+		var dataFilter = null;
+		body.customerId = req.params.cusid;
+		var send = function(req, res, view, data, cb){
+			requestHelper.sendJsonRes(res, 200, data)
+		}
+		requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
 	};
 
 };

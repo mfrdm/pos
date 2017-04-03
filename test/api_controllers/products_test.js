@@ -1,7 +1,7 @@
-// var assert = require("assert"); // node.js core module
-// var request = require('request');
+var assert = require("assert"); // node.js core module
+var request = require('request');
 
-// suite('Products API test', function() {
+suite('Products API test', function() {
 // 	suite('Find some products by given criteria', function(done) {
 // 		test('should return some products', function(done) {
 // 			request({
@@ -30,22 +30,23 @@
 // 		});
 // 	});
 
-// 	suite('create product', function(done) {
-// 		test('should create new product', function(done) {
-// 			request({
-// 				method:'POST',
-// 				url:'http://localhost:3000/api/products/create',
-// 				body: {
-// 					name:'phong'
-// 				},
-// 				json: true
-// 			}, function(err, res, body){
-// 				console.log(res.statusCode);
-// 				assert.equal(res.statusCode, 201);
-// 				done();
-// 			})
-// 		});
-// 	});
+	// suite('create product', function(done) {
+	// 	test('should create new product', function(done) {
+	// 		request({
+	// 			method:'POST',
+	// 			url:'http://localhost:3000/api/products/create',
+	// 			body: {
+	// 				name:'fruit',
+	// 				price:10000
+	// 			},
+	// 			json: true
+	// 		}, function(err, res, body){
+	// 			console.log(res.statusCode);
+	// 			assert.equal(res.statusCode, 201);
+	// 			done();
+	// 		})
+	// 	});
+	// });
 
 // 	suite('Find and update one Depts by given ID', function(done) {
 // 		test('should return one Depts and update', function(done) {
@@ -62,4 +63,4 @@
 // 			})
 // 		});
 // 	});
-// });
+});
