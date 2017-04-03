@@ -47,7 +47,7 @@ module.exports = new function (){
 				var idValue = req.params[idName];
 				var update = req.body;	
 				var query = Model
-					.findByIdAndUpdate (mongoose.Types.ObjectId(idValue), {update}, {runValidators: true});
+					.findByIdAndUpdate (mongoose.Types.ObjectId(idValue), update, {runValidators: true});
 				requestHelper.stdExec (res, query);
 			}
 			else{

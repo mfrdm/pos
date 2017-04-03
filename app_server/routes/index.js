@@ -24,7 +24,7 @@ router.get('/', othersCtrl.readHome);
 router.get('/checkin', checkinCtrl.readCheckin);
 router.post('/checkin/:cusid', checkinCtrl.checkin);
 router.post('/checkin/:cusid/edit', checkinCtrl.updateCheckin);
-router.get('/checkout/invoice', checkoutCtrl.readInvoice);
+router.get('/checkout/invoice/:cusid', checkoutCtrl.readInvoice);
 router.post('/checkout/', checkoutCtrl.checkout);
 router.get('/booking', bookingCtrl.readBooking);
 router.post('/booking/:cusid', bookingCtrl.booking);
