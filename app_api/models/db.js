@@ -16,6 +16,6 @@ require('./companies');
 require('./depts');
 require('./products');
 require('./orders');
-require('./cost');
+require('./costs');
 require('./bookings');
 require('./assets');

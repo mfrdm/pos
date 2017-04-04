@@ -5,6 +5,7 @@ var helper = require ('../../libs/node/helper');
 suite ('Test booking API.', function() {
 	// setup
 	var server = helper.getAPIOption().server;
+	
 	suite ('Update a booking', function (){
 		var route = '/api/bookings/booking';
 		var bookingId = 'xxxx';
@@ -150,7 +151,7 @@ suite ('Test booking API.', function() {
 			done();		
 		});
  	});
- 	
+
 	suite ('Find some booking given criteria.', function() {
 		var qs = {
 			customerId: 2312312,
