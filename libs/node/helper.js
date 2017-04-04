@@ -6,6 +6,7 @@ module.exports = new function() {
     // NEED TO FIX
     this.getAPIOption = function(host, port) {
         var defaultPort = 3000;
+
         var defaultHost = "http://localhost";
 
         var apiOptions = {

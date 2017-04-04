@@ -17,7 +17,6 @@ module.exports = new function () {
 		if (Object.keys(qs).length) {
 			reqOptions.qs = qs;
 		};
-
 		try{
 			request (reqOptions, function(err, response, body){
 				var data = dataFilter ? dataFilter(body.data) : body.data;
@@ -27,7 +26,6 @@ module.exports = new function () {
 				if (otherAction){
 					otherAction (body, err, response, req, res, reqOptions);
 				}
-
 				send (req, res, view, data, cb);
 			});
 		}

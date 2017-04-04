@@ -1,5 +1,4 @@
 // var assert = require("assert"); // node.js core module
-// require('../../app_api/models/db');
 // var request = require('request');
 
 // suite('Orders API test', function() {

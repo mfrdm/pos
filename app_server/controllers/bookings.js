@@ -4,21 +4,21 @@ var requestHelper = require('../../libs/node/requestHelper')
 var request = require('request')
 var apiOptions = helper.getAPIOption()
 
-module.exports = new Checkin();
+module.exports = new Booking();
 
-function Checkin() {
+function Booking() {
 
-	this.readCheckin = function(req, res) {
-		var apiUrl = apiOptions.server + "/api/customers";
-		var view = 'checkin';
-		var qs = {firstname:"tuan"};
+	this.readBooking = function(req, res) {
+		var apiUrl = apiOptions.server + "/api/bookings";
+		var view = null;
+		var qs = {};
 		var dataFilter = function(dataList){
 			var data = {
 				user: {
 					data:dataList
 				},
 				look:{
-					title:"Checkin for Customers",
+					title:"Booking",
 					css:['']
 				}
 			};
@@ -30,17 +30,19 @@ function Checkin() {
 		requestHelper.readApi(req, res, apiUrl, view, qs, dataFilter, send);
 	};
 
-	this.checkin = function(req, res) {
-		var apiUrl = apiOptions.server + "/api/orders/create";
+	this.booking = function(req, res) {
+		var apiUrl = apiOptions.server + "/api/bookings/create";
 		var view = null;
 		var body = req.body;
 		var dataFilter = null;
 		body.customerId = req.params.cusid;
+		body.checkinTime = Date.now();
+		body.storeId = '123';
 		var send = function(req, res, view, data, cb){
 			var apiUrl = apiOptions.server + '/customers/customer/' + data.customerId + '/edit';
 			var view = null;
 			var dataFilter = null;
-			var body = {$push: {"order":{"orderId":data._id}}};
+			var body = {$push: {"booking":{"bookingId":data._id}}};
 			var send = function(req, res, view, data, cb){
 				requestHelper.sendJsonRes(res, 200, data)
 			}
@@ -49,13 +51,11 @@ function Checkin() {
 		requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
 	};
 
-	this.updateCheckin = function(req, res) {
-		//cusid is id of the order
-		var apiUrl = apiOptions.server + "/api/orders/order/"+req.params.cusid+"/edit";
+	this.updateBooking = function(req, res) {
+		var apiUrl = apiOptions.server + "/api/bookings/booking/"+req.params.cusid+"/edit";
 		var view = null;
 		var body = req.body;
 		var dataFilter = null;
-		body.customerId = req.params.cusid;
 		var send = function(req, res, view, data, cb){
 			requestHelper.sendJsonRes(res, 200, data)
 		}

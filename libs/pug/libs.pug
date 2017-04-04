@@ -1,0 +1,44 @@
+// assume placed within .column
+// equalized by default
+mixin createCardCollection (titles, mediaObjs, createHeader, headerParam, createFooter, footerParam, links, mediaType, sizeUp)
+	//if hasHeader
+	if !mediaType
+		- var mediaType = 'img';
+	if !sizeUp
+		- var sizeUp = 'small-up-2 medium-up-3 large-up-4';
+	div(class="row " + sizeUp, data-equalizer="", data-equalize-by-row="true")
+		- var mediaObjNum = mediaObjs.length;
+		- for (var i =0; i < mediaObjNum; i++)
+			div(class="card column column-block myCard")
+				div(class="myWrapper", data-equalizer-watch="")
+					div(class="card-divider")
+						if createHeader
+							+createHeader(headerParam, i)
+						else
+							=titles[i]
+					if mediaType === 'img'
+						if links
+							a(href=links[i])
+								img(src=mediaObjs[i], class="", alt="")
+						else
+							img(src=mediaObjs[i], class="", alt="")
+					if createFooter
+						div(class="card-section")
+							+createFooter (footerParam, i)
+
+// create a list of links by default
+mixin createVMenu (items, links, title, titleClass, createList, params)
+	ul(class="menu vertical")
+		if title
+			if !titleClass
+				- var titleClass = "myBoxTitle"
+			li(class=titleClass)= title
+		if !createList
+			- var itemNum = items.length;
+			- for (var i = 0; i < itemNum; i++)		
+				li: a(href=links[i])= items[i]
+		else
+			- var itemNum = params[0].length;
+			- for (var i = 0; i < itemNum; i++)		
+				li
+					+createList(params, i)

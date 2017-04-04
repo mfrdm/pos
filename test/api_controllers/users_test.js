@@ -1,8 +1,7 @@
-// var assert = require("assert"); // node.js core module
-// require('../../app_api/models/db');
-// var request = require('request');
+var assert = require("assert"); // node.js core module
+var request = require('request');
 
-// suite('User Api test', function() {
+suite('User Api test', function() {
 // 	suite('Find some users by given criteria', function(done) {
 // 		test('should return some users', function(done) {
 // 			request({
@@ -32,22 +31,24 @@
 // 		});
 // 	});
 
-// 	suite('create user', function(done) {
-// 		test('should create new users', function(done) {
-// 			request({
-// 				method:'POST',
-// 				url:'http://localhost:3000/api/users/create',
-// 				body: {
-// 					firstname:'trung'
-// 				},
-// 				json: true
-// 			}, function(err, res, body){
-// 				console.log(res.statusCode);
-// 				assert.equal(res.statusCode, 201);
-// 				done();
-// 			})
-// 		});
-// 	});
+	// suite('create user', function(done) {
+	// 	test('should create new users', function(done) {
+	// 		request({
+	// 			method:'POST',
+	// 			url:'http://localhost:3000/api/users/create',
+	// 			body: {
+	// 				firstname:'trung',
+	// 				role:'admin',
+	// 				permission:1
+	// 			},
+	// 			json: true
+	// 		}, function(err, res, body){
+	// 			console.log(res.statusCode);
+	// 			assert.equal(res.statusCode, 201);
+	// 			done();
+	// 		})
+	// 	});
+	// });
 
 // 	suite('Find and update one users by given ID', function(done) {
 // 		test('should return one users and update', function(done) {
@@ -66,4 +67,4 @@
 // 	});
 
 
-// });
+});
