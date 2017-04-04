@@ -9,11 +9,38 @@ module.exports = new Customers();
 function Customers() {
 
 	this.readOverview = function(req, res) {
-
+		var data = {
+			user: {
+				data:dataList
+			},
+			look:{
+				title:"Customers",
+				css:['']
+			}
+		};
+		res.render('customermanagement', {data:data})
 	};
 
 	this.readSomeCustomers = function(req, res) {
-
+		var apiUrl = apiOptions.server + "/api/customers/";
+		var view = 'checkin';
+		var qs = {};
+		var dataFilter = function(dataList){
+			var data = {
+				user: {
+					data:dataList
+				},
+				look:{
+					title:"Return 1 specific Customer by ID",
+					css:['']
+				}
+			};
+			return data;
+		};
+		var send = function(req, res, view, data, cb){
+			requestHelper.sendJsonRes(res, 200, data)
+		}
+		requestHelper.readApi(req, res, apiUrl, view, qs, dataFilter, send);
 	};
 
 	this.readOneCustomerById = function(req, res) {
@@ -39,7 +66,14 @@ function Customers() {
 	};
 
 	this.createOneCustomer = function(req, res) {
-
+		var apiUrl = apiOptions.server + "/api/customers/create/";
+		var view = null;
+		var body = req.body;
+		var dataFilter = null;
+		var send = function(req, res, view, data, cb){
+			requestHelper.sendJsonRes(res, 200, data)
+		}
+		requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
 	};
 
 	this.updateOneCustomer = function(req, res) {
@@ -47,8 +81,6 @@ function Customers() {
 		var view = null;
 		var body = req.body;
 		var dataFilter = null;
-		console.log('test')
-		console.log(body)
 		var send = function(req, res, view, data, cb){
 			requestHelper.sendJsonRes(res, 200, data)
 		}
