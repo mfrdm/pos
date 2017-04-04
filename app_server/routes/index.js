@@ -26,18 +26,23 @@ router.post('/checkin/:cusid', checkinCtrl.checkin);
 router.post('/checkin/:cusid/edit', checkinCtrl.updateCheckin);//cusid is order id
 router.get('/checkout/invoice/:cusid', checkoutCtrl.readInvoice);
 router.post('/checkout/', checkoutCtrl.checkout);
+
 router.get('/bookings', bookingCtrl.readBooking);
 router.post('/bookings/:cusid', bookingCtrl.booking);
 router.post('/bookings/:cusid/edit', bookingCtrl.updateBooking);
-router.get('/hr', hrCtrl.readOverview);
 
+router.get('/hr', hrCtrl.readOverview);
 router.get('/search/hr', hrCtrl.searchHr);
 router.get('/hr/employees/employee/:uid', hrCtrl.readOneUser);
+router.post('/hr/employees/employee/:uid/edit', hrCtrl.editOneUser);
+
 router.get('/bi', biCtrl.readReport);
+
 router.get('/assets', assetsCtrl.readSomeAsset);
 router.get('/assets/asset/:assetid', assetsCtrl.readOneAssetById);
 router.post('/assets/create', assetsCtrl.createOneAsset);
 router.post('/assets/asset/:assetid/edit', assetsCtrl.updateOneAsset);
+
 router.get('/customer-management', customersCtrl.readOverview);
 router.get('/search/customer', customersCtrl.readSomeCustomers);
 router.get('/customers/customer/:cusid', customersCtrl.readOneCustomerById);

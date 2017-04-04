@@ -9,13 +9,7 @@ module.exports = new Users();
 function Users() {
 
 	this.readSomeUsers = function(req, res) {
-		var func = function(query){
-			query.conditions = {
-				firstname:"cuong"
-			}
-			return query;
-		}
-		dbHelper.findSome(req, res, UserModel, func)
+		dbHelper.findSome(req, res, UserModel)
 	};
 
 	this.readOneUserById = function(req, res) {

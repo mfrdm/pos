@@ -7,6 +7,7 @@ module.exports = new function (){
 	//insert new User
 	this.insertOne = function (req, res, Model) {
 		try{
+			console.log(req.body)
 			var query = new Model (req.body);
 			query.save (function (err, data){
 				if (err){
