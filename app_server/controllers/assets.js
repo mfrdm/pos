@@ -9,19 +9,47 @@ module.exports = new Assets();
 function Assets() {
 
 	this.readSomeAsset = function(req, res) {
-
+		var apiUrl = apiOptions.server + "/api/assets";
+		var view = null;
+		var qs = {};
+		var dataFilter = null;
+		var send = function(req, res, view, data, cb){
+			requestHelper.sendJsonRes(res, 200, data)
+		}
+		requestHelper.readApi(req, res, apiUrl, view, qs, dataFilter, send);
 	};
 
 	this.readOneAssetById = function(req, res) {
-
+		var apiUrl = apiOptions.server + "/api/assets/asset/"+req.params.assetid;
+		var view = null;
+		var qs = {};
+		var dataFilter = null;
+		var send = function(req, res, view, data, cb){
+			requestHelper.sendJsonRes(res, 200, data)
+		}
+		requestHelper.readApi(req, res, apiUrl, view, qs, dataFilter, send);
 	};
 
 	this.createOneAsset = function(req, res) {
-
+		var apiUrl = apiOptions.server + "/api/assets/create";
+		var view = null;
+		var body = req.body;
+		var dataFilter = null;
+		var send = function(req, res, view, data, cb){
+			requestHelper.sendJsonRes(res, 200, data)
+		}
+		requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
 	};
 
 	this.updateOneAsset = function(req, res) {
-
+		var apiUrl = apiOptions.server + "/api/assets/asset/"+req.params.assetid+"/edit";
+		var view = null;
+		var body = req.body;
+		var dataFilter = null;
+		var send = function(req, res, view, data, cb){
+			requestHelper.sendJsonRes(res, 200, data)
+		}
+		requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
 	};
 
 };

@@ -44,7 +44,7 @@ router.post('/assets/create', assetsCtrl.createOneAsset);
 router.post('/assets/asset/:assetid/edit', assetsCtrl.updateOneAsset);
 
 router.get('/customer-management', customersCtrl.readOverview);
-router.get('/search/customer', customersCtrl.readSomeCustomers);
+router.get('/customers', customersCtrl.readSomeCustomers);
 router.get('/customers/customer/:cusid', customersCtrl.readOneCustomerById);
 router.post('/customers/create', customersCtrl.createOneCustomer);
 router.post('/customers/customer/:cusid/edit', customersCtrl.updateOneCustomer);
@@ -52,9 +52,12 @@ router.get('/fin/costs', finCtrl.readSomeCosts);
 router.post('/fin/cost/create', finCtrl.createOneCost);
 router.get('/fin/costs/cost/:costid', finCtrl.readOneCostById);
 router.post('/find/costs/cost/:costid/edit', finCtrl.updateOneCost);
+
 router.get('/company', companiesCtrl.readOneCompById);
 router.get('/company/depts', deptsCtrl.readSomeDepts);
-router.post('/company/depts/dept/:deptid', deptsCtrl.readOneDeptById);
+router.get('/company/depts/dept/:deptid', deptsCtrl.readOneDeptById);
+router.post('/company/depts/create', deptsCtrl.createOneDept);
+router.post('/company/depts/dept/:deptid/edit', deptsCtrl.updateOneDept);
 
 // function isLoggedIn(req, res, next) {
 // 	// if user is authenticated in the session, carry on
