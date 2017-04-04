@@ -118,41 +118,41 @@ suite ('Test booking API.', function() {
 	// 	});
 	// });
 
-	suite ('Find one booking by its ID.', function(){
-		var route = '/api/bookings/booking/';
-		var url = server + route;	
-		var bookingid = 'x';
+	// suite ('Find one booking by its ID.', function(){
+	// 	var route = '/api/bookings/booking/';
+	// 	var url = server + route;	
+	// 	var bookingid = 'x';
 
-		var qs = {};
+	// 	var qs = {};
 			
-		test ('Should detect user has no permission to access a booking', function (done){
-			assert.equal (true, false);
-			done();
-		});
+	// 	test ('Should detect user has no permission to access a booking', function (done){
+	// 		assert.equal (true, false);
+	// 		done();
+	// 	});
 
-		test ('Should detect booking id is invalid', function (done){
-			var oldId = bookingid;
-			bookingid = 'invalid value';
+	// 	test ('Should detect booking id is invalid', function (done){
+	// 		var oldId = bookingid;
+	// 		bookingid = 'invalid value';
 
-			request ({
-				method:'GET',
-				url: url + bookingid,
-				json: true,
-				qs: qs,
-			}, function (err, res, body) {
-				assert.equal(res.statusCode, 400);
-				done();
-			});	
+	// 		request ({
+	// 			method:'GET',
+	// 			url: url + bookingid,
+	// 			json: true,
+	// 			qs: qs,
+	// 		}, function (err, res, body) {
+	// 			assert.equal(res.statusCode, 400);
+	// 			done();
+	// 		});	
 
-			bookingId = oldId;
-		});
+	// 		bookingId = oldId;
+	// 	});
 
-		test ('Should detect required input is not provided', function (done){
-			assert.equal(true, false);
-			done();		
-		});
+	// 	test ('Should detect required input is not provided', function (done){
+	// 		assert.equal(true, false);
+	// 		done();		
+	// 	});
 
-	});
+	// });
 
 
 	// suite ('Find some booking given criteria.', function() {

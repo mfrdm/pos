@@ -61,7 +61,7 @@ function Booking() {
 			return true
 		}
 
-		if (checkCheckinTime(req.body.checkinTime)){
+		if (!checkCheckinTime(req.body.checkinTime)){
 			requestHelper.sendJsonRes (res, 400, {message: 'Invalid input'});
 			return
 		}
