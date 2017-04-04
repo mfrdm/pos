@@ -75,33 +75,33 @@ suite('Checkin controller test', function() {
 	// 	});
 	// });
 
-	suite('Edit order of a customer', function(done) {
-		test('should change the product line', function(done) {
-			request({
-				method:'POST',
-				url:'http://localhost:3000/checkin/58e1fef23a4948415f0932df/edit',
-				body:{
-					$set:{
-						"orderline":[{
-							productId:"58e1fbb34f76af3e1a7fcd5f",
-							productName:"food",
-							price:5000,
-							quantity:222
-						},
-						{
-							productId:"58e1fdc4cf2a403fd0b3a811",
-							productName:"fruit",
-							price:10000,
-							quantity:54
-						}]
-					}
-				},
-				json: true
-			}, function(err, res, body){
-				console.log(body)
-				assert.equal(res.statusCode, 200);
-				done();
-			})
-		});
-	});
+	// suite('Edit order of a customer', function(done) {
+	// 	test('should change the product line', function(done) {
+	// 		request({
+	// 			method:'POST',
+	// 			url:'http://localhost:3000/checkin/58e1fef23a4948415f0932df/edit',
+	// 			body:{
+	// 				$set:{
+	// 					"orderline":[{
+	// 						productId:"58e1fbb34f76af3e1a7fcd5f",
+	// 						productName:"food",
+	// 						price:5000,
+	// 						quantity:222
+	// 					},
+	// 					{
+	// 						productId:"58e1fdc4cf2a403fd0b3a811",
+	// 						productName:"fruit",
+	// 						price:10000,
+	// 						quantity:54
+	// 					}]
+	// 				}
+	// 			},
+	// 			json: true
+	// 		}, function(err, res, body){
+	// 			console.log(body)
+	// 			assert.equal(res.statusCode, 200);
+	// 			done();
+	// 		})
+	// 	});
+	// });
 });

@@ -47,6 +47,8 @@ function Customers() {
 		var view = null;
 		var body = req.body;
 		var dataFilter = null;
+		console.log('test')
+		console.log(body)
 		var send = function(req, res, view, data, cb){
 			requestHelper.sendJsonRes(res, 200, data)
 		}

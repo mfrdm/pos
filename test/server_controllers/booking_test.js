@@ -26,7 +26,6 @@ suite('Booking test server', function() {
 				},
 				json: true
 			}, function(err, res, body){
-				console.log(body)
 				assert.equal(res.statusCode, 200);
 				done();
 			})

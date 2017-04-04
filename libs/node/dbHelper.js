@@ -40,11 +40,13 @@ module.exports = new function (){
 		}
 	};
 
-	this.updateOneById = function (req, res, Model){
+	this.updateOneById = function (req, res, Model, idName){
 		try {
+			console.log(req.params)
+			console.log(req.params[idName])
 			if (req.params && req.params[req.query.idName]){
 				var idValue = req.params[req.query.idName];
-				var update = req.body;	
+				var update = req.body;
 				var query = Model
 					.findByIdAndUpdate (mongoose.Types.ObjectId(idValue), update, {runValidators: true});
 				requestHelper.stdExec (res, query);

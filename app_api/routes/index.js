@@ -9,7 +9,7 @@ var deptsCtrl = require("../controllers/depts");
 var productsCtrl = require("../controllers/products");
 var ordersCtrl = require("../controllers/orders");
 var costsCtrl = require("../controllers/costs");
-var bookingCtrl = require("../controllers/booking");
+var bookingCtrl = require("../controllers/bookings");
 var assetsCtrl = require("../controllers/assets");
 
 router.get('/users', usersCtrl.readSomeUsers);

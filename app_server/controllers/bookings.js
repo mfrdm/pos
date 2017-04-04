@@ -36,6 +36,8 @@ function Booking() {
 		var body = req.body;
 		var dataFilter = null;
 		body.customerId = req.params.cusid;
+		body.checkinTime = Date.now();
+		body.storeId = '123';
 		var send = function(req, res, view, data, cb){
 			var apiUrl = apiOptions.server + '/customers/customer/' + data.customerId + '/edit';
 			var view = null;
