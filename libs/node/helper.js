@@ -6,17 +6,20 @@ module.exports = new function() {
     // NEED TO FIX
     this.getAPIOption = function(host, port) {
         var defaultPort = 3000;
+        var defaultDbName = 'pos';
 
         var defaultHost = "http://localhost";
 
         var apiOptions = {
             server: defaultHost + ":" + defaultPort,
+            dbName: 'test',
         };
 
         if (process.env.NODE_ENV === 'production') {
             host = host ? host : "http://104.199.160.180";
             port = port ? port : defaultPort;
             apiOptions.server = host + ":" + port; // FIX: CHANGE later
+            apiOptions.dbName = defaultDbName;
         }
         return apiOptions
     };
@@ -24,13 +27,14 @@ module.exports = new function() {
     this.simpleTryCatch = function(f, mode, res) {
         try {
             f();
-        } catch (ex) {
+        } 
+        catch (ex) {
             if (!mode) {
                 console.log(ex);
-
-            } else if (mode === 1) {
-                sendJsonRes(res, 500, err);
-                return
+            } 
+            else if (mode === 1) {
+                res.status (500);
+                res.json (err);
             }
         }
     };

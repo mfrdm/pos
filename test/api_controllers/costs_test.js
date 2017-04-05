@@ -2,10 +2,13 @@ var assert = require ('assert'); // node.js core module
 var request = require ('request');
 var helper = require ('../../libs/node/helper');
 var TestHelper =  require ('../../libs/node/testHelper');
+var dateFormat = require ('dateFormat');
 
 suite ('Test costs API.', function (){
 	// setup
 	var server = helper.getAPIOption().server;
+	var costId = '58e4754f95e39314c6bf3bc2';
+	this.timeout (3000);
 
 	suite ('Read some costs.', function (){
 
@@ -54,10 +57,9 @@ suite ('Test costs API.', function (){
 	});
 
 	suite ('Read one cost by ID.', function (){
-		var url = server + '/api/costs/cost/' + '1232';
+		var url = server + '/api/costs/cost/' + costId;
 		var qs = {
 			userId: 'xxxx',
-			costId: '123123123'
 		};
 
 		var th = new TestHelper ({url: url, method: 'GET', qs: qs});
@@ -77,7 +79,7 @@ suite ('Test costs API.', function (){
 		var url = server + '/api/costs/create';
 		var body = {
 			userId: 'xxxx',
-			amount: 3123122,
+			amount: Math.ceil((Math.random () * 100000)),
 			costType: 1,
 		};		
 
@@ -104,16 +106,22 @@ suite ('Test costs API.', function (){
 			th.testPermission (done, 'no permission');			
 		});
 
+		test ('Should successfully create one cost', function (done){
+			th.testSuccess (done, 201);
+		});
+
 	});
 
 	suite ('Update one cost.', function (){
-		var costId = '34234324';
 		var url = server + '/api/costs/cost/' + costId + '/edit';
 		var body = {
 			userId: 'xxxx',
-			amount: 3123122,
-			costType: 1,
-			explaination: 'test'
+			amount: Math.ceil((Math.random () * 100000)),
+			costType: 2,
+			updateAt: {
+				time: dateFormat ('isoDateTime'),
+				explain: 'test'
+			}
 		};	
 
 		var th = new TestHelper ({url: url, method: 'POST', body: body});
@@ -135,10 +143,14 @@ suite ('Test costs API.', function (){
 
 		});
 
-
 		test ('Should detect user has no permission', function (done){
 			th.testPermission (done, 'no permission');			
-		});		
+		});	
+
+		test ('Should successfully update one cost', function (done){
+			th.testSuccess (done, 200);
+		});
+
 	});
 
 });

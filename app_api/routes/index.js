@@ -13,34 +13,34 @@ var bookingCtrl = require("../controllers/bookings");
 var assetsCtrl = require("../controllers/assets");
 
 router.get('/users', usersCtrl.readSomeUsers);
-router.get('/users/user/:uid', usersCtrl.readOneUserById);
+router.get('/users/user/:uId', usersCtrl.readOneUserById);
 router.post('/users/create', usersCtrl.createOneUser);
-router.post('/users/user/:uid/edit', usersCtrl.updateOneUserById);
+router.post('/users/user/:uId/edit', usersCtrl.updateOneUserById);
 
 router.get('/customers/', customersCtrl.readSomeCustomers);
-router.get('/customers/customer/:cusid', customersCtrl.readOneCustomerById);
+router.get('/customers/customer/:cusId', customersCtrl.readOneCustomerById);
 router.post('/customers/create', customersCtrl.createOneCustomer);
-router.post('/customers/customer/:cusid/edit', customersCtrl.updateOneCustomerById);
+router.post('/customers/customer/:cusId/edit', customersCtrl.updateOneCustomerById);
 
 router.get('/companies/', companiesCtrl.readSomeComps);
-router.get('/companies/company/:compid', companiesCtrl.readOneCompById);
+router.get('/companies/company/:compId', companiesCtrl.readOneCompById);
 router.post('/companies/create', companiesCtrl.createOneComp);
-router.post('/companies/company/:compid/edit', companiesCtrl.updateOneCompById);
+router.post('/companies/company/:compId/edit', companiesCtrl.updateOneCompById);
 
 router.get('/companies/depts/', deptsCtrl.readSomeDepts);
-router.get('/depts/dept/:deptid', deptsCtrl.readOneDeptById);
+router.get('/depts/dept/:deptId', deptsCtrl.readOneDeptById);
 router.post('/depts/create', deptsCtrl.createOneDept);
-router.post('/depts/dept/:deptid/edit', deptsCtrl.updateOneDeptById);
+router.post('/depts/dept/:deptId/edit', deptsCtrl.updateOneDeptById);
 
 router.get('/products/', productsCtrl.readSomeProducts);
-router.get('/products/product/:productid', productsCtrl.readOneProductById);
+router.get('/products/product/:productId', productsCtrl.readOneProductById);
 router.post('/products/create', productsCtrl.createOneProduct);
-router.post('/products/product/:productid/edit', productsCtrl.updateOneProductById);
+router.post('/products/product/:productId/edit', productsCtrl.updateOneProductById);
 
 router.get('/orders/', ordersCtrl.readSomeOrders);
-router.get('/orders/order/:orderid', ordersCtrl.readOneOrderById);
+router.get('/orders/order/:orderId', ordersCtrl.readOneOrderById);
 router.post('/orders/create', ordersCtrl.createOneOrder);
-router.post('/orders/order/:orderid/edit', ordersCtrl.updateOneOrderById);
+router.post('/orders/order/:orderId/edit', ordersCtrl.updateOneOrderById);
 
 router.get('/costs/', costsCtrl.readSomeCosts);
 router.get('/costs/cost/:costId', costsCtrl.readOneCostById);

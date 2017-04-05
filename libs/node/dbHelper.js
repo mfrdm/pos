@@ -7,7 +7,7 @@ module.exports = new function (){
 	//insert new User
 	this.insertOne = function (req, res, Model) {
 		try{
-			console.log(req.body)
+			// console.log(req.body)
 			var query = new Model (req.body);
 			query.save (function (err, data){
 				if (err){
@@ -46,17 +46,18 @@ module.exports = new function (){
 		try {
 			if (req.params && req.params[idName]){
 				var idValue = req.params[idName];
-				var update = req.body;	
+				var update = req.body;
 				var query = Model
 					.findByIdAndUpdate (mongoose.Types.ObjectId(idValue), update, {runValidators: true});
 				requestHelper.stdExec (res, query);
 			}
 			else{
-				requestHelper.sendJsonRes(res, 404, {
+				console.log ('Error: no passed params');
+				requestHelper.sendJsonRes(res, 400, {
 					message: 'no passed params'			
 				});
 			}
-		} 
+		}
 		catch (ex){
 			console.log(ex)
 			requestHelper.sendJsonRes(res, 500, {
@@ -75,6 +76,7 @@ module.exports = new function (){
 			requestHelper.stdExec (res, query);
 		}
 		else{
+			console.log ('Error: no passed params');
 			requestHelper.sendJsonRes(res, 404, {
 				message: 'no passed params'			
 			});
@@ -83,8 +85,8 @@ module.exports = new function (){
 
 	this.findSome = function(req, res, Model) {
 		try{
-			console.log(req.query)
-			var query = Model.find(req.query, req.query.projection, req.query.opts);
+			var queryInput = req.query.queryInput ? JSON.parse (req.query.queryInput) : {conditions: null, projection: null, opts: null}; // queyInput is a js object being stringified
+			var query = Model.find(queryInput.conditions, queryInput.projection, queryInput.opts);
 			requestHelper.stdExec (res, query);
 		}
 		catch(ex){

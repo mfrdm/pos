@@ -9,7 +9,8 @@ module.exports = new Bi();
 function Bi() {
 
 	this.readReport = function(req, res) {
-
+		// later
+		res.json ('Built later')
 	};
 
 };

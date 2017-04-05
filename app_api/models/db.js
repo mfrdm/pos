@@ -1,10 +1,13 @@
 var MGDB = require('../../libs/node/db').MGDB;
+var helper = require('../../libs/node/helper');
+var apiOptions = helper.getAPIOption();
+
 
 var host = 'localhost';
 var port = 27017;
 var username = '';
 var passwd = '';
-var db = 'test';
+var db = apiOptions.dbName;
 
 var mgdb = new MGDB (host, port, db, username, passwd);
 

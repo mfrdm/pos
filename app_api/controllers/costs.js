@@ -60,7 +60,7 @@ function Costs() {
 	this.readOneCostById = function(req, res) {
 		// FIX
 		function checkProvidRequiredInput (data){
-			if (!data.userId || !data.costId) return false
+			if (!data.userId) return false
 			return true
 		}
 

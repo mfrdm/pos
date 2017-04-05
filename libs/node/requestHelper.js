@@ -26,6 +26,8 @@ module.exports = new function () {
 				if (otherAction){
 					otherAction (body, err, response, req, res, reqOptions);
 				}
+
+				res.status (response.statusCode);
 				send (req, res, view, data, cb);
 			});
 		}
@@ -38,7 +40,8 @@ module.exports = new function () {
 		var method = 'GET';
 		var returnJson = true;
 		var body = {};
-		send = send ? send : function (){res.render (view, data, cb)};
+		qs = qs ? qs : req.query;
+		send = send ? send : function (req, res, view, data, cb){res.render (view, data, cb)};
 		this.callApi (req, res, apiUrl, method, returnJson, view, qs, body, dataFilter, send, otherAction, cb);
 	}
 
@@ -46,6 +49,8 @@ module.exports = new function () {
 		var method = 'POST';
 		var returnJson = true;
 		var qs = {};
+		body = body ? body : req.body;
+		send = send ? send : function (req, res, view, data, cb){res.render (view, data, cb)};
 		this.callApi (req, res, apiUrl, method, returnJson, view, qs, body, dataFilter, send, otherAction, cb);
 	}
 
@@ -59,13 +64,13 @@ module.exports = new function () {
 		try {
 			query.exec(function (err, data) {	
 				if (err){
-					// console.log (err);
+					console.log (err);
 					thisObj.sendJsonRes(res, 400, {message: err});
 				}
 
 				else if (!data) {
-					// console.log ('empty results');
-					thisObj.sendJsonRes(res, 404, {
+					console.log ('empty results');
+					thisObj.sendJsonRes(res, 400, {
 						message: 'empty results'
 					});
 				}
@@ -76,7 +81,7 @@ module.exports = new function () {
 			});
 		}
 		catch (err) {
-			// console.log (err);
+			console.log (err);
 			this.sendJsonRes(res, 500, {
 				message: err,
 			});
