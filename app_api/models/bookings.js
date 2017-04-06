@@ -13,7 +13,7 @@ var bookingSchema = mongoose.Schema({
 		by: mongoose.Schema.Types.ObjectId
 	}],
 	createdAt: {type: Date, default: Date.now},
-	message: String // other requirements from the customer
+	message: String, // other requirements from the customer
 	quantity: Number,
 });
 

@@ -45,7 +45,7 @@ var usersSchema = mongoose.Schema({
 	active: {type: Boolean, default: true},
 	deactiveAt: {type: Date},
 	role: {type: Number, required: true}, //(staff, admin, manager)
-	permissions: [{type: Number, required: true}] // indicate which resource to be about to access
+	permissions: [{type: Number, required: true}], // indicate which resource to be about to access
 	edu: [eduSchema],
 	workexp: [workexpSchema], // past working experience 
 	deptList: [{deptId: mongoose.Schema.Types.ObjectId, deptName: String, status: Number, in: Date, out: Date}],
@@ -57,5 +57,11 @@ var usersSchema = mongoose.Schema({
 	role: {type:String},
 	permission: {type:Number},
 });
+
+// TESTING
+usersSchema.methods.confirm = function (){
+	var message = this. firstname + ' ' + this.lastname + ' create an account';
+	console.log (messgage);
+}
 
 mongoose.model ('users', usersSchema);

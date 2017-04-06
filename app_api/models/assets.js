@@ -10,7 +10,7 @@ var assetsSchema = mongoose.Schema({
 		explain: String,
 		by: mongoose.Schema.Types.ObjectId
 	}],
-	status: Number // quality of asset
+	status: Number, // quality of asset
 	storeId: mongoose.Schema.Types.ObjectId,
 	compId: mongoose.Schema.Types.ObjectId,
 });

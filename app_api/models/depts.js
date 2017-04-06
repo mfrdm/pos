@@ -5,7 +5,7 @@ var deptsSchema = mongoose.Schema({
 	managerFullname: {type:String},
 	staffList: [mongoose.Schema.Types.ObjectId],
 	compId: mongoose.Schema.Types.ObjectId,
-	childDeptList: [mongoose.Schema.Types.ObjectId]
+	childDeptList: [mongoose.Schema.Types.ObjectId],
 	parentDeptId: mongoose.Schema.Types.ObjectId, // could be null
 	contact: {
 		phone: {type:String},
