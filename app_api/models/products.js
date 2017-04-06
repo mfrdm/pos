@@ -8,6 +8,7 @@ var productsSchema = mongoose.Schema({
 	updateAt: {
 		time: Date,
 		explain: String, 
+		by: mongoose.Schema.Types.ObjectId,
 	},
 	compId: mongoose.Schema.Types.ObjectId
 });
