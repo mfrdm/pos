@@ -68,3 +68,16 @@ body {
 	font-size: 18px;
 	color: #5c6bc0;
 }
+
+/*=====Background=====*/
+
+.background{
+	min-height: 75vh;
+	margin-left: 2em;
+	margin-right: 3em;
+	-webkit-transition: all 250ms;
+    -moz-transition: all 250ms;
+	transition: all 250ms;
+	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+	width:97%;
+}
