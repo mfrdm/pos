@@ -1,4 +1,70 @@
 body {
-	padding: 50px;
 	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+.row{
+	max-width: 100%;
+}
+
+/*======Header tab======*/
+
+.sidebar{
+	padding: 1em 2em;
+	background-color: #495469;
+	color: #b2b6be;
+	min-height: 100vh;
+}
+
+.header-tab, .tab{
+	padding: 1em 0;
+	position: relative;
+	cursor: pointer;
+}
+
+.tab:hover{
+	background-color: #2d3749;
+	color: #fff;
+}
+
+.header-title p, .tab p{
+	margin:0;
+	padding: 0.5em 2em;
+	display: inline-block;
+}
+
+.header-title i, .tab i{
+	padding-left: 1rem;
+}
+
+.header-title p{
+	text-transform: uppercase;
+	font-weight: bold;
+	color: #fff;
+	padding-left: 1rem;
+}
+
+/*=====Content=====*/
+
+.widget{
+	margin: 3em 0.5em;
+	padding: 2em 2em;
+	-webkit-transition: all 250ms;
+    -moz-transition: all 250ms;
+	transition: all 250ms;
+	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.content-widget{
+	display: inline-block;
+}
+
+.content-widget .title-widget{
+	font-weight: bold;
+	font-size: 24px;
+	color: #ef5350;
+}
+
+.content-widget .text-widget{
+	font-size: 18px;
+	color: #5c6bc0;
 }
