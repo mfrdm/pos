@@ -17,7 +17,7 @@ function Users() {
 	};
 
 	this.createOneUser = function(req, res) {
-		dbHelper.insertOne(req, res, UserModel)
+		dbHelper.insertOne(req, res, UserModel);
 	};
 
 	this.updateOneUserById = function(req, res) {

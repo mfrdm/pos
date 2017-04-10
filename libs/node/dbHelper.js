@@ -5,16 +5,19 @@ var requestHelper = require('./requestHelper');
 
 module.exports = new function (){
 	//insert new User
-	this.insertOne = function (req, res, Model) {
+	this.insertOne = function (req, res, Model, otherAction) {
 		try{
 			// console.log(req.body)
-			var query = new Model (req.body);
-			query.save (function (err, data){
+			var obj = new Model (req.body);
+			obj.save (function (err, data){
 				if (err){
 					console.log(err)
 					requestHelper.sendJsonRes(res, 404, err);
 					return
 				}
+
+				if (otherAction) otherAction (obj); // intend to call methods of the obj
+
 				requestHelper.sendJsonRes (res, 201, {data: data});			
 			});	
 		}

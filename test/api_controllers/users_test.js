@@ -1,7 +1,14 @@
-var assert = require("assert"); // node.js core module
-var request = require('request');
+var assert = require ('assert'); // node.js core module
+var request = require ('request');
+var helper = require ('../../libs/node/helper');
+var TestHelper = require ('../../libs/node/testHelper');
+
 
 suite('User Api test', function() {
+	// setup
+	var server = helper.getAPIOption().server;
+	this.timeout (3000);
+
 // 	suite('Find some users by given criteria', function(done) {
 // 		test('should return some users', function(done) {
 // 			request({
@@ -31,24 +38,19 @@ suite('User Api test', function() {
 // 		});
 // 	});
 
-	// suite('create user', function(done) {
-	// 	test('should create new users', function(done) {
-	// 		request({
-	// 			method:'POST',
-	// 			url:'http://localhost:3000/api/users/create',
-	// 			body: {
-	// 				firstname:'trung',
-	// 				role:'admin',
-	// 				permission:1
-	// 			},
-	// 			json: true
-	// 		}, function(err, res, body){
-	// 			console.log(res.statusCode);
-	// 			assert.equal(res.statusCode, 201);
-	// 			done();
-	// 		})
-	// 	});
-	// });
+	suite('create user', function(done) {
+		var url = server + '/api/users/create';
+		var body = {
+			firstname:'Hiep',
+			lastname: 'Pham'		
+		}
+
+		var th = new TestHelper ({url: url, method: 'POST', body: body});
+
+		test('should create new users', function(done) {
+			th.testSuccess (done, 201);
+		});
+	});
 
 // 	suite('Find and update one users by given ID', function(done) {
 // 		test('should return one users and update', function(done) {
