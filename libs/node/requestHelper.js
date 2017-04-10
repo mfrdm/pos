@@ -30,12 +30,12 @@ module.exports = new function () {
 				res.status (response.statusCode);
 
 				if (response.statusCode != 200 && response.statusCode != 201){
-					var data = {
+					var error = {
 						user:{
 
 						},
-						message: body.message,
-						statusCode: response.statusCode,
+						stack: body.message,
+						status: response.statusCode,
 						look:{
 							title: 'Error ',
 							css:[],
@@ -43,7 +43,7 @@ module.exports = new function () {
 						}
 					}
 
-					res.render ('error', {data: data});
+					res.render ('error', {error: error});
 				}
 
 				send (req, res, view, data, cb);

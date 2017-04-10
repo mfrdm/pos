@@ -1,2 +1,88 @@
 extends layout
 block content
+	p: a(class="button", href="#", data-open="addAssetFormModal") Add
+
+	div(class="reveal" id="deleteAssetFormModal" data-reveal="true")
+		div(class="row")
+			- var assetName = 'XXX';
+			- var assetCat = 'Category 1';
+			- var assetQuant = 10;
+			- var assetStatus = 1;
+
+			table
+				thead
+					tr
+						- var assetNames = ['Name', 'Category', 'Quantity', 'Status', 'Edit', 'Delete'];
+						- var twidth = ['30%', '10%', '10%', '10%', '10%', '10%'];
+						- var assets = data.data;
+						- var assetNum = data.data.length;
+						- var assetNameNum = assetNames.length;
+						- for (var i = 0; i < assetNameNum; i++)
+							th(width=twidth[i])= assetNames[i]
+				tbody
+					tr
+						td= assetName
+						td= assetCat
+						td= assetQuant
+						td= assetStatus
+
+		div(class="row")
+			div(class="button-group")
+				a(class="button") Delete
+				a(class="button float-right") Cancel
+
+	div(class="reveal" id="addAssetFormModal" data-reveal="true")
+		form
+			div(class="row")
+				div(class="column small-3")
+					label(for="assetNameInput", class="text-right middle") Asset name
+				div(class="column small-9")
+					input(type="text", placeholder="Asset Name", id="assetNameInput")
+			div(class="row")
+				div(class="column small-3")
+					label(for="assetCatInput", class="text-right middle") Asset name
+				div(class="column small-9")
+					- var catValues = [1,2,3,4];
+					- var catNames = [1,2,3,4];
+					- var catNum = catValues.length;
+					select(name="category", id="assetCatInput")
+						- for (var i = 0; i < catNum; i++)
+							option(value=catValues[i])= catNames[i]
+			div(class="row")
+				div(class="column small-3")
+					label(for="assetQuantity", class="text-right middle") Quantity
+				div(class="column small-9")
+					input(type="text", placeholder="Asset Name", id="assetQuantity")
+			div(class="row")
+				div(class="column small-3")
+					label(for="assetStatus", class="text-right middle") Status
+				div(class="column small-9")
+					- var statusValues = [1,2,3];
+					- var statusNames = ['Good', 'Average', 'Bad'];
+					- var statusNum = statusValues.length;
+					select(name="category", id="assetCatInput")
+						- for (var i = 0; i < statusNum; i++)
+							option(value=statusValues[i])= statusNames[i]
+			div(class="row")
+				div(class="button-group")
+					a(class="button") Create
+					a(class="button float-right") Cancel									
+	table
+		thead
+			tr
+				- var assetNames = ['Name', 'Category', 'Quantity', 'Status', 'Edit', 'Delete'];
+				- var twidth = ['30%', '10%', '10%', '10%', '10%', '10%'];
+				- var assets = data.data;
+				- var assetNum = data.data.length;
+				- var assetNameNum = assetNames.length;
+				- for (var i = 0; i < assetNameNum; i++)
+					th(width=twidth[i])= assetNames[i]
+		tbody
+			- for (var i = 0; i < assetNum; i++)
+				tr
+					td= assets[i].name
+					td= assets[i].category
+					td= assets[i].quantity
+					td= assets[i].status
+					td: a(class="button warning", data-open="addAssetFormModal") Edit
+					td: a(class="button alert", data-open="deleteAssetFormModal") Delete
