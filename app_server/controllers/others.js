@@ -19,6 +19,7 @@ function Others() {
 				js:[]
 			}
 		};
+		
 		res.render('index', {data:data})
 	};
 

@@ -26,13 +26,13 @@ html
 						div(class='header-title')
 							i(class="fa fa-home fa-lg" aria-hidden="true")
 							p Green Space POS
-					- var tabs = ['Checkin', 'Checkout','Booking','Customer Management', 'Assets', 'BI','HR', 'Revenue', 'Cost', 'Store', 'Attendance','Profile']
-					//- - var icons = [' fa-sign-in', ' fa-sign-out', ' fa-calendar-check-o', ' fa-user', ' fa-steam', ' fa-area-chart', ' fa-address-card', ' fa-bar-chart', ' fa-bar-chart-o', ' fa-building', ' fa-bullhorn', ' fa-user-circle']
-					- for (var i=0; i<tabs.length; i++)
-						div(class='tab small-12 columns')
-							i(class="fa fa-user fa-lg" aria-hidden="true")
-							p=tabs[i]
-							div(class='line')
+					- var menuNames = ['Checkin', 'Checkout','Booking','Customer Management', 'Assets', 'BI','HR', 'Revenue', 'Cost', 'Store', 'Attendance','Profile'];
+					- var menuLinks = ['', '', '', '','/assets', '', '', '','', '', '', ''];
+					- for (var i=0; i<menuNames.length; i++)
+						ul(class='menu vertical')
+							li: a(href=menuLinks[i])= menuNames[i]
+							//p=menuNames[i]
+							//div(class='line')
 			div(class='main small-12 medium-10 columns')
 				div(class='row')
 					- var titleWidgets = ['30/60', '20/30', '3/5', '5']
@@ -46,6 +46,8 @@ html
 				div(class='row')
 					div(class='background small-12 columns')
 						block content
+
+		
 
 		// footer
 		div(class="row grey")

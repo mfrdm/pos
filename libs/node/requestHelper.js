@@ -19,7 +19,7 @@ module.exports = new function () {
 		};
 		try{
 			request (reqOptions, function(err, response, body){
-				var data = dataFilter ? dataFilter(body.data) : body.data;
+				var data = dataFilter ? dataFilter (body.data) : body.data;
 
 				// for other actions like logging
 				// pass many params, but author of otherAction can choose some to use
@@ -28,6 +28,24 @@ module.exports = new function () {
 				}
 
 				res.status (response.statusCode);
+
+				if (response.statusCode != 200 && response.statusCode != 201){
+					var data = {
+						user:{
+
+						},
+						message: body.message,
+						statusCode: response.statusCode,
+						look:{
+							title: 'Error ',
+							css:[],
+							js:[]
+						}
+					}
+
+					res.render ('error', {data: data});
+				}
+
 				send (req, res, view, data, cb);
 			});
 		}
@@ -68,7 +86,7 @@ module.exports = new function () {
 					thisObj.sendJsonRes(res, 400, {message: err});
 				}
 
-				else if (!data) {
+				else if (!data || !data.length) {
 					console.log ('empty results');
 					thisObj.sendJsonRes(res, 400, {
 						message: 'empty results'

@@ -10,12 +10,32 @@ function Assets() {
 
 	this.readSomeAsset = function(req, res) {
 		var apiUrl = apiOptions.server + "/api/assets";
-		var view = null;
-		var qs = {};
-		var dataFilter = null;
-		var send = function(req, res, view, data, cb){
-			requestHelper.sendJsonRes(res, 200, data)
+		var view = 'assets';
+		var qs = {
+			userId: 'xxx',
+			status: 1,
+		};
+
+		var dataFilter = function (data){
+			return {
+				data: {
+					user:{
+
+					},
+					data: data,
+					look:{
+						title:"Assets",
+						css:[],
+						js:[]
+					}						
+				}
+			}
+		};
+
+		var send = function (req, res, view, data, cb){
+			res.render (view, data, cb);
 		}
+
 		requestHelper.readApi(req, res, apiUrl, view, qs, dataFilter, send);
 	};
 
