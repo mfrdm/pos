@@ -7,16 +7,42 @@ html
 		// Let browser know website is optimized for mobile
 		meta(name='viewport', content='width=device-width, initial-scale=1.0')
 
-		//- title= data.look.title
+		title= data.look.title
 		link(rel="stylesheet", href='/vendor/css/foundation.min.css')
 		link(rel="stylesheet", href="https://fonts.googleapis.com/icon?family=Material+Icons")
 		link(rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css")
 		link(rel="stylesheet", href='/css/test.css')
-		//- if (data.look.css && data.look.css[0])
-		//- 	- var cssFileNum = data.look.css.length
-		//- 	- for (var i = 0; i < cssFileNum; i++)
-		//- 		link(rel="stylesheet", href='/css/' + data.look.css[i] + '.css')
+		if (data.look.css && data.look.css[0])
+			- var cssFileNum = data.look.css.length
+			- for (var i = 0; i < cssFileNum; i++)
+				link(rel="stylesheet", href='/css/' + data.look.css[i] + '.css')
 	body
+
+		//Basic Layout
+		div(class='row')
+			div(class='sidebar small-12 medium-2 columns')
+				div(class='row')
+					div(class='header-tab small-10 columns')
+						div(class='header-title')
+							i(class="fa fa-home fa-lg" aria-hidden="true")
+							p Green Space POS
+					- var tabs = ['Checkin', 'Checkout','Booking','Customer Management', 'Assets', 'BI','HR', 'Revenue', 'Cost', 'Store', 'Attendance','Profile']
+					//- - var icons = [' fa-sign-in', ' fa-sign-out', ' fa-calendar-check-o', ' fa-user', ' fa-steam', ' fa-area-chart', ' fa-address-card', ' fa-bar-chart', ' fa-bar-chart-o', ' fa-building', ' fa-bullhorn', ' fa-user-circle']
+					- for (var i=0; i<tabs.length; i++)
+						div(class='tab small-12 columns')
+							i(class="fa fa-user fa-lg" aria-hidden="true")
+							p=tabs[i]
+							div(class='line')
+			div(class='main small-12 medium-10 columns')
+				div(class='row')
+					- var titleWidgets = ['30/60', '20/30', '3/5', '5']
+					- var textWidgets = ['seats available', 'booking available', 'private rooms available', 'waiting customers']
+					- for(var i=0; i<titleWidgets.length; i++)
+						div(class='small-12 medium-3 columns')
+							div(class='widget')
+								div(class='content-widget')
+									div(class='title-widget')=titleWidgets[i]
+									div(class='text-widget')=textWidgets[i]
 
 		block content
 
@@ -28,7 +54,7 @@ html
 		script(src="/vendor/js/jquery-3.1.1.min.js")
 		script(src="/vendor/js/what-input.js")
 		script(src="/vendor/js/foundation.min.js")
-		//- if (data.look.js && data.look.js[0])
-		//- 	- var jsFileNum = data.look.js.length
-		//- 	- for (var i = 0; i < jsFileNum; i++)
-		//- 		script(src="/js/" + data.look.js[i])
+		if (data.look.js && data.look.js[0])
+			- var jsFileNum = data.look.js.length
+			- for (var i = 0; i < jsFileNum; i++)
+				script(src="/js/" + data.look.js[i])
