@@ -12,7 +12,11 @@ var ordersSchema = mongoose.Schema({
 	],
 	checkinTime: {type: Date, default: Date.now},
 	checkoutTime: {type: Date},
-	customerId: {type: mongoose.Schema.Types.ObjectId, required: true},
+	customers:{
+		customerId: {type: mongoose.Schema.Types.ObjectId},
+		firstname: {type:String},
+		lastname: {type:String}
+	},
 	storeId: {type: mongoose.Schema.Types.ObjectId, required: true},
 	staffId: {type: mongoose.Schema.Types.ObjectId, required: true},	
 	status: {type: Number, default: 1}, // 1: checked in, 2: paid and checked out, 3: cancel

@@ -9,13 +9,7 @@ module.exports = new Orders();
 function Orders() {
 
 	this.readSomeOrders = function(req, res) {
-		var func = function(q){
-			q.conditions = {
-				name: "food"
-			}
-			return q;
-		}
-		dbHelper.findSome(req, res, OrdersModel, func)
+		dbHelper.findSome(req, res, OrdersModel)
 	};
 
 	this.readOneOrderById = function(req, res) {

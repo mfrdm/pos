@@ -13,7 +13,7 @@ function Customers() {
 	};
 
 	this.readOneCustomerById = function(req, res) {
-		dbHelper.findOneById(req, res, CustomersModel, 'cusid')
+		dbHelper.findOneById(req, res, CustomersModel, 'cusId')
 	};
 
 	this.createOneCustomer = function(req, res) {
@@ -21,7 +21,7 @@ function Customers() {
 	};
 
 	this.updateOneCustomerById = function(req, res) {
-		dbHelper.updateOneById(req, res, CustomersModel, 'cusid')
+		dbHelper.updateOneById(req, res, CustomersModel, 'cusId')
 	};
 
 };

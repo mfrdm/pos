@@ -28,21 +28,26 @@ suite('User Api test', function() {
 	// 	});
 	// });
 
-	// suite('create customers', function(done) {
-	// 	test('should create new customers', function(done) {
-	// 		request({
-	// 			method:'POST',
-	// 			url:'http://localhost:3000/api/customers/create',
-	// 			body: {
-	// 				firstname:'trung'
-	// 			},
-	// 			json: true
-	// 		}, function(err, res, body){
-	// 			assert.equal(res.statusCode, 201);
-	// 			done();
-	// 		})
-	// 	});
-	// });
+	suite('create customers', function(done) {
+		test('should create new customers', function(done) {
+			request({
+				method:'POST',
+				url:'http://localhost:3000/api/customers/create',
+				body: {
+					firstname:'duc',
+					lastname:'long',
+					gender:2,
+					birthday: new Date('09/15/1994'),
+					phone:'1234',
+					email:'cuongtuanpham@gmail.com'
+				},
+				json: true
+			}, function(err, res, body){
+				assert.equal(res.statusCode, 201);
+				done();
+			})
+		});
+	});
 
 	// suite('Find and update one customers by given ID', function(done) {
 	// 	test('should return one customers and update', function(done) {

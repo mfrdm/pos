@@ -30,23 +30,23 @@ suite('Products API test', function() {
 // 		});
 // 	});
 
-	// suite('create product', function(done) {
-	// 	test('should create new product', function(done) {
-	// 		request({
-	// 			method:'POST',
-	// 			url:'http://localhost:3000/api/products/create',
-	// 			body: {
-	// 				name:'fruit',
-	// 				price:10000
-	// 			},
-	// 			json: true
-	// 		}, function(err, res, body){
-	// 			console.log(res.statusCode);
-	// 			assert.equal(res.statusCode, 201);
-	// 			done();
-	// 		})
-	// 	});
-	// });
+	suite('create product', function(done) {
+		test('should create new product', function(done) {
+			request({
+				method:'POST',
+				url:'http://localhost:3000/api/products/create',
+				body: {
+					name:'Bread',
+					price:8000
+				},
+				json: true
+			}, function(err, res, body){
+				console.log(res.statusCode);
+				assert.equal(res.statusCode, 201);
+				done();
+			})
+		});
+	});
 
 // 	suite('Find and update one Depts by given ID', function(done) {
 // 		test('should return one Depts and update', function(done) {
