@@ -28,6 +28,8 @@ router.get('/auth/google/callback',
 router.get('/', othersCtrl.readHome);
 
 router.get('/checkin', checkinCtrl.readCheckin);
+router.get('/angularCheckin', checkinCtrl.angularCheckin);
+
 router.post('/checkin/:cusId', checkinCtrl.checkin);
 router.post('/checkin/:cusId/edit', checkinCtrl.updateCheckin);//cusid is order id
 router.get('/checkout/invoice/:cusId', checkoutCtrl.readInvoice);

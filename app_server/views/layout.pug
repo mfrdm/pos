@@ -1,5 +1,5 @@
 doctype html
-html
+html(ng-app='posApp')
 	// pug mixin library
 	include ../../libs/pug/libs
 	head
@@ -53,11 +53,13 @@ html
 		div(class="row grey")
 
 
-		//script(src="/vendor/js/angular.min.js")
+		script(src="/vendor/js/angular.min.js")
+		script(src='/vendor/js/angular-route.min.js')
 		script(src="/vendor/js/jquery-3.1.1.min.js")
 		script(src="/vendor/js/what-input.js")
 		script(src="/vendor/js/foundation.min.js")
 		script(src="/js/test.js")
+		script(src="/js/app.js")
 		if (data.look.js && data.look.js[0])
 			- var jsFileNum = data.look.js.length
 			- for (var i = 0; i < jsFileNum; i++)

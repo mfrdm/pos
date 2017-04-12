@@ -85,13 +85,13 @@ module.exports = new function () {
 					console.log (err);
 					thisObj.sendJsonRes(res, 400, {message: err});
 				}
-
 				else if (!data || !data.length) {
 					console.log ('empty results');
 					thisObj.sendJsonRes(res, 400, {
 						message: 'empty results'
 					});
 				}
+
 				else {
 					thisObj.sendJsonRes (res, 200, {message: 'success', data: data});
 				}

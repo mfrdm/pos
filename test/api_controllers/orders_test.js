@@ -1,7 +1,7 @@
-// var assert = require("assert"); // node.js core module
-// var request = require('request');
+var assert = require("assert"); // node.js core module
+var request = require('request');
 
-// suite('Orders API test', function() {
+suite('Orders API test', function() {
 // 	suite('Find some orders by given criteria', function(done) {
 // 		test('should return some orders', function(done) {
 // 			request({
@@ -30,22 +30,40 @@
 // 		});
 // 	});
 
-// 	suite('create order', function(done) {
-// 		test('should create new order', function(done) {
-// 			request({
-// 				method:'POST',
-// 				url:'http://localhost:3000/api/orders/create',
-// 				body: {
-// 					name:'food'
-// 				},
-// 				json: true
-// 			}, function(err, res, body){
-// 				console.log(res.statusCode);
-// 				assert.equal(res.statusCode, 201);
-// 				done();
-// 			})
-// 		});
-// 	});
+	suite('create order', function(done) {
+		test('should create new order', function(done) {
+			request({
+				method:'POST',
+				url:'http://localhost:3000/api/orders/create',
+				body: {
+					total: 1,
+					orderline: [
+						{
+							productId: "58eb2d71a83bc43a426f0bd3",
+							productName: "Private Room",
+							price: 10000,
+							quantity: 1
+						}
+					],
+					customers:{
+						customerId: "58eb474538671b4224745192",
+						firstname: "duc",
+						lastname: "long"
+					},
+					storeId: "58eb474538671b4224745192",
+					staffId: "58eb474538671b4224745192",	
+					updateAt: {
+						time: new Date('09/15/2017')
+					}
+				},
+				json: true
+			}, function(err, res, body){
+				console.log(res.statusCode);
+				assert.equal(res.statusCode, 201);
+				done();
+			})
+		});
+	});
 
 // 	suite('Find and update one Orders by given ID', function(done) {
 // 		test('should return one Orders and update', function(done) {
@@ -62,4 +80,4 @@
 // 			})
 // 		});
 // 	});
-// });
+});

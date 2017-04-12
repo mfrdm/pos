@@ -44,8 +44,8 @@ function Customers() {
 	};
 
 	this.readOneCustomerById = function(req, res) {
-		var apiUrl = apiOptions.server + "/api/customers/customer/" + req.params.cusid;
-		var view = 'checkin';
+		var apiUrl = apiOptions.server + "/api/customers/customer/" + req.params.cusId;
+		var view = null;
 		var qs = {};
 		var dataFilter = function(dataList){
 			var data = {

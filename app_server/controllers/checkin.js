@@ -9,9 +9,45 @@ module.exports = new Checkin();
 function Checkin() {
 
 	this.readCheckin = function(req, res) {
-		var apiUrl = apiOptions.server + "/api/customers";
+		//var apiUrl = apiOptions.server + "/api/orders";
 		var view = 'checkin';
-		var qs = {firstname:"tuan"};
+		// var qs = {
+		// 	queryInput: JSON.stringify({
+		// 		conditions: {status:1},
+		// 		projection: null,
+		// 		opts: null
+		// 	})
+		// };
+		// var dataFilter = function(dataList){
+			var data = {
+				user: {
+					// data:dataList
+				},
+				look:{
+					title:"Checkin for Customers",
+					css:[''],
+					js:['checkin/checkin.angular.js']
+				}
+			};
+		// 	return data;
+		// };
+		// var send = function(req, res, view, data, cb){
+		// 	res.render(view, {data:data}, cb)
+		// }
+		//requestHelper.readApi(req, res, apiUrl, view, qs, dataFilter, send);
+		res.render(view, {data:data})
+	};
+
+	this.angularCheckin = function(req, res) {
+		var apiUrl = apiOptions.server + "/api/orders";
+		var view = null;
+		var qs = {
+			queryInput: JSON.stringify({
+				conditions: {status:1},
+				projection: null,
+				opts: null
+			})
+		};
 		var dataFilter = function(dataList){
 			var data = {
 				user: {
@@ -19,7 +55,8 @@ function Checkin() {
 				},
 				look:{
 					title:"Checkin for Customers",
-					css:['']
+					css:[''],
+					js:['']
 				}
 			};
 			return data;
