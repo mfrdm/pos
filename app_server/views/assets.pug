@@ -1,8 +1,9 @@
 extends layout
 block content
-	p: a(class="button", href="#", data-open="addAssetFormModal") Add
+	h2= data.look.title
+	p: a(class="button", href="#", data-open="addFormModal") Add
 
-	div(class="reveal" id="deleteAssetFormModal" data-reveal="true")
+	div(class="reveal" id="deleteFormModal" data-reveal="true")
 		div(class="row")
 			- var assetName = 'XXX';
 			- var assetCat = 'Category 1';
@@ -31,7 +32,7 @@ block content
 				a(class="button") Delete
 				a(class="button float-right") Cancel
 
-	div(class="reveal" id="addAssetFormModal" data-reveal="true")
+	div(class="reveal" id="addFormModal" data-reveal="true")
 		form
 			div(class="row")
 				div(class="column small-3")
@@ -70,19 +71,18 @@ block content
 	table
 		thead
 			tr
-				- var assetNames = ['Name', 'Category', 'Quantity', 'Status', 'Edit', 'Delete'];
+				- var tableHeaderNames = ['Name', 'Category', 'Quantity', 'Status', 'Edit', 'Delete'];
 				- var twidth = ['30%', '10%', '10%', '10%', '10%', '10%'];
-				- var assets = data.data;
-				- var assetNum = data.data.length;
-				- var assetNameNum = assetNames.length;
-				- for (var i = 0; i < assetNameNum; i++)
-					th(width=twidth[i])= assetNames[i]
+				- var key = ['name', 'category', 'quantity', 'status'];
+				- var d = data.data;
+				- var rowNum = d.length;
+				- var columnNum = tableHeaderNames.length;
+				- for (var i = 0; i < columnNum; i++)
+					th(width=twidth[i])= tableHeaderNames[i]
 		tbody
-			- for (var i = 0; i < assetNum; i++)
+			- for (var i = 0; i < rowNum; i++)
 				tr
-					td= assets[i].name
-					td= assets[i].category
-					td= assets[i].quantity
-					td= assets[i].status
-					td: a(class="button warning", data-open="addAssetFormModal") Edit
-					td: a(class="button alert", data-open="deleteAssetFormModal") Delete
+					- for (var j = 0; j < key.length; j++)
+						td= d[i][key[j]]
+					td: a(class="button warning", data-open="addFormModal") Edit
+					td: a(class="button alert", data-open="deleteFormModal") Delete	

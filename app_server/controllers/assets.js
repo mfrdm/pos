@@ -9,45 +9,37 @@ module.exports = new Assets();
 function Assets() {
 
 	this.readSomeAsset = function(req, res) {
+		var names = ['table', 'cup', 'laptop', 'chair'];
+		var categories = [1,2,3,1];
+		var quantities = [1,3,4,5];
+		var statuses = [1,1,2,2]; // quality of asset	
 
-		try{
+		var d = [];
 
-			var names = ['table', 'cup', 'laptop', 'chair'];
-			var categories = [1,2,3,1];
-			var quantities = [1,3,4,5];
-			var statuses = [1,1,2,2]; // quality of asset	
+		for (var i = 0; i < names.length; i++){
+			d.push ({
+				name: names [i],
+				category: categories [i],
+				quantity: quantities [i],
+				status: statuses[i],
+			});
+		}
 
-			var d = [];
+		// TESTING
+		var data = {
+			user:{
 
-			for (var i = 0; i < names.length; i++){
-				d.push ({
-					name: names [i],
-					category: categories [i],
-					quantity: quantities [i],
-					status: statuses[i],
-				});
+			},
+			data: d,
+			look:{
+				title:"Assets",
+				css:[],
+				js:[]
 			}
-
-			// TESTING
-			var data = {
-				user:{
-
-				},
-				data: d,
-				look:{
-					title:"Assets",
-					css:[],
-					js:[]
-				}
-			};	
-					
-			res.render ('assets', {data: data});
-		}
-		catch (ex){
-			console.log (ex)
-		}
+		};	
+				
+		res.render ('assets', {data: data});
 		
-
 
 		// var apiUrl = apiOptions.server + "/api/assets";
 		// var view = 'assets';
