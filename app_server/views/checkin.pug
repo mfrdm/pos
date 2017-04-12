@@ -1,54 +1,49 @@
 extends layout
 block content
-	div(ng-app='checkinApp' ng-controller='checkinCtrl as checkin')
-		div(class='checkin-step')
-			div(class="input-group")
-				input(class="input-group-field" type="text")
-				div(class="input-group-button")
-					input(type="submit" class="button" value="Submit")
-			label Filter
-			select(id="select" required ng-model='order')
-				option(value="name") Name
-				option(value="time") Time
-				option(value="service") Service
-			table
-				thead
-					tr
-						th(width='100') Stt
-						th(width='200') Name
-						th Date
-						th Time
-						th Service
-						th(width='100') Checkout
-						th(width='100') Edit
-				tbody
-					tr(ng-repeat="user in checkin.userList")
-						td {{$index + 1}}
-						td {{user.customers.firstname}}
-						td {{user.checkinTime | date:'dd/MM/yyyy'}}
-						td {{user.checkinTime | date: 'shortTime'}}
-						td {{user.orderline[0].productName}}
-						td Checkin
-						td edit
-					//- - var userList = data.user.data
-					//- - for (var i = 0; i<userList.length; i++)
-					//- 	tr
-					//- 		td=i+1
-					//- 		td=userList[i].customers.firstname+' '+userList[i].customers.lastname
-					//- 		- var d = new Date(userList[i].checkinTime)
-					//- 		td=d.toLocaleDateString()
-					//- 		td=d.toLocaleTimeString()
-					//- 		td=userList[i].orderline[0].productName
-					//- 		td
-					//- 			button(type="button" class="warning button") Checkout
-					//- 		td
-					//- 			button(type="button" class="alert button") Edit
-		div(class='customer-step')
-			div(class='row')
-				div(class='columns small-12 medium-4 medium-offset-4')
-					table
-						thead
-							tr
-								th Title
-								th Details
-						tbody(class='customer-detail')
+	div(ng-app='checkinApp')
+		//- base(href='/checkin')
+		a(href='#!/')
+			button(type="button" class="primary button") Main
+		a(href='#!/customer')
+			button(type="button" class="alert button") Customer
+		ng-view
+		//- div(class='checkin-step')
+		//- 	div(class="input-group")
+		//- 		input(class="input-group-field" type="text")
+		//- 		div(class="input-group-button")
+		//- 			input(type="submit" class="button" value="Submit")
+		//- 	label Filter
+		//- 	select(id="select" required ng-model='order')
+		//- 		option(value="name") Name
+		//- 		option(value="time") Time
+		//- 		option(value="service") Service
+		//- 	table
+		//- 		thead
+		//- 			tr
+		//- 				th(width='100') Stt
+		//- 				th(width='200') Name
+		//- 				th Date
+		//- 				th Time
+		//- 				th Service
+		//- 				th(width='100') Checkout
+		//- 				th(width='100') Edit
+		//- 		tbody
+		//- 			tr(ng-repeat="user in checkin.userList")
+		//- 				td {{$index + 1}}
+		//- 				td {{user.customers.firstname}}
+		//- 				td {{user.checkinTime | date:'dd/MM/yyyy'}}
+		//- 				td {{user.checkinTime | date: 'shortTime'}}
+		//- 				td {{user.orderline[0].productName}}
+		//- 				td 
+		//- 					button(type="button" class="warning button") Checkout
+		//- 				td 
+		//- 					button(type="button" class="alert button") Edit
+		//- div(class='customer-step')
+		//- 	div(class='row')
+		//- 		div(class='columns small-12 medium-4 medium-offset-4')
+		//- 			table
+		//- 				thead
+		//- 					tr
+		//- 						th Title
+		//- 						th Details
+		//- 				tbody(class='customer-detail')

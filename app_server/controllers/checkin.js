@@ -26,7 +26,7 @@ function Checkin() {
 				look:{
 					title:"Checkin for Customers",
 					css:[''],
-					js:['checkin.js', 'angular/checkin.angular.js']
+					js:['checkin/checkin.angular.js']
 				}
 			};
 		// 	return data;
@@ -56,7 +56,7 @@ function Checkin() {
 				look:{
 					title:"Checkin for Customers",
 					css:[''],
-					js:['checkin.js', 'angular/checkin.angular.js']
+					js:['']
 				}
 			};
 			return data;

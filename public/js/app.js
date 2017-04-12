@@ -1,1 +1,1 @@
-angular.module('posApp', ['ngRoute','checkinApp'])
+angular.module('posApp', ['checkinApp'])
