@@ -62,7 +62,8 @@ module.exports = new function () {
 	this.stdExec = function (res, query) {
 		var thisObj = this;
 		try {
-			query.exec(function (err, data) {	
+			query.exec(function (err, data) {
+
 				if (err){
 					console.log (err);
 					thisObj.sendJsonRes(res, 400, {message: err});

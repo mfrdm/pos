@@ -21,7 +21,7 @@ var customersSchema = mongoose.Schema({
 		explain: String,
 		by: mongoose.Schema.Types.ObjectId
 	}],
-	order: [{type: mongoose.Schema.Types.ObjectId}],
+	order: [{orderid:{type: mongoose.Schema.Types.ObjectId}}],
 	booking: [{type:mongoose.Schema.Types.ObjectId}],
 });
 

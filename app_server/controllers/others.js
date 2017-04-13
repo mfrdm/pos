@@ -19,7 +19,7 @@ function Others() {
 				js:[]
 			}
 		};
-		res.render('index', {data:data})
+		res.render('layout', {data:data})
 	};
 
 };

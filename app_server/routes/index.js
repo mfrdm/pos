@@ -28,10 +28,12 @@ router.get('/auth/google/callback',
 router.get('/', othersCtrl.readHome);
 
 router.get('/checkin', checkinCtrl.readCheckin);
-router.get('/angularCheckin', checkinCtrl.angularCheckin);
-
+router.get('/angular/readSomeCusCheckin', checkinCtrl.readSomeCusCheckin);
+router.get('/angular/readOneCusCheckin', checkinCtrl.readOneCusCheckin);
+router.get('/angular/readMainCheckin', checkinCtrl.readMainCheckin);
 router.post('/checkin/:cusId', checkinCtrl.checkin);
 router.post('/checkin/:cusId/edit', checkinCtrl.updateCheckin);//cusid is order id
+
 router.get('/checkout/invoice/:cusId', checkoutCtrl.readInvoice);
 router.post('/checkout/', checkoutCtrl.checkout);
 

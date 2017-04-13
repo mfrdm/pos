@@ -34,12 +34,12 @@ suite('User Api test', function() {
 				method:'POST',
 				url:'http://localhost:3000/api/customers/create',
 				body: {
-					firstname:'duc',
-					lastname:'long',
-					gender:2,
-					birthday: new Date('09/15/1994'),
-					phone:'1234',
-					email:'cuongtuanpham@gmail.com'
+					firstname:'trong',
+					lastname:'hoang',
+					gender:1,
+					birthday: new Date('09/10/1994'),
+					phone:'2345',
+					email:'adf@gmail.com'
 				},
 				json: true
 			}, function(err, res, body){
