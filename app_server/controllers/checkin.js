@@ -15,7 +15,7 @@ function Checkin() {
 			look:{
 				title:"Checkin for Customers",
 				css:[''],
-				js:['checkin/checkin.angular.js']
+				js:['checkin/checkin.angular.js', 'checkin/controller.angular.js', 'checkin/service.angular.js']
 			},
 			angular:'checkinApp'
 		};
