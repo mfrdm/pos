@@ -74,10 +74,18 @@ block content
 				- var columnNum = tableHeaderNames.length;
 				- for (var i = 0; i < columnNum; i++)
 					th(width=twidth[i])= tableHeaderNames[i]
-		tbody
-			- for (var i = 0; i < rowNum; i++)
-				tr
-					- for (var j = 0; j < key.length; j++)
-						td= d[i][key[j]]
-					td: a(class="button warning", data-open="addFormModal") Edit
-					td: a(class="button alert", data-open="deleteFormModal") Delete	
+		tbody(ng-controller="costManagementCtrl")
+			tr(ng-repeat="c in costs")
+				td {{ c.costType }}
+				td {{ c.amount | toVND: "VND" }}
+				td {{ c.desc }}
+				td {{ c.createdAt | date: "dd MMM yyyy" }}
+				td {{ c.updatedAt | date: "dd-mm-yyyy" }}
+				td: a(class="button warning", data-open="addFormModal") Edit
+				td: a(class="button alert", data-open="deleteFormModal") Delete			
+			//- for (var i = 0; i < rowNum; i++)
+				//tr
+					//- for (var j = 0; j < key.length; j++)
+						//td= d[i][key[j]]
+					//td: a(class="button warning", data-open="addFormModal") Edit
+					//td: a(class="button alert", data-open="deleteFormModal") Delete	

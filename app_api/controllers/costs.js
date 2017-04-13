@@ -9,6 +9,30 @@ module.exports = new Costs();
 function Costs() {
 
 	this.readSomeCosts = function(req, res) {
+		// TESTING
+		var amount = [100000, 200000, 2000000, 3000000];
+		var desc = ['For open day','For open day', 'For open day', 'For open day'];
+		var costType = [1,3,4,5];
+		var createdAt = ['2017-01-03', '2017-01-03', '2017-01-03', '2017-01-03'];
+		var updatedAt = ['2017-01-03', '2017-01-03', '2017-01-03', '2017-01-03'];	
+
+		var d = [];
+
+		for (var i = 0; i < amount.length; i++){
+			d.push ({
+				amount: amount [i],
+				desc: desc [i],
+				costType: costType [i],
+				createdAt: createdAt[i],
+				updatedAt: updatedAt[i]
+			});
+		}
+
+		res.json (d)
+		return
+
+		// END
+
 		// FIX
 		function checkProvidRequiredInput (data){
 			if (!data.userId || !data.end || !data.start) return false

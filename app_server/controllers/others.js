@@ -9,6 +9,7 @@ module.exports = new Others();
 function Others() {
 
 	this.readHome = function(req, res) {
+
 		var data = {
 			user:{
 
@@ -16,7 +17,7 @@ function Others() {
 			look:{
 				title:"Home Page",
 				css:[],
-				js:[]
+				js:[],
 			}
 		};
 		

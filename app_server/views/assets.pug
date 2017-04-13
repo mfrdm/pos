@@ -79,10 +79,20 @@ block content
 				- var columnNum = tableHeaderNames.length;
 				- for (var i = 0; i < columnNum; i++)
 					th(width=twidth[i])= tableHeaderNames[i]
-		tbody
-			- for (var i = 0; i < rowNum; i++)
-				tr
-					- for (var j = 0; j < key.length; j++)
-						td= d[i][key[j]]
-					td: a(class="button warning", data-open="addFormModal") Edit
-					td: a(class="button alert", data-open="deleteFormModal") Delete	
+		tbody(ng-controller="assetCtrl")
+			tr(ng-repeat="asset in assets")
+				//small(asset-section, sectionName='Asset Section')
+				//small(asset-section-a, sectionName='Asset Section')
+				td {{ asset.name }}
+				td {{ asset.category }}
+				td {{ asset.quantity }}
+				td {{ asset.status }}
+				td: a(class="button warning", data-open="addFormModal") Edit
+				td: a(class="button alert", data-open="deleteFormModal") Delete				
+
+			//- for (var i = 0; i < rowNum; i++)
+				//tr
+					//- for (var j = 0; j < key.length; j++)
+						//td= d[i][key[j]]
+					//td: a(class="button warning", data-open="addFormModal") Edit
+					//td: a(class="button alert", data-open="deleteFormModal") Delete	

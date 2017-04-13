@@ -9,6 +9,26 @@ module.exports = new Assets();
 function Assets() {
 
 	this.readSomeAssets = function(req, res, next) {
+
+		var names = ['table', 'cup', 'laptop', 'chair'];
+		var categories = [1,2,3,1];
+		var quantities = [1,3,4,5];
+		var statuses = [1,1,2,2]; // quality of asset	
+
+		var d = [];
+
+		for (var i = 0; i < names.length; i++){
+			d.push ({
+				name: names [i],
+				category: categories [i],
+				quantity: quantities [i],
+				status: statuses[i],
+			});
+		}
+
+		res.json (d)
+		return
+
 		// FIX
 		function checkProvidRequiredInput (data){
 			if (!data.userId || !data.status) return false
