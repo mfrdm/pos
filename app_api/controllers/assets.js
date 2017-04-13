@@ -8,7 +8,7 @@ module.exports = new Assets();
 
 function Assets() {
 
-	this.readSomeAssets = function(req, res) {
+	this.readSomeAssets = function(req, res, next) {
 		// FIX
 		function checkProvidRequiredInput (data){
 			if (!data.userId || !data.status) return false

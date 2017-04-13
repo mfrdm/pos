@@ -28,40 +28,46 @@ var workexpSchema = new mongoose.Schema({
 var usersSchema = mongoose.Schema({
 	firstname: {type: String, required: true},
 	lastname: {type: String, required: true},
-	birthday: Date,
-	gender: Number,
-	phone: [{type: String}],
-	tempAddress: addrSchema,
-	perAddress: addrSchema,
-	email: String,
-	secondEmail: [{type: String}],
-	attendance: [{day: Date, status: Number, explain: String}],
+	// birthday: Date,
+	// gender: Number,
+	// phone: [{type: String}],
+	// tempAddress: addrSchema,
+	// perAddress: addrSchema,
+	// email: String,
+	// secondEmail: [{type: String}],
+	// attendance: [{day: Date, status: Number, explain: String}],
 	createdAt: {type: Date, default: Date.now},
-	updatedAt: [{
-		time: {type: Date}, 
-		explain: String,
-		by: mongoose.Schema.Types.ObjectId
-	}],
-	active: {type: Boolean, default: true},
-	deactiveAt: {type: Date},
-	role: {type: Number, required: true}, //(staff, admin, manager)
-	permissions: [{type: Number, required: true}], // indicate which resource to be about to access
-	edu: [eduSchema],
-	workexp: [workexpSchema], // past working experience 
-	deptList: [{deptId: mongoose.Schema.Types.ObjectId, deptName: String, status: Number, in: Date, out: Date}],
-	compList: [{compId: mongoose.Schema.Types.ObjectId, compName: String, status: Number, in: Date, out: Date}],
-	google: { // not complete
-		token: String,
-		email: String
-	},
-	role: {type:String},
-	permission: {type:Number},
+	// updatedAt: [{
+	// 	time: {type: Date}, 
+	// 	explain: String,
+	// 	by: mongoose.Schema.Types.ObjectId
+	// }],
+	// active: {type: Boolean, default: true},
+	// deactiveAt: {type: Date},
+	// role: {type: Number, required: true}, //(staff, admin, manager)
+	// permissions: [{type: Number, required: true}], // indicate which resource to be about to access
+	// edu: [eduSchema],
+	// workexp: [workexpSchema], // past working experience 
+	// deptList: [{deptId: mongoose.Schema.Types.ObjectId, deptName: String, status: Number, in: Date, out: Date}],
+	// compList: [{compId: mongoose.Schema.Types.ObjectId, compName: String, status: Number, in: Date, out: Date}],
+	// google: { // not complete
+	// 	token: String,
+	// 	email: String
+	// },
+	// role: {type:String},
+	// permission: {type:Number},
 });
 
 // TESTING
-usersSchema.methods.confirm = function (){
-	var message = this. firstname + ' ' + this.lastname + ' create an account';
-	console.log (messgage);
-}
+// usersSchema.methods.confirm = function (){
+// 	var message = this. firstname + ' ' + this.lastname + ' create an account';
+// 	console.log (message);
+// }
+
+// TESTING
+// usersSchema.statics.findAdmin = function (){
+// 	var adminName = 'Hiep';
+// 	return this.find ({'firstname': adminName})
+// }
 
 mongoose.model ('users', usersSchema);

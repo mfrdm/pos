@@ -25,13 +25,13 @@ html(ng-app='posApp')
 						div(class='header-title')
 							i(class="fa fa-home fa-lg" aria-hidden="true")
 							p Green Space POS
-					- var tabs = ['Checkin', 'Checkout','Booking','Customer Management', 'Assets', 'BI','HR', 'Revenue', 'Cost', 'Store', 'Attendance','Profile']
-					//- - var icons = [' fa-sign-in', ' fa-sign-out', ' fa-calendar-check-o', ' fa-user', ' fa-steam', ' fa-area-chart', ' fa-address-card', ' fa-bar-chart', ' fa-bar-chart-o', ' fa-building', ' fa-bullhorn', ' fa-user-circle']
-					- for (var i=0; i<tabs.length; i++)
-						div(class='tab small-12 columns')
-							i(class="fa fa-user fa-lg" aria-hidden="true")
-							p=tabs[i]
-							div(class='line')
+					- var menuNames = ['Checkin', 'Checkout','Booking','Customer Management', 'Assets', 'BI','HR', 'Revenue', 'Cost', 'Store', 'Attendance','Profile'];
+					- var menuLinks = ['', '', '/bookings', '','/assets', '/bi', '', '','/fin/costs', '', '', ''];
+					- for (var i=0; i<menuNames.length; i++)
+						ul(class='menu vertical')
+							li: a(href=menuLinks[i])= menuNames[i]
+							//p=menuNames[i]
+							//div(class='line')
 			div(class='main small-12 medium-10 columns')
 				div(class='row')
 					- var titleWidgets = ['30/60', '20/30', '3/5', '5']
@@ -50,6 +50,8 @@ html(ng-app='posApp')
 
 							ng-view
 
+		
+
 		// footer
 		div(class="row grey")
 
@@ -58,6 +60,7 @@ html(ng-app='posApp')
 		script(src="/vendor/js/jquery-3.1.1.min.js")
 		script(src="/vendor/js/what-input.js")
 		script(src="/vendor/js/foundation.min.js")
+		script(src="/js/test.js")
 		script(src="/js/app.js")
 		if (data.look.js && data.look.js[0])
 			- var jsFileNum = data.look.js.length

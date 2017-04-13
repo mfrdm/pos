@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 
 var costsSchema = mongoose.Schema({
 	amount: Number,
+	desc: String,
 	costType: Number,
 	updateAt: [{
 		time: {type: Date},

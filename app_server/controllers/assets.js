@@ -9,14 +9,66 @@ module.exports = new Assets();
 function Assets() {
 
 	this.readSomeAsset = function(req, res) {
-		var apiUrl = apiOptions.server + "/api/assets";
-		var view = null;
-		var qs = {};
-		var dataFilter = null;
-		var send = function(req, res, view, data, cb){
-			requestHelper.sendJsonRes(res, 200, data)
+		var names = ['table', 'cup', 'laptop', 'chair'];
+		var categories = [1,2,3,1];
+		var quantities = [1,3,4,5];
+		var statuses = [1,1,2,2]; // quality of asset	
+
+		var d = [];
+
+		for (var i = 0; i < names.length; i++){
+			d.push ({
+				name: names [i],
+				category: categories [i],
+				quantity: quantities [i],
+				status: statuses[i],
+			});
 		}
-		requestHelper.readApi(req, res, apiUrl, view, qs, dataFilter, send);
+
+		// TESTING
+		var data = {
+			user:{
+
+			},
+			data: d,
+			look:{
+				title:"Assets",
+				css:[],
+				js:[]
+			}
+		};	
+				
+		res.render ('assets', {data: data});
+		
+
+		// var apiUrl = apiOptions.server + "/api/assets";
+		// var view = 'assets';
+		// var qs = {
+		// 	userId: 'xxx',
+		// 	status: 1,
+		// };
+
+		// var dataFilter = function (data){
+		// 	return {
+		// 		data: {
+		// 			user:{
+
+		// 			},
+		// 			data: data,
+		// 			look:{
+		// 				title:"Assets",
+		// 				css:[],
+		// 				js:[]
+		// 			}						
+		// 		}
+		// 	}
+		// };
+
+		// var send = function (req, res, view, data, cb){
+		// 	res.render (view, data, cb);
+		// }
+
+		// requestHelper.readApi(req, res, apiUrl, view, qs, dataFilter, send);
 	};
 
 	this.readOneAssetById = function(req, res) {

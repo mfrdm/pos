@@ -9,9 +9,43 @@ module.exports = new Fin();
 function Fin() {
 
 	this.readSomeCosts = function(req, res) {
-		var apiUrl = apiOptions.server + '/api/costs/';
-		var view = 'costManagement';
-		requestHelper.readApi (req, res, apiUrl, view);
+		var amount = [100000, 200000, 2000000, 3000000];
+		var desc = ['For open day','For open day', 'For open day', 'For open day'];
+		var costType = [1,3,4,5];
+		var createdAt = ['2017-01-03', '2017-01-03', '2017-01-03', '2017-01-03'];
+		var updatedAt = ['2017-01-03', '2017-01-03', '2017-01-03', '2017-01-03'];	
+
+		var d = [];
+
+		for (var i = 0; i < amount.length; i++){
+			d.push ({
+				amount: amount [i],
+				desc: desc [i],
+				costType: costType [i],
+				createdAt: createdAt[i],
+				updatedAt: updatedAt[i]
+			});
+		}
+
+		// TESTING
+		var data = {
+			user:{
+
+			},
+			data: d,
+			look:{
+				title:"Cost Management",
+				css:[],
+				js:[]
+			}
+		};	
+				
+		res.render ('costManagement', {data: data});		
+
+
+		// var apiUrl = apiOptions.server + '/api/costs/';
+		// var view = 'costManagement';
+		// requestHelper.readApi (req, res, apiUrl, view);
 	};
 
 	this.readOneCostById = function(req, res) {
