@@ -20,8 +20,23 @@ function Others() {
 				js:[],
 			}
 		};
-		
-		res.render('index', {data:data})
+
+		res.render('index', {data:data});
 	};
+
+	this.angularApp = function (req, res){
+		var data = {
+			user:{
+
+			},
+			look:{
+				title:"Home Page",
+				css:[],
+				js:[],
+			}
+		};			
+
+		res.render ('layout', {data: data});
+	}
 
 };

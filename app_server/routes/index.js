@@ -25,7 +25,9 @@ router.get('/auth/google/callback',
 	)
 );
 
-router.get('/', othersCtrl.readHome);
+// router.get('/', othersCtrl.readHome);
+router.get('/readHome', othersCtrl.readHome); // TEST ANGULAR 
+router.get('/', othersCtrl.angularApp); // TEST ANGULAR 
 
 router.get('/checkin', checkinCtrl.readCheckin);
 router.get('/angularCheckin', checkinCtrl.angularCheckin);
