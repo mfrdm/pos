@@ -12,6 +12,16 @@ app.config(["$routeProvider",function($routeProvider) {
 			controller:"CusCheckinCtrl",
 			controllerAs:'vm'
 		})
+		.when("/checkout", {
+			templateUrl : "/angular/readOneCusCheckout",
+			controller:"CusCheckoutCtrl",
+			controllerAs:'vm'
+		})
+		.when("/edit", {
+			templateUrl : "/angular/readOneCusEdit",
+			controller:"CusEditCtrl",
+			controllerAs:'vm'
+		})
 		.otherwise({
 			redirect:'/'
 		});
@@ -20,19 +30,12 @@ app.config(["$routeProvider",function($routeProvider) {
 
 var MainCheckinCtrl = function(readCheckinService){
 	var vm = this;
-	// vm.submit = function(){
-	// 	if(vm.text){
-	// 		vm.list = vm.text;
-	// 		vm.text = '';
-	// 	}
-	// };
 	readCheckinService
 		.then(function success(res){
 			vm.userList = res.data.user.data
 		}, function error(err){
 			console.log(err)
 		});
-
 }
 
 var CusCheckinCtrl = function(readOneCusService, $http){
@@ -53,6 +56,27 @@ var CusCheckinCtrl = function(readOneCusService, $http){
 		})
 }
 
+var CusCheckoutCtrl = function(readOneOrder){
+	var vm = this;
+	readOneOrder
+		.then(function success(res){
+			vm.order = res.data.user.data
+			vm.outTime = new Date();
+		}, function error(err){
+			console.log(err)
+		})
+}
+
+var CusEditCtrl = function(readOneOrder){
+	var vm = this;
+	readOneOrder
+		.then(function success(res){
+			vm.order = res.data.user.data
+		}, function error(err){
+			console.log(err)
+		})
+}
+
 var readCheckinService = function($http){
 	return $http({
 		method:'GET',
@@ -64,6 +88,13 @@ var readOneCusService = function($http){
 	return $http({
 		method:'GET',
 		url:'/customers/customer/58eb474538671b4224745192'
+	})
+}
+
+var readOneOrder = function($http){
+	return $http({
+		method:'GET',
+		url:'/checkout/invoice/58eee6800de4f5161f50afdf'
 	})
 }
 
@@ -93,7 +124,10 @@ var checkInService = function(user, vm, $http){
 }
 
 app.controller('CusCheckinCtrl', CusCheckinCtrl)
+	.controller('CusCheckoutCtrl', CusCheckoutCtrl)
 	.controller('MainCheckinCtrl', MainCheckinCtrl)
+	.controller('CusEditCtrl', CusEditCtrl)
 	.service('readCheckinService', readCheckinService)
 	.service('readOneCusService', readOneCusService)
 	.service('checkInService', checkInService)
+	.service('readOneOrder', readOneOrder)

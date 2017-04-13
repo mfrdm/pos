@@ -9,7 +9,7 @@ module.exports = new Checkout();
 function Checkout() {
 
 	this.readInvoice = function(req, res) {
-		var apiUrl = apiOptions.server + "/api/customers/customer/"+req.params.cusid;
+		var apiUrl = apiOptions.server + "/api/orders/order/"+req.params.orderId;
 		var view = null;
 		var qs = {};
 		var dataFilter = function(dataList){

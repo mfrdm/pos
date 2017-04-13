@@ -25,7 +25,9 @@ div(class='checkin-step')
 				td {{user.checkinTime | date:'dd/MM/yyyy'}}
 				td {{user.checkinTime | date: 'shortTime'}}
 				td {{user.orderline[0].productName}}
-				td 
-					button(type="button" class="warning button") Checkout
-				td 
-					button(type="button" class="alert button") Edit
+				td
+					a(href='#!/checkout')
+						button(type="button" class="warning button") Checkout
+				td
+					a(href='#!/edit')
+						button(type="button" class="alert button") Edit

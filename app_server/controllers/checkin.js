@@ -112,4 +112,29 @@ function Checkin() {
 		requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
 	};
 
+	this.readOneCusCheckout = function(req,res){
+		var data = {
+			user: {
+			},
+			look:{
+				title:"Checkout for Customers",
+				css:[''],
+				js:['checkin/checkin.angular.js']
+			}
+		};
+		res.render('checkin/cusCheckout', {data:data})
+	}
+
+	this.readOneCusEdit = function(req, res){
+		var data = {
+			user: {
+			},
+			look:{
+				title:"Edit for Customers Checkin",
+				css:[''],
+				js:['checkin/checkin.angular.js']
+			}
+		};
+		res.render('checkin/cusEdit.pug', {data:data})
+	}
 };

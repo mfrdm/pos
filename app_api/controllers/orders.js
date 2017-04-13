@@ -13,7 +13,7 @@ function Orders() {
 	};
 
 	this.readOneOrderById = function(req, res) {
-		dbHelper.findOneById(req, res, OrdersModel, 'orderid')
+		dbHelper.findOneById(req, res, OrdersModel, 'orderId')
 	};
 
 	this.createOneOrder = function(req, res) {
@@ -21,7 +21,7 @@ function Orders() {
 	};
 
 	this.updateOneOrderById = function(req, res) {
-		dbHelper.updateOneById(req, res, OrdersModel, 'orderid')
+		dbHelper.updateOneById(req, res, OrdersModel, 'orderId')
 	};
 
 };

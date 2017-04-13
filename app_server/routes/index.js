@@ -30,11 +30,13 @@ router.get('/', othersCtrl.readHome);
 router.get('/checkin', checkinCtrl.readCheckin);
 router.get('/angular/readSomeCusCheckin', checkinCtrl.readSomeCusCheckin);
 router.get('/angular/readOneCusCheckin', checkinCtrl.readOneCusCheckin);
+router.get('/angular/readOneCusCheckout', checkinCtrl.readOneCusCheckout);
+router.get('/angular/readOneCusEdit', checkinCtrl.readOneCusEdit);
 router.get('/angular/readMainCheckin', checkinCtrl.readMainCheckin);
 router.post('/checkin/:cusId', checkinCtrl.checkin);
 router.post('/checkin/:cusId/edit', checkinCtrl.updateCheckin);//cusid is order id
 
-router.get('/checkout/invoice/:cusId', checkoutCtrl.readInvoice);
+router.get('/checkout/invoice/:orderId', checkoutCtrl.readInvoice);
 router.post('/checkout/', checkoutCtrl.checkout);
 
 router.get('/bookings', bookingCtrl.readBooking);
