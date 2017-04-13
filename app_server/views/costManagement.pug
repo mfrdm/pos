@@ -1,0 +1,91 @@
+extends layout
+block content
+	h2= data.look.title
+	p: a(class="button", href="#", data-open="addFormModal") Add
+
+	div(class="reveal" id="deleteFormModal" data-reveal="true")
+		div(class="row")
+			// TESTING DATA
+			- var costType = 1;
+			- var amount = 1000000;
+			- var describe = 'For company birthday';
+			- var createdAt = '2017-01-29';
+			- var updatedAt = '2017-01-30';
+			// END
+			table
+				thead
+					tr
+					- var tableHeaderNames = ['Category', 'Amount', 'Describe', 'Created At', 'Updated At'];
+					- var twidth = ['20%', '10%', '20%', '15%', '15%'];
+					- var columnNum = tableHeaderNames.length;
+					- for (var i = 0; i < columnNum; i++)
+						th(width=twidth[i])= tableHeaderNames[i]
+				tbody
+					tr
+						td= costType
+						td= amount
+						td= describe
+						td= createdAt
+						td= updatedAt
+
+		div(class="row")
+			div(class="button-group")
+				a(class="button") Delete
+				a(class="button float-right") Cancel
+
+	div(class="reveal" id="addFormModal" data-reveal="true")
+		form
+			div(class="row")
+				div(class="column small-3")
+					label(for="costCategory", class="text-right middle") Category
+				div(class="column small-9")
+					- var catValues = [1,2,3];
+					- var catNum = catValues.length;
+					select(name="category", id="costCategory")
+						- for (var i = 0; i < catNum; i++)
+							option(value=catValues[i])= catValues[i]
+			div(class="row")
+				div(class="column small-3")
+					label(for="costAmount", class="text-right middle") Amount
+				div(class="column small-9")
+					input(type="text", placeholder="Cost amount", id="costAmount")
+			div(class="row")
+				div(class="column small-3")
+					label(for="costDesc", class="text-right middle") Describe
+				div(class="column small-9")
+					input(type="text", placeholder="Descibe cost", id="costDesc")
+			div(class="row")
+				div(class="column small-3")
+					label(for="updateExplain", class="text-right middle") Reason to update
+				div(class="column small-9")
+					input(type="text", placeholder="Reason to update", id="updateExplain")
+			div(class="row")
+				div(class="button-group")
+					a(class="button") Create
+					a(class="button float-right") Cancel									
+	table
+		thead
+			tr
+				- var tableHeaderNames = ['Category', 'Amount', 'Describe', 'Created At', 'Updated At', 'Edit', 'Delete'];
+				- var twidth = ['20%', '10%', '20%', '15%', '15%', '10%', '10%'];
+				- var d = data.data;
+				- var key = ['costType', 'amount', 'desc', 'createdAt', 'updatedAt'];
+				- var rowNum = d.length;
+				- var columnNum = tableHeaderNames.length;
+				- for (var i = 0; i < columnNum; i++)
+					th(width=twidth[i])= tableHeaderNames[i]
+		tbody(ng-controller="costManagementCtrl")
+			tr(ng-repeat="c in costs")
+				td {{ c.costType }}
+				td {{ c.amount | toVND: "VND" }}
+				td {{ c.desc }}
+				td {{ c.createdAt | date: "dd MMM yyyy" }}
+				td {{ c.updatedAt | date: "dd-mm-yyyy" }}
+				td: a(class="button warning", data-open="addFormModal") Edit
+				td: a(class="button alert", data-open="deleteFormModal") Delete			
+			//- for (var i = 0; i < rowNum; i++)
+				//tr
+					//- for (var j = 0; j < key.length; j++)
+						//td= d[i][key[j]]
+					//td: a(class="button warning", data-open="addFormModal") Edit
+					//td: a(class="button alert", data-open="deleteFormModal") Delete	
