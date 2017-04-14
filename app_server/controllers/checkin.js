@@ -7,19 +7,6 @@ var apiOptions = helper.getAPIOption();
 module.exports = new Checkin();
 
 function Checkin() {
-	//Read the main checkin page - show all current customers checked in
-	this.readCheckin = function(req, res) {
-		var data = {
-			user: {
-			},
-			look:{
-				title:"Checkin for Customers",
-				css:[''],
-				js:['checkin/checkin.angular.js', 'checkin/controller.angular.js', 'checkin/service.angular.js']
-			}
-		};
-		res.render('layout', {data:data})
-	};
 	//Call api get all customers who checked in - call after readCheckin
 	this.readSomeCusCheckin = function(req, res) {
 		var apiUrl = apiOptions.server + "/api/orders";

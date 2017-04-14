@@ -2,22 +2,22 @@ var app = angular.module('posApp', ['ngRoute']);
 
 app.config(["$routeProvider",function($routeProvider) {
 	$routeProvider
-		.when("/", {
+		.when("/checkin", {
 			templateUrl : "/angular/readMainCheckin",
 			controller:"MainCheckinCtrl",
 			controllerAs:"vm"
 		})
-		.when("/customer", {
+		.when("/checkin/customer", {
 			templateUrl : "/angular/readOneCusCheckin",
 			controller:"CusCheckinCtrl",
 			controllerAs:'vm'
 		})
-		.when("/checkout", {
+		.when("/checkin/checkout", {
 			templateUrl : "/angular/readOneCusCheckout",
 			controller:"CusCheckoutCtrl",
 			controllerAs:'vm'
 		})
-		.when("/edit", {
+		.when("/checkin/edit", {
 			templateUrl : "/angular/readOneCusEdit",
 			controller:"CusEditCtrl",
 			controllerAs:'vm'

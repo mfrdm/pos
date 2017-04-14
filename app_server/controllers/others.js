@@ -16,7 +16,7 @@ function Others() {
 			look:{
 				title:"Home Page",
 				css:[],
-				js:[]
+				js:['route.angular.js', 'checkin/controller.angular.js', 'checkin/service.angular.js']
 			}
 		};
 		res.render('layout', {data:data})

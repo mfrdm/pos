@@ -26,7 +26,7 @@ html(ng-app='posApp')
 							i(class="fa fa-home fa-lg" aria-hidden="true")
 							p Green Space POS
 					- var menuNames = ['Checkin', 'Checkout','Booking','Customer Management', 'Assets', 'BI','HR', 'Revenue', 'Cost', 'Store', 'Attendance','Profile'];
-					- var menuLinks = ['', '', '/bookings', '','/assets', '/bi', '', '','/fin/costs', '', '', ''];
+					- var menuLinks = ['/#!/checkin', '/#!/checkout', '/bookings', '/#!/booking','/assets', '/bi', '/#!/hr', '/#!/revenue','/fin/costs', '/#!/store', '/#!/attendance', '/#!/profile'];
 					- for (var i=0; i<menuNames.length; i++)
 						ul(class='menu vertical')
 							li: a(href=menuLinks[i])= menuNames[i]
@@ -58,7 +58,6 @@ html(ng-app='posApp')
 		script(src="/vendor/js/what-input.js")
 		script(src="/vendor/js/foundation.min.js")
 		script(src="/js/test.js")
-		script(src="/js/app.js")
 		if (data.look.js && data.look.js[0])
 			- var jsFileNum = data.look.js.length
 			- for (var i = 0; i < jsFileNum; i++)

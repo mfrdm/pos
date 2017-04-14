@@ -25,8 +25,8 @@ table
 			td {{user.checkinTime | date: 'shortTime'}}
 			td {{user.orderline[0].productName}}
 			td
-				a(href='#!/checkout')
-					button(type="button" class="warning button") Checkout
+				a(href='#!/checkin/checkout')
+					button(type="button" class="warning button" ng-click='vm.getIndex($index)') Checkout
 			td
-				a(href='#!/edit')
+				a(href='#!/checkin/edit')
 					button(type="button" class="alert button") Edit

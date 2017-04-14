@@ -3,6 +3,9 @@ var MainCheckinCtrl = function(readCheckinService){
 	readCheckinService
 		.then(function success(res){
 			vm.userList = res.data.user.data
+			vm.getIndex = function(index){
+				console.log(vm.userList[index])
+			}
 		}, function error(err){
 			console.log(err)
 		});
