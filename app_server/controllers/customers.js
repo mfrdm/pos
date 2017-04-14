@@ -18,8 +18,22 @@ function Customers() {
 				css:['']
 			}
 		};
-		res.render('customermanagement', {data:data})
+		res.render('layout', {data:data})
 	};
+
+	//Render angular view for Create Customer
+	this.readCreateCustomer = function(req, res){
+		var data = {
+			user: {
+				data:dataList
+			},
+			look:{
+				title:"Customers",
+				css:['']
+			}
+		};
+		res.render('customers/createCustomer', {data:data})
+	}
 
 	this.readSomeCustomers = function(req, res) {
 		var apiUrl = apiOptions.server + "/api/customers/";

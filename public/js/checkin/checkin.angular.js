@@ -1,4 +1,4 @@
-var app = angular.module('checkinApp', ['ngRoute']);
+var app = angular.module('posApp', ['ngRoute']);
 
 app.config(["$routeProvider",function($routeProvider) {
 	$routeProvider

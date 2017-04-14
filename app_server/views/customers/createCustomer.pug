@@ -1,0 +1,13 @@
+table
+	thead
+		tr
+			th Field Name
+			th Field Value
+
+	tbody
+		- var list = ['Firstname', 'Lastname', 'Age', 'Birthday', 'Email', 'Phone']
+		- for(var  i = 0; i<list.length; i++)
+		tr
+			td list[i]
+			td
+				input(placeholder='Type here ...')
