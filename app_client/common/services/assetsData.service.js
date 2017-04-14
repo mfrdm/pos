@@ -1,9 +1,9 @@
 angular
 	.module ('posApp')
-	.service ('assetData', assetData);
+	.service ('assetsData', assetsData);
 
 
-function assetData ($http){
+function assetsData ($http){
 	var url = '/api/assets';
 	return $http.get (url);
 };

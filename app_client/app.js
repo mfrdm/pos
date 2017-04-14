@@ -9,12 +9,22 @@ function config ($routeProvider){
 		})
 		.when ('/assets', {
 			templateUrl: '/assets',
-			controller: 'assetCtrl',
+			controller: 'assetsCtrl',
 			controllerAs: 'vm',
 		})
+		.when ('/fin/costs', {
+			templateUrl: '/fin/costs',
+			controller: 'costsCtrl',
+			controllerAs: 'vm',
+		})		
 		.otherwise ({redirectTo: '/'});
 };
 
 angular
 	.module ('posApp')
 	.config (['$routeProvider', config])
+	.run(function($rootScope) {
+	    $rootScope.$on('$viewContentLoaded', function () {
+	        $(document).foundation();
+	    });
+	});
