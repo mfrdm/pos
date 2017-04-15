@@ -1,12 +1,7 @@
-angular.module ('posApp', ['ngRoute']);
+var app = angular.module ('posApp', ['ngRoute']);
 
 function config ($routeProvider){
 	$routeProvider
-		.when ('/', {
-			templateUrl: '/readHome',
-			controller: 'homeCtrl',
-			controllerAs: 'vm',
-		})
 		.when ('/assets', {
 			templateUrl: '/assets',
 			controller: 'assetsCtrl',
@@ -45,8 +40,7 @@ function config ($routeProvider){
 		.otherwise ({redirectTo: '/'});
 };
 
-angular
-	.module ('posApp')
+app
 	.config (['$routeProvider', config])
 	.run(function($rootScope) {
 	    $rootScope.$on('$viewContentLoaded', function () {

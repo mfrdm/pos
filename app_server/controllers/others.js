@@ -9,6 +9,7 @@ module.exports = new Others();
 function Others() {
 
 	this.angularApp = function (req, res){
+		var listFile = ['checkin', 'checkout', 'customers', 'assets', 'costs', 'home']
 		var data = {
 			user:{
 
@@ -16,9 +17,13 @@ function Others() {
 			look:{
 				title:"Home Page",
 				css:[],
-				js:[],
+				js:['app.js'],
 			}
-		};			
+		};
+		for (var i=0; i<listFile.length; i++){
+			data.look.js.push(listFile[i]+'.ctrl.js')
+			data.look.js.push('common/services/'+listFile[i]+'.service.js')
+		}			
 
 		res.render ('layout', {data: data});
 	}
