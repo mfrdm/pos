@@ -8,8 +8,7 @@ module.exports = new Others();
 
 function Others() {
 
-	this.readHome = function(req, res) {
-		var files = ['checkin', 'checkout', 'customer']
+	this.angularApp = function (req, res){
 		var data = {
 			user:{
 
@@ -17,14 +16,11 @@ function Others() {
 			look:{
 				title:"Home Page",
 				css:[],
-				js:['route.angular.js']
+				js:[],
 			}
-		};
-		for (var i=0; i<files.length; i++){
-			data.look.js.push(files[i]+'/controller.angular.js')
-			data.look.js.push(files[i]+'/service.angular.js')
-		};
-		res.render('layout', {data:data})
-	};
+		};			
+
+		res.render ('layout', {data: data});
+	}
 
 };

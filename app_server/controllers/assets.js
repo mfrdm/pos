@@ -9,6 +9,7 @@ module.exports = new Assets();
 function Assets() {
 
 	this.readSomeAsset = function(req, res) {
+
 		var names = ['table', 'cup', 'laptop', 'chair'];
 		var categories = [1,2,3,1];
 		var quantities = [1,3,4,5];
@@ -34,7 +35,8 @@ function Assets() {
 			look:{
 				title:"Assets",
 				css:[],
-				js:[]
+				js:[],
+				page: '1'
 			}
 		};	
 				

@@ -32,6 +32,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 //Set static folder
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/app_client', express.static(path.join(__dirname, 'app_client')));
 
 //Session, initialize
 app.use(session({ secret: 'anythingyouwanttotype' })); // session secret

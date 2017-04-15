@@ -1,88 +1,77 @@
-extends layout
-block content
-	h2= data.look.title
-	p: a(class="button", href="#", data-open="addFormModal") Add
+h2= data.look.title
+p: button(class="button", data-open="addFormModal", ng-click="vm.resetFormData('add')") Add
 
-	div(class="reveal" id="deleteFormModal" data-reveal="true")
+div(class="reveal" id="deleteFormModal" data-reveal="true")
+	div(class="row")
+		table
+			thead
+				tr
+					- var assetNames = ['Name', 'Category', 'Quantity', 'Status'];
+					- var twidth = ['30%', '10%', '10%', '10%'];
+					- var assets = data.data;
+					- var assetNum = data.data.length;
+					- var assetNameNum = assetNames.length;
+					- for (var i = 0; i < assetNameNum; i++)
+						th(width=twidth[i])= assetNames[i]
+			tbody
+				tr
+					td {{ vm.formData.name }}
+					td {{ vm.formData.category }}
+					td {{ vm.formData.quantity }}
+					td {{ vm.formData.status }}
+
+	div(class="row")
+		div(class="button-group")
+			a(class="button", ng-click="vm.updateFormData('delete')") Delete
+			a(class="button float-right") Cancel
+
+div(class="reveal" id="addFormModal" data-reveal="true")
+	form
 		div(class="row")
-			- var assetName = 'XXX';
-			- var assetCat = 'Category 1';
-			- var assetQuant = 10;
-			- var assetStatus = 1;
-
-			table
-				thead
-					tr
-						- var assetNames = ['Name', 'Category', 'Quantity', 'Status', 'Edit', 'Delete'];
-						- var twidth = ['30%', '10%', '10%', '10%', '10%', '10%'];
-						- var assets = data.data;
-						- var assetNum = data.data.length;
-						- var assetNameNum = assetNames.length;
-						- for (var i = 0; i < assetNameNum; i++)
-							th(width=twidth[i])= assetNames[i]
-				tbody
-					tr
-						td= assetName
-						td= assetCat
-						td= assetQuant
-						td= assetStatus
-
+			div(class="column small-3")
+				label(for="assetNameInput", class="text-right middle") Name
+			div(class="column small-9")
+				input(type="text", placeholder="Asset name", id="assetNameInput", value="{{ vm.formData.name }}", ng-model="vm.formData.name")
+		div(class="row")
+			div(class="column small-3")
+				label(for="assetCatInput", class="text-right middle") Category
+			div(class="column small-9")
+				input(type="text", placeholder="Category of the asset", name="category", id="assetCatInput", value="{{ vm.formData.category }}", ng-model="vm.formData.category")
+		div(class="row")
+			div(class="column small-3")
+				label(for="assetQuantity", class="text-right middle") Quantity
+			div(class="column small-9")
+				input(type="text", placeholder="Asset quantity", id="assetQuantity", value="{{ vm.formData.quantity }}", ng-model="vm.formData.quantity")
+		div(class="row")
+			div(class="column small-3")
+				label(for="assetStatus", class="text-right middle") Status
+			div(class="column small-9")
+				input(type="text", placeholder="Asset Status", id="assetStatus", value="{{ vm.formData.status }}", ng-model="vm.formData.status")
+		div(class="row")
+			div(class="column small-3")
+				label(for="updateExplain", class="text-right middle") Reason to update
+			div(class="column small-9")
+				input(type="text", placeholder="Reason to update", id="updateExplain", value="{{ vm.formData.reason }}", ng-model="vm.formData.reason")
 		div(class="row")
 			div(class="button-group")
-				a(class="button") Delete
-				a(class="button float-right") Cancel
-
-	div(class="reveal" id="addFormModal" data-reveal="true")
-		form
-			div(class="row")
-				div(class="column small-3")
-					label(for="assetNameInput", class="text-right middle") Asset name
-				div(class="column small-9")
-					input(type="text", placeholder="Asset Name", id="assetNameInput")
-			div(class="row")
-				div(class="column small-3")
-					label(for="assetCatInput", class="text-right middle") Asset name
-				div(class="column small-9")
-					- var catValues = [1,2,3,4];
-					- var catNames = [1,2,3,4];
-					- var catNum = catValues.length;
-					select(name="category", id="assetCatInput")
-						- for (var i = 0; i < catNum; i++)
-							option(value=catValues[i])= catNames[i]
-			div(class="row")
-				div(class="column small-3")
-					label(for="assetQuantity", class="text-right middle") Quantity
-				div(class="column small-9")
-					input(type="text", placeholder="Asset Name", id="assetQuantity")
-			div(class="row")
-				div(class="column small-3")
-					label(for="assetStatus", class="text-right middle") Status
-				div(class="column small-9")
-					- var statusValues = [1,2,3];
-					- var statusNames = ['Good', 'Average', 'Bad'];
-					- var statusNum = statusValues.length;
-					select(name="category", id="assetCatInput")
-						- for (var i = 0; i < statusNum; i++)
-							option(value=statusValues[i])= statusNames[i]
-			div(class="row")
-				div(class="button-group")
-					a(class="button") Create
-					a(class="button float-right") Cancel									
-	table
-		thead
-			tr
-				- var tableHeaderNames = ['Name', 'Category', 'Quantity', 'Status', 'Edit', 'Delete'];
-				- var twidth = ['30%', '10%', '10%', '10%', '10%', '10%'];
-				- var key = ['name', 'category', 'quantity', 'status'];
-				- var d = data.data;
-				- var rowNum = d.length;
-				- var columnNum = tableHeaderNames.length;
-				- for (var i = 0; i < columnNum; i++)
-					th(width=twidth[i])= tableHeaderNames[i]
-		tbody
-			- for (var i = 0; i < rowNum; i++)
-				tr
-					- for (var j = 0; j < key.length; j++)
-						td= d[i][key[j]]
-					td: a(class="button warning", data-open="addFormModal") Edit
-					td: a(class="button alert", data-open="deleteFormModal") Delete	
+				a(class="button", ng-click="vm.updateFormData()") {{ vm.formDataBtnName }}
+				a(class="button float-right") Cancel									
+table
+	thead
+		tr
+			- var tableHeaderNames = ['Name', 'Category', 'Quantity', 'Status', 'Edit', 'Delete'];
+			- var twidth = ['30%', '10%', '10%', '10%', '10%', '10%'];
+			- var key = ['name', 'category', 'quantity', 'status'];
+			- var d = data.data;
+			- var rowNum = d.length;
+			- var columnNum = tableHeaderNames.length;
+			- for (var i = 0; i < columnNum; i++)
+				th(width=twidth[i])= tableHeaderNames[i]
+	tbody
+		tr(ng-repeat="asset in vm.assets")
+			td {{ asset.name }}
+			td {{ asset.category }}
+			td {{ asset.quantity }}
+			td {{ asset.status }}
+			td: a(class="button warning", data-open="addFormModal", ng-click="vm.getFormData($index, 'edit')") Edit
+			td: a(class="button alert", data-open="deleteFormModal", ng-click="vm.getFormData($index)") Delete

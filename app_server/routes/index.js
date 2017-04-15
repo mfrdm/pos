@@ -25,7 +25,7 @@ router.get('/auth/google/callback',
 	)
 );
 
-router.get('/', othersCtrl.readHome);
+router.get('/', othersCtrl.angularApp);
 // Checkin
 router.get('/angular/readSomeCusCheckin', checkinCtrl.readSomeCusCheckin);
 router.get('/angular/readOneCusCheckin', checkinCtrl.readOneCusCheckin);
