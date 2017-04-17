@@ -15,6 +15,10 @@ var MainCheckinCtrl = function(checkinService, checkinFactory,$window){
 		})
 	}
 
+	vm.checkOutCus = function(id){
+		checkinFactory.setData(id)
+	}
+
 	checkinService.readCheckinService()
 		.then(function success(res){
 			console.log(res)
@@ -47,15 +51,28 @@ var CusCheckinCtrl = function(checkinService,checkinFactory,$window){
 		})
 }
 
-var CusCheckoutCtrl = function(checkinService){
+var CusCheckoutCtrl = function(checkinService, checkinFactory, $window){
 	var vm = this;
-	checkinService.readOneOrder()
+	var id = checkinFactory.getData();
+	checkinService.readOneOrder(id)
 		.then(function success(res){
+			console.log(res)
 			vm.order = res.data.user.data
 			vm.outTime = new Date();
+			vm.checkout = function(){
+				checkinService.checkOutCustomerService(vm.order._id)
+				$window.location.href = '#!/checkin';
+
+			}
 		}, function error(err){
 			console.log(err)
 		})
+
+	vm.cancelCheckout = function(){
+		$window.location.href = '#!/checkin';
+	}
+
+
 }
 
 var CusEditCtrl = function(checkinService){
@@ -69,6 +86,6 @@ var CusEditCtrl = function(checkinService){
 }
 
 app.controller('CusCheckinCtrl', ['checkinService','checkinFactory','$window', CusCheckinCtrl])
-	.controller('CusCheckoutCtrl', ['checkinService',CusCheckoutCtrl])
+	.controller('CusCheckoutCtrl', ['checkinService','checkinFactory','$window',CusCheckoutCtrl])
 	.controller('MainCheckinCtrl', ['checkinService','checkinFactory','$window', MainCheckinCtrl])
 	.controller('CusEditCtrl', ['checkinService', CusEditCtrl])
