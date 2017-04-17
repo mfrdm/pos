@@ -1,15 +1,20 @@
 //Get data to render all current checked in customers
-var MainCheckinCtrl = function(checkinService){
+var MainCheckinCtrl = function(checkinService, checkinFactory,$window){
 	var vm = this;
 
 	vm.searchFunc = function(){
 		checkinService.searchService(vm.searchInput)
 		.then(function success(res){
-			console.log(res)
+			vm.results = res.data.data
+			vm.goToCustomer = function(id){
+				checkinFactory.setData(id);
+				$window.location.href = '#!/checkin/customer';
+			}
 		}, function error(err){
 			console.log(err)
 		})
 	}
+
 	checkinService.readCheckinService()
 		.then(function success(res){
 			console.log(res)
@@ -20,12 +25,14 @@ var MainCheckinCtrl = function(checkinService){
 }
 
 //Get data of one customer who we want to check in for
-var CusCheckinCtrl = function(checkinService, $window){
+var CusCheckinCtrl = function(checkinService,checkinFactory,$window){
 	var vm = this;
-
-	checkinService.readOneCusService()
+	var id = checkinFactory.getData();
+	console.log(id);
+	checkinService.readOneCusService(id)
 		.then(function success(res){
-			vm.user = res.data.user.data
+			console.log(res)
+			vm.user = res.data.data
 			//When click checkin, will check in for customer
 			vm.checkin = function(){
 				checkinService.checkInCustomerService(vm.user, vm)
@@ -61,7 +68,7 @@ var CusEditCtrl = function(checkinService){
 		})
 }
 
-app.controller('CusCheckinCtrl', ['checkinService', '$window', CusCheckinCtrl])
+app.controller('CusCheckinCtrl', ['checkinService','checkinFactory','$window', CusCheckinCtrl])
 	.controller('CusCheckoutCtrl', ['checkinService',CusCheckoutCtrl])
-	.controller('MainCheckinCtrl', ['checkinService', MainCheckinCtrl])
+	.controller('MainCheckinCtrl', ['checkinService','checkinFactory','$window', MainCheckinCtrl])
 	.controller('CusEditCtrl', ['checkinService', CusEditCtrl])

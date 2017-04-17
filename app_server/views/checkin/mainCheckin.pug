@@ -1,7 +1,14 @@
-div(class="input-group")
+form(class="input-group" ng-submit='vm.searchFunc()')
 	input(class="input-group-field" type="text" ng-model='vm.searchInput')
 	div(class="input-group-button")
-		input(type="submit" class="button" value="Submit" ng-click='vm.searchFunc()')
+		input(type="submit" class="button" value="Submit")
+div(class='searchResult')
+	table
+		tbody
+			tr(ng-repeat = 'result in vm.results')
+				td(ng-click='vm.goToCustomer(result._id)') {{result.firstname}}
+				td {{result.lastname}}
+
 label Filter
 select(id="select" required ng-model='order')
 	option(value="name") Name

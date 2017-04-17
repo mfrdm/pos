@@ -7,10 +7,10 @@ var checkinService = function($http){
 		// console.log('test')
 	}
 
-	this.readOneCusService = function(){
+	this.readOneCusService = function(id){
 		return $http({
 		method:'GET',
-			url:'/customers/customer/58eb474538671b4224745192'
+			url:'api/customers/customer/'+id
 		})
 	}
 
@@ -62,4 +62,23 @@ var checkinService = function($http){
 	}
 }
 
-app.service('checkinService', ['$http',  checkinService])
+var checkinFactory = function(){
+	// this.shareData = function(){
+		var private_data;
+		var setData = function(data){
+			private_data = (data)
+			console.log(private_data)
+		};
+		var getData = function(){
+			console.log(private_data)
+			return private_data;
+		}
+		return{
+			setData : setData,
+			getData : getData
+		}
+	// }
+}
+
+app.service('checkinService', ['$http', '$window',  checkinService])
+app.factory('checkinFactory',checkinFactory)
