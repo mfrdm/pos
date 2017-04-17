@@ -1,13 +1,46 @@
-table
-	thead
-		tr
-			th Field Name
-			th Field Value
+div(class='row')
+	table(class="columns small-12 medium-6 medium-offset-3")
+		thead
+			tr
+				th Field Name
+				th Field Value
 
-	tbody
-		- var list = ['Firstname', 'Lastname', 'Age', 'Birthday', 'Email', 'Phone']
-		- for(var  i = 0; i<list.length; i++)
-		tr
-			td list[i]
-			td
-				input(placeholder='Type here ...')
+		tbody
+			tr
+				td
+					p Firstname
+				td
+					input(placeholder='Type here ...' ng-model='vm.formData.firstname')
+			tr
+				td
+					p Lastname
+				td
+					input(placeholder='Type here ...' ng-model='vm.formData.lastname')
+			tr
+				td
+					p Age
+				td
+					input(placeholder='Type here ...' ng-model='vm.formData.age')
+			tr
+				td
+					p Birthday
+				td
+					input(placeholder='Type here ...' ng-model='vm.formData.birthday')
+			tr
+				td
+					p Gender
+				td
+					input(placeholder='Type here ...' ng-model='vm.formData.gender')
+			tr
+				td
+					p Email
+				td
+					input(placeholder='Type here ...' ng-model='vm.formData.email')
+			tr
+				td
+					p Phone Number
+				td
+					input(placeholder='Type here ...' ng-model='vm.formData.phone')
+div(class='row')
+	div(class='columns small-2 small-offset-5')
+		button(type="button" class="button" ng-click='vm.createNewUser()') Create

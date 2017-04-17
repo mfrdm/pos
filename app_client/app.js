@@ -35,9 +35,9 @@ function config ($routeProvider){
 			controller:"CusEditCtrl",
 			controllerAs:'vm'
 		})
-		.when("/customer/create", {
-			templateUrl : "/angular/createNewCus",
-			controller:"CusCreateCtrl",
+		.when("/customers", {
+			templateUrl : "/angular/readCreateCustomer",
+			controller: "CusCreateCtrl",
 			controllerAs:'vm'
 		})
 		.otherwise ({redirectTo: '/'});
