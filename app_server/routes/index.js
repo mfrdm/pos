@@ -59,7 +59,7 @@ router.get('/customers', customersCtrl.readSomeCustomers);
 router.get('/customers/customer/:cusId', customersCtrl.readOneCustomerById);
 router.post('/customers/create', customersCtrl.createOneCustomer);
 router.post('/customers/customer/:cusId/edit', customersCtrl.updateOneCustomer);
-router.get('/readCreateCustomer', customersCtrl.readCreateCustomer);
+router.get('/angular/readCreateCustomer', customersCtrl.readCreateCustomer);
 
 router.get('/fin/costs', finCtrl.readSomeCosts);
 router.post('/fin/costs/create', finCtrl.createOneCost);

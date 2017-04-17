@@ -1,8 +1,18 @@
 //Get data to render all current checked in customers
-var MainCheckinCtrl = function(readCheckinService){
+var MainCheckinCtrl = function(checkinService){
 	var vm = this;
-	readCheckinService
+
+	vm.searchFunc = function(){
+		checkinService.searchService(vm.searchInput)
 		.then(function success(res){
+			console.log(res)
+		}, function error(err){
+			console.log(err)
+		})
+	}
+	checkinService.readCheckinService()
+		.then(function success(res){
+			console.log(res)
 			vm.userList = res.data.user.data
 		}, function error(err){
 			console.log(err)
@@ -10,14 +20,15 @@ var MainCheckinCtrl = function(readCheckinService){
 }
 
 //Get data of one customer who we want to check in for
-var CusCheckinCtrl = function(readOneCusService, $http, $window){
+var CusCheckinCtrl = function(checkinService, $window){
 	var vm = this;
-	readOneCusService
+
+	checkinService.readOneCusService()
 		.then(function success(res){
 			vm.user = res.data.user.data
 			//When click checkin, will check in for customer
 			vm.checkin = function(){
-				checkInService(vm.user, vm, $http)
+				checkinService.checkInCustomerService(vm.user, vm)
 				.then(function success(res){
 					$window.location.href = '#!/checkin';
 				}, function error(err){
@@ -29,9 +40,9 @@ var CusCheckinCtrl = function(readOneCusService, $http, $window){
 		})
 }
 
-var CusCheckoutCtrl = function(readOneOrder){
+var CusCheckoutCtrl = function(checkinService){
 	var vm = this;
-	readOneOrder
+	checkinService.readOneOrder()
 		.then(function success(res){
 			vm.order = res.data.user.data
 			vm.outTime = new Date();
@@ -40,9 +51,9 @@ var CusCheckoutCtrl = function(readOneOrder){
 		})
 }
 
-var CusEditCtrl = function(readOneOrder){
+var CusEditCtrl = function(checkinService){
 	var vm = this;
-	readOneOrder
+	checkinService.readOneOrder()
 		.then(function success(res){
 			vm.order = res.data.user.data
 		}, function error(err){
@@ -50,7 +61,7 @@ var CusEditCtrl = function(readOneOrder){
 		})
 }
 
-app.controller('CusCheckinCtrl', CusCheckinCtrl)
-	.controller('CusCheckoutCtrl', CusCheckoutCtrl)
-	.controller('MainCheckinCtrl', MainCheckinCtrl)
-	.controller('CusEditCtrl', CusEditCtrl)
+app.controller('CusCheckinCtrl', ['checkinService', '$window', CusCheckinCtrl])
+	.controller('CusCheckoutCtrl', ['checkinService',CusCheckoutCtrl])
+	.controller('MainCheckinCtrl', ['checkinService', MainCheckinCtrl])
+	.controller('CusEditCtrl', ['checkinService', CusEditCtrl])

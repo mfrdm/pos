@@ -21,20 +21,6 @@ function Customers() {
 		res.render('layout', {data:data})
 	};
 
-	//Render angular view for Create Customer
-	this.readCreateCustomer = function(req, res){
-		var data = {
-			user: {
-				data:dataList
-			},
-			look:{
-				title:"Customers",
-				css:['']
-			}
-		};
-		res.render('customers/createCustomer', {data:data})
-	}
-
 	this.readSomeCustomers = function(req, res) {
 		var apiUrl = apiOptions.server + "/api/customers/";
 		var view = 'checkin';
@@ -101,4 +87,18 @@ function Customers() {
 		requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
 	};
 
+	//Angular get view
+	//Render angular view for Create Customer
+	this.readCreateCustomer = function(req, res){
+		var data = {
+			user: {
+				
+			},
+			look:{
+				title:"Customers",
+				css:['']
+			}
+		};
+		res.render('customers/createCustomer', {data:data})
+	}
 };
