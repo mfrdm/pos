@@ -28,4 +28,8 @@ function Others() {
 		res.render ('layout', {data: data});
 	}
 
+	this.getMessageTemplate = function (req, res) {
+		res.render ('others/message');
+	}
+
 };

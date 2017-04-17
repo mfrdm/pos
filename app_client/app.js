@@ -4,6 +4,9 @@ function config ($routeProvider){
 	$routeProvider
 		.when ('/assets', {
 			templateUrl: '/assets',
+			resolve: {
+				'checkPermisson': ['$q', checkPermission]
+			},
 			controller: 'assetsCtrl',
 			controllerAs: 'vm',
 		})
@@ -40,10 +43,16 @@ function config ($routeProvider){
 		.otherwise ({redirectTo: '/'});
 };
 
+// FIX later
+// Check if a user has permission to access a certain page or resource
+function checkPermission ($q) {
+	return $q.defer ()
+}
+
 app
-	.config (['$routeProvider', config])
+	.config (['$routeProvider', config])	
 	.run(function($rootScope) {
 	    $rootScope.$on('$viewContentLoaded', function () {
 	        $(document).foundation();
 	    });
-	});
+	})

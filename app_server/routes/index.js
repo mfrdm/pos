@@ -26,6 +26,7 @@ router.get('/auth/google/callback',
 );
 
 router.get('/', othersCtrl.angularApp);
+
 // Checkin
 router.get('/angular/readSomeCusCheckin', checkinCtrl.readSomeCusCheckin);
 router.get('/angular/readOneCusCheckin', checkinCtrl.readOneCusCheckin);
@@ -76,6 +77,9 @@ router.get('/products', productsCtrl.readSomeProducts);
 router.post('/products/create', productsCtrl.createOneProduct);
 router.get('/products/product/:productId', productsCtrl.readOneProductById);
 router.post('/products/product/:productId/edit', productsCtrl.updateOneProduct);
+
+// Others
+router.get ('/others/template/message', othersCtrl.getMessageTemplate);
 
 // function isLoggedIn(req, res, next) {
 // 	// if user is authenticated in the session, carry on
