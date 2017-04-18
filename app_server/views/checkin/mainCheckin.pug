@@ -33,7 +33,7 @@ table
 			td {{user.orderline[0].productName}}
 			td
 				a(href='#!/checkin/checkout')
-					button(type="button" class="warning button" ng-click='vm.checkOutCus(user._id)') Checkout
+					button(type="button" class="warning button" ng-click='vm.getIndex(user.customers._id)') Checkout
 			td
 				a(href='#!/checkin/edit')
-					button(type="button" class="alert button") Edit
+					button(type="button" class="alert button" ng-click='vm.goToEdit($index)') Edit

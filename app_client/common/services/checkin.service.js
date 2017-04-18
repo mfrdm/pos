@@ -56,6 +56,16 @@ var checkinService = function($http){
 		})
 	}
 
+	// this.updateOrder = function(id, checkinTime, ){
+	// 	return $http({
+	// 		url:'/api/orders/order/'+id+'/edit',
+	// 		method:'POST',
+	// 		data:JSON.stringify({
+	// 			checkinTime:
+	// 		})
+	// 	})
+	// }
+
 	this.searchService = function(input){
 		var array = [{"firstname" : { $regex: input, $options: 'i' }}, {"lastname" : { $regex: input, $options: 'i' }}]
 		return $http({
