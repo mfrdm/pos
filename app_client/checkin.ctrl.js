@@ -1,108 +1,84 @@
 //Get data to render all current checked in customers
-var MainCheckinCtrl = function(checkinService, checkinFactory,$window){
+var CheckinCtrl = function(checkinService, $window, $route){
 	var vm = this;
-
+	vm.tab = 'tab-search';
+	////////////////////////////////////////////////////////
+	//Setup ng-switch
+	vm.toCheckin = function(index){
+		vm.tab = 'tab-checkin'
+		vm.user = vm.results[index]
+	}
+	vm.toCheckout = function(index){
+		vm.tab = 'tab-checkout';
+		vm.oneOrder = vm.userList[index];
+		vm.checkout;
+	}
+	vm.toSearch = function(){
+		vm.tab = 'tab-search'
+		$route.reload();
+	}
+	vm.toEdit = function(index){
+		vm.tab = 'tab-edit';
+		vm.oneOrder = vm.userList[index];
+	}
+	////////////////////////////////////////////////////////
+	//Search Page
 	vm.searchFunc = function(){
-		checkinService.searchService(vm.searchInput)
+		checkinService.searchCustomers(vm.searchInput)
 		.then(function success(res){
 			vm.results = res.data.data
-			vm.goToCustomer = function(id){
-				checkinFactory.setData(id);
-				$window.location.href = '#!/checkin/customer';
-			}
+
 		}, function error(err){
 			console.log(err)
 		})
 	}
 
-	checkinService.readCheckinService()
+	checkinService.getDataOrderCheckin()
 		.then(function success(res){
-			vm.userList = res.data.user.data
-			vm.goToEdit = function(index){
-				checkinFactory.setData(vm.userList[index]._id)
-			}
+			vm.userList = res.data.data
 		}, function error(err){
 			console.log(err)
 		});
-}
-
-//Get data of one customer who we want to check in for
-var CusCheckinCtrl = function(checkinService,checkinFactory,$window){
-	var vm = this;
-	var id = checkinFactory.getData();
-	console.log(id);
-	checkinService.readOneCusService(id)
-		.then(function success(res){
-			vm.user = res.data.data
-			//When click checkin, will check in for customer
-			vm.checkin = function(){
-				checkinService.checkInCustomerService(vm.user, vm)
-				.then(function success(res){
-					$window.location.href = '#!/checkin';
-				}, function error(err){
-					console.log(err)
-				});
-			}
-		}, function error(err){
-			console.log(err)
-		})
-}
-
-var CusCheckoutCtrl = function(checkinService, checkinFactory, $window){
-	var vm = this;
-	var id = checkinFactory.getData();
-	checkinService.readOneOrder(id)
-		.then(function success(res){
-			vm.order = res.data.user.data
-			vm.outTime = new Date();
-			vm.checkout = function(){
-				checkinService.checkOutCustomerService(vm.order._id);
-
-				$window.location.href = '#!/checkin';
-			}
-		}, function error(err){
-			console.log(err)
-		})
-
-	vm.cancelCheckout = function(){
-		$window.location.href = '#!/checkin';
+	////////////////////////////////////////////////////////
+	//Checkout Page
+	vm.checkout = function(){
+		vm.outTime = new Date();
+		checkinService.postCheckOut(vm.oneOrder._id)
+			.then(function success(res){
+				vm.tab = 'tab-search';
+				$route.reload();
+			}, function error(err){
+				console.log(err);
+			})
 	}
-
-
-}
-
-var CusEditCtrl = function(checkinService, checkinFactory){
-	var vm = this;
-	var id = checkinFactory.getData();
-	valueArr = ['Private Room', 'Group Room', 'Soft Drink', 'Food']
-	
-	vm.checkboxModel1 = {value:false}
-	vm.checkboxModel2 = {value:false}
-	vm.checkboxModel3 = {value:false}
-	vm.checkboxModel4 = {value:false}
-	
+	////////////////////////////////////////////////////////
+	//Checkout Page
+	vm.checkin = function(){
+		checkinService.postCheckIn(vm.user, vm)
+			.then(function success(res){
+				vm.tab = 'tab-search';
+				$route.reload();
+			}, function error(err){
+				console.log(err);
+			})
+	}
+	////////////////////////////////////////////////////////
+	//Edit Page
+	vm.productList = ['Private Room', 'Group Room', 'Food', 'Drink']
 	vm.saveEdit = function(){
-		var checkboxArr = [vm.checkboxModel1.value, vm.checkboxModel2.value, vm.checkboxModel3.value, vm.checkboxModel4.value]
-		console.log(checkboxArr)
-		for (var i=0; i<4; i++){
-			if(checkboxArr[i]==true){
-				console.log(valueArr[i])
-			}
+		var newOrderLine = []
+		for (var i=0; i<vm.list.length; i++){
+			newOrderLine.push({productName:vm.list[i]})
 		}
+		console.log(newOrderLine)
+		checkinService.postEdit(vm.oneOrder, newOrderLine)
+			.then(function success(res){
+				vm.tab = 'tab-search';
+				$route.reload();
+			}, function error(err){
+				console.log(err)
+			})
 	}
-	// checkinService.readOneOrder(id)
-	// 	.then(function success(res){
-	// 		console.log(res)
-	// 		vm.order = res.data.user.data
-	// 		vm.saveEdit = function(){
-	// 			console.log(vm.products, vm.checkInDate, vm.checkInTime)
-	// 		}
-	// 	}, function error(err){
-	// 		console.log(err)
-	// 	})
 }
 
-app.controller('CusCheckinCtrl', ['checkinService','checkinFactory','$window', CusCheckinCtrl])
-	.controller('CusCheckoutCtrl', ['checkinService','checkinFactory','$window',CusCheckoutCtrl])
-	.controller('MainCheckinCtrl', ['checkinService','checkinFactory','$window', MainCheckinCtrl])
-	.controller('CusEditCtrl', ['checkinService','checkinFactory', CusEditCtrl])
+app.controller('CheckinCtrl', ['checkinService','$window','$route', CheckinCtrl])

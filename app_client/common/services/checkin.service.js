@@ -1,27 +1,46 @@
 var checkinService = function($http){
-	this.readCheckinService = function(){
+
+	//Search Service
+	this.searchCustomers = function(input){
+		var array = [{"firstname" : { $regex: input, $options: 'i' }}, {"lastname" : { $regex: input, $options: 'i' }}]
 		return $http({
 			method:'GET',
-			url:'/angular/readSomeCusCheckin'
+			url:'/api/customers',
+			params:{
+				queryInput:JSON.stringify({
+					conditions: {$or: array},
+					projection: null,
+					opts: null
+				})
+			}
 		})
-		// console.log('test')
 	}
 
-	this.readOneCusService = function(id){
+	//Get all checked in customer
+	this.getDataOrderCheckin = function(){
+		return $http({
+			method:'GET',
+			url:'/api/orders',
+			params: {
+				queryInput: JSON.stringify({
+					conditions: {status:1},
+					projection: null,
+					opts: null
+				})
+			}
+		})
+	}
+
+	//Get data from 1 customer by ID
+	this.getDataOneCustomer = function(id){
 		return $http({
 		method:'GET',
 			url:'api/customers/customer/'+id
 		})
 	}
 
-	this.readOneOrder = function(id){
-		return $http({
-			method:'GET',
-			url:'/checkout/invoice/'+id
-		})
-	}
-
-	this.checkInCustomerService = function(user, vm){
+	//Create new check in customer
+	this.postCheckIn = function(user, vm){
 		return $http({
 				method:'POST',
 				url:'/checkin/'+user._id,
@@ -46,7 +65,19 @@ var checkinService = function($http){
 			})
 	}
 
-	this.checkOutCustomerService = function(id){
+	//Update new Order
+	this.postEdit = function(oneOrder, newOrderLine){
+		return $http({
+			method:'POST',
+			url:'/api/orders/order/'+oneOrder._id+'/edit',
+			data:JSON.stringify({
+				$set:{orderline:newOrderLine}
+			})
+		})
+	}
+
+	//Checkout for customer
+	this.postCheckOut = function(id){
 		return $http({
 			url:'/api/orders/order/'+id+'/edit',
 			method:'POST',
@@ -55,48 +86,6 @@ var checkinService = function($http){
 			})
 		})
 	}
-
-	// this.updateOrder = function(id, checkinTime, ){
-	// 	return $http({
-	// 		url:'/api/orders/order/'+id+'/edit',
-	// 		method:'POST',
-	// 		data:JSON.stringify({
-	// 			checkinTime:
-	// 		})
-	// 	})
-	// }
-
-	this.searchService = function(input){
-		var array = [{"firstname" : { $regex: input, $options: 'i' }}, {"lastname" : { $regex: input, $options: 'i' }}]
-		return $http({
-			method:'GET',
-			url:'/api/customers',
-			params:{
-				queryInput:JSON.stringify({
-					conditions: {$or: array},
-					projection: null,
-					opts: null
-				})
-			}
-		})
-	}
-}
-
-var checkinFactory = function(){
-	var private_data;
-	var setData = function(data){
-		private_data = (data)
-		console.log(private_data)
-	};
-	var getData = function(){
-		console.log(private_data)
-		return private_data;
-	}
-	return{
-		setData : setData,
-		getData : getData
-	}
 }
 
 app.service('checkinService', ['$http', '$window',  checkinService])
-app.factory('checkinFactory',checkinFactory)

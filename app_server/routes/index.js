@@ -28,11 +28,7 @@ router.get('/auth/google/callback',
 router.get('/', othersCtrl.angularApp);
 
 // Checkin
-router.get('/angular/readSomeCusCheckin', checkinCtrl.readSomeCusCheckin);
-router.get('/angular/readOneCusCheckin', checkinCtrl.readOneCusCheckin);
-router.get('/angular/readOneCusCheckout', checkinCtrl.readOneCusCheckout);
-router.get('/angular/readOneCusEdit', checkinCtrl.readOneCusEdit);
-router.get('/angular/readMainCheckin', checkinCtrl.readMainCheckin);
+router.get('/angular/checkin', checkinCtrl.readAngularCheckin);
 router.post('/checkin/:cusId', checkinCtrl.checkin);
 router.post('/checkin/:cusId/edit', checkinCtrl.updateCheckin);//cusid is order id
 
