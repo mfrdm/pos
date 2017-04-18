@@ -37,7 +37,7 @@ div(class="reveal" id="addFormModal" data-reveal="true")
 			div(class="column small-3")
 				label(for="assetNameInput", class="text-right middle") Name
 			div(class="column small-9")
-				input(type="text", placeholder="Asset name", id="assetNameInput", value="{{ vm.formData.name }}", ng-model="vm.formData.name")
+				input(type="text", placeholder="Asset name", id="assetNameInput", value="{{ vm.formData.name }}", ng-model="vm.formData.name" required)
 		div(class="row")
 			div(class="column small-3")
 				label(for="assetCatInput", class="text-right middle") Category
@@ -60,7 +60,7 @@ div(class="reveal" id="addFormModal" data-reveal="true")
 				input(type="text", placeholder="Reason to update", id="updateExplain", value="{{ vm.formData.reason }}", ng-model="vm.formData.reason")
 		div(class="row")
 			div(class="button-group")
-				<a class="button", ng-click="vm.updateAsset(vm.otherUpdateMode)" data-toggle="{{ vm.other.messageDivId }}" data-close> {{ vm.other.updateBtnName }} </a>
+				<input class="button", ng-click="vm.updateAsset(vm.otherUpdateMode)" data-toggle="{{ vm.other.messageDivId }}" type="submit" value="{{ vm.other.updateBtnName }}" data-close>
 				<a class="button float-right" data-close> Cancel </a>									
 
 table
