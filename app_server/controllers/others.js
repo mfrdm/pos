@@ -12,9 +12,11 @@ function Others() {
 		//var listFile = ['checkin', 'checkout', 'customers', 'assets', 'costs', 'home'];
 		var ctrFileNames = ['checkin', 'checkout', 'customers', 'assets', 'costs', 'home'];
 		var serviceFileNames = ['checkin', 'checkout', 'customers', 'assets', 'costs', 'home', 'common'];
+		var directiveFileNames = ['components'];
 
 		var ctrlNum = ctrFileNames.length;
 		var serNum = serviceFileNames.length;
+		var directiveNum = directiveFileNames.length;
 
 		var data = {
 			user:{
@@ -35,6 +37,10 @@ function Others() {
 			data.look.js.push ('common/services/' + serviceFileNames[i] + '.service.js');
 		}
 
+		for (var i=0; i < directiveNum; i++){
+			data.look.js.push ('common/directives/' + directiveFileNames[i] + '.directive.js');
+		}
+
 		// for (var i=0; i<listFile.length; i++){
 		// 	data.look.js.push(listFile[i]+'.ctrl.js')
 		// 	data.look.js.push('common/services/'+listFile[i]+'.service.js')
@@ -44,7 +50,11 @@ function Others() {
 	}
 
 	this.getMessageTemplate = function (req, res) {
-		res.render ('others/message');
+		res.render ('components/message');
 	}
+
+	this.getAssetTemplate = function (req, res) {
+		res.render ('components/asset');
+	}	
 
 };

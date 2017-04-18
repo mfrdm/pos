@@ -1,28 +1,12 @@
 angular
 	.module ('posApp')
-	.controller ('assetsCtrl', ['assetsService', 'motion', assetsCtrl])
-	.directive ('messageWidget', [messageWidget])
+	.controller ('assetsCtrl', ['assetsService', assetsCtrl])
 
-// TEST declerative
-function messageWidget () {
-	return {
-		templateUrl: '/others/template/message',
-		restrict: 'AE',
-		link: function ($scope, $element, $attrs){
-			$scope.message = 'Initial value';
-			$(document).foundation();
-		},
-		scope: {
-			message: '=',
-			messageState: '='
-		}
-	}
-}
 
-// END
-
-function assetsCtrl (assetsService, motion) {
+function assetsCtrl (assetsService) {
 	var vm = this;
+	var hiddenClass = 'is-hidden';
+
 	vm.other = {};
 	vm.other.curIndex = -1;
 	vm.other.updateMode = '';
@@ -30,6 +14,12 @@ function assetsCtrl (assetsService, motion) {
 	vm.other.message = '';
 	vm.other.messageState = '';
 	vm.other.messageTemplate = '/others/template/message';
+	vm.other.messageDivId = 'messageCallout';
+	vm.other.assetDivId = 'assetList';
+	vm.other.deleteFormModalId = 'deleteFormModal';
+	vm.other.addFormModalId = 'addFormModal';
+	vm.other.editActionName = 'edit';
+	vm.other.deleteActionName = 'delete';
 
 	function resetSelectedAsset (){
 		vm.formData = {
@@ -41,18 +31,28 @@ function assetsCtrl (assetsService, motion) {
 		};			
 	}
 
-	vm.getSelectedAsset = function (action, index){
+	function resetMessage () {
 		// hide message
-		var messageDivId = 'messageCallout';
-		motion.hide (messageCallout);
+		if (!$('#' + vm.other.messageDivId +'.' + hiddenClass).length){
+			$('#' + vm.other.messageDivId).addClass (hiddenClass);
+		}
 
+		vm.other.message = '';
+		vm.other.messageState = '';			
+	}
+
+	vm.getSelectedAsset = function (action, index){
+		resetMessage ()
+		
 		if (action == 'add'){
 			vm.other.updateBtnName = 'Add';
 			vm.other.updateMode = 'create';
 			resetSelectedAsset ();
 
 		}
+
 		else if (action == 'edit'){
+			// console.log ('click edit')
 			vm.other.updateBtnName = 'Submit';
 			vm.other.updateMode = 'update';
 			vm.formData = {
@@ -66,6 +66,7 @@ function assetsCtrl (assetsService, motion) {
 			vm.other.curIndex = index;			
 		}
 		else if (action == 'delete') {
+			// console.log ('click delete')
 			vm.formData = {
 				name: vm.assets[index].name,
 				category: vm.assets[index].category,
@@ -125,7 +126,22 @@ function assetsCtrl (assetsService, motion) {
 	};
 
 	vm.deleteAsset = function (){
-		console.log ('delete')
+		var idAsset = 111111;
+
+		assetsService.deleteOne (idAsset)
+			.then (
+				function (data) {
+					console.log (data);
+					// insert new one
+					vm.other.message = 'Succeed to delete a new asset';
+					vm.other.messageState = 'success';
+				},
+				function (err){
+					console.log (err);
+					vm.other.message = 'Fail to delete a new asset';
+					vm.other.messageState = 'warning';
+				}
+		)	
 	}
 
 	assetsService.readSome ()

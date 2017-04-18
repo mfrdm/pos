@@ -79,7 +79,8 @@ router.get('/products/product/:productId', productsCtrl.readOneProductById);
 router.post('/products/product/:productId/edit', productsCtrl.updateOneProduct);
 
 // Others
-router.get ('/others/template/message', othersCtrl.getMessageTemplate);
+router.get ('/components/template/message', othersCtrl.getMessageTemplate);
+router.get ('/components/template/asset', othersCtrl.getAssetTemplate);
 
 // function isLoggedIn(req, res, next) {
 // 	// if user is authenticated in the session, carry on

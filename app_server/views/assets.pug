@@ -2,7 +2,7 @@ h2= data.look.title
 
 //div(ng-include='vm.other.messageTemplate')
 
-div <message-widget message="vm.other.message" message-state="vm.other.messageState" >
+div <message-widget message="vm.other.message" message-state="vm.other.messageState" message-div-id="{{ vm.other.messageDivId }}" id="{{ vm.other.messageDivId }}" data-toggler="is-hidden" data-closable class="is-hidden">
 
 div(class='row column')
 	p: button(class="button", data-open="addFormModal", ng-click="vm.getSelectedAsset('add')") Add
@@ -28,8 +28,8 @@ div(class="reveal" id="deleteFormModal" data-reveal="true")
 
 	div(class="row")
 		div(class="button-group")
-			a(class="button", ng-click="vm.deleteAsset()") Delete
-			a(class="button float-right") Cancel
+			<a class="button" ng-click="vm.deleteAsset()" data-close data-toggle="{{ vm.other.messageDivId }}">Delete</a>
+			<a class="button float-right" data-close>Cancel</a>
 
 div(class="reveal" id="addFormModal" data-reveal="true")
 	form
@@ -60,7 +60,7 @@ div(class="reveal" id="addFormModal" data-reveal="true")
 				input(type="text", placeholder="Reason to update", id="updateExplain", value="{{ vm.formData.reason }}", ng-model="vm.formData.reason")
 		div(class="row")
 			div(class="button-group")
-				<a class="button", ng-click="vm.updateAsset(vm.otherUpdateMode)" data-toggle="messageCallout" data-close> {{ vm.other.updateBtnName }} </a>
+				<a class="button", ng-click="vm.updateAsset(vm.otherUpdateMode)" data-toggle="{{ vm.other.messageDivId }}" data-close> {{ vm.other.updateBtnName }} </a>
 				<a class="button float-right" data-close> Cancel </a>									
 
 table
@@ -74,11 +74,5 @@ table
 			- var columnNum = tableHeaderNames.length;
 			- for (var i = 0; i < columnNum; i++)
 				th(width=twidth[i])= tableHeaderNames[i]
-	tbody
-		tr(ng-repeat="asset in vm.assets")
-			td {{ asset.name }}
-			td {{ asset.category }}
-			td {{ asset.quantity }}
-			td {{ asset.status }}
-			td: a(class="button warning", data-open="addFormModal", ng-click="vm.getSelectedAsset('edit', $index)") Edit
-			td: a(class="button alert", data-open="deleteFormModal", ng-click="vm.getSelectedAsset('delete', $index)") Delete
+	tbody(id="{{ vm.other.assetDivId }}")
+		tr(ng-repeat="asset in vm.assets", asset-widget, asset="asset", add-form-modal-id="{{ vm.other.addFormModalId }}", delete-form-modal-id="{{ vm.other.deleteFormModalId }}", index="{{ $index }}", delete-action="{{ vm.other.deleteActionName }}", edit-action="{{ vm.other.editActionName }}", asset-list-id="{{ vm.other.assetDivId }}", get-selected-asset="vm.getSelectedAsset (action, index)")
