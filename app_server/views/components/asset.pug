@@ -1,0 +1,6 @@
+td {{ asset.name }}
+td {{ asset.category }}
+td {{ asset.quantity }}
+td {{ asset.status }}
+td: a(class="button warning", data-open='{{ addFormModalId }}', ng-click="getSelectedAssetToEdit()") Edit
+td: a(class="button alert", data-open="{{ deleteFormModalId }}", ng-click="getSelectedAssetToDelete()") Delete

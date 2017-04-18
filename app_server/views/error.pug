@@ -1,6 +1,2 @@
-extends layout
-
-block content
-	//h1= data.statusCode + ": " + data.message
-	h2= error.status
-	pre #{error.stack}
+h2= error.status
+pre #{error.stack}
