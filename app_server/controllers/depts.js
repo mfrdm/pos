@@ -52,4 +52,20 @@ function Depts() {
 		requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
 	};
 
+	//Angular Render Page
+	this.readAllDepts = function(req, res){
+		helper.angularRender(req, res, 'dept/allDepts')
+	}
+
+	this.readCreateDept = function(req, res){
+		helper.angularRender(req, res, 'dept/createDept')
+	}
+
+	this.readEditDept = function(req, res){
+		helper.angularRender(req, res, 'dept/editDept')
+	}
+
+	this.readProfileDept = function(req, res){
+		helper.angularRender(req, res, 'dept/profileDept')
+	}
 };

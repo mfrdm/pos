@@ -40,6 +40,13 @@ var CusProfileCtrl = function(checkinService, checkinFactory){
 		})
 }
 
+var CusEditCtrl = function(checkinService, checkinFactory){
+	var vm = this;
+
+
+}
+
 app.controller('CusCreateCtrl', ['customerService',CusCreateCtrl])
 	.controller('CusSearchCtrl', ['checkinService', 'checkinFactory','$window',CusSearchCtrl])
 	.controller('CusProfileCtrl', ['checkinService','checkinFactory',CusProfileCtrl])
+	.controller('CusEditCtrl', [CusEditCtrl])

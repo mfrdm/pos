@@ -55,6 +55,10 @@ function Others() {
 
 	this.getAssetTemplate = function (req, res) {
 		res.render ('components/asset');
-	}	
+	}
+
+	this.readAttendance = function(req, res){
+		helper.angularRender(req, res, 'attendance/attendance')
+	}
 
 };

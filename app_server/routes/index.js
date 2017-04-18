@@ -63,6 +63,7 @@ router.post('/customers/customer/:cusId/edit', customersCtrl.updateOneCustomer);
 router.get('/angular/readCreateCustomer', customersCtrl.readCreateCustomer);
 router.get('/angular/readCustomers', customersCtrl.readCustomers);
 router.get('/angular/readProfileCustomer', customersCtrl.readProfileCustomer);
+router.get('/angular/readEditCustomer', customersCtrl.readEditCustomer);
 
 router.get('/fin/costs', finCtrl.readSomeCosts);
 router.post('/fin/costs/create', finCtrl.createOneCost);
@@ -74,11 +75,21 @@ router.get('/company/depts', deptsCtrl.readSomeDepts);
 router.get('/company/depts/dept/:deptId', deptsCtrl.readOneDeptById);
 router.post('/company/depts/create', deptsCtrl.createOneDept);
 router.post('/company/depts/dept/:deptId/edit', deptsCtrl.updateOneDept);
+router.get('/angular/depts/all', deptsCtrl.readAllDepts);
+router.get('/angular/depts/create', deptsCtrl.readCreateDept);
+router.get('/angular/depts/edit', deptsCtrl.readEditDept);
+router.get('/angular/depts/profile', deptsCtrl.readProfileDept);
 
 router.get('/products', productsCtrl.readSomeProducts);
 router.post('/products/create', productsCtrl.createOneProduct);
 router.get('/products/product/:productId', productsCtrl.readOneProductById);
 router.post('/products/product/:productId/edit', productsCtrl.updateOneProduct);
+router.get('/angular/products/search', productsCtrl.readSearchProduct);
+router.get('/angular/products/create', productsCtrl.readCreateProduct);
+router.get('/angular/products/edit', productsCtrl.readEditProduct);
+router.get('/angular/products/profile', productsCtrl.readProfileProduct);
+
+router.get('/angular/attendance', othersCtrl.readAttendance);
 
 // Others
 router.get ('/components/template/message', othersCtrl.getMessageTemplate);

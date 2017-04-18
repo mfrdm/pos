@@ -108,4 +108,15 @@ module.exports = new function() {
 
         return str
     };
+
+    this.angularRender = function( req, res, path){
+        var data = {
+            user: {
+            },
+            look:{
+                css:['']
+            }
+        };
+        res.render(path, {data:data})
+    }
 }

@@ -90,41 +90,18 @@ function Customers() {
 	//Angular get view
 	//Render angular view for Create Customer
 	this.readCreateCustomer = function(req, res){
-		var data = {
-			user: {
-				
-			},
-			look:{
-				title:"Customers",
-				css:['']
-			}
-		};
-		res.render('customers/createCustomer', {data:data})
+		helper.angularRender(req, res, 'customers/createCustomer')
 	}
 
 	this.readCustomers = function(req, res){
-		var data = {
-			user: {
-				
-			},
-			look:{
-				title:"Customers",
-				css:['']
-			}
-		};
-		res.render('customers/searchCustomer', {data:data})
+		helper.angularRender(req, res, 'customers/searchCustomer')
 	}
 
 	this.readProfileCustomer = function(req, res){
-		var data = {
-			user: {
-				
-			},
-			look:{
-				title:"Customers",
-				css:['']
-			}
-		};
-		res.render('customers/infoCustomer', {data:data})
+		helper.angularRender(req, res, 'customers/infoCustomer')
+	}
+
+	this.readEditCustomer = function(req, res){
+		helper.angularRender(req, res, 'customers/editCustomer')
 	}
 };

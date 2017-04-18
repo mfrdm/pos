@@ -50,6 +50,56 @@ function config ($routeProvider){
 			controller: "CusProfileCtrl",
 			controllerAs:'vm'
 		})
+		.when("/customers/edit", {
+			templateUrl: "/angular/readEditCustomer",
+			controller: "CusEditCtrl",
+			controllerAs: 'vm'
+		})
+		.when("/attendance", {
+			templateUrl: "/angular/attendance",
+			controller: "AttendanceCtrl",
+			controllerAs: 'vm'
+		})
+		.when("/depts/profile", {
+			templateUrl: "/angular/depts/profile",
+			controller: "DeptProfileCtrl",
+			controllerAs: 'vm'
+		})
+		.when("/depts/all", {
+			templateUrl: "/angular/depts/all",
+			controller: "DeptProfileCtrl",
+			controllerAs: 'vm'
+		})
+		.when("/depts/create", {
+			templateUrl: "/angular/depts/create",
+			controller: "DeptCreateCtrl",
+			controllerAs: 'vm'
+		})
+		.when("/depts/edit", {
+			templateUrl: "/angular/depts/edit",
+			controller: "DeptEditCtrl",
+			controllerAs: 'vm'
+		})
+		.when("/products/profile", {
+			templateUrl: "/angular/produtcs/profile",
+			controller: "ProductProfileCtrl",
+			controllerAs: 'vm'
+		})
+		.when("/products/search", {
+			templateUrl: "/angular/produtcs/search",
+			controller: "ProductSearchCtrl",
+			controllerAs: 'vm'
+		})
+		.when("/products/create", {
+			templateUrl: "/angular/produtcs/create",
+			controller: "ProductCreateCtrl",
+			controllerAs: 'vm'
+		})
+		.when("/products/edit", {
+			templateUrl: "/angular/produtcs/edit",
+			controller: "ProductEditCtrl",
+			controllerAs: 'vm'
+		})
 		.otherwise ({redirectTo: '/'});
 };
 

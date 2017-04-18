@@ -36,31 +36,6 @@ function Checkin() {
 		}
 		requestHelper.readApi(req, res, apiUrl, view, qs, dataFilter, send);
 	};
-	//Render ng-view main checkin
-	this.readMainCheckin = function(req, res) {
-		var data = {
-			user: {
-			},
-			look:{
-				title:"Checkin for Customers",
-				css:['']
-			}
-		};
-		res.render('checkin/mainCheckin', {data:data})
-	};
-	//Render page contains one customer to check in for him/her
-	this.readOneCusCheckin = function(req, res){
-		var data = {
-			user: {
-			},
-			look:{
-				title:"Checkin for Customers",
-				css:[''],
-				js:['checkin/checkin.angular.js']
-			}
-		};
-		res.render('checkin/cusCheckin', {data:data})
-	}
 
 	this.checkin = function(req, res) {
 		var apiUrl = apiOptions.server + "/api/orders/create";
@@ -98,29 +73,20 @@ function Checkin() {
 		requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
 	};
 
+	//Render ng-view main checkin
+	this.readMainCheckin = function(req, res) {
+		helper.angularRender( req, res,'checkin/mainCheckin')
+	};
+	//Render page contains one customer to check in for him/her
+	this.readOneCusCheckin = function(req, res){
+		helper.angularRender(req, res,'checkin/cusCheckin')
+	}
+
 	this.readOneCusCheckout = function(req,res){
-		var data = {
-			user: {
-			},
-			look:{
-				title:"Checkout for Customers",
-				css:[''],
-				js:['checkin/checkin.angular.js']
-			}
-		};
-		res.render('checkin/cusCheckout', {data:data})
+		helper.angularRender(req, res,'checkin/cusCheckout')
 	}
 
 	this.readOneCusEdit = function(req, res){
-		var data = {
-			user: {
-			},
-			look:{
-				title:"Edit for Customers Checkin",
-				css:[''],
-				js:['checkin/checkin.angular.js']
-			}
-		};
-		res.render('checkin/cusEdit.pug', {data:data})
+		helper.angularRender(req, res,'checkin/cusEdit')
 	}
 };
