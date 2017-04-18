@@ -32,4 +32,21 @@ function Products () {
 		requestHelper.postApi (req, res, apiUrl, view);
 	};
 
+	//Angular
+	this.readSearchProduct = function(req, res){
+		helper.angularRender(req, res, 'products/searchProduct')
+	}
+
+	this.readCreateProduct = function(req, res){
+		helper.angularRender(req, res, 'products/createProduct')
+	}
+
+	this.readEditProduct = function(req, res){
+		helper.angularRender(req, res, 'products/editProduct')
+	}
+
+	this.readProfileProduct = function(req, res){
+		helper.angularRender(req, res, 'products/profileProduct')
+	}
+
 };

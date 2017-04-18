@@ -44,9 +44,12 @@ router.post('/bookings/:cusId', bookingCtrl.booking);
 router.post('/bookings/:cusId/edit', bookingCtrl.updateBooking);
 
 router.get('/hr', hrCtrl.readOverview);
-router.get('/search/hr', hrCtrl.searchHr);
 router.get('/hr/employees/employee/:uId', hrCtrl.readOneUser);
 router.post('/hr/employees/employee/:uId/edit', hrCtrl.editOneUser);
+router.get('/angular/employees/search', hrCtrl.readSearchEmployee);
+router.get('/angular/employees/create', hrCtrl.readCreateEmployee);
+router.get('/angular/employees/edit', hrCtrl.readEditEmployee);
+router.get('/angular/employees/profile', hrCtrl.readProfileEmployee);
 
 router.get('/bi', biCtrl.readReport);
 

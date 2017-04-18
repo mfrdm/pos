@@ -21,10 +21,6 @@ function Hr() {
 		res.render('createstaff', {data:data})
 	};
 
-	this.searchHr = function(req, res) {
-
-	};
-
 	this.readOneUser = function(req, res) {
 		var apiUrl = apiOptions.server + "/api/users/user/" + req.params.uid;
 		var view = 'checkin';
@@ -68,5 +64,22 @@ function Hr() {
 		}
 		requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
 	};
+
+	//Angular
+	this.readSearchEmployee = function(req, res){
+		helper.angularRender(req, res, 'staff/searchStaff')
+	}
+
+	this.readCreateEmployee = function(req, res){
+		helper.angularRender(req, res, 'staff/createStaff')
+	}
+
+	this.readEditEmployee = function(req, res){
+		helper.angularRender(req, res, 'staff/editStaff')
+	}
+
+	this.readProfileEmployee = function(req, res){
+		helper.angularRender(req, res, 'staff/profileStaff')
+	}
 
 };
