@@ -114,4 +114,17 @@ function Customers() {
 		};
 		res.render('customers/searchCustomer', {data:data})
 	}
+
+	this.readProfileCustomer = function(req, res){
+		var data = {
+			user: {
+				
+			},
+			look:{
+				title:"Customers",
+				css:['']
+			}
+		};
+		res.render('customers/infoCustomer', {data:data})
+	}
 };

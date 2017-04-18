@@ -6,5 +6,5 @@ div(class='searchResult')
 	table
 		tbody
 			tr(ng-repeat = 'result in vm.results')
-				td {{result.firstname}}
+				td(ng-click='vm.goToCustomer(result._id)') {{result.firstname}}
 				td {{result.lastname}}

@@ -61,6 +61,7 @@ router.post('/customers/create', customersCtrl.createOneCustomer);
 router.post('/customers/customer/:cusId/edit', customersCtrl.updateOneCustomer);
 router.get('/angular/readCreateCustomer', customersCtrl.readCreateCustomer);
 router.get('/angular/readCustomers', customersCtrl.readCustomers);
+router.get('/angular/readProfileCustomer', customersCtrl.readProfileCustomer);
 
 router.get('/fin/costs', finCtrl.readSomeCosts);
 router.post('/fin/costs/create', finCtrl.createOneCost);

@@ -42,6 +42,11 @@ function config ($routeProvider){
 			controller: "CusCreateCtrl",
 			controllerAs:'vm'
 		})
+		.when("/customers/profile", {
+			templateUrl : "/angular/readProfileCustomer",
+			controller: "CusProfileCtrl",
+			controllerAs:'vm'
+		})
 		.otherwise ({redirectTo: '/'});
 };
 
