@@ -101,4 +101,17 @@ function Customers() {
 		};
 		res.render('customers/createCustomer', {data:data})
 	}
+
+	this.readCustomers = function(req, res){
+		var data = {
+			user: {
+				
+			},
+			look:{
+				title:"Customers",
+				css:['']
+			}
+		};
+		res.render('customers/searchCustomer', {data:data})
+	}
 };

@@ -33,6 +33,11 @@ function config ($routeProvider){
 			controllerAs:'vm'
 		})
 		.when("/customers", {
+			templateUrl : "/angular/readCustomers",
+			controller: "CusSearchCtrl",
+			controllerAs:'vm'
+		})
+		.when("/customers/create", {
 			templateUrl : "/angular/readCreateCustomer",
 			controller: "CusCreateCtrl",
 			controllerAs:'vm'
