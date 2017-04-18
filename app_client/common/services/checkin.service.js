@@ -7,17 +7,17 @@ var checkinService = function($http){
 		// console.log('test')
 	}
 
-	this.readOneCusService = function(){
+	this.readOneCusService = function(id){
 		return $http({
 		method:'GET',
-			url:'/customers/customer/58eb474538671b4224745192'
+			url:'api/customers/customer/'+id
 		})
 	}
 
-	this.readOneOrder = function(){
+	this.readOneOrder = function(id){
 		return $http({
 			method:'GET',
-			url:'/checkout/invoice/58eee6800de4f5161f50afdf'
+			url:'/checkout/invoice/'+id
 		})
 	}
 
@@ -46,6 +46,26 @@ var checkinService = function($http){
 			})
 	}
 
+	this.checkOutCustomerService = function(id){
+		return $http({
+			url:'/api/orders/order/'+id+'/edit',
+			method:'POST',
+			data:JSON.stringify({
+				status:2
+			})
+		})
+	}
+
+	// this.updateOrder = function(id, checkinTime, ){
+	// 	return $http({
+	// 		url:'/api/orders/order/'+id+'/edit',
+	// 		method:'POST',
+	// 		data:JSON.stringify({
+	// 			checkinTime:
+	// 		})
+	// 	})
+	// }
+
 	this.searchService = function(input){
 		var array = [{"firstname" : { $regex: input, $options: 'i' }}, {"lastname" : { $regex: input, $options: 'i' }}]
 		return $http({
@@ -62,4 +82,21 @@ var checkinService = function($http){
 	}
 }
 
-app.service('checkinService', ['$http',  checkinService])
+var checkinFactory = function(){
+	var private_data;
+	var setData = function(data){
+		private_data = (data)
+		console.log(private_data)
+	};
+	var getData = function(){
+		console.log(private_data)
+		return private_data;
+	}
+	return{
+		setData : setData,
+		getData : getData
+	}
+}
+
+app.service('checkinService', ['$http', '$window',  checkinService])
+app.factory('checkinFactory',checkinFactory)

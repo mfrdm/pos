@@ -5,24 +5,28 @@ div(class='row')
 				tr
 					th Title
 					th Details
+			
 			tbody(class='customer-detail')
-				tr
-					td Name
-					td {{vm.order.customers.firstname}} {{vm.order.customers.lastname}}
 				tr
 					td Products
 					td
-						p(ng-repeat='product in vm.order.orderline') {{product.productName}}
-				tr
-					td Checkin Date
-					td {{vm.order.checkinTime | date: 'dd/MM/yyyy'}}
-				tr
-					td Checkin Time
-					td {{vm.order.checkinTime | date: 'shortTime'}}
+						form
+							div
+								input(type='checkbox' value='Private Room' id='private' ng-model='vm.checkboxModel1.value')
+								label(for='#private') Private Room
+							div
+								input(type='checkbox' value='Group Room' id='group' ng-model='vm.checkboxModel2.value')
+								label(for='#group') Group Room
+							div
+								input(type='checkbox' value='Soft Drink' id='group' ng-model='vm.checkboxModel3.value')
+								label(for='#group') Soft Drink
+							div
+								input(type='checkbox' value='Group Room' id='group' ng-model='vm.checkboxModel4.value')
+								label(for='#group') Food
 
 div(class='row')
 	div(class='columns small-2 medium-1 medium-offset-4')
-		button(type="button" class="button" ng-click='vm.checkout()') Save
+		button(type="button" class="button" ng-click='vm.saveEdit()') Save
 	div(class='columns small-2 medium-6')
-		a(href='/#!/')
+		a(href='/#!/checkin')
 			button(type="button" class="button") Cancel
