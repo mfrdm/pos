@@ -32,4 +32,8 @@ function Products () {
 		requestHelper.postApi (req, res, apiUrl, view);
 	};
 
+	//Angular
+	this.readAngularProducts = function(req, res){
+		helper.angularRender(req, res, 'products/Product')
+	}
 };

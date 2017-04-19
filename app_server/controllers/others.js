@@ -12,8 +12,8 @@ function Others() {
 		console.log ('Pass authorization phase')
 
 		//var listFile = ['checkin', 'checkout', 'customers', 'assets', 'costs', 'home'];
-		var ctrFileNames = ['checkin', 'checkout', 'customers', 'assets', 'costs', 'home'];
-		var serviceFileNames = ['checkin', 'checkout', 'customers', 'assets', 'costs', 'home', 'common'];
+		var ctrFileNames = ['checkin', 'checkout','products', 'customers', 'assets', 'costs', 'home', 'depts', 'employees'];
+		var serviceFileNames = ['checkin', 'checkout', 'products','customers', 'assets', 'costs', 'home', 'depts','employees','common'];
 		var directiveFileNames = ['components'];
 
 		var ctrlNum = ctrFileNames.length;
@@ -51,12 +51,20 @@ function Others() {
 		res.render ('layout', {data: data});
 	}
 
+	this.login = function(req, res){
+		helper.angularRender(req, res, 'login')
+	}
+
 	this.getMessageTemplate = function (req, res) {
 		res.render ('components/message');
 	}
 
 	this.getAssetTemplate = function (req, res) {
 		res.render ('components/asset');
-	}	
+	}
+
+	this.readAngularAttendance = function(req, res){
+		helper.angularRender(req, res, 'attendance/attendance')
+	}
 
 };

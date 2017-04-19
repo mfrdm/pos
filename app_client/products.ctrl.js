@@ -1,4 +1,4 @@
-var CustomerCtrl = function(checkinService, customerService, $route){
+var ProductCtrl = function(productService, $route){
 	var vm = this;
 	vm.tab = 'tab-search';
 	////////////////////////////////////////////////////////
@@ -8,7 +8,7 @@ var CustomerCtrl = function(checkinService, customerService, $route){
 	}
 	vm.toProfile = function(index){
 		vm.tab = 'tab-profile';
-		vm.customer = vm.results[index]
+		vm.product = vm.results[index]
 	}
 	vm.toSearch = function(){
 		vm.tab = 'tab-search'
@@ -20,7 +20,7 @@ var CustomerCtrl = function(checkinService, customerService, $route){
 	////////////////////////////////////////////////////////
 	//Search Page
 	vm.searchFunc = function(){
-		checkinService.searchCustomers(vm.searchInput)
+		productService.searchProducts(vm.searchInput)
 		.then(function success(res){
 			vm.results = res.data.data
 		}, function error(err){
@@ -29,8 +29,8 @@ var CustomerCtrl = function(checkinService, customerService, $route){
 	}
 	////////////////////////////////////////////////////////
 	//Create Page
-	vm.createNewCustomer = function(){
-		customerService.postCreateCustomer(vm.formData)
+	vm.createNewProduct = function(){
+		productService.postCreateProduct(vm.formData)
 			.then(function success(res){
 				vm.tab = 'tab-search'
 				$route.reload();
@@ -41,15 +41,13 @@ var CustomerCtrl = function(checkinService, customerService, $route){
 	////////////////////////////////////////////////////////
 	//Edit Page
 	vm.saveEdit = function(){
-		vm.data={
+		vm.data = {
 			$set:{
-				firstname:vm.customer.firstname,
-				lastname:vm.customer.lastname,
-				email:vm.customer.email,
-				birthday:vm.customer.birthday
+				name:vm.product.name,
+				managerFullname:vm.product.managerFullname
 			}
 		}
-		customerService.postSaveEdit(vm.customer._id, vm.data)
+		productService.postSaveEdit(vm.product._id, vm.data)
 			.then(function success(res){
 				console.log(res)
 				vm.tab = 'tab-search';
@@ -60,4 +58,4 @@ var CustomerCtrl = function(checkinService, customerService, $route){
 	}
 }
 
-app.controller('CustomerCtrl', ['checkinService','customerService','$route',CustomerCtrl])
+app.controller('ProductCtrl', ['productService','$route',ProductCtrl])

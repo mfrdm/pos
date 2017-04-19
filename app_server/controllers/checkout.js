@@ -41,4 +41,7 @@ function Checkout() {
 		requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
 	};
 
+	this.readAngularCheckout = function(req, res){
+		helper.angularRender( req, res,'checkout/Checkout')
+	}
 };

@@ -36,25 +36,22 @@ router.get('/', auth, othersCtrl.angularApp); // TEST local authen
 // router.get('/', othersCtrl.angularApp);
 
 // Checkin
-router.get('/angular/readSomeCusCheckin', checkinCtrl.readSomeCusCheckin);
-router.get('/angular/readOneCusCheckin', checkinCtrl.readOneCusCheckin);
-router.get('/angular/readOneCusCheckout', checkinCtrl.readOneCusCheckout);
-router.get('/angular/readOneCusEdit', checkinCtrl.readOneCusEdit);
-router.get('/angular/readMainCheckin', checkinCtrl.readMainCheckin);
+router.get('/angular/checkin', checkinCtrl.readAngularCheckin);
 router.post('/checkin/:cusId', checkinCtrl.checkin);
 router.post('/checkin/:cusId/edit', checkinCtrl.updateCheckin); //cusid is order id
 
 router.get('/checkout/invoice/:orderId', checkoutCtrl.readInvoice);
 router.post('/checkout/', checkoutCtrl.checkout);
+router.get('/angular/checkout', checkoutCtrl.readAngularCheckout);
 
 router.get('/bookings', bookingCtrl.readBooking);
 router.post('/bookings/:cusId', bookingCtrl.booking);
 router.post('/bookings/:cusId/edit', bookingCtrl.updateBooking);
 
 router.get('/hr', hrCtrl.readOverview);
-router.get('/search/hr', hrCtrl.searchHr);
 router.get('/hr/employees/employee/:uId', hrCtrl.readOneUser);
 router.post('/hr/employees/employee/:uId/edit', hrCtrl.editOneUser);
+router.get('/angular/employees', hrCtrl.readAngularEmployees);
 
 router.get('/bi', biCtrl.readReport);
 
@@ -69,8 +66,7 @@ router.get('/customers', customersCtrl.readSomeCustomers);
 router.get('/customers/customer/:cusId', customersCtrl.readOneCustomerById);
 router.post('/customers/create', customersCtrl.createOneCustomer);
 router.post('/customers/customer/:cusId/edit', customersCtrl.updateOneCustomer);
-router.get('/angular/readCreateCustomer', customersCtrl.readCreateCustomer);
-router.get('/angular/readCustomers', customersCtrl.readCustomers);
+router.get('/angular/customers', customersCtrl.readAngularCustomers);
 
 router.get('/fin/costs', finCtrl.readSomeCosts);
 router.post('/fin/costs/create', finCtrl.createOneCost);
@@ -82,16 +78,22 @@ router.get('/company/depts', deptsCtrl.readSomeDepts);
 router.get('/company/depts/dept/:deptId', deptsCtrl.readOneDeptById);
 router.post('/company/depts/create', deptsCtrl.createOneDept);
 router.post('/company/depts/dept/:deptId/edit', deptsCtrl.updateOneDept);
+router.get('/angular/depts', deptsCtrl.readAngularDepts);
 
 router.get('/products', productsCtrl.readSomeProducts);
 router.post('/products/create', productsCtrl.createOneProduct);
 router.get('/products/product/:productId', productsCtrl.readOneProductById);
 router.post('/products/product/:productId/edit', productsCtrl.updateOneProduct);
+router.get('/angular/products', productsCtrl.readAngularProducts);
+
+router.get('/angular/attendance', othersCtrl.readAngularAttendance);
 
 // Others
 router.get ('/components/template/message', othersCtrl.getMessageTemplate);
 router.get ('/components/template/asset', othersCtrl.getAssetTemplate);
 
+//Login page
+router.get('/login', othersCtrl.login);
 // function isLoggedIn(req, res, next) {
 // 	// if user is authenticated in the session, carry on
 // 	if (req.isAuthenticated())

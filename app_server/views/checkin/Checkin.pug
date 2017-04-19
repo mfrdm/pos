@@ -1,0 +1,128 @@
+div(ng-switch='vm.tab')
+	//- Search and show all checked in page
+	div(ng-switch-when='tab-search')
+		form(class="input-group" ng-submit='vm.searchFunc()')
+			input(class="input-group-field" type="text" ng-model='vm.searchInput')
+			div(class="input-group-button")
+				input(type="submit" class="button" value="Submit")
+		div(class='searchResult')
+			table
+				tbody
+					tr(ng-repeat = 'result in vm.results')
+						td(ng-click='vm.toCheckin($index)') {{result.firstname}}
+						td {{result.lastname}}
+		label Filter
+		select(id="select" required ng-model='order')
+			option(value="name") Name
+			option(value="time") Time
+			option(value="service") Service
+		table
+			thead
+				tr
+					th(width='100') Stt
+					th(width='200') Name
+					th Date
+					th Time
+					th Service
+					th(width='100') Checkout
+					th(width='100') Edit
+			tbody
+				tr(ng-repeat="user in vm.userList")
+					td {{$index + 1}}
+					td {{user.customers.firstname}} {{user.customers.lastname}}
+					td {{user.checkinTime | date:'dd/MM/yyyy'}}
+					td {{user.checkinTime | date: 'shortTime'}}
+					td
+						div(ng-repeat='order in user.orderline')
+							p {{order.productName}}
+					td
+						button(type="button" class="warning button" ng-click='vm.toCheckout($index)') Checkout
+					td
+						button(type="button" class="alert button" ng-click='vm.toEdit($index)') Edit
+	//- Check in for customer
+	div(ng-switch-when='tab-checkin')
+		div(class='row')
+			div(class='columns small-12 medium-4 medium-offset-4')
+				table
+					thead
+						tr
+							th Title
+							th Details
+					tbody(class='customer-detail')
+						tr
+							td Name
+							td {{vm.user.firstname}} {{vm.user.lastname}}
+						tr
+							td Birthday
+							td {{vm.user.birthday | date:'dd/MM/yyyy'}}
+						tr
+							td Email
+							td {{vm.user.email}}
+						tr
+							td Service
+							td
+								select(ng-model='vm.ordername')
+									option(value='Private-Room') Private Room
+									option(value='Group-Room') Group Room
+		div(class='row')
+			div(class='columns small-2 medium-1 medium-offset-4')
+				button(type="button" class="button" ng-click='vm.checkin()') Checkin
+			div(class='columns small-2 medium-6')
+				button(type="button" class="button" ng-click='vm.toSearch()') Back
+	//- Checkout for customer
+	div(ng-switch-when='tab-checkout')
+		div(class='row')
+			div(class='columns small-12 medium-4 medium-offset-4')
+				table
+					thead
+						tr
+							th Title
+							th Details
+					tbody(class='customer-detail')
+						tr
+							td Name
+							td {{vm.oneOrder.customers.firstname}} {{vm.oneOrder.customers.lastname}}
+						tr
+							td Products
+							td
+								p(ng-repeat='product in vm.oneOrder.orderline') {{product.productName}}
+						tr
+							td Checkin Date
+							td {{vm.oneOrder.checkinTime | date: 'dd/MM/yyyy'}}
+						tr
+							td Checkin Time
+							td {{vm.oneOrder.checkinTime | date: 'shortTime'}}
+						tr
+							td Checkout Time
+							td {{vm.outTime | date: 'shortTime'}}
+						tr
+							td Total money
+							td {{vm.oneOrder.service}}
+		div(class='row')
+			div(class='columns small-2 medium-1 medium-offset-4')
+				button(type="button" class="button" ng-click='vm.checkout()') Checkout
+			div(class='columns small-2 medium-6')
+				button(type="button" class="button" ng-click='vm.toSearch()') Back
+	//- Edit orders
+	div(ng-switch-when='tab-edit')
+		div(class='row')
+			div(class='columns small-12 medium-4 medium-offset-4')
+				table
+					thead
+						tr
+							th Title
+							th Details
+					
+					tbody(class='customer-detail')
+						tr
+							td Products
+							td
+								form
+									div(ng-repeat='product in vm.productList')
+										input(type='checkbox' value="product" checklist-model="vm.list" checklist-value="product")
+										| {{product}}
+		div(class='row')
+			div(class='columns small-2 medium-1 medium-offset-4')
+				button(type="button" class="button" ng-click='vm.saveEdit()') Save
+			div(class='columns small-2 medium-6')
+				button(type="button" class="button" ng-click='vm.toSearch()') Back

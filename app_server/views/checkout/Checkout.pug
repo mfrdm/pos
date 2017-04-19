@@ -1,0 +1,36 @@
+//- form(class="input-group" ng-submit='vm.searchFunc()')
+//- 	input(class="input-group-field" type="text" ng-model='vm.searchInput')
+//- 	div(class="input-group-button")
+//- 		input(type="submit" class="button" value="Submit")
+//- div(class='searchResult')
+//- 	table
+//- 		tbody
+//- 			tr(ng-repeat = 'result in vm.results')
+//- 				td(ng-click='vm.toCheckin($index)') {{result.firstname}}
+//- 				td {{result.lastname}}
+//- label Filter
+//- select(id="select" required ng-model='order')
+//- 	option(value="name") Name
+//- 	option(value="time") Time
+//- 	option(value="service") Service
+table
+	thead
+		tr
+			th(width='100') Stt
+			th(width='200') Name
+			th Date checkin
+			th Time checkin
+			th Date checkout
+			th Time checkout
+			th Service
+	tbody
+		tr(ng-repeat="user in vm.userList")
+			td {{$index + 1}}
+			td {{user.customers.firstname}} {{user.customers.lastname}}
+			td {{user.checkinTime | date:'dd/MM/yyyy'}}
+			td {{user.checkinTime | date: 'shortTime'}}
+			td {{user.checkoutTime | date:'dd/MM/yyyy'}}
+			td {{user.checkoutTime | date: 'shortTime'}}
+			td
+				div(ng-repeat='order in user.orderline')
+					p {{order.productName}}

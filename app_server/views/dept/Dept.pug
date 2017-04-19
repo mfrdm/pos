@@ -1,0 +1,85 @@
+div(ng-switch='vm.tab')
+	div(ng-switch-when='tab-search')
+		//- Search Store
+		form(class="input-group" ng-submit='vm.searchFunc()')
+			input(class="input-group-field" type="text" ng-model='vm.searchInput')
+			div(class="input-group-button")
+				input(type="submit" class="button" value="Submit")
+		div(class='searchResult')
+			table
+				tbody
+					tr(ng-repeat = 'result in vm.results')
+						td(ng-click='vm.toProfile($index)') {{result.name}}
+						td {{result.manager}}
+		div(class='row')
+			div(class='columns small-2 small-offset-5')
+				button(type="button" class="button success" ng-click='vm.toCreate()') Create New Store
+	div(ng-switch-when='tab-create')
+		//- Create Customer
+		div(class='row')
+			table(class="columns small-12 medium-6 medium-offset-3")
+				thead
+					tr
+						th Field Name
+						th Field Value
+				tbody
+					tr
+						td
+							p Store Name
+						td
+							input(placeholder='Type here ...' ng-model='vm.formData.name')
+					tr
+						td
+							p Manager Name
+						td
+							input(placeholder='Type here ...' ng-model='vm.formData.managerFullname')
+		div(class='row')
+			div(class='columns small-2 small-offset-5')
+				button(type="button" class="button" ng-click='vm.createNewStore()') Create
+	div(ng-switch-when='tab-profile')
+		//- Profile Customer
+		div(class='row')
+			div(class='columns small-12 medium-4 medium-offset-4')
+				table
+					thead
+						tr
+							th Title
+							th Details
+					tbody(class='dept-detail')
+						tr
+							td Name
+							td {{vm.dept.name}}
+						tr
+							td Manager
+							td {{vm.dept.managerFullname}}
+						tr
+							td Staff List
+							td {{vm.dept.staffList}}
+		div(class='row')
+			div(class='columns small-2 medium-1 medium-offset-4')
+				button(type="button" class="button" ng-click='vm.toEdit()') Edit
+			div(class='columns small-2 medium-6')
+				button(type="button" class="button" ng-click='vm.toSearch()') Back
+	div(ng-switch-when='tab-edit')
+		//- Edit Customer
+		div(class='row')
+			div(class='columns small-12 medium-4 medium-offset-4')
+				table
+					thead
+						tr
+							th Title
+							th Details
+					tbody(class='dept-detail')
+						tr
+							td Store Name
+							td
+								input(ng-model='vm.dept.name')
+						tr
+							td Manager Name
+							td
+								input(ng-model="vm.dept.managerFullname")
+		div(class='row')
+			div(class='columns small-2 medium-1 medium-offset-4')
+				button(type="button" class="button" ng-click='vm.saveEdit()') Save
+			div(class='columns small-2 medium-6')
+				button(type="button" class="button" ng-click='vm.toSearch()') Back
