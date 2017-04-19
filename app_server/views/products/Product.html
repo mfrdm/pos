@@ -1,0 +1,147 @@
+
+<div ng-switch="vm.tab">
+  <div ng-switch-when="tab-search">
+    <form class="input-group" ng-submit="vm.searchFunc()">
+      <input class="input-group-field" type="text" ng-model="vm.searchInput"/>
+      <div class="input-group-button">
+        <input class="button" type="submit" value="Submit"/>
+      </div>
+    </form>
+    <div class="searchResult">
+      <table>
+        <tbody>
+          <tr ng-repeat="result in vm.results">
+            <td ng-click="vm.toProfile($index)">{{result.name}}</td>
+            <td>{{result.manager}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <div class="columns small-2 small-offset-5">
+        <button class="button success" type="button" ng-click="vm.toCreate()">Create New Product</button>
+      </div>
+    </div>
+  </div>
+  <div ng-switch-when="tab-create">
+    <div class="row">
+      <table class="columns small-12 medium-6 medium-offset-3">
+        <thead>
+          <tr>
+            <th>Field Name</th>
+            <th>Field Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <p>Product Name</p>
+            </td>
+            <td>
+              <input placeholder="Type here ..." ng-model="vm.formData.name"/>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <p>Price</p>
+            </td>
+            <td>
+              <input placeholder="Type here ..." ng-model="vm.formData.price"/>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <p>Category</p>
+            </td>
+            <td>
+              <input placeholder="Type here ..." ng-model="vm.formData.category"/>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <div class="columns small-2 small-offset-5">
+        <button class="button" type="button" ng-click="vm.createNewProduct()">Create</button>
+      </div>
+    </div>
+  </div>
+  <div ng-switch-when="tab-profile">
+    <div class="row">
+      <div class="columns small-12 medium-4 medium-offset-4">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody class="product-detail">
+            <tr>
+              <td>Product Name</td>
+              <td>{{vm.product.name}}</td>
+            </tr>
+            <tr>
+              <td>Price</td>
+              <td>{{vm.product.price}}</td>
+            </tr>
+            <tr>
+              <td>Category</td>
+              <td>{{vm.product.category}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="columns small-2 medium-1 medium-offset-4">
+        <button class="button" type="button" ng-click="vm.toEdit()">Edit</button>
+      </div>
+      <div class="columns small-2 medium-6">
+        <button class="button" type="button" ng-click="vm.toSearch()">Back</button>
+      </div>
+    </div>
+  </div>
+  <div ng-switch-when="tab-edit">
+    <div class="row">
+      <div class="columns small-12 medium-4 medium-offset-4">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody class="product-detail">
+            <tr>
+              <td>Store Name</td>
+              <td>
+                <input ng-model="vm.product.name"/>
+              </td>
+            </tr>
+            <tr>
+              <td>Price</td>
+              <td>
+                <input ng-model="vm.product.price"/>
+              </td>
+            </tr>
+            <tr>
+              <td>Category</td>
+              <td>
+                <input ng-model="vm.product.price"/>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="columns small-2 medium-1 medium-offset-4">
+        <button class="button" type="button" ng-click="vm.saveEdit()">Save</button>
+      </div>
+      <div class="columns small-2 medium-6">
+        <button class="button" type="button" ng-click="vm.toSearch()">Back</button>
+      </div>
+    </div>
+  </div>
+</div>

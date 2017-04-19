@@ -26,8 +26,8 @@ html(ng-app='posApp')
 						div(class='header-title')
 							i(class="fa fa-home fa-lg" aria-hidden="true")
 							p: a(href="/") Green Space POS
-					- var menuNames = ['Checkin', 'Checkout','Booking','Customer Management', 'Assets', 'BI','HR', 'Revenue', 'Cost', 'Store', 'Attendance','Profile'];
-					- var menuLinks = ['#!/checkin', '#!/checkout', '#!/bookings', '#!/customers','#!/assets', '#!/bi', '#!/staff', '','#!/fin/costs', '#!/stores', '#!/attendance', '#!/profile'];
+					- var menuNames = ['Checkin', 'Checkout','Booking','Customer Management', 'Assets', 'BI','HR', 'Revenue', 'Cost', 'Store','Product', 'Attendance','Profile'];
+					- var menuLinks = ['#!/checkin', '#!/checkout', '#!/bookings', '#!/customers','#!/assets', '#!/bi', '#!/staff', '','#!/fin/costs', '#!/stores','#!/products', '#!/attendance', '#!/profile'];
 					- for (var i=0; i<menuNames.length; i++)
 						ul(class='menu vertical')
 							li: a(href=menuLinks[i])= menuNames[i]
