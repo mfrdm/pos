@@ -15,6 +15,4 @@ var customerService = function($http){
 	}
 }
 
-
-
 app.service('customerService', ['$http',customerService])

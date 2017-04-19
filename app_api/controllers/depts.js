@@ -13,7 +13,7 @@ function Depts() {
 	};
 
 	this.readOneDeptById = function(req, res) {
-		dbHelper.findOneById(req, res, DeptsModel, 'deptid')
+		dbHelper.findOneById(req, res, DeptsModel, 'deptId')
 	};
 
 	this.createOneDept = function(req, res) {
@@ -21,7 +21,8 @@ function Depts() {
 	};
 
 	this.updateOneDeptById = function(req, res) {
-		dbHelper.updateOneById(req, res, DeptsModel, 'deptid')
+		console.log(req.body)
+		dbHelper.updateOneById(req, res, DeptsModel, 'deptId')
 	};
 
 };

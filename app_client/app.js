@@ -30,7 +30,7 @@ function config ($routeProvider){
 			controller: "AttendanceCtrl",
 			controllerAs: 'vm'
 		})
-		.when("/depts", {
+		.when("/stores", {
 			templateUrl: "/angular/depts",
 			controller: "DeptCtrl",
 			controllerAs: 'vm'
