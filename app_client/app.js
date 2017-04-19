@@ -40,7 +40,7 @@ function config ($routeProvider){
 			controller: "ProductCtrl",
 			controllerAs: 'vm'
 		})
-		.when("/employees", {
+		.when("/staff", {
 			templateUrl: "/angular/employees",
 			controller: "EmployeeCtrl",
 			controllerAs: 'vm'
