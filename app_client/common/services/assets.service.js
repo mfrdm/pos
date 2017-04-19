@@ -16,8 +16,11 @@ function assetsService ($http, $q){
 	}
 
 	this.deleteOne = function (id){
-		var url = '/api/assets/asset/' + id + '/delete';
-		return $http.post (url, {});
+		// var url = '/api/assets/asset/' + id + '/delete';
+		// return $http.post (url, {});
+		var deferObj = $q.defer ();
+		deferObj.resolve ()
+		return deferObj.promise
 	}
 
 	this.createOne = function (data){
@@ -26,12 +29,12 @@ function assetsService ($http, $q){
 
 		// TESTING
 		var deferObj = $q.defer ();
-		var data = {
-			name: 'Long table',
-			category: 2,
-			quantity: 10,
-			status: 2,
-		}
+		// var data = {
+		// 	name: 'Long table',
+		// 	category: 2,
+		// 	quantity: 10,
+		// 	status: 2,
+		// }
 		
 		deferObj.resolve ({data: data})
 		return deferObj.promise

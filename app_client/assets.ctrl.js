@@ -110,8 +110,8 @@ function assetsCtrl (assetsService) {
 			assetsService.createOne (data)
 				.then (
 					function (data) {
-						console.log (data);
-						// insert new one
+						// console.log (data);
+						vm.assets.push (data.data)
 						vm.other.message = 'Succeed to add a new asset';
 						vm.other.messageState = 'success';
 					},
@@ -131,17 +131,19 @@ function assetsCtrl (assetsService) {
 		assetsService.deleteOne (idAsset)
 			.then (
 				function (data) {
-					console.log (data);
-					// insert new one
+					console.log ('ok');
+					vm.assets.splice (vm.other.curIndex, 1)
 					vm.other.message = 'Succeed to delete a new asset';
 					vm.other.messageState = 'success';
 				},
 				function (err){
 					console.log (err);
+					console.log ('error');
 					vm.other.message = 'Fail to delete a new asset';
 					vm.other.messageState = 'warning';
 				}
-		)	
+		)
+
 	}
 
 	assetsService.readSome ()
