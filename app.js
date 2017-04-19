@@ -10,37 +10,43 @@ var express = require('express'),
     passport = require('passport'),
     session = require('express-session');
 
-//Connect database
+// Connect database
 require('./app_api/models/db');
-//Config passport for authenticating
+// Config passport for authenticating
 require('./app_api/config/passport')(passport);
 
-//Routes
+// Routes
 var routes = require('./app_server/routes/index'),
-	routesApi = require('./app_api/routes/index');
+    routesApi = require('./app_api/routes/index');
 
 var http = require('http');
 
-// view engine setup
+// View engine setup
 app.set('views', path.join(__dirname, 'app_server', 'views'));
 app.set('view engine', 'pug');
 
-//Log, bodyparser
+// Log, bodyparser
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-//Set static folder
+// Set static folder
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/app_client', express.static(path.join(__dirname, 'app_client')));
 
-//Session, initialize
+// Session, initialize
 app.use(session({ secret: 'anythingyouwanttotype' })); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 
-//Use routes
+// Use routes
 app.use('/', routes);
+
+// app.use(function (req, res, next){
+//     console.log ('back to stage');
+//     next ()
+// })
+
 app.use('/api', routesApi);
 
 // catch 404 and forward to error handler
@@ -52,23 +58,32 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error', {
-    data: {
-			user:{
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-			},
-			look: {
-				title: "Error",
-				css: [''], // FIX: add name         
-			},
-		}
-	});
+    // render the error page
+    res.status(err.status || 500);
+
+    if (res.status == 404){
+        return res.render('error', {
+            error: err,
+            data: {
+                user:{
+
+                },
+                look: {
+                    title: "Error",
+                    css: [''], // FIX: add name         
+                },
+            }
+        });       
+    }
+
+    else {
+        return res.json ({error: err});
+    }
 });
 
 module.exports = app;

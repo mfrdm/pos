@@ -1,4 +1,7 @@
 var mongoose = require('mongoose');
+var crypto = require('crypto');
+var jwt = require('jsonwebtoken');
+
 
 var addrSchema = new mongoose.Schema({
 	country: {type: Number, 'default': 1, required: true},
@@ -28,22 +31,23 @@ var workexpSchema = new mongoose.Schema({
 var usersSchema = mongoose.Schema({
 	firstname: {type: String, required: true},
 	lastname: {type: String, required: true},
-	// birthday: Date,
-	// gender: Number,
-	// phone: [{type: String}],
-	// tempAddress: addrSchema,
-	// perAddress: addrSchema,
-	// email: String,
-	// secondEmail: [{type: String}],
-	// attendance: [{day: Date, status: Number, explain: String}],
+	// birthday: {type: Date, required: true},
+	// gender: {type: Number, required: true},
+	phone: {type: String, required: true},
+	secondPhones: [{type: String}],
+	tempAddress: addrSchema,
+	perAddress: addrSchema,
+	email: {type: String},
+	secondEmails: [{type: String}],
+	attendance: [{day: Date, status: Number, explain: String}],
 	createdAt: {type: Date, default: Date.now},
-	// updatedAt: [{
-	// 	time: {type: Date}, 
-	// 	explain: String,
-	// 	by: mongoose.Schema.Types.ObjectId
-	// }],
-	// active: {type: Boolean, default: true},
-	// deactiveAt: {type: Date},
+	updatedAt: [{
+		time: {type: Date}, 
+		explain: String,
+		by: mongoose.Schema.Types.ObjectId // user id of those who made change
+	}],
+	active: {type: Boolean, default: true},
+	deactiveAt: {type: Date},
 	// role: {type: Number, required: true}, //(staff, admin, manager)
 	// permissions: [{type: Number, required: true}], // indicate which resource to be about to access
 	// edu: [eduSchema],
@@ -54,20 +58,44 @@ var usersSchema = mongoose.Schema({
 	// 	token: String,
 	// 	email: String
 	// },
-	// role: {type:String},
-	// permission: {type:Number},
+	hash: String,
+	salt: String,
+
 });
 
-// TESTING
-// usersSchema.methods.confirm = function (){
-// 	var message = this. firstname + ' ' + this.lastname + ' create an account';
-// 	console.log (message);
-// }
 
-// TESTING
+// TESTING static method
 // usersSchema.statics.findAdmin = function (){
 // 	var adminName = 'Hiep';
 // 	return this.find ({'firstname': adminName})
 // }
+
+usersSchema.methods.setPassword = function (passwd){
+	this.salt = crypto.randomBytes(16).toString('hex');
+	this.hash = crypto.pbkdf2Sync(passwd, this.salt, 1000, 64).toString('hex');
+};
+
+usersSchema.methods.validPassword = function (passwd){
+	var hash = crypto.pbkdf2Sync(passwd, this.salt, 1000, 64).toString('hex');
+	return this.hash === hash
+};
+
+usersSchema.methods.generateJwt = function (passwd, dayNum){
+	dayNum = dayNum ? dayNum : 365; // subject to CHANGE
+	var expiry = new Date ();
+	expiry.setDate (expiry.getDate() + dayNum);
+
+	return jwt.sign ( // include fields to return when user login or register
+		{	
+			_id: this._id,
+			phone: this.phone,
+			firstname: this.firstname,
+			lastname: this.lastname,
+			exp: parseInt(expiry.getTime() / 1000)
+		},
+		process.env.JWT_SECRET
+	);
+};
+
 
 mongoose.model ('users', usersSchema);

@@ -9,6 +9,8 @@ module.exports = new Others();
 function Others() {
 
 	this.angularApp = function (req, res){
+		console.log ('Pass authorization phase')
+
 		//var listFile = ['checkin', 'checkout', 'customers', 'assets', 'costs', 'home'];
 		var ctrFileNames = ['checkin', 'checkout', 'customers', 'assets', 'costs', 'home'];
 		var serviceFileNames = ['checkin', 'checkout', 'customers', 'assets', 'costs', 'home', 'common'];

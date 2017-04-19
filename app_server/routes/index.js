@@ -1,6 +1,13 @@
 var express = require("express");
 var router = express.Router();
 var passport = require('passport');
+var jwt = require ('express-jwt');
+
+var auth = jwt ({
+    secret: process.env.JWT_SECRET,
+    userProperty: 'payload', // NOTICE
+});
+
 var checkinCtrl = require("../controllers/checkin");
 var checkoutCtrl = require("../controllers/checkout");
 var bookingCtrl = require("../controllers/bookings");
@@ -25,7 +32,8 @@ router.get('/auth/google/callback',
 	)
 );
 
-router.get('/', othersCtrl.angularApp);
+router.get('/', auth, othersCtrl.angularApp); // TEST local authen
+// router.get('/', othersCtrl.angularApp);
 
 // Checkin
 router.get('/angular/readSomeCusCheckin', checkinCtrl.readSomeCusCheckin);
@@ -34,7 +42,7 @@ router.get('/angular/readOneCusCheckout', checkinCtrl.readOneCusCheckout);
 router.get('/angular/readOneCusEdit', checkinCtrl.readOneCusEdit);
 router.get('/angular/readMainCheckin', checkinCtrl.readMainCheckin);
 router.post('/checkin/:cusId', checkinCtrl.checkin);
-router.post('/checkin/:cusId/edit', checkinCtrl.updateCheckin);//cusid is order id
+router.post('/checkin/:cusId/edit', checkinCtrl.updateCheckin); //cusid is order id
 
 router.get('/checkout/invoice/:orderId', checkoutCtrl.readInvoice);
 router.post('/checkout/', checkoutCtrl.checkout);
@@ -50,6 +58,7 @@ router.post('/hr/employees/employee/:uId/edit', hrCtrl.editOneUser);
 
 router.get('/bi', biCtrl.readReport);
 
+// router.get('/assets', auth, assetsCtrl.readSomeAsset); // TEST local authen
 router.get('/assets', assetsCtrl.readSomeAsset);
 router.get('/assets/asset/:assetId', assetsCtrl.readOneAssetById);
 router.post('/assets/create', assetsCtrl.createOneAsset);
