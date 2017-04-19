@@ -49,6 +49,10 @@ function Others() {
 		res.render ('layout', {data: data});
 	}
 
+	this.login = function(req, res){
+		helper.angularRender(req, res, 'login')
+	}
+
 	this.getMessageTemplate = function (req, res) {
 		res.render ('components/message');
 	}

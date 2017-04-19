@@ -83,6 +83,8 @@ router.get('/angular/attendance', othersCtrl.readAngularAttendance);
 router.get ('/components/template/message', othersCtrl.getMessageTemplate);
 router.get ('/components/template/asset', othersCtrl.getAssetTemplate);
 
+//Login page
+router.get('/login', othersCtrl.login);
 // function isLoggedIn(req, res, next) {
 // 	// if user is authenticated in the session, carry on
 // 	if (req.isAuthenticated())
