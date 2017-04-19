@@ -1,5 +1,5 @@
 //Get data to render all current checked in customers
-var CheckinCtrl = function(checkinService, $window, $route){
+var CheckinCtrl = function(checkinService, $route){
 	var vm = this;
 	vm.tab = 'tab-search';
 	////////////////////////////////////////////////////////
@@ -81,4 +81,4 @@ var CheckinCtrl = function(checkinService, $window, $route){
 	}
 }
 
-app.controller('CheckinCtrl', ['checkinService','$window','$route', CheckinCtrl])
+app.controller('CheckinCtrl', ['checkinService','$route', CheckinCtrl])

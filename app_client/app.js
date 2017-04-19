@@ -21,23 +21,28 @@ function config ($routeProvider){
 			controllerAs:"vm"
 		})
 		.when("/customers", {
-			templateUrl : "/angular/readCustomers",
-			controller: "CusSearchCtrl",
+			templateUrl : "/angular/customers",
+			controller: "CustomerCtrl",
 			controllerAs:'vm'
 		})
-		.when("/attendance", {
-			templateUrl: "/angular/attendance",
+		.when("/attendances", {
+			templateUrl: "/angular/attendances",
 			controller: "AttendanceCtrl",
 			controllerAs: 'vm'
 		})
 		.when("/depts", {
-			templateUrl: "/angular/depts/profile",
-			controller: "DeptProfileCtrl",
+			templateUrl: "/angular/depts",
+			controller: "DeptCtrl",
 			controllerAs: 'vm'
 		})
 		.when("/products", {
-			templateUrl: "/angular/produtcs/profile",
-			controller: "ProductProfileCtrl",
+			templateUrl: "/angular/products",
+			controller: "ProductCtrl",
+			controllerAs: 'vm'
+		})
+		.when("/employees", {
+			templateUrl: "/angular/employees",
+			controller: "EmployeeCtrl",
 			controllerAs: 'vm'
 		})
 		.otherwise ({redirectTo: '/'});

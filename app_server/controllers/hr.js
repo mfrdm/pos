@@ -66,20 +66,7 @@ function Hr() {
 	};
 
 	//Angular
-	this.readSearchEmployee = function(req, res){
-		helper.angularRender(req, res, 'staff/searchStaff')
+	this.readAngularEmployees = function(req, res){
+		helper.angularRender(req, res, 'staff/Staff')
 	}
-
-	this.readCreateEmployee = function(req, res){
-		helper.angularRender(req, res, 'staff/createStaff')
-	}
-
-	this.readEditEmployee = function(req, res){
-		helper.angularRender(req, res, 'staff/editStaff')
-	}
-
-	this.readProfileEmployee = function(req, res){
-		helper.angularRender(req, res, 'staff/profileStaff')
-	}
-
 };

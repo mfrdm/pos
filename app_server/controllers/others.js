@@ -57,7 +57,7 @@ function Others() {
 		res.render ('components/asset');
 	}
 
-	this.readAttendance = function(req, res){
+	this.readAngularAttendance = function(req, res){
 		helper.angularRender(req, res, 'attendance/attendance')
 	}
 

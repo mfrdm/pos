@@ -42,10 +42,7 @@ router.post('/bookings/:cusId/edit', bookingCtrl.updateBooking);
 router.get('/hr', hrCtrl.readOverview);
 router.get('/hr/employees/employee/:uId', hrCtrl.readOneUser);
 router.post('/hr/employees/employee/:uId/edit', hrCtrl.editOneUser);
-router.get('/angular/employees/search', hrCtrl.readSearchEmployee);
-router.get('/angular/employees/create', hrCtrl.readCreateEmployee);
-router.get('/angular/employees/edit', hrCtrl.readEditEmployee);
-router.get('/angular/employees/profile', hrCtrl.readProfileEmployee);
+router.get('/angular/employees', hrCtrl.readAngularEmployees);
 
 router.get('/bi', biCtrl.readReport);
 
@@ -59,10 +56,7 @@ router.get('/customers', customersCtrl.readSomeCustomers);
 router.get('/customers/customer/:cusId', customersCtrl.readOneCustomerById);
 router.post('/customers/create', customersCtrl.createOneCustomer);
 router.post('/customers/customer/:cusId/edit', customersCtrl.updateOneCustomer);
-router.get('/angular/readCreateCustomer', customersCtrl.readCreateCustomer);
-router.get('/angular/readCustomers', customersCtrl.readCustomers);
-router.get('/angular/readProfileCustomer', customersCtrl.readProfileCustomer);
-router.get('/angular/readEditCustomer', customersCtrl.readEditCustomer);
+router.get('/angular/customers', customersCtrl.readAngularCustomers);
 
 router.get('/fin/costs', finCtrl.readSomeCosts);
 router.post('/fin/costs/create', finCtrl.createOneCost);
@@ -74,21 +68,15 @@ router.get('/company/depts', deptsCtrl.readSomeDepts);
 router.get('/company/depts/dept/:deptId', deptsCtrl.readOneDeptById);
 router.post('/company/depts/create', deptsCtrl.createOneDept);
 router.post('/company/depts/dept/:deptId/edit', deptsCtrl.updateOneDept);
-router.get('/angular/depts/all', deptsCtrl.readAllDepts);
-router.get('/angular/depts/create', deptsCtrl.readCreateDept);
-router.get('/angular/depts/edit', deptsCtrl.readEditDept);
-router.get('/angular/depts/profile', deptsCtrl.readProfileDept);
+router.get('/angular/depts', deptsCtrl.readAngularDepts);
 
 router.get('/products', productsCtrl.readSomeProducts);
 router.post('/products/create', productsCtrl.createOneProduct);
 router.get('/products/product/:productId', productsCtrl.readOneProductById);
 router.post('/products/product/:productId/edit', productsCtrl.updateOneProduct);
-router.get('/angular/products/search', productsCtrl.readSearchProduct);
-router.get('/angular/products/create', productsCtrl.readCreateProduct);
-router.get('/angular/products/edit', productsCtrl.readEditProduct);
-router.get('/angular/products/profile', productsCtrl.readProfileProduct);
+router.get('/angular/products', productsCtrl.readAngularProducts);
 
-router.get('/angular/attendance', othersCtrl.readAttendance);
+router.get('/angular/attendance', othersCtrl.readAngularAttendance);
 
 // Others
 router.get ('/components/template/message', othersCtrl.getMessageTemplate);

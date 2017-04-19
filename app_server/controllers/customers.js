@@ -89,19 +89,7 @@ function Customers() {
 
 	//Angular get view
 	//Render angular view for Create Customer
-	this.readCreateCustomer = function(req, res){
-		helper.angularRender(req, res, 'customers/createCustomer')
-	}
-
-	this.readCustomers = function(req, res){
-		helper.angularRender(req, res, 'customers/searchCustomer')
-	}
-
-	this.readProfileCustomer = function(req, res){
-		helper.angularRender(req, res, 'customers/infoCustomer')
-	}
-
-	this.readEditCustomer = function(req, res){
-		helper.angularRender(req, res, 'customers/editCustomer')
+	this.readAngularCustomers = function(req, res){
+		helper.angularRender(req, res, 'customers/Customer')
 	}
 };

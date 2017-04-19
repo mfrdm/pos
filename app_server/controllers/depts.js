@@ -53,19 +53,7 @@ function Depts() {
 	};
 
 	//Angular Render Page
-	this.readAllDepts = function(req, res){
-		helper.angularRender(req, res, 'dept/allDepts')
-	}
-
-	this.readCreateDept = function(req, res){
-		helper.angularRender(req, res, 'dept/createDept')
-	}
-
-	this.readEditDept = function(req, res){
-		helper.angularRender(req, res, 'dept/editDept')
-	}
-
-	this.readProfileDept = function(req, res){
-		helper.angularRender(req, res, 'dept/profileDept')
+	this.readAngularDepts = function(req, res){
+		helper.angularRender(req, res, 'dept/Dept')
 	}
 };

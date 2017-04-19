@@ -1,52 +1,63 @@
-var CusCreateCtrl = function(customerService){
+var CustomerCtrl = function(checkinService, customerService, $route){
 	var vm = this;
-	var data = {};
-	vm.formData = {};
-	vm.createNewUser = function(){
-		customerService.createCustomer(vm.formData)
+	vm.tab = 'tab-search';
+	////////////////////////////////////////////////////////
+	//Setup ng-switch
+	vm.toCreate = function(){
+		vm.tab = 'tab-create'
+	}
+	vm.toProfile = function(index){
+		vm.tab = 'tab-profile';
+		vm.customer = vm.results[index]
+	}
+	vm.toSearch = function(){
+		vm.tab = 'tab-search'
+		$route.reload();
+	}
+	vm.toEdit = function(){
+		vm.tab = 'tab-edit';
+	}
+	////////////////////////////////////////////////////////
+	//Search Page
+	vm.searchFunc = function(){
+		checkinService.searchCustomers(vm.searchInput)
+		.then(function success(res){
+			vm.results = res.data.data
+		}, function error(err){
+			console.log(err)
+		})
+	}
+	////////////////////////////////////////////////////////
+	//Create Page
+	vm.createNewCustomer = function(){
+		customerService.postCreateCustomer(vm.formData)
+			.then(function success(res){
+				vm.tab = 'tab-search'
+				$route.reload();
+			}, function error(err){
+				console.log(err)
+			})
+	}
+	////////////////////////////////////////////////////////
+	//Edit Page
+	vm.saveEdit = function(){
+		vm.data={
+			$set:{
+				firstname:vm.customer.firstname,
+				lastname:vm.customer.lastname,
+				email:vm.customer.email,
+				birthday:vm.customer.birthday
+			}
+		}
+		customerService.postSaveEdit(vm.customer._id, vm.data)
 			.then(function success(res){
 				console.log(res)
+				vm.tab = 'tab-search';
+				$route.reload();
 			}, function error(err){
 				console.log(err)
 			})
 	}
 }
 
-var CusSearchCtrl = function(checkinService, checkinFactory, $window){
-	var vm = this;
-	vm.searchFunc = function(){
-		checkinService.searchService(vm.searchInput)
-		.then(function success(res){
-			vm.results = res.data.data
-			vm.goToCustomer = function(id){
-				checkinFactory.setData(id);
-				$window.location.href = '#!/customers/profile';
-			}
-		}, function error(err){
-			console.log(err)
-		})
-	}
-}
-
-var CusProfileCtrl = function(checkinService, checkinFactory){
-	var vm = this;
-	var id = checkinFactory.getData();
-	checkinService.readOneCusService(id)
-		.then(function success(res){
-			vm.user = res.data.data
-			//When click checkin, will check in for customer
-		}, function error(err){
-			console.log(err)
-		})
-}
-
-var CusEditCtrl = function(checkinService, checkinFactory){
-	var vm = this;
-
-
-}
-
-app.controller('CusCreateCtrl', ['customerService',CusCreateCtrl])
-	.controller('CusSearchCtrl', ['checkinService', 'checkinFactory','$window',CusSearchCtrl])
-	.controller('CusProfileCtrl', ['checkinService','checkinFactory',CusProfileCtrl])
-	.controller('CusEditCtrl', [CusEditCtrl])
+app.controller('CustomerCtrl', ['checkinService','customerService','$route',CustomerCtrl])

@@ -1,0 +1,118 @@
+div(ng-switch='vm.tab')
+	div(ng-switch-when='tab-search')
+		//- Search Customer
+		form(class="input-group" ng-submit='vm.searchFunc()')
+			input(class="input-group-field" type="text" ng-model='vm.searchInput')
+			div(class="input-group-button")
+				input(type="submit" class="button" value="Submit")
+		div(class='searchResult')
+			table
+				tbody
+					tr(ng-repeat = 'result in vm.results')
+						td(ng-click='vm.toProfile($index)') {{result.firstname}}
+						td {{result.lastname}}
+		div(class='row')
+			div(class='columns small-2 small-offset-5')
+				button(type="button" class="button success" ng-click='vm.toCreate()') Create New Customer
+	div(ng-switch-when='tab-create')
+		//- Create Customer
+		div(class='row')
+			table(class="columns small-12 medium-6 medium-offset-3")
+				thead
+					tr
+						th Field Name
+						th Field Value
+				tbody
+					tr
+						td
+							p Firstname
+						td
+							input(placeholder='Type here ...' ng-model='vm.formData.firstname')
+					tr
+						td
+							p Lastname
+						td
+							input(placeholder='Type here ...' ng-model='vm.formData.lastname')
+					tr
+						td
+							p Age
+						td
+							input(placeholder='Type here ...' ng-model='vm.formData.age')
+					tr
+						td
+							p Birthday
+						td
+							input(placeholder='Type here ...' ng-model='vm.formData.birthday')
+					tr
+						td
+							p Gender
+						td
+							input(placeholder='Type here ...' ng-model='vm.formData.gender')
+					tr
+						td
+							p Email
+						td
+							input(placeholder='Type here ...' ng-model='vm.formData.email')
+					tr
+						td
+							p Phone Number
+						td
+							input(placeholder='Type here ...' ng-model='vm.formData.phone')
+		div(class='row')
+			div(class='columns small-2 small-offset-5')
+				button(type="button" class="button" ng-click='vm.createNewCustomer()') Create
+	div(ng-switch-when='tab-profile')
+		//- Profile Customer
+		div(class='row')
+			div(class='columns small-12 medium-4 medium-offset-4')
+				table
+					thead
+						tr
+							th Title
+							th Details
+					tbody(class='customer-detail')
+						tr
+							td Name
+							td {{vm.customer.firstname}} {{vm.customer.lastname}}
+						tr
+							td Birthday
+							td {{vm.customer.birthday | date:'dd/MM/yyyy'}}
+						tr
+							td Email
+							td {{vm.customer.email}}
+		div(class='row')
+			div(class='columns small-2 medium-1 medium-offset-4')
+				button(type="button" class="button" ng-click='vm.toEdit()') Edit
+			div(class='columns small-2 medium-6')
+				button(type="button" class="button" ng-click='vm.toSearch()') Back
+	div(ng-switch-when='tab-edit')
+		//- Edit Customer
+		div(class='row')
+			div(class='columns small-12 medium-4 medium-offset-4')
+				table
+					thead
+						tr
+							th Title
+							th Details
+					tbody(class='customer-detail')
+						tr
+							td First Name
+							td
+								input(ng-model='vm.customer.firstname')
+						tr
+							td Last Name
+							td
+								input(ng-model="vm.customer.lastname")
+						tr
+							td Birthday
+							td
+								input(datetime="dd-MM-yyyy" ng-model="vm.customer.birthday" )
+						tr
+							td Email
+							td
+								input(ng-model="vm.customer.email")
+		div(class='row')
+			div(class='columns small-2 medium-1 medium-offset-4')
+				button(type="button" class="button" ng-click='vm.saveEdit()') Save
+			div(class='columns small-2 medium-6')
+				button(type="button" class="button" ng-click='vm.toSearch()') Back
