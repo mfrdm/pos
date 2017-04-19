@@ -20,6 +20,11 @@ function config ($routeProvider){
 			controller:"CheckinCtrl",
 			controllerAs:"vm"
 		})
+		.when("/checkout", {
+			templateUrl : "/angular/checkout",
+			controller:"CheckoutCtrl",
+			controllerAs:"vm"
+		})
 		.when("/customers", {
 			templateUrl : "/angular/customers",
 			controller: "CustomerCtrl",

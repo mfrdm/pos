@@ -34,6 +34,7 @@ router.post('/checkin/:cusId/edit', checkinCtrl.updateCheckin);//cusid is order 
 
 router.get('/checkout/invoice/:orderId', checkoutCtrl.readInvoice);
 router.post('/checkout/', checkoutCtrl.checkout);
+router.get('/angular/checkout', checkoutCtrl.readAngularCheckout);
 
 router.get('/bookings', bookingCtrl.readBooking);
 router.post('/bookings/:cusId', bookingCtrl.booking);
