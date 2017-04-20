@@ -1,21 +1,26 @@
 var EmployeeCtrl = function(employeeService, $route){
 	var vm = this;
 	vm.tab = 'tab-search';
+	vm.pageTitle = 'Search Staff'
 	////////////////////////////////////////////////////////
 	//Setup ng-switch
 	vm.toCreate = function(){
 		vm.tab = 'tab-create'
+		vm.pageTitle = 'Create Staff'
 	}
 	vm.toProfile = function(index){
 		vm.tab = 'tab-profile';
+		vm.pageTitle = 'Profile Staff'
 		vm.employee = vm.results[index]
 	}
 	vm.toSearch = function(){
 		vm.tab = 'tab-search'
+		vm.pageTitle = 'Search Staff'
 		$route.reload();
 	}
 	vm.toEdit = function(){
 		vm.tab = 'tab-edit';
+		vm.pageTitle = 'Edit Staff'
 	}
 	////////////////////////////////////////////////////////
 	//Search Page

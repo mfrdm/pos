@@ -1,6 +1,9 @@
 div(ng-switch='vm.tab')
 	div(ng-switch-when='tab-search')
-		//- Search Store
+		div(class='row')
+			div(class='small-12')
+				p(class='pageTitle') {{vm.pageTitle}}
+		//- Search Product
 		form(class="input-group" ng-submit='vm.searchFunc()')
 			input(class="input-group-field" type="text" ng-model='vm.searchInput')
 			div(class="input-group-button")
@@ -15,6 +18,9 @@ div(ng-switch='vm.tab')
 			div(class='columns small-2 small-offset-5')
 				button(type="button" class="button success" ng-click='vm.toCreate()') Create New Product
 	div(ng-switch-when='tab-create')
+		div(class='row')
+			div(class='small-12')
+				p(class='pageTitle') {{vm.pageTitle}}
 		//- Create Customer
 		div(class='row')
 			table(class="columns small-12 medium-6 medium-offset-3")
@@ -23,27 +29,31 @@ div(ng-switch='vm.tab')
 						th Field Name
 						th Field Value
 				tbody
-					tr
-						td
-							p Product Name
-						td
-							input(placeholder='Type here ...' ng-model='vm.formData.name')
-					tr
-						td
-							p Price
-						td
-							input(placeholder='Type here ...' ng-model='vm.formData.price')
-					tr
-						td
-							p Category
-						td
-							input(placeholder='Type here ...' ng-model='vm.formData.category')
+					form
+						tr
+							td
+								p Product Name
+							td
+								input(placeholder='Type here ...' ng-model='vm.formData.name' required)
+						tr
+							td
+								p Price
+							td
+								input(placeholder='Type here ...' ng-model='vm.formData.price' required)
+						tr
+							td
+								p Category
+							td
+								input(placeholder='Type here ...' ng-model='vm.formData.category' required)
 		div(class='row')
 			div(class='columns small-2 medium-2 medium-offset-3')
 				button(type="button" class="button" ng-click='vm.createNewProduct()') Create
 			div(class='columns small-2 medium-2 medium-offset-2 button-right')
 				button(type="button" class="button" ng-click='vm.toSearch()') Back
 	div(ng-switch-when='tab-profile')
+		div(class='row')
+			div(class='small-12')
+				p(class='pageTitle') {{vm.pageTitle}}
 		//- Profile Product
 		div(class='row')
 			div(class='columns small-12 medium-4 medium-offset-4')
@@ -68,6 +78,9 @@ div(ng-switch='vm.tab')
 			div(class='columns small-2 medium-2 medium-offset-2 button-right')
 				button(type="button" class="button" ng-click='vm.toSearch()') Back
 	div(ng-switch-when='tab-edit')
+		div(class='row')
+			div(class='small-12')
+				p(class='pageTitle') {{vm.pageTitle}}
 		//- Edit Product
 		div(class='row')
 			div(class='columns small-12 medium-4 medium-offset-4')

@@ -1,21 +1,26 @@
 var DeptCtrl = function(deptService, $route){
 	var vm = this;
 	vm.tab = 'tab-search';
+	vm.pageTitle = 'Search Store'
 	////////////////////////////////////////////////////////
 	//Setup ng-switch
 	vm.toCreate = function(){
 		vm.tab = 'tab-create'
+		vm.pageTitle = 'Create Store'
 	}
 	vm.toProfile = function(index){
 		vm.tab = 'tab-profile';
+		vm.pageTitle = 'Profile Store'
 		vm.dept = vm.results[index]
 	}
 	vm.toSearch = function(){
 		vm.tab = 'tab-search'
+		vm.pageTitle = 'Search Store'
 		$route.reload();
 	}
 	vm.toEdit = function(){
 		vm.tab = 'tab-edit';
+		vm.pageTitle = 'Edit Store'
 	}
 	////////////////////////////////////////////////////////
 	//Search Page

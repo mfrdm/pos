@@ -230,7 +230,7 @@ div#login-btn{
 
 /*===============================*/
 .content{
-	padding:4em;
+	padding:2em 4em;
 }
 
 label{
@@ -248,6 +248,11 @@ td p, tbody tr td{
 	margin-bottom: 0;
 	padding: 1rem 1.5rem;
 	font-size: 18px;
+}
+
+.result{
+	background-color: #9CCC65;
+	font-weight: bold;
 }
 
 table thead th{
@@ -279,4 +284,25 @@ input[type='text']{
 	padding: 1em;
 	height: 60px;
 	font-size: 18px;
+}
+
+.checkin-text{
+	font-size: 22px;
+	font-weight: bold;
+}
+
+.red{
+	color: #f44336;
+}
+
+.pageTitle{
+	font-size: 25px;
+	border-bottom: 2px solid #FFFFFF;
+	color: #FFFFFF;
+	margin-bottom: 2em
+	padding: 0;
+}
+
+.row{
+	max-width: 100%;
 }

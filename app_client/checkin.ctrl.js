@@ -2,23 +2,29 @@
 var CheckinCtrl = function(checkinService, $route){
 	var vm = this;
 	vm.tab = 'tab-search';
+	vm.pageTitle = 'Home Checkin';
+	vm.order = '-checkinTime'
 	////////////////////////////////////////////////////////
 	//Setup ng-switch
 	vm.toCheckin = function(index){
 		vm.tab = 'tab-checkin'
+		vm.pageTitle = 'Checkin'
 		vm.user = vm.results[index]
 	}
 	vm.toCheckout = function(index){
 		vm.tab = 'tab-checkout';
+		vm.pageTitle = 'Checkout'
 		vm.oneOrder = vm.userList[index];
 		vm.checkout;
 	}
 	vm.toSearch = function(){
 		vm.tab = 'tab-search'
+		vm.pageTitle = 'Home Checkin'
 		$route.reload();
 	}
 	vm.toEdit = function(index){
 		vm.tab = 'tab-edit';
+		vm.pageTitle = 'Edit Checkin'
 		vm.oneOrder = vm.userList[index];
 	}
 	////////////////////////////////////////////////////////
