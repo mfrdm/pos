@@ -22,7 +22,7 @@ var CustomerCtrl = function(checkinService, customerService, $route){
 	vm.searchFunc = function(){
 		checkinService.searchCustomers(vm.searchInput)
 		.then(function success(res){
-			vm.results = res.data.data
+			vm.results = res.data.data;
 		}, function error(err){
 			console.log(err)
 		})
