@@ -16,7 +16,7 @@ module.exports = new function() {
         };
 
         if (process.env.NODE_ENV === 'production') {
-            host = host ? host : "http://104.199.160.180";
+            host = host ? host : defaultHost;
             port = port ? port : defaultPort;
             apiOptions.server = host + ":" + port; // FIX: CHANGE later
             apiOptions.dbName = defaultDbName;

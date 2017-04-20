@@ -9,18 +9,19 @@ module.exports = new Authentication ();
 
 function Authentication () {
 	this.register = function (req, res){
+		// FIX: include other required data
 		function checkRequiredInput (data){
 			if (!data.phone || !data.firstname || !data.lastname || !data.password) return false
 			else return true
 		}
 
+		// FIX: placeholder
 		function checkAccountCreated (data){
-			if (data.phone = 'created') return true
-			else return true
+			if (data.phone == 'created') return true
+			else return false
 		}
 
 		if (!checkRequiredInput (req.body)) {
-			console.log ('Input required')
 			return requestHelper.sendJsonRes (res, 400, {message: 'Input required'});
 		};
 

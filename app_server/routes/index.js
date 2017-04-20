@@ -32,8 +32,8 @@ router.get('/auth/google/callback',
 	)
 );
 
-router.get('/', auth, othersCtrl.angularApp); // TEST local authen
-// router.get('/', othersCtrl.angularApp);
+// router.get('/', auth, othersCtrl.angularApp); // TEST local authen
+router.get('/', othersCtrl.angularApp);
 
 // Checkin
 router.get('/angular/checkin', checkinCtrl.readAngularCheckin);

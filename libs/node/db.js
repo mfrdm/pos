@@ -18,7 +18,6 @@ MGDB.prototype = new function(){
 		dbURI = this.port ? dbURI + ':' + this.port : dbURI;
 		dbURI = this.db ? dbURI + '/' + this.db : dbURI + dbDefault;
 		dbURI = 'mongodb://' + dbURI;
-
 		mongoose.connect(dbURI, dbOptions);
 		this.listenEvents (dbURI);
 	};

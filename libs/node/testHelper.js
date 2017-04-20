@@ -23,6 +23,7 @@ module.exports = function (input){
 		else reqOpt.body = this.input.body;
 
 		request (reqOpt, function (err, res, body){
+			console.log (body)
 			assert.equal (body.error.status, code);
 			done();				
 		});		
