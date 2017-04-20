@@ -38,19 +38,19 @@ suite('User Api test', function() {
 // 		});
 // 	});
 
-	suite('create user', function(done) {
-		var url = server + '/api/users/create';
-		var body = {
-			firstname:'Hiep',
-			lastname: 'Pham'		
-		}
+	// suite('create user', function(done) {
+	// 	var url = server + '/api/users/create';
+	// 	var body = {
+	// 		firstname:'Hiep',
+	// 		lastname: 'Pham'		
+	// 	}
 
-		var th = new TestHelper ({url: url, method: 'POST', body: body});
+	// 	var th = new TestHelper ({url: url, method: 'POST', body: body});
 
-		test('should create new users', function(done) {
-			th.testSuccess (done, 201);
-		});
-	});
+	// 	test('should create new users', function(done) {
+	// 		th.testSuccess (done, 201);
+	// 	});
+	// });
 
 // 	suite('Find and update one users by given ID', function(done) {
 // 		test('should return one users and update', function(done) {

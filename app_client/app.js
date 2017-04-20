@@ -2,6 +2,11 @@ var app = angular.module ('posApp', ['ngRoute', "checklist-model"]);
 
 function config ($routeProvider){
 	$routeProvider
+		.when ('/login', {
+			templateUrl: '/login',
+			controler: 'loginCtrl',
+			controllerAs: 'vm',
+		})
 		.when ('/assets', {
 			templateUrl: '/assets',
 			resolve: {

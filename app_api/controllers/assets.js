@@ -3,6 +3,7 @@ var dbHelper = require('../../libs/node/dbHelper');
 var requestHelper = require('../../libs/node/requestHelper');
 var mongoose = require('mongoose');
 var AssetsModel = mongoose.model('assets');
+var errorHelper = require ('../../libs/node/errorHelper');
 
 module.exports = new Assets();
 
@@ -36,13 +37,13 @@ function Assets() {
 		}
 
 		// FIX
-		function checkStatusFormat (status){
+		function checkValueFormat (status){
 			if (status == 'invalid format') return false
 			return true
 		}
 
 		// FIX
-		function checkStatusValue (status){
+		function checkValue (status){
 			if (status == 'invalid value') return false
 			return true
 		}		
@@ -54,23 +55,19 @@ function Assets() {
 		}		
 
 		if (!checkProvidRequiredInput(req.query)){
-			requestHelper.sendJsonRes (res, 400, {message: 'Input required'});
-			return
+			throw new errorHelper.InputRequiredError ();
 		}
 
-		if (!checkStatusFormat(req.query.status)){
-			requestHelper.sendJsonRes (res, 400, {message: 'Invalid format'});
-			return
+		if (!checkValueFormat(req.query.status)){
+			throw new errorHelper.InvalidFormatError ();
 		}
 
-		if  (!checkStatusValue(req.query.status)){
-			requestHelper.sendJsonRes (res, 400, {message: 'Invalid value'});
-			return
+		if  (!checkValue(req.query.status)){
+			throw new errorHelper.InvalidValueError ();
 		}
 
 		if (!checkUserPermission(req.query.userId)){
-			requestHelper.sendJsonRes (res, 400, {message: 'No permission'});
-			return
+			throw new errorHelper.NoPermissionError ();
 		}
 
 		dbHelper.findSome (req, res, AssetsModel);

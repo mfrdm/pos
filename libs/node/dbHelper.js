@@ -5,10 +5,11 @@ var requestHelper = require('./requestHelper');
 
 module.exports = new function (){
 	//insert new User
-	this.insertOne = function (req, res, Model, otherAction) {
+	this.insertOne = function (req, res, Model, beforeAction, afterAction) {
 		try{
-			// console.log(req.body)
 			var obj = new Model (req.body);
+			if (beforeAction) beforeAction (obj, req.body);
+
 			obj.save (function (err, data){
 				if (err){
 					console.log(err)
@@ -16,9 +17,8 @@ module.exports = new function (){
 					return
 				}
 
-				if (otherAction) otherAction (obj); // intend to call methods of the obj
-
-				requestHelper.sendJsonRes (res, 201, {data: data});			
+				if (afterAction) afterAction (obj, res, data); // intend to call methods of the obj
+				else requestHelper.sendJsonRes (res, 201, {data: data});			
 			});	
 		}
 		catch(ex){

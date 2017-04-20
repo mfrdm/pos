@@ -2,6 +2,7 @@ var express = require("express");
 
 var router = express.Router();
 
+var authCtrl = require ('../controllers/authentication');
 var usersCtrl = require("../controllers/users");
 var customersCtrl = require("../controllers/customers");
 var companiesCtrl = require("../controllers/companies");
@@ -11,6 +12,9 @@ var ordersCtrl = require("../controllers/orders");
 var costsCtrl = require("../controllers/costs");
 var bookingCtrl = require("../controllers/bookings");
 var assetsCtrl = require("../controllers/assets");
+
+router.post ('/register', authCtrl.register);
+router.post ('/login', authCtrl.login);
 
 router.get('/users', usersCtrl.readSomeUsers);
 router.get('/users/user/:uId', usersCtrl.readOneUserById);

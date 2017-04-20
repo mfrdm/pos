@@ -53,11 +53,16 @@ div(class="reveal" id="addFormModal" data-reveal="true")
 				label(for="assetStatus", class="text-right middle") Status
 			div(class="column small-9")
 				input(type="text", placeholder="Asset Status", id="assetStatus", value="{{ vm.formData.status }}", ng-model="vm.formData.status")
+		
 		div(class="row")
-			div(class="column small-3")
-				label(for="updateExplain", class="text-right middle") Reason to update
-			div(class="column small-9")
-				input(type="text", placeholder="Reason to update", id="updateExplain", value="{{ vm.formData.reason }}", ng-model="vm.formData.reason")
+			<div ng-switch on="vm.other.updateBtnName">
+				<div ng-switch-when="Submit">
+					div(class="column small-3")
+						label(for="updateExplain", class="text-right middle") Reason to update
+					div(class="column small-9")
+						input(type="text", placeholder="Reason to update", id="updateExplain", value="{{ vm.formData.reason }}", ng-model="vm.formData.reason")
+				</div>
+			</div>
 		div(class="row")
 			div(class="button-group")
 				<input class="button", ng-click="vm.updateAsset(vm.otherUpdateMode)" data-toggle="{{ vm.other.messageDivId }}" type="submit" value="{{ vm.other.updateBtnName }}" data-close>
