@@ -1,5 +1,5 @@
  body {
-	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+	font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 html{
@@ -230,5 +230,53 @@ div#login-btn{
 
 /*===============================*/
 .content{
-	padding:1em;
+	padding:4em;
+}
+
+label{
+	color: #FFFFFF;
+	font-size: 18px;
+}
+
+input{
+	border: none;
+	padding: 1rem 1.5rem;
+	font-size: 18px;
+}
+
+td p, tbody tr td{
+	margin-bottom: 0;
+	padding: 1rem 1.5rem;
+	font-size: 18px;
+}
+
+table thead th{
+	text-align: center;
+}
+
+button{
+	width: 100%;
+}
+
+.button{
+	font-size: 20px;
+}
+
+.button-right{
+	float:left !important;
+}
+
+input[type='checkbox']{
+	margin:0 1rem 1rem;
+}
+
+input[type='submit']{
+	font-size: 18px;
+	height: 60px;
+}
+
+input[type='text']{
+	padding: 1em;
+	height: 60px;
+	font-size: 18px;
 }
