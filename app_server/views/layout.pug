@@ -17,39 +17,32 @@ html(ng-app='posApp')
 			- for (var i = 0; i < cssFileNum; i++)
 				link(rel="stylesheet", href='/css/' + data.look.css[i] + '.css')
 	body
+		div(class='background')
+		div(class='headbar')
+			div(class='row')
+				div(class='small-12 medium-3 large-2 columns header')
+					i(class="fa fa-globe fa-lg")
+					h5 Green Space
+				div(class='small-6 medium-2 medium-offset-1 columns')
+					p 20 People are waiting
+				div(class='small-6 medium-2 columns')
+					p 20 People are waiting
+				div(class='small-6 medium-2 columns')
+					p 20 People are waiting
+				div(class='small-6 medium-3 columns')
+					p 20 People are waiting
+		div(class='sidebar small-12 medium-3 large-2 columns')
+			div(class='row')
+			- var menuNames = ['Checkin', 'Checkout','Booking','Customer Management', 'Assets', 'BI','HR', 'Revenue', 'Cost', 'Store','Product', 'Attendance','Profile'];
+			- var menuLinks = ['#!/checkin', '#!/checkout', '#!/bookings', '#!/customers','#!/assets', '#!/bi', '#!/staff', '','#!/fin/costs', '#!/stores','#!/products', '#!/attendance', '#!/profile'];
+			- for (var i=0; i<menuNames.length; i++)
+				a(href=menuLinks[i])
+					div(class='small-12 columns')
+						h5=menuNames[i]
+		div(class='content small-12 medium-9 large-10 columns')
+			ng-view
+			block content
 
-		//Basic Layout
-		div(class='row')
-			div(class='sidebar small-12 medium-2 columns')
-				div(class='row')
-					div(class='header-tab small-10 columns')
-						div(class='header-title')
-							i(class="fa fa-home fa-lg" aria-hidden="true")
-							p: a(href="/") Green Space POS
-					- var menuNames = ['Checkin', 'Checkout','Booking','Customer Management', 'Assets', 'BI','HR', 'Revenue', 'Cost', 'Store','Product', 'Attendance','Profile'];
-					- var menuLinks = ['#!/checkin', '#!/checkout', '#!/bookings', '#!/customers','#!/assets', '#!/bi', '#!/staff', '','#!/fin/costs', '#!/stores','#!/products', '#!/attendance', '#!/profile'];
-					- for (var i=0; i<menuNames.length; i++)
-						ul(class='menu vertical')
-							li: a(href=menuLinks[i])= menuNames[i]
-							//p=menuNames[i]
-							//div(class='line')
-			div(class='main small-12 medium-10 columns')
-				div(class='row')
-					- var titleWidgets = ['30/60', '20/30', '3/5', '5']
-					- var textWidgets = ['seats available', 'booking available', 'private rooms available', 'waiting customers']
-					- for(var i=0; i<titleWidgets.length; i++)
-						div(class='small-12 medium-3 columns')
-							div(class='widget')
-								div(class='content-widget')
-									div(class='title-widget')=titleWidgets[i]
-									div(class='text-widget')=textWidgets[i]
-				div(class='row')
-					div(class='background small-12 columns')
-						div(ng-view)
-						block content
-
-		// footer
-		div(class="row grey")
 
 		script(src="/vendor/js/angular.min.js")
 		script(src='/vendor/js/angular-route.min.js')
@@ -57,6 +50,7 @@ html(ng-app='posApp')
 		script(src="/vendor/js/jquery-3.1.1.min.js")
 		script(src="/vendor/js/what-input.js")
 		script(src="/vendor/js/foundation.min.js")
+		script(src="/js/test.js")
 		if (data.look.js && data.look.js[0])
 			- var jsFileNum = data.look.js.length
 			- for (var i = 0; i < jsFileNum; i++)
