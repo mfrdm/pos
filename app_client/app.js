@@ -4,7 +4,7 @@ function config ($routeProvider){
 	$routeProvider
 		.when ('/login', {
 			templateUrl: '/login',
-			controler: 'loginCtrl',
+			controller: 'loginCtrl',
 			controllerAs: 'vm',
 		})
 		.when ('/assets', {

@@ -11,7 +11,7 @@ function Others() {
 	this.angularApp = function (req, res){
 
 		//var listFile = ['checkin', 'checkout', 'customers', 'assets', 'costs', 'home'];
-		var ctrFileNames = ['checkin', 'checkout','products', 'customers', 'assets', 'costs', 'home', 'depts', 'employees'];
+		var ctrFileNames = ['checkin', 'checkout','products', 'customers', 'assets', 'costs', 'home', 'depts', 'employees', 'login'];
 		var serviceFileNames = ['checkin', 'checkout', 'products','customers', 'assets', 'costs', 'home', 'depts','employees','common', 'authentication'];
 		var directiveFileNames = ['components'];
 

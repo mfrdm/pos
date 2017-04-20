@@ -5,7 +5,13 @@
 
 
 	function loginCtrl ($location, authentication) {
+		console.log ('in login ctrl')
 		var vm = this;
+
+		vm.other.localLoginBoxName = 'loginBox';
+		vm.other.localSignupBoxName = 'signupBox';
+		vm.other.switch1 = vm.other.localLoginBoxName;
+
 		vm.credentials = {
 			firstname: '',
 			lastname: '',
@@ -16,21 +22,30 @@
 		vm.returnPage = $location.search ().page || '/';
 
 		vm.successAction = function (data){
-			console.log (data)
+			vm.credentials = {};
+			$location.search ('page', null);
+			$location.path (vm.returnPage);
 		};
 
 		vm.failAction = function (err){
-
+			// display message
 		};
 
 		vm.submitRegister = function (){
-			console.log ('about to submit')
-			authentication.register (vm.credentials, vm.successAction, vm.failAction);
+			// authentication.register (vm.credentials, vm.successAction, vm.failAction);
+			vm.successAction ();
 		};
 
 		vm.submitLogin = function (){
 
-		}
+		};
+
+		vm.changeSwitch = function (which) {
+			if ( which == 1){
+				vm.other.switch1 = vm.other.localSignupBoxName;
+			}
+		};
+
 	}
 
 })();

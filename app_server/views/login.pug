@@ -1,90 +1,51 @@
 div(id='login-bg')
-div(class='row')
-	div(class='columns small-12 medium-4 medium-offset-4')
-		div(class='content')
-			h1(class='title') Green Space POS
-			h3(class='description') Just come and get things done
-div(class='row')
-	div(class='columns small-12 medium-4 medium-offset-4')
-		div(class='button-google')
-			p Login/Sign Up by Google +
-div(class='row')
-	div(class='columns small-12 medium-4 medium-offset-4')
-		div(class='button-facebook')
-			p Login/Sign Up by Facebook
-div(class='row')
-	a(data-open="exampleModal1" id='local-btn')
-		div(class='columns small-12 medium-4 medium-offset-4')
-			div(class='button-local')
-				p Login/Sign Up by password
-div(class="reveal" id="exampleModal1" data-reveal)
-	button(class="close-button" data-close aria-label="Close modal" type="button")
-		span(aria-hidden="true") &times;
-	ul(class='tabs' data-tabs id='tabs')
-		li(class="tabs-title is-active")
-			a(href="#panel1" aria-selected="true")
-				span Login
-		li(class="tabs-title")
-			a(href='#panel2')
-				span Signup
-	div(class='tabs-content' data-tabs-content='tabs')
-		div(class="tabs-panel is-active" id="panel1")
-			//- Login Form ///////////////////////////////////////////
-			form(ng-submit='vm.submitLogin ()')
-				div(class='row columns')
-					div(class='row')
-						div(class='small-3 columns')
-							label(for='right-label' class='right inline') Phone/Email
-						div(class='small-9 columns')
-							input(type="text" id="right-label" placeholder="Enter your phone/ or email")
-				div(class='row columns')
-					div(class='row')
-						div(class='small-3 columns')
-							label(for='right-label' class='right inline') Password
-						div(class='small-9 columns')
-							input(type="password" id="right-label" placeholder="Password")
-				div(class="row")
-					div(class='small-2 small-offset-5 columns' id='login-btn')
-						a(href="#" class="small button") Submit
-		div(class="tabs-panel" id="panel2")
-			//- Sign up form /////////////////////////////////////////
-			form(ng-submit='vm.submitRegister ()')
-				div(class='row')
-					div(class='small-12 columns')
-						div(class='row')
-							div(class='small-3 columns')
-								label(for='right-label' class='right inline') Firstname
-							div(class='small-9 columns')
-								input(type="text" id="right-label" placeholder="Firstname" ng-model="vm.credentials.firstname")
-					div(class='small-12 columns')
-						div(class='row')
-							div(class='small-3 columns')
-								label(for='right-label' class='right inline') Middle Name
-							div(class='small-9 columns')
-								input(type="text" id="right-label" placeholder="Enter your middle name" ng-model="vm.credentials.middleName")
-					div(class='small-12 columns')
-						div(class='row')
-							div(class='small-3 columns')
-								label(for='right-label' class='right inline') Last Name
-							div(class='small-9 columns')
-								input(type="text" id="right-label" placeholder="Lastname" ng-model="vm.credentials.lastname")
-					div(class='small-12 columns')
-						div(class='row')
-							div(class='small-3 columns')
-								label(for='right-label' class='right inline') Email
-							div(class='small-9 columns')
-								input(type="text" id="right-label" placeholder="Enter your email" ng-model="vm.credentials.email")
-					div(class='small-12 columns')
-						div(class='row')
-							div(class='small-3 columns')
-								label(for='right-label' class='right inline') Phone Number
-							div(class='small-9 columns')
-								input(type="text" id="right-label" placeholder="Phone Number" ng-model="vm.credentials.phone")
-					div(class='small-12 columns')
-						div(class='row')
-							div(class='small-3 columns')
-								label(for='right-label' class='right inline') Password
-							div(class='small-9 columns')
-								input(type="password" id="right-label" placeholder="Password" ng-model="vm.credentials.password")
-					div(class='small-2 small-offset-5 columns' id='signup-btn')
-						a(href="#" class="small button") Submit
+
+div
+	div(class="row column")
+		div(class="button-group expanded")
+			a(class="button") Google +
+			a(class="button") Facebook
+	hr
+	div(ng-switch on="vm.other.switch1")
+		div(class="row" ng-switch-when="{{ vm.other.localLoginBoxName }}")
+			form
+				div(class="row column")
+					label Phone / Email
+						input(type="text")
+				div(class="row column")
+					label Password
+						input(type="text")
+				div(class="row column small-6 small-offset-3 text-center")
+					a(class="button") Log in
+			div(class="row column text-right")
+				<span>Don't have an account? <a ng-click="vm.changeSwitch(1, vm.other.localSignupBoxName)">Sign up</a></span>
+
+		div(class="row" ng-switch-when="{{ vm.other.localSignupBoxName }}")
+			form
+				div(class="row column")
+					label Email
+						input(type="text")
+				div(class="row column")
+					label First Name
+						input(type="text")
+				div(class="row column")
+					label Middle Name
+						input(type="text")
+				div(class="row column")
+					label Last Name
+						input(type="text")
+				div(class="row column")
+					label Birthday
+						input(type="text")
+				div(class="row column")
+					label Gender
+						input(type="text")
+				div(class="row column")
+					label Phone
+						input(type="text")
+				div(class="row column")
+					label Password
+						input(type="text")
+				div(class="row column small-6 small-offset-3 text-center")
+					a(class="button") Sign up
+
