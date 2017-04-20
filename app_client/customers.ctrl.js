@@ -1,28 +1,33 @@
 var CustomerCtrl = function(checkinService, customerService, $route){
 	var vm = this;
 	vm.tab = 'tab-search';
+	vm.pageTitle = 'Search Customer'
 	////////////////////////////////////////////////////////
 	//Setup ng-switch
 	vm.toCreate = function(){
 		vm.tab = 'tab-create'
+		vm.pageTitle = 'Create Customer'
 	}
 	vm.toProfile = function(index){
 		vm.tab = 'tab-profile';
 		vm.customer = vm.results[index]
+		vm.pageTitle = 'Profile Customer'
 	}
 	vm.toSearch = function(){
 		vm.tab = 'tab-search'
+		vm.pageTitle = 'Search Customer'
 		$route.reload();
 	}
 	vm.toEdit = function(){
 		vm.tab = 'tab-edit';
+		vm.pageTitle = 'Edit Customer'
 	}
 	////////////////////////////////////////////////////////
 	//Search Page
 	vm.searchFunc = function(){
 		checkinService.searchCustomers(vm.searchInput)
 		.then(function success(res){
-			vm.results = res.data.data
+			vm.results = res.data.data;
 		}, function error(err){
 			console.log(err)
 		})

@@ -1,21 +1,26 @@
 var ProductCtrl = function(productService, $route){
 	var vm = this;
 	vm.tab = 'tab-search';
+	vm.pageTitle = 'Search Products'
 	////////////////////////////////////////////////////////
 	//Setup ng-switch
 	vm.toCreate = function(){
 		vm.tab = 'tab-create'
+		vm.pageTitle = 'Create Products'
 	}
 	vm.toProfile = function(index){
 		vm.tab = 'tab-profile';
+		vm.pageTitle = 'Profile Products'
 		vm.product = vm.results[index]
 	}
 	vm.toSearch = function(){
 		vm.tab = 'tab-search'
+		vm.pageTitle = 'Search Products'
 		$route.reload();
 	}
 	vm.toEdit = function(){
 		vm.tab = 'tab-edit';
+		vm.pageTitle = 'Edit Products'
 	}
 	////////////////////////////////////////////////////////
 	//Search Page

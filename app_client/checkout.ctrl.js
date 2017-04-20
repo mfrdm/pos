@@ -1,5 +1,6 @@
 var CheckoutCtrl = function(checkoutService, $route){
 	var vm = this;
+	vm.pageTitle = 'Home Checkout'
 	checkoutService.getDataOrderCheckout()
 		.then(function success(res){
 			console.log(res)

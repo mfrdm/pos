@@ -60,7 +60,6 @@ var usersSchema = mongoose.Schema({
 	// },
 	hash: String,
 	salt: String,
-
 });
 
 
