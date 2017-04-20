@@ -9,6 +9,7 @@ html(ng-app='posApp')
 
 		title= data.look.title
 		link(rel="stylesheet", href='/vendor/css/foundation.min.css')
+		link(type="text/css" media="screen" rel="stylesheet" href='/vendor/css/responsive-tables.css')
 		link(rel="stylesheet", href="https://fonts.googleapis.com/icon?family=Material+Icons")
 		link(rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css")
 		link(rel="stylesheet", href='/css/test.css')
@@ -21,8 +22,10 @@ html(ng-app='posApp')
 		div(class='headbar')
 			div(class='row')
 				div(class='small-12 medium-3 large-2 columns header')
-					i(class="fa fa-globe fa-lg")
-					h5 Green Space
+					a(href='#!/')
+						i(class="fa fa-globe fa-lg")
+						h5 Green Space
+					i(class="fa fa-bars fa-lg")
 				div(class='small-6 medium-2 medium-offset-1 columns')
 					p 20 People are waiting
 				div(class='small-6 medium-2 columns')
@@ -47,10 +50,12 @@ html(ng-app='posApp')
 		script(src="/vendor/js/angular.min.js")
 		script(src='/vendor/js/angular-route.min.js')
 		script(src='/vendor/js/checklist-model.min.js')
-		script(src="/vendor/js/jquery-3.1.1.min.js")
+		script(type="text/javascript" src="/vendor/js/jquery-2.0.min.js")
+		script(src="/js/test.js")
 		script(src="/vendor/js/what-input.js")
 		script(src="/vendor/js/foundation.min.js")
-		script(src="/js/test.js")
+		script(type="text/javascript" src="/vendor/js/responsive-tables.js")
+		
 		if (data.look.js && data.look.js[0])
 			- var jsFileNum = data.look.js.length
 			- for (var i = 0; i < jsFileNum; i++)

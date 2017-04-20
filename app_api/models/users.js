@@ -31,8 +31,8 @@ var workexpSchema = new mongoose.Schema({
 var usersSchema = mongoose.Schema({
 	firstname: {type: String, required: true},
 	lastname: {type: String, required: true},
-	// birthday: {type: Date, required: true},
-	// gender: {type: Number, required: true},
+	birthday: {type: Date, required: true},
+	gender: {type: Number, required: true},
 	phone: {type: String, required: true},
 	secondPhones: [{type: String}],
 	tempAddress: addrSchema,
@@ -48,16 +48,16 @@ var usersSchema = mongoose.Schema({
 	}],
 	active: {type: Boolean, default: true},
 	deactiveAt: {type: Date},
-	// role: {type: Number, required: true}, //(staff, admin, manager)
-	// permissions: [{type: Number, required: true}], // indicate which resource to be about to access
-	// edu: [eduSchema],
-	// workexp: [workexpSchema], // past working experience 
-	// deptList: [{deptId: mongoose.Schema.Types.ObjectId, deptName: String, status: Number, in: Date, out: Date}],
-	// compList: [{compId: mongoose.Schema.Types.ObjectId, compName: String, status: Number, in: Date, out: Date}],
-	// google: { // not complete
-	// 	token: String,
-	// 	email: String
-	// },
+	role: {type: Number, required: true}, //(staff, admin, manager)
+	permissions: [{type: Number, required: true}], // indicate which resource to be about to access
+	edu: [eduSchema],
+	workexp: [workexpSchema], // past working experience 
+	deptList: [{deptId: mongoose.Schema.Types.ObjectId, deptName: String, status: Number, in: Date, out: Date}],
+	compList: [{compId: mongoose.Schema.Types.ObjectId, compName: String, status: Number, in: Date, out: Date}],
+	google: { // not complete
+		token: String,
+		email: String
+	},
 	hash: String,
 	salt: String,
 });

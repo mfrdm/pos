@@ -2,6 +2,7 @@ var EmployeeCtrl = function(employeeService, $route){
 	var vm = this;
 	vm.tab = 'tab-search';
 	vm.pageTitle = 'Search Staff'
+	
 	////////////////////////////////////////////////////////
 	//Setup ng-switch
 	vm.toCreate = function(){
