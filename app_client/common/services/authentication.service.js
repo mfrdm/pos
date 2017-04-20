@@ -3,7 +3,7 @@
 		.module ('posApp')
 		.service ('authentication', ['$window', '$http', authentication]);
 
-	function authentication ($window) {
+	function authentication ($window, $http) {
 		var tokenKey = 'posAppToken';
 		this.saveToken = function (token) {
 			$window.localStorage [tokenKey] = token;

@@ -1,5 +1,4 @@
 (function () {
-
 	angular
 		.module ('posApp')
 		.controller ('assetsCtrl', ['assetsService', assetsCtrl])
