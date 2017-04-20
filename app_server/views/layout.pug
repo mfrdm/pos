@@ -32,9 +32,8 @@ html(ng-app='posApp')
 				div(class='small-6 medium-3 columns')
 					p 20 People are waiting
 		div(class='sidebar small-12 medium-3 large-2 columns')
-			div(class='row')
-			- var menuNames = ['Checkin', 'Checkout','Booking','Customer Management', 'Assets', 'BI','HR', 'Revenue', 'Cost', 'Store','Product', 'Attendance','Profile'];
-			- var menuLinks = ['#!/checkin', '#!/checkout', '#!/bookings', '#!/customers','#!/assets', '#!/bi', '#!/staff', '','#!/fin/costs', '#!/stores','#!/products', '#!/attendance', '#!/profile'];
+			- var menuNames = ['Checkin', 'Checkout','Booking','Customer Management', 'Assets', 'BI','HR', 'Revenue', 'Cost', 'Store','Product', 'Attendance','Profile', 'Login'];
+			- var menuLinks = ['#!/checkin', '#!/checkout', '#!/bookings', '#!/customers','#!/assets', '#!/bi', '#!/staff', '','#!/fin/costs', '#!/stores','#!/products', '#!/attendance', '#!/profile', '#!/login'];
 			- for (var i=0; i<menuNames.length; i++)
 				a(href=menuLinks[i])
 					div(class='small-12 columns')

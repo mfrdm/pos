@@ -1,10 +1,10 @@
 (function () {
 	angular
 		.module ('posApp')
-		.controller ('assetsCtrl', ['assetsService', assetsCtrl])
+		.controller ('assetsCtrl', ['assetsService', '$http', 'authentication', assetsCtrl])
 
 
-	function assetsCtrl (assetsService) {
+	function assetsCtrl (assetsService, $http, authentication) {
 		var vm = this;
 		var hiddenClass = 'is-hidden';
 
@@ -21,6 +21,23 @@
 		vm.other.addFormModalId = 'addFormModal';
 		vm.other.editActionName = 'edit';
 		vm.other.deleteActionName = 'delete';
+
+
+		// TESTING: Successfully pass authentication token to server
+		vm.testLogin = function (){
+			return $http.post ('/checkout', {}, {
+				headers: {
+					Authorization: 'Bearer ' + authentication.getToken()
+				}
+			})
+			.then (
+				function (data){
+					console.log (data);	
+			},
+				function (err){
+					console.log (err);
+			});
+		}
 
 		function resetSelectedAsset (){
 			vm.formData = {

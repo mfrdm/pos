@@ -6,46 +6,47 @@ div
 			a(class="button") Google +
 			a(class="button") Facebook
 	hr
-	div(ng-switch on="vm.other.switch1")
-		div(class="row" ng-switch-when="{{ vm.other.localLoginBoxName }}")
-			form
-				div(class="row column")
+	div(ng-switch="vm.other.displayLoginBox")
+		div(class="row" ng-switch-when="login-box")
+			form(ng-submit="vm.submitLogin()")
+				div(class="column small-12")
 					label Phone / Email
-						input(type="text")
-				div(class="row column")
+						input(type="text", ng-model="vm.credentials.username" required)
+				div(class="column small-12")
 					label Password
-						input(type="text")
-				div(class="row column small-6 small-offset-3 text-center")
-					a(class="button") Log in
-			div(class="row column text-right")
+						input(type="text", ng-model="vm.credentials.password" required)
+				div(class="column small-12 text-center")
+					input(class="button" type="submit" value="Login")
+			div(class="column small-12 text-center")
 				<span>Don't have an account? <a ng-click="vm.changeSwitch(1, vm.other.localSignupBoxName)">Sign up</a></span>
 
-		div(class="row" ng-switch-when="{{ vm.other.localSignupBoxName }}")
-			form
-				div(class="row column")
+		div(class="row" ng-switch-when="signup-box")
+			form(ng-submit="vm.submitRegister()")
+				div(class="column small-12")
 					label Email
-						input(type="text")
-				div(class="row column")
+						input(type="text", ng-model="vm.credentials.email" required)
+				div(class="column small-12")
 					label First Name
-						input(type="text")
-				div(class="row column")
+						input(type="text", ng-model="vm.credentials.firstname" required)
+				div(class="column small-12")
 					label Middle Name
-						input(type="text")
-				div(class="row column")
+						input(type="text", ng-model="vm.credentials.midname")
+				div(class="column small-12")
 					label Last Name
-						input(type="text")
-				div(class="row column")
+						input(type="text", ng-model="vm.credentials.lastname" required)
+				div(class="column small-12")
 					label Birthday
-						input(type="text")
-				div(class="row column")
+						input(type="text", ng-model="vm.credentials.birthday" required)
+				div(class="column small-12")
 					label Gender
-						input(type="text")
-				div(class="row column")
+						input(type="text", ng-model="vm.credentials.gender" required)
+				div(class="column small-12")
 					label Phone
-						input(type="text")
-				div(class="row column")
+						input(type="text", ng-model="vm.credentials.phone" required)
+				div(class="column small-12")
 					label Password
-						input(type="text")
-				div(class="row column small-6 small-offset-3 text-center")
-					a(class="button") Sign up
-
+						input(type="password", ng-model="vm.credentials.password" required)
+				div(class="column small-12 small-offset-3 text-center")
+					input(class="button" type="submit" value="Sign up")
+			div(class="column small-12 text-center")
+				<span>Already a member? Please <a ng-click="vm.changeSwitch(1, vm.other.localLoginBoxName)">Login</a></span>

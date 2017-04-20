@@ -41,7 +41,8 @@ router.post('/checkin/:cusId', checkinCtrl.checkin);
 router.post('/checkin/:cusId/edit', checkinCtrl.updateCheckin); //cusid is order id
 
 router.get('/checkout/invoice/:orderId', checkoutCtrl.readInvoice);
-router.post('/checkout/', checkoutCtrl.checkout);
+router.post('/checkout/', auth, checkoutCtrl.checkout); // TEST local authen
+// router.post('/checkout/', checkoutCtrl.checkout);
 router.get('/angular/checkout', checkoutCtrl.readAngularCheckout);
 
 router.get('/bookings', bookingCtrl.readBooking);
