@@ -1,6 +1,6 @@
 var app = angular.module ('posApp', ['ngRoute', "checklist-model"]);
 
-function config ($routeProvider){
+function config ($routeProvider, $locationProvider){
 	$routeProvider
 		.when ('/login', {
 			templateUrl: '/login',
@@ -56,6 +56,7 @@ function config ($routeProvider){
 			controllerAs: 'vm'
 		})
 		.otherwise ({redirectTo: '/'});
+	$locationProvider.html5Mode(true);
 };
 
 // FIX later
@@ -65,7 +66,7 @@ function checkPermission ($q) {
 }
 
 app
-	.config (['$routeProvider', config])	
+	.config (['$routeProvider','$locationProvider', config])	
 	.run(function($rootScope) {
 	    $rootScope.$on('$viewContentLoaded', function () {
 	        $(document).foundation();
