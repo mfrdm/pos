@@ -1,5 +1,5 @@
 app
-	.controller('CheckinCtrl', ['$scope','checkinService','$route', CheckinCtrl])
+	.controller('CheckinCtrl', ['$scope','checkinService','$route','socket', CheckinCtrl])
 
 //Get data to render all current checked in customers
 function CheckinCtrl ($scope, checkinService, $route){
@@ -13,6 +13,8 @@ function CheckinCtrl ($scope, checkinService, $route){
 	vm.look.checkInListDiv = true;
 	vm.look.checkInEditDiv = false;
 	vm.look.checkInDiv = false;
+
+	socket.emit('mess', 'hello')
 
 	vm.data.services = { // Fix: fetch from server
 		productName: ['Private', 'Common'],

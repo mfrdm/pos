@@ -34,30 +34,30 @@ var usersSchema = mongoose.Schema({
 	birthday: {type: Date, required: true},
 	gender: {type: Number, required: true},
 	phone: {type: String, required: true},
-	secondPhones: [{type: String}],
-	tempAddress: addrSchema,
-	perAddress: addrSchema,
+	// secondPhones: [{type: String}],
+	// tempAddress: addrSchema,
+	// perAddress: addrSchema,
 	email: {type: String},
-	secondEmails: [{type: String}],
-	attendance: [{day: Date, status: Number, explain: String}],
-	createdAt: {type: Date, default: Date.now},
-	updatedAt: [{
-		time: {type: Date}, 
-		explain: String,
-		by: mongoose.Schema.Types.ObjectId // user id of those who made change
-	}],
-	active: {type: Boolean, default: true},
-	deactiveAt: {type: Date},
-	role: {type: Number, required: true}, //(staff, admin, manager)
-	permissions: [{type: Number, required: true}], // indicate which resource to be about to access
-	edu: [eduSchema],
-	workexp: [workexpSchema], // past working experience 
-	deptList: [{deptId: mongoose.Schema.Types.ObjectId, deptName: String, status: Number, in: Date, out: Date}],
-	compList: [{compId: mongoose.Schema.Types.ObjectId, compName: String, status: Number, in: Date, out: Date}],
-	google: { // not complete
-		token: String,
-		email: String
-	},
+	// secondEmails: [{type: String}],
+	// attendance: [{day: Date, status: Number, explain: String}],
+	// createdAt: {type: Date, default: Date.now},
+	// updatedAt: [{
+	// 	time: {type: Date}, 
+	// 	explain: String,
+	// 	by: mongoose.Schema.Types.ObjectId // user id of those who made change
+	// }],
+	// active: {type: Boolean, default: true},
+	// deactiveAt: {type: Date},
+	// role: {type: Number, required: true}, //(staff, admin, manager)
+	// permissions: [{type: Number, required: true}], // indicate which resource to be about to access
+	// edu: [eduSchema],
+	// workexp: [workexpSchema], // past working experience 
+	// deptList: [{deptId: mongoose.Schema.Types.ObjectId, deptName: String, status: Number, in: Date, out: Date}],
+	// compList: [{compId: mongoose.Schema.Types.ObjectId, compName: String, status: Number, in: Date, out: Date}],
+	// google: { // not complete
+	// 	token: String,
+	// 	email: String
+	// },
 	hash: String,
 	salt: String,
 });
