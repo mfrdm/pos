@@ -1,51 +1,20 @@
-div(id='login-bg')
-
-div
+div(class="medium-6 columns medium-push-2")
+	h2(class="text-center") Green Space
+	h3(class="text-center") Just come and get all things done
 	div(class="row column")
 		div(class="button-group expanded")
 			a(class="button") Google +
 			a(class="button") Facebook
 	hr
-	div(ng-switch on="vm.other.switch1")
-		div(class="row" ng-switch-when="{{ vm.other.localLoginBoxName }}")
-			form
-				div(class="row column")
-					label Phone / Email
-						input(type="text")
-				div(class="row column")
-					label Password
-						input(type="text")
-				div(class="row column small-6 small-offset-3 text-center")
-					a(class="button") Log in
-			div(class="row column text-right")
-				<span>Don't have an account? <a ng-click="vm.changeSwitch(1, vm.other.localSignupBoxName)">Sign up</a></span>
-
-		div(class="row" ng-switch-when="{{ vm.other.localSignupBoxName }}")
-			form
-				div(class="row column")
-					label Email
-						input(type="text")
-				div(class="row column")
-					label First Name
-						input(type="text")
-				div(class="row column")
-					label Middle Name
-						input(type="text")
-				div(class="row column")
-					label Last Name
-						input(type="text")
-				div(class="row column")
-					label Birthday
-						input(type="text")
-				div(class="row column")
-					label Gender
-						input(type="text")
-				div(class="row column")
-					label Phone
-						input(type="text")
-				div(class="row column")
-					label Password
-						input(type="text")
-				div(class="row column small-6 small-offset-3 text-center")
-					a(class="button") Sign up
-
+	div(class="row")
+		form(ng-submit="vm.submitLogin()")
+			div(class="column small-12")
+				label Phone / Email
+					input(type="text", ng-model="vm.credentials.username" required)
+			div(class="column small-12")
+				label Password
+					input(type="password", ng-model="vm.credentials.password" required)
+			div(class="column small-12 text-center")
+				input(class="button" type="submit" value="Login")
+		div(class="column small-12 text-center")
+			<span>Don't have an account? <a href="#!/register">Sign up</a></span>

@@ -24,11 +24,9 @@ module.exports = function(passport) {
 	},
 
     passport.use (new LocalStrategy(
-        {
-            usernameField: 'phone',
-        },
+        {},
         function (username, password, done){
-            UserModel.findOne({ 'phone': username }, // need to check either email or phone
+            UserModel.findOne({ $or: [{'phone': username}, {'email': username}] }, // need to check either email or phone
                 function(err, user) {
                     if (err) return done (err);
                     if (!user) {

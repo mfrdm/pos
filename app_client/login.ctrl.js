@@ -1,51 +1,59 @@
 (function () {
 	angular
 		.module ('posApp')
-		.controller ('loginCtrl', ['$location', 'authentication', loginCtrl])
+		.controller ('LoginCtrl', ['$route', '$scope', '$location', 'authentication', LoginCtrl])
 
 
-	function loginCtrl ($location, authentication) {
-		console.log ('in login ctrl')
+	function LoginCtrl ($route, $scope, $location, authentication) {
+
 		var vm = this;
+		vm.other = {};
 
-		vm.other.localLoginBoxName = 'loginBox';
-		vm.other.localSignupBoxName = 'signupBox';
-		vm.other.switch1 = vm.other.localLoginBoxName;
+		vm.other.returnPage = $location.search ().page || '/checkin';
+
+		if ($route.current.locals.checkPermission.pass){
+			var storeName = 'Green Space Chua Lang 82/70'; // TESTING
+			$scope.layout.updateAfterLogin (storeName);
+			$location.path (vm.other.returnPage);
+			return
+		}
 
 		vm.credentials = {
 			firstname: '',
 			lastname: '',
+			midname: '',
+			email: '',
+			birthday: '',
+			gender: '',
+			phone: '',
 			password: '',
 			username: '', // phone or email
 		}
 
-		vm.returnPage = $location.search ().page || '/';
+		
 
-		vm.successAction = function (data){
+		vm.loginSuccessAction = function (data) {
+			var storeName = 'Green Space Chua Lang 82/70'; // TESTING
 			vm.credentials = {};
 			$location.search ('page', null);
-			$location.path (vm.returnPage);
+			$scope.layout.updateAfterLogin (storeName);
+			$location.path (vm.other.returnPage);			
 		};
 
-		vm.failAction = function (err){
-			// display message
-		};
+		vm.loginFailAction = function (data) {
 
-		vm.submitRegister = function (){
-			// authentication.register (vm.credentials, vm.successAction, vm.failAction);
-			vm.successAction ();
 		};
 
 		vm.submitLogin = function (){
-
+			authentication.login (vm.credentials, vm.loginSuccessAction, vm.loginFailAction);
 		};
 
-		vm.changeSwitch = function (which) {
-			if ( which == 1){
-				vm.other.switch1 = vm.other.localSignupBoxName;
-			}
-		};
 
+		vm.logout = function (){
+			authentication.logout (null, function (){
+				$location.path ('/login');					
+			});
+		};
 	}
 
 })();

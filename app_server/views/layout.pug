@@ -12,40 +12,75 @@ html(ng-app='posApp')
 		link(type="text/css" media="screen" rel="stylesheet" href='/vendor/css/responsive-tables.css')
 		link(rel="stylesheet", href="https://fonts.googleapis.com/icon?family=Material+Icons")
 		link(rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css")
-		link(rel="stylesheet", href='/css/test.css')
+		//link(rel="stylesheet", href='/css/test.css')
 		if (data.look.css && data.look.css[0])
 			- var cssFileNum = data.look.css.length
 			- for (var i = 0; i < cssFileNum; i++)
 				link(rel="stylesheet", href='/css/' + data.look.css[i] + '.css')
-	body
-		div(class='background')
-		div(class='headbar')
-			div(class='row')
-				div(class='small-12 medium-3 large-2 columns header')
-					a(href='/')
-						i(class="fa fa-globe fa-lg")
-						h5 Green Space
-					i(class="fa fa-bars fa-lg")
-				div(class='small-6 medium-2 medium-offset-1 columns')
-					p 20 People are waiting
-				div(class='small-6 medium-2 columns')
-					p 20 People are waiting
-				div(class='small-6 medium-2 columns')
-					p 20 People are waiting
-				div(class='small-6 medium-3 columns')
-					p 20 People are waiting
-		div(class='sidebar small-12 medium-3 large-2 columns')
-			div(class='row')
-			- var menuNames = ['Checkin', 'Checkout','Booking','Customer Management', 'Assets', 'BI','HR', 'Revenue', 'Cost', 'Store','Product', 'Attendance','Profile'];
-			- var menuLinks = ['/checkin', '/checkout', '/bookings', '/customers','/assets', '/bi', '/staff', '','/fin/costs', '/stores','/products', '/attendance', '/profile'];
-			- for (var i=0; i<menuNames.length; i++)
-				a(href=menuLinks[i])
-					div(class='small-12 columns')
-						h5=menuNames[i]
-		div(class='content small-12 medium-9 large-10 columns')
-			ng-view
-			block content
 
+	body(ng-controller="LayoutCtrl")
+		nav(class="show-for-large top-bar paddingLR0" id="topNavBar")
+			div(class="medium-2 columns")
+				ul(class="menu paddingLR15")
+					li: a(href="#!/" class="paddingLR0")
+						<span class="show-for-large">GS POS						
+			div(class="medium-10 columns")
+				ul(class="menu float-left")
+					li {{ layout.storeName }}
+				ul(class="menu dropdown float-right stdBox paddingLR15 stdBoxRight" data-dropdown-menu)
+					li(class="childHStdBox"): a(class="button" href="#!/login" ng-show="layout.loginBtn") Login
+					li(ng-show="layout.notiBtn" class="childHStdBox")
+						a(class="dropDownNoIcon paddingLR0"): i(class="material-icons") notifications
+						ul(class="menu")
+							- var notiData = ['Pham Manh Hiep booked a private room at 20:00', 'Pham Manh Hiep book a common spot at 21:00'];
+							- for (var i=0; i < notiData.length; i ++)
+								li(class="menu-text")= notiData[i]
+
+					li(ng-show="layout.accountBtn" class="childHStdBox")
+						a(class="dropDownNoIcon paddingLR0"): i(class="material-icons") account_circle
+						ul(class="menu")
+							li: a Profile
+							li: a Setting
+							li: a Logout
+
+
+		div(class="title-bar text-center" data-responsive-toggle="mainMenu" data-hide-for="large")
+			button(class="menu-icon" type="button" data-toggle id="top-menu-btn")
+			div(class="title-bar-title")
+				a(href="#!/" class="paddingLR0 title-bar-title") GS POS
+
+		div(class="row marginLR0")
+			div(class="large-2 columns colorGrey" ng-show="layout.sideBarMenu" id="mainMenu")
+				ul(class="menu vertical")
+					li: a(href="#!/checkin") Checkin
+					li: a(href="#!/bookings") Booking
+					li: a(href="#!/customers") Customer
+					li: a(href="#!/assets") Assets
+					li: a(href="#!/hr") HR
+					li: a(href="#!/fin") Finance
+					li: a(href="#!/products") Product
+					li: a(href="#!/attendance") Attendance
+					li: a(href="#!/store") Store		
+			div(class="large-10 small-12 columns stdBox" id="mainContentDiv")
+				div(class="row medium-up-3 show-for-medium colorGrey" ng-show="layout.commonStatisticBar")
+					div(class="column column-block text-center")
+						div(class="newBox")
+							span {{ layout.customerNumber }} Customers
+					div(class="column column-block text-center")
+						div(class="newBox")
+							span {{ layout.bookingNumber }} Bookings
+					div(class="column column-block text-center")
+						div(class="newBox")
+							span {{ layout.parkingLotNumber }} Parking lots
+				div(class="newBox callout {{ layout.messageMode }}" ng-show="layout.messageDiv" )
+					p {{ layout.message }}
+					button(class="close-button" type="button" ng-click="layout.closeMessageDiv ()")
+						<span aria-hidden="true">&times;</span>
+				div(class="stdBox")
+					ng-view
+		div(class="footer0")
+		div(class="footer1")
+		div(class="footer2")
 
 		script(src="/vendor/js/angular.min.js")
 		script(src='/vendor/js/angular-route.min.js')

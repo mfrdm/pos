@@ -1,147 +1,156 @@
-div(ng-switch='vm.tab')
-	//- Search and show all checked in page
-	div(ng-switch-when='tab-search')
-		div(class='row')
-			div(class='small-12')
-				p(class='pageTitle') {{vm.pageTitle}}
-		div(class='row')
-			div(class='small-12 columns')
-				form(class="input-group" ng-submit='vm.searchFunc()')
-					input(class="input-group-field" type="text" ng-model='vm.searchInput')
-					div(class="input-group-button")
-						input(type="submit" class="button" value="Submit")
-				div(class='searchResult')
-					table
-						tbody
-							tr(ng-repeat = 'result in vm.results')
-								td(ng-click='vm.toCheckin($index)' class='result') {{result.lastname}} {{result.firstname}}
-		div(class='row')
-			div(class='small-8 columns')
-				label Filter
-				select(id="select" required ng-model='vm.order')
-					option(value="customers.firstname") Name
-					option(value="checkinTime") Time
-					option(value="orderline") Service
-			div(class='small-4 columns')
-				label Type
-				select(id="select" required ng-model='vm.orderType')
-					option(value="Ascending" ng-selected="selected") Ascending
-					option(value="Decending") Decending
-		div(class='row table-row')
-			div(class='small-12 columns')
-				table(class="responsive")
+div(class="columns row")
+	div(class="row colums")
+		div(class="column")
+			h2 Check-in List
+		// Setting
+		div(class="row column")
+			div(class="column small-3")
+				ul(class="menu")
+					li
+						a(class="button primary" ng-click="vm.toggleCheckInDiv()") 
+							<span class="show-for-large">Check-in</span><i class="material-icons customIcon hide-for-large"> add</i>
+			div(class="column small-9")
+				ul(class="menu clearfix")
+					li(class="float-right marginL15")
+						<a class="button secondary" ng-click="vm.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
+					li(class="float-right")
+						ul(class="menu")
+							li: label(class="paddingR15 show-for-large") Sort by
+							li: select(class="")
+									option(value="name") Name
+									option(value="checkinTime") Check-in time
+									option(value="status") Status
+		// Check-in
+		div(class="column")
+			div(class="borderT newBox row column paddingLR15" ng-show="vm.look.checkInDiv")
+				div(class="row column")
+					form(ng-submit="vm.searchCustomers('checkInDiv')")
+						div(class="row column")
+							label Phone/Email
+								input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.data.checkingInCustomer.username')
+						div(ng-show="vm.look.checkingInCustomerSearchResultDiv" class="marginB15")
+							div(class="table-scroll")
+								table(class="hover unstriped borderAll")
+									thead
+										tr
+											th No
+											th Last Name
+											th First Name
+											th Email
+											th Phone				
+									tbody
+										tr(ng-repeat='result in vm.searchResult.checkingInCustomers', ng-click='vm.selectCustomerToCheckin($index)' class="pointerCursor")
+											td {{ $index + 1 }}
+											td {{ result.lastname }}
+											td {{ result.firstname }}
+											td {{ result.email }}
+											td {{ result.phone }}
+				
+				form(ng-submit="vm.checkin ()")
+					div(class="row column")
+						label Service
+							select(name="selectedService" ng-model="vm.data.checkingInCustomer.orderline[0].productName" ng-options="val for val in vm.data.services.productName")
+					div(class="row column")
+						ul(class="menu vertical")
+							li(ng-repeat="item in vm.data.checkingInCustomer.orderline.slice(1)" class="marginB15")
+								div(class="column row")
+									div(class="column small-6 paddingL0")
+										label Other items
+											select(name="{{ 'otherItem' + ($index + 1) }}" ng-model="item.productName" ng-options="val for val in vm.data.otherItems.productName")
+									div(class="column small-6 paddingR0")
+										label Quantity
+											input(name="{{ 'otherItemQuantity' + ($index + 1)}}" ng-model="item.quantity" string-to-number type="number" value="{{ item.quantity }}")
+						div(class="marginB15")
+							a(ng-click="vm.addMoreOtherItems ('checkingInDiv')") Add more items
+					div(class="row column")
+						input(class="button" type="submit" value="Submit")
+						button(class="button float-right" ng-click="vm.toggleCheckInDiv()") Cancel
+
+		// Filter
+		div(class="column" ng-show="vm.look.filterDiv")
+			form(class="borderT newBox row column")
+				div(class="row column marginB15 small-up-2 medium-up-3")
+					fieldset(class="column column-block")
+						legend Checked-in
+						div(class="row column")
+							input(type="radio" name="checkedInTime" value="today" id="checkedInTimeToday" required)
+							label(for="checkedInTimeToday") Today
+						div(class="row column")
+							input(type="radio" name="checkedInTime" value="today" id="checkedInTimeYesterday" required)
+							label(for="checkedInTimeYesterday") Yesterday
+						div(class="row column")
+							input(type="radio" name="checkedInTime" value="today" id="checkedInTime3days" required)
+							label(for="checkedInTime3days") 3 days ago
+						div(class="row column")
+							input(type="radio" name="checkedInTime" value="today" id="checkedInTime7days" required)
+							label(for="checkedInTime7days") 7 days ago	
+					fieldset(class="column column-block")
+						legend Status
+						div(class="row column")
+							input(type="checkbox" name="checkoutStatus" value="in" id="checkoutStatusIn" required)
+							label(for="checkoutStatusIn") In
+						div(class="row column")
+							input(type="checkbox" name="checkoutStatus" value="out" id="checkoutStatusOut" required)
+							label(for="checkoutStatusOut") Out
+
+					fieldset(class="column column-block")
+						legend Services
+						div(class="row column")
+							input(type="checkbox" name="serviceType" value="all" id="serviceTypePrivate" required)
+							label(for="serviceTypePrivate") Private
+						div(class="row column")
+							input(type="checkbox" name="serviceType" value="in" id="serviceTypeCommon" required)
+							label(for="serviceTypeCommon") Common
+		
+		// Edit check-in
+		div(class="column" ng-show="vm.look.checkInEditDiv")
+			div(class="newBox")
+				h3 Edit checked-in customer: {{ vm.data.editedCheckedInCustomer.username}}
+				form
+					div(class="row column")
+						label Service
+							select(name="selectedService" ng-model="vm.data.editedCheckedInCustomer.orderline[0].productName" ng-options="val for val in vm.data.services.productName")
+					div(class="row column")
+						ul(class="menu vertical")
+							li(ng-repeat="item in vm.data.editedCheckedInCustomer.orderline.slice(1)" class="marginB15")
+								div(class="column row")
+									div(class="column small-6 paddingL0")
+										label Other items
+											select(name="{{ 'selectedOtherItem' + ($index + 1)}}" ng-model="item.productName" ng-options="val for val in vm.data.otherItems.productName")
+									div(class="column small-6 paddingR0")
+										label Quantity
+											input(name="{{ 'otherItemQuantity' + ($index + 1)}}" ng-model="item.quantity" string-to-number type="number" value="{{ item.quantity }}")
+						div(class="marginB15")
+							a(ng-click="vm.addMoreOtherItems ('editedCheckedInDiv')") Add more items
+					div(class="row column")
+						input(class="button" type="submit" value="Submit" ng-click="vm.updateCheckin ()")
+						button(class="button float-right" ng-click="vm.toggleCheckInEditDiv()") Cancel
+
+
+		// Check-in list
+		div(class="column" ng-show="vm.look.checkInListDiv")
+			div(class="table-scroll newBox")
+				table(class="borderAll")
 					thead
 						tr
-							th(width='100') Stt
-							th(width='200') Name
+							th No
+							th Name
+							th Phone
 							th Date
 							th Time
 							th Service
-							th(width='100') Checkout
-							th(width='100') Edit
+							th Checkout
+							th Edit
 					tbody
-						tr(ng-repeat="user in vm.userList | orderBy:vm.order")
-							td {{$index + 1}}
-							td {{user.customers.firstname}} {{user.customers.lastname}}
-							td {{user.checkinTime | date:'dd/MM/yyyy'}}
-							td {{user.checkinTime | date: 'shortTime'}}
+						tr(ng-repeat="customer in vm.data.checkedInList | orderBy:vm.order")
+							td {{ $index + 1 }}
+							td {{ customer.customer.firstname }} {{customer.customer.lastname}}
+							td {{ customer.customer.phone }}
+							td {{ customer.checkinTime | date:'dd/MM/yyyy' }}
+							td {{ customer.checkinTime | date: 'shortTime' }}
+							td {{ customer.orderline[0].productName	}}
 							td
-								div(ng-repeat='order in user.orderline')
-									p {{order.productName}}
+								button(type="button" class="warning button" ng-click="vm.toggleCheckInEditDiv ($index)") Checkout
 							td
-								button(type="button" class="warning button" ng-click='vm.toCheckout($index)') Checkout
-							td
-								button(type="button" class="alert button" ng-click='vm.toEdit($index)') Edit
-	//- Check in for customer
-	div(ng-switch-when='tab-checkin')
-		div(class='row')
-			div(class='small-12')
-				p(class='pageTitle') {{vm.pageTitle}}
-		div(class='row')
-			div(class='columns small-12 medium-12')
-				table
-					thead
-						tr
-							th(class='checkin-text') Title
-							th(class='checkin-text') Details
-					tbody(class='customer-detail')
-						tr
-							td(class='checkin-text') Name
-							td(class='checkin-text') {{vm.user.firstname}} {{vm.user.lastname}}
-						tr
-							td(class='checkin-text') Birthday
-							td(class='checkin-text') {{vm.user.birthday | date:'dd/MM/yyyy'}}
-						tr
-							td(class='checkin-text') Email
-							td(class='checkin-text') {{vm.user.email}}
-						tr
-							td(class='checkin-text') Service
-							td(class='checkin-text')
-								select(ng-model='vm.ordername')
-									option(value='Private-Room') Private Room
-									option(value='Group-Room') Group Room
-		div(class='row')
-			div(class='columns small-2 medium-2 medium-offset-3')
-				button(type="button" class="button" ng-click='vm.checkin()') Checkin
-			div(class='columns small-2 medium-2 medium-offset-2 button-right')
-				button(type="button" class="button" ng-click='vm.toSearch()') Back
-	//- Checkout for customer
-	div(ng-switch-when='tab-checkout')
-		div(class='row')
-			div(class='small-12')
-				p(class='pageTitle') {{vm.pageTitle}}
-		div(class='row')
-			div(class='columns small-12 medium-12')
-				table
-					thead
-						tr
-							th(class='checkin-text') Title
-							th(class='checkin-text') Details
-					tbody(class='customer-detail')
-						tr
-							td(class='checkin-text') Name
-							td(class='checkin-text') {{vm.oneOrder.customers.firstname}} {{vm.oneOrder.customers.lastname}}
-						tr
-							td(class='checkin-text') Products
-							td(class='checkin-text red')
-								div(ng-repeat='product in vm.oneOrder.orderline') {{product.productName}}
-						tr
-							td(class='checkin-text') Checkin Time
-							td(class='checkin-text red') {{vm.oneOrder.checkinTime | date: 'shortTime'}}  --- {{vm.oneOrder.checkinTime | date: 'dd/MM/yyyy'}}
-						tr
-							td(class='checkin-text') Checkout Time
-							td(class='checkin-text red') {{vm.outTime | date: 'shortTime'}}
-						tr
-							td(class='checkin-text') Total money
-							td(class='checkin-text red') {{vm.oneOrder.service}}
-		div(class='row')
-			div(class='columns small-2 medium-2 medium-offset-3')
-				button(type="button" class="button" ng-click='vm.checkout()') Checkout
-			div(class='columns small-2 medium-2 medium-offset-2 button-right')
-				button(type="button" class="button" ng-click='vm.toSearch()') Back
-	//- Edit orders
-	div(ng-switch-when='tab-edit')
-		div(class='row')
-			div(class='small-12')
-				p(class='pageTitle') {{vm.pageTitle}}
-		div(class='row')
-			div(class='columns small-12 medium-4 medium-offset-4')
-				table
-					thead
-						tr
-							th Title
-							th Details
-					
-					tbody(class='customer-detail')
-						tr
-							td Products
-							td
-								form
-									div(ng-repeat='product in vm.productList')
-										input(type='checkbox' value="product" checklist-model="vm.list" checklist-value="product")
-										| {{product}}
-		div(class='row')
-			div(class='columns small-2 medium-2 medium-offset-3')
-				button(type="button" class="button" ng-click='vm.saveEdit()') Save
-			div(class='columns small-2 medium-2 medium-offset-2 button-right')
-				button(type="button" class="button" ng-click='vm.toSearch()') Back
+								button(type="button" class="alert button" ng-click="vm.toggleCheckInEditDiv ($index)") Edit
+

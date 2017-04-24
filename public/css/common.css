@@ -1,0 +1,199 @@
+/*////////////////// Built-in //////////////////*/
+body {
+	font-size: 1rem;
+}
+
+label {
+	font-size: 1rem;
+}
+
+.row {
+	max-width: none;
+}
+
+.table-scroll table {
+	width: 100%;
+} 
+
+/*///////////////// Dimension /////////////////*/
+
+.marginLR15 {
+	margin-left: .9375rem;
+	margin-right: .9375rem;
+}
+
+.marginLR0 {
+	margin-left: 0!important;
+	margin-right: 0!important;
+}
+
+.marginB15 {
+	margin-bottom: .9375rem;
+}
+
+.marginB0 {
+	margin-bottom: 0!important;
+}
+
+.marginL15 {
+	margin-left: .9375rem;
+}
+
+
+.marginAll15 {
+	margin: .9375rem;
+}
+
+.marginTB15 {
+	margin-top: .9375rem;
+	margin-bottom: .9375rem;
+}
+
+.paddingLR15 {
+	padding-left: .9375rem!important;
+	padding-right: .9375rem!important;	
+}
+
+.paddingLR0 {
+	padding-left: 0!important;
+	padding-right: 0!important;	
+}
+
+.paddingR0 {
+	padding-right: 0!important;
+}
+
+.paddingL0 {
+	padding-left: 0!important;
+}
+
+.paddingT15 {
+	padding-top: .9375rem;
+}
+
+.paddingR15 {
+	padding-right: .9375rem;
+}
+
+.paddingAll15 {
+	padding: .9375rem;
+}
+
+.paddingTB15 {
+	padding-top: .9375rem;
+	padding-bottom: .9375rem;
+}
+
+/*/////////////////////// Color & Text /////////////////////*/
+.colorGrey {
+	background-color: #D7D4D4;
+}
+
+.colorBlue {
+	background-color: #E0FFFF;
+}
+
+.fontSize20 {
+	font-size: 1.25rem;
+}
+
+.fontSize16 {
+	font-size: 1rem!important;
+}
+
+/*//////////////////////// Component //////////////////////////*/
+.pointerCursor {
+	cursor: pointer;
+}
+
+.borderTB {
+	border-top: 1px solid #D7D4D4;
+	border-bottom: 1px solid #D7D4D4;	
+}
+
+.borderT {
+	border-top: 1px solid #D7D4D4;
+}
+
+.borderAll {
+	border: 1px solid #D7D4D4;
+}
+
+.customIcon {
+	position: relative;
+	margin: 0!important;
+	font-size: 1rem; /* size of text used with icon is 0.9 rem*/
+}
+
+.dropDownNoIcon:after {
+	display: none!important;
+}
+
+.stdBorder {
+	border-top: 1px solid #D7D4D4;
+	border-bottom: 1px solid #D7D4D4;
+}
+
+/* New box */
+.newBox {
+	padding-top: .9375rem;
+	margin-top: .9375rem;		
+}
+
+/* Standard box */
+.stdBox {
+
+}
+
+.stdBox > .stdBox {
+	margin-top: 1.25rem;
+	margin-bottom: 1.5rem;
+}
+
+.stdBox > .stdBoxTitle {
+	margin-top: .9375rem;
+	margin-bottom: .9375rem;
+	font-size: 	1.5rem; /* 24px */
+	font-weight: bold;
+}
+
+.stdBox > .stdBoxBody {
+	padding: .9375rem;
+	border: 1px solid #D7D4D4;
+}
+
+.stdBox > .stdBoxBorder {
+	border: 1px solid #D7D4D4;
+}
+
+.stdBox > .childVStdBox {
+	margin-top: .9375rem;
+	margin-bottom: .9375rem;
+}
+
+.stdBox.stdBoxLeft > .childHStdBox {
+	padding-right: .9375rem;	
+}
+
+.stdBox.stdBoxRight > .childHStdBox {
+	padding-left: .9375rem;	
+}
+
+.childVStdBox > .stdBoxBody {
+	padding: .9375rem;
+	border: 1px solid #D7D4D4;
+}
+
+/*////////// Specific component ///////////// */
+#top-menu-btn{
+	position: absolute;
+	left: .625rem;
+	margin: 0!important;
+	top: 12px;
+}
+
+@media print, screen and (min-width: 40em){
+	#top-menu-btn{
+		left: .9375rem;
+	}	
+}

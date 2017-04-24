@@ -31,6 +31,7 @@ function Checkout() {
 	};
 
 	this.checkout = function(req, res) {
+		
 		var apiUrl = apiOptions.server + "/api/orders/order/"+req.body.orderId+"/edit";
 		var view = null;
 		var body = {"$set":{"status":"2", "checkoutTime":Date.now()}};

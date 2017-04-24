@@ -17,7 +17,7 @@
 			var auth = this;
 			return $http.post ('/api/register', user).then (
 				function (data){
-					auth.saveToken (data.token);
+					auth.saveToken (data.data.token);
 					successAction (data);
 				},
 				function (err){
@@ -27,19 +27,25 @@
 			)
 		};
 
-		this.login = function (){
+		this.login = function (user, successAction, failAction){
+			var auth = this;
 			return $http.post ('/api/login', user).then (
 				function (data){
-					auth.saveToken (data.token);
+					console.log (data)
+					auth.saveToken (data.data.token);
+					successAction (data);
 				},
 				function (err){
-					
+					console.log (err);
+					failAction (err);					
 				}
 			)
 		};
 
-		this.logout = function (){
+		this.logout = function (beforeAction, afterAction){
+			beforeAction ();
 			$window.localStorage.removeItem (tokenKey);
+			afterAction ();
 		};
 
 		this.isLoggedIn = function (){
