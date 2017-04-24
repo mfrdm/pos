@@ -41,7 +41,7 @@ html(ng-app='posApp')
 						ul(class="menu")
 							li: a Profile
 							li: a Setting
-							li: a Logout
+							li(ng-click='layout.logout()'): a Logout
 
 
 		div(class="title-bar text-center" data-responsive-toggle="mainMenu" data-hide-for="large")

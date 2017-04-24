@@ -7,12 +7,25 @@ var apiOptions = helper.getAPIOption();
 module.exports = new Others();
 
 function Others() {
+	this.test = function(req, res){
+		var data = {
+			user:{
+
+			},
+			look:{
+				title:"Home Page",
+				css:['common'],
+				js:['app.js'],
+			}
+		};
+		res.render ('layout', {data: data});
+	}
 
 	this.angularApp = function (req, res){
 
 		//var listFile = ['checkin', 'checkout', 'customers', 'assets', 'costs', 'home'];
 		var ctrFileNames = ['checkin', 'checkout','products', 'customers', 'assets', 'costs', 'home', 'depts', 'employees', 'login', 'register'];
-		var serviceFileNames = ['checkin', 'checkout', 'products','customers', 'assets', 'costs', 'home', 'depts','employees','common', 'authentication', 'socket'];
+		var serviceFileNames = ['checkin', 'checkout', 'products','customers', 'assets', 'costs', 'home', 'depts','employees','common', 'authentication'];
 		var directiveFileNames = ['components'];
 
 		var ctrlNum = ctrFileNames.length;

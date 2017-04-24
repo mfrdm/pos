@@ -24,30 +24,62 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-var io = require('socket.io')(server)
 
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
+var io = require('socket.io')(server)
+
 var list = []
 io.on('connection', function(socket){
-    console.log('a user connected with id: '+socket.id);
-    var user = {}
-    user.userId = socket.id;
-    list.push(user)
-    socket.on('send', function(msg){
-      console.log(msg)
-      // socket.emit('resend', 'msg')
-    })
-    console.log(list)
-    
-    socket.on('disconnect', function(){
-        list = list.filter(function(ele){
-          ele.userId = socket.id
-        });
-        console.log('user disconnected');
+  console.log('a user connected with id: '+socket.id);
+  var userId = socket.id;
+  var dict = {}
+  dict.userId = socket.id;
+  dict.username = 'Anonymous'
+  list.push(dict)
+
+  socket.on('chat message', function(msg){
+    console.log(msg.receiver)
+    var receiver = list.filter(function(ele){
+      if(ele.username == msg.receiver){
+        return ele.userId
+      }
     });
+    if(receiver.length != 0){
+      console.log(receiver[0].userId)
+      socket.broadcast.to(receiver[0].userId).emit('message',msg.username+'   says:   '+msg.msg);
+    }
+
+
+  socket.emit('online', list)
+  });
+
+socket.on('register', function(msg){
+    if(msg.username != ''){
+        console.log(msg.username)
+        list.map(function(ele){
+        if(ele.userId == socket.id){
+        return ele.username = msg.username
+        }else{
+        return ele.username
+        }
+        })
+    }
+    console.log(list)
+    socket.emit('online', list)
+})
+
+socket.on('disconnect', function(){
+    console.log('user disconnected');
+    list = list.filter(function(id){
+    return id.userId != socket.id
+})
+socket.emit('online', list)
+});
+socket.emit('online', list)
+    console.log(list)
 });
 /**
  * Normalize a port into a number, string, or false.

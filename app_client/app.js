@@ -7,7 +7,7 @@ app
 	        $("#mainContentDiv").foundation(); // initialize elements in ng-view
 	    });
 	})
-	.controller ('LayoutCtrl', ['$scope', '$location', LayoutCtrl])	
+	.controller ('LayoutCtrl', ['$scope', '$location','authentication', LayoutCtrl])	
 
 
 function config ($routeProvider){
@@ -90,7 +90,7 @@ function checkPermission ($q, authentication) {
 	}
 }
 
-function LayoutCtrl ($scope, $location) {
+function LayoutCtrl ($scope, $location, authentication) {
 	$scope.layout = {};
 	$scope.layout.loginBtn = true;
 	$scope.layout.customerNumber = 100; // TESTING
@@ -118,6 +118,12 @@ function LayoutCtrl ($scope, $location) {
 
 	$scope.layout.closeMessageDiv = function (){
 		$scope.layout.messageDiv = false;
+	}
+
+	$scope.layout.logout = function(){
+		var beforeAction = function(){};
+		var afterAction = function(){};
+		authentication.logout(beforeAction, afterAction)
 	}
 
 	$("body").foundation();

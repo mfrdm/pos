@@ -1,5 +1,5 @@
 app
-	.controller('CheckinCtrl', ['$scope','checkinService','$route','socket', CheckinCtrl])
+	.controller('CheckinCtrl', ['$scope','checkinService','$route', CheckinCtrl])
 
 //Get data to render all current checked in customers
 function CheckinCtrl ($scope, checkinService, $route){
@@ -14,7 +14,27 @@ function CheckinCtrl ($scope, checkinService, $route){
 	vm.look.checkInEditDiv = false;
 	vm.look.checkInDiv = false;
 
-	socket.emit('mess', 'hello')
+	//=========================================================
+	var socket = io();
+	vm.sendTest = function(){
+		socket.emit('chat message', {msg:vm.msg,username:vm.username, receiver:vm.receiverName})
+	}
+	vm.registerTest = function(){
+		socket.emit('register', {username:vm.username})
+	}
+	vm.ele = []
+	socket.on('message', function(msg){
+		console.log(msg)
+	})
+
+     //  socket.on('online', function(msg){
+     //    var anoNumber = msg.filter(function(element){
+     //      return element.username == 'Anonymous'
+     //    }).length
+     //    console.log(anoNumber)
+     //    $('#online span').replaceWith(anoNumber)
+     //  })
+	//=========================================================
 
 	vm.data.services = { // Fix: fetch from server
 		productName: ['Private', 'Common'],

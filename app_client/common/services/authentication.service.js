@@ -45,6 +45,7 @@
 		this.logout = function (beforeAction, afterAction){
 			beforeAction ();
 			$window.localStorage.removeItem (tokenKey);
+			$window.location.href = '/';
 			afterAction ();
 		};
 
