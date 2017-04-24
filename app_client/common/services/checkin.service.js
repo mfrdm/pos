@@ -39,31 +39,13 @@ var checkinService = function($http){
 		})
 	}
 
-	//Create new check in customer
-	this.postCheckIn = function(user, vm){
+	this.createOne = function (userId, data) {
 		return $http({
-				method:'POST',
-				url:'/checkin/'+user._id,
-				data: JSON.stringify({
-					total: 1,
-					orderline: [
-						{
-							productName: vm.ordername
-						}
-					],
-					customers:{
-						customerId: user._id,
-						firstname: user.firstname,
-						lastname: user.lastname
-					},
-					storeId: "58eb474538671b4224745192",
-					staffId: "58eb474538671b4224745192",	
-					updateAt: {
-						time: new Date('09/15/2017')
-					}
-				})
-			})
-	}
+			method:'POST',
+			url:'/checkin/' + userId,
+			data: JSON.stringify(data),
+		});
+	};
 
 	//Update new Order
 	this.updateOne = function(id, data){

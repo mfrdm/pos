@@ -78,16 +78,18 @@ function config ($routeProvider){
 
 // Check if a user has permission to access a certain page or resource
 function checkPermission ($q, authentication) {
-	if (authentication.isLoggedIn ()){
-		return {
-			pass: true
-		}
-	}
-	else{
-		return {
-			pass: false
-		}
-	}
+	// if (authentication.isLoggedIn ()){
+	// 	return {
+	// 		pass: true
+	// 	}
+	// }
+	// else{
+	// 	return {
+	// 		pass: false
+	// 	}
+	// }
+
+	return $q.defer().promise
 }
 
 function LayoutCtrl ($scope, $location) {
