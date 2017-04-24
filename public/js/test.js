@@ -4,7 +4,6 @@ $(document).ready(function(){
 		toggleSidebar()
 	})
 	triggerSidebar()
-	console.log('checkkkkk')
 })
 
 

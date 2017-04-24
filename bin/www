@@ -24,10 +24,31 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
+var io = require('socket.io')(server)
+
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
+var list = []
+io.on('connection', function(socket){
+    console.log('a user connected with id: '+socket.id);
+    var user = {}
+    user.userId = socket.id;
+    list.push(user)
+    socket.on('send', function(msg){
+      console.log(msg)
+      // socket.emit('resend', 'msg')
+    })
+    console.log(list)
+    
+    socket.on('disconnect', function(){
+        list = list.filter(function(ele){
+          ele.userId = socket.id
+        });
+        console.log('user disconnected');
+    });
+});
 /**
  * Normalize a port into a number, string, or false.
  */

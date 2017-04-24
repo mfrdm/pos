@@ -2,10 +2,10 @@ var MGDB = require('../../libs/node/db').MGDB;
 var helper = require('../../libs/node/helper');
 var apiOptions = helper.getAPIOption();
 
-var host = '104.199.160.180';
+var host = 'localhost';
 var port = 27017;
-var username = 'contentAdmin';
-var passwd = 'greenspace';
+var username = '';
+var passwd = '';
 var db = apiOptions.dbName;
 
 var mgdb = new MGDB (host, port, db, username, passwd);

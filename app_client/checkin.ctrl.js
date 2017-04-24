@@ -4,6 +4,9 @@ var CheckinCtrl = function(checkinService, $route){
 	vm.tab = 'tab-search';
 	vm.pageTitle = 'Home Checkin';
 	vm.order = '-checkinTime'
+	var socket = io.connect('localhost:3000');
+
+	socket.emit('send', 'msg');
 	////////////////////////////////////////////////////////
 	//Setup ng-switch
 	vm.toCheckin = function(index){
