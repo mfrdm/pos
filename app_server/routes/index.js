@@ -95,6 +95,8 @@ router.get ('/components/template/asset', othersCtrl.getAssetTemplate);
 
 //Login page
 router.get('/login', othersCtrl.login);
+router.get('/register', othersCtrl.register);
+
 // function isLoggedIn(req, res, next) {
 // 	// if user is authenticated in the session, carry on
 // 	if (req.isAuthenticated())

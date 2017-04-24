@@ -1,10 +1,10 @@
 (function () {
 	angular
 		.module ('posApp')
-		.controller ('assetsCtrl', ['assetsService', '$http', 'authentication', assetsCtrl])
+		.controller ('assetsCtrl', ['$location', '$route', 'assetsService', '$http', 'authentication', assetsCtrl])
 
 
-	function assetsCtrl (assetsService, $http, authentication) {
+	function assetsCtrl ($location, $route, assetsService, $http, authentication) {
 		var vm = this;
 		var hiddenClass = 'is-hidden';
 
@@ -22,6 +22,16 @@
 		vm.other.editActionName = 'edit';
 		vm.other.deleteActionName = 'delete';
 
+
+		// TESTING
+		if ($route.current.locals.checkPermisson.pass){
+			//
+		}
+		else {
+			$location.path ('/login');
+			return
+		}
+		// END	
 
 		// TESTING: Successfully pass authentication token to server
 		vm.testLogin = function (){

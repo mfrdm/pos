@@ -1,15 +1,22 @@
 (function () {
 	angular
 		.module ('posApp')
-		.controller ('loginCtrl', ['$location', 'authentication', loginCtrl])
+		.controller ('LoginCtrl', ['$route', '$scope', '$location', 'authentication', LoginCtrl])
 
 
-	function loginCtrl ($location, authentication) {
+	function LoginCtrl ($route, $scope, $location, authentication) {
+
 		var vm = this;
 		vm.other = {};
-		vm.other.localLoginBoxName = 'login-box';
-		vm.other.localSignupBoxName = 'signup-box';
-		vm.other.displayLoginBox = vm.other.localLoginBoxName;
+
+		vm.other.returnPage = $location.search ().page || '/checkin';
+
+		if ($route.current.locals.checkPermission.pass){
+			var storeName = 'Green Space Chua Lang 82/70'; // TESTING
+			$scope.layout.updateAfterLogin (storeName);
+			$location.path (vm.other.returnPage);
+			return
+		}
 
 		vm.credentials = {
 			firstname: '',
@@ -23,30 +30,18 @@
 			username: '', // phone or email
 		}
 
-		vm.other.returnPage = $location.search ().page || '/';
-
-		vm.registerSuccessAction = function (data){
-			vm.credentials = {};
-			$location.search ('page', null);
-			$location.path (vm.other.returnPage);
-		};
-
-		vm.registerFailAction = function (err){
-			// display message
-		};
+		
 
 		vm.loginSuccessAction = function (data) {
+			var storeName = 'Green Space Chua Lang 82/70'; // TESTING
 			vm.credentials = {};
 			$location.search ('page', null);
+			$scope.layout.updateAfterLogin (storeName);
 			$location.path (vm.other.returnPage);			
 		};
 
 		vm.loginFailAction = function (data) {
 
-		};
-
-		vm.submitRegister = function (){
-			authentication.register (vm.credentials, vm.registerSuccessAction, vm.registerFailAction);
 		};
 
 		vm.submitLogin = function (){
@@ -59,14 +54,6 @@
 				$location.path ('/login');					
 			});
 		};
-
-		vm.changeSwitch = function (which, ele) {
-			if ( which == 1){
-				vm.other.displayLoginBox = ele;
-
-			}
-		};
-
 	}
 
 })();

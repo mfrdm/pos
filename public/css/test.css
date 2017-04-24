@@ -1,4 +1,4 @@
- body {
+body {
 	font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -152,6 +152,7 @@ div#login-btn{
 	float:none;
 } 
 */
+
 .background{
 	position: absolute;
 	width: 100%;

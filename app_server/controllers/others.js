@@ -11,7 +11,7 @@ function Others() {
 	this.angularApp = function (req, res){
 
 		//var listFile = ['checkin', 'checkout', 'customers', 'assets', 'costs', 'home'];
-		var ctrFileNames = ['checkin', 'checkout','products', 'customers', 'assets', 'costs', 'home', 'depts', 'employees', 'login'];
+		var ctrFileNames = ['checkin', 'checkout','products', 'customers', 'assets', 'costs', 'home', 'depts', 'employees', 'login', 'register'];
 		var serviceFileNames = ['checkin', 'checkout', 'products','customers', 'assets', 'costs', 'home', 'depts','employees','common', 'authentication'];
 		var directiveFileNames = ['components'];
 
@@ -25,7 +25,7 @@ function Others() {
 			},
 			look:{
 				title:"Home Page",
-				css:[],
+				css:['common'],
 				js:['app.js'],
 			}
 		};
@@ -52,6 +52,10 @@ function Others() {
 
 	this.login = function(req, res){
 		helper.angularRender(req, res, 'login')
+	}
+
+	this.register = function (req, res){
+		res.render ('register');
 	}
 
 	this.getMessageTemplate = function (req, res) {

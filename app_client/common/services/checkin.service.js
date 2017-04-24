@@ -66,15 +66,15 @@ var checkinService = function($http){
 	}
 
 	//Update new Order
-	this.postEdit = function(oneOrder, newOrderLine){
+	this.updateOne = function(id, data){
 		return $http({
-			method:'POST',
-			url:'/api/orders/order/'+oneOrder._id+'/edit',
-			data:JSON.stringify({
-				$set:{orderline:newOrderLine}
+			method: 'POST',
+			url: '/api/orders/order/'+ id +'/edit',
+			data: JSON.stringify({
+				$set: { orderline: data }
 			})
 		})
-	}
+	};
 
 	//Checkout for customer
 	this.postCheckOut = function(id){
@@ -85,7 +85,7 @@ var checkinService = function($http){
 				status:2
 			})
 		})
-	}
+	};
 }
 
 app.service('checkinService', ['$http', '$window',  checkinService])

@@ -4,7 +4,5 @@ angular
 
 function homeCtrl (homeData) {
 	var vm = this;
-	vm.test = {
-		message: homeData.message
-	}
+	vm.test = 'home'
 }
