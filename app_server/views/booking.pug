@@ -30,18 +30,32 @@ div(class="columns row")
 					div(class='column small-6 paddingR0')
 						label Service
 							select(name="selectedService" ng-model="vm.data.checkingInCustomer.orderline[0].productName" ng-options="val for val in vm.data.services.productName")
+				div(class='row column')
+					div(class='column small-6 paddingL0')
+						label DateTime
+							input(type='text' my-datepicker='')
 				div(class="row column")
-					ul(class="menu vertical")
-						li(ng-repeat="item in vm.data.checkingInCustomer.orderline.slice(1)" class="marginB15")
-							div(class="column row")
-								div(class="column small-6 paddingL0")
-									label Other items
-										select(name="{{ 'otherItem' + ($index + 1) }}" ng-model="item.productName" ng-options="val for val in vm.data.otherItems.productName")
-								div(class="column small-6 paddingR0")
-									label Quantity
-										input(name="{{ 'otherItemQuantity' + ($index + 1)}}" ng-model="item.quantity" string-to-number type="number" value="{{ item.quantity }}")
-					div(class="marginB15")
-						a(ng-click="vm.addMoreOtherItems ('checkingInDiv')") Add more items
+						input(class="button" type="submit" value="Booking")
+	div(class="row colums")
+		div(class="column")
+			h2 Booking List
+		// Setting
+		div(class="row column")
+			div(class="column small-12")
+				ul(class="menu clearfix")
+					li(class="float-right marginL15")
+						<a class="button secondary" ng-click="vm.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
+					li(class="float-right")
+						ul(class="menu")
+							li: label(class="paddingR15 show-for-large") Sort by
+							li: select(class="")
+									option(value="name") Name
+									option(value="checkinTime") Check-in time
+									option(value="status") Status
+		div(class="column")
+			div(class="borderT newBox row column paddingLR15")
 				div(class="row column")
-					input(class="button" type="submit" value="Submit")
-					button(class="button float-right" ng-click="vm.toggleCheckInDiv()") Cancel
+					form(ng-submit="vm.searchCustomers('checkInDiv')")
+						div(class="row column")
+							label Phone/Email
+								input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.data.checkingInCustomer.username')

@@ -2,6 +2,23 @@ angular
 	.module ('posApp')
 	.directive ('messageWidget', [messageWidget])
 	.directive ('assetWidget', [assetWidget])
+	.directive ('myDatepicker', [datepicker])
+
+function datepicker (){
+	return {
+		link: function(scope, element, attrs){
+			$(element).fdatepicker({
+				initialDate: '07-05-2017',
+				format: 'dd-mm-yyyy  hh:ii',
+				disableDblClickSelection: true,
+				leftArrow:'<<',
+				rightArrow:'>>',
+				closeButton: false,
+				pickTime: true
+			})
+		}
+	}
+}
 
 function messageWidget () {
 	return {
