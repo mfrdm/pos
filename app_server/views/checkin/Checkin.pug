@@ -39,12 +39,15 @@ div(class="columns row")
 											th Email
 											th Phone				
 									tbody
-										tr(ng-repeat='result in vm.searchResult.checkingInCustomers', ng-click='vm.selectCustomerToCheckin($index)' class="pointerCursor")
-											td {{ $index + 1 }}
-											td {{ result.lastname }}
-											td {{ result.firstname }}
-											td {{ result.email }}
-											td {{ result.phone }}
+										tr(ng-repeat='noti in vm.noties')
+											td {{noti.firstname}}
+											td {{noti.msg}}
+										//- tr(ng-repeat='result in vm.searchResult.checkingInCustomers', ng-click='vm.selectCustomerToCheckin($index)' class="pointerCursor")
+										//- 	td {{ $index + 1 }}
+										//- 	td {{ result.lastname }}
+										//- 	td {{ result.firstname }}
+										//- 	td {{ result.email }}
+										//- 	td {{ result.phone }}
 				
 				form(ng-submit="vm.checkin ()")
 					div(class="row column")
@@ -153,17 +156,9 @@ div(class="columns row")
 								button(type="button" class="warning button" ng-click="vm.toggleCheckInEditDiv ($index)") Checkout
 							td
 								button(type="button" class="alert button" ng-click="vm.toggleCheckInEditDiv ($index)") Edit
-	ul(id="messages" ng-repeat='ele in vm.ele')
-		p {{ele}}
 	div(id='online')
 		span
 		p anonymous are online
-	form(id="message" ng-submit='vm.sendTest()')
+	form(id="message" ng-submit='vm.sendNoti()')
 		input(ng-model="vm.msg" autocomplete="off")
 		button(type="button" class="success button" ) Send
-	form(id='register' ng-submit='vm.registerTest()')
-		input(ng-model="vm.username" autocomplete="off")
-		button(type="button" class="success button" ) Username
-	form(id='receiver' ng-submit='vm.receiveTest()')
-		input(ng-model="vm.receiverName" autocomplete="off")
-		button(type="button" class="success button" ) Receiver

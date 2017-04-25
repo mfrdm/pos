@@ -30,11 +30,14 @@ html(ng-app='posApp')
 				ul(class="menu dropdown float-right stdBox paddingLR15 stdBoxRight" data-dropdown-menu)
 					li(class="childHStdBox"): a(class="button" href="#!/login" ng-show="layout.loginBtn") Login
 					li(ng-show="layout.notiBtn" class="childHStdBox")
-						a(class="dropDownNoIcon paddingLR0"): i(class="material-icons") notifications
-						ul(class="menu")
-							- var notiData = ['Pham Manh Hiep booked a private room at 20:00', 'Pham Manh Hiep book a common spot at 21:00'];
-							- for (var i=0; i < notiData.length; i ++)
-								li(class="menu-text")= notiData[i]
+						a(ng-style='layout.style' class="dropDownNoIcon paddingLR0"): i(class="material-icons") notifications
+						ul(class="menu noti" )
+							// - var notiData = ['Pham Manh Hiep booked a private room at 20:00', 'Pham Manh Hiep book a common spot at 21:00'];
+							// - for (var i=0; i < notiData.length; i ++)
+							// 	li(class="menu-text")= notiData[i]
+							li(ng-repeat='noti in layout.notifications')
+								p {{noti.firstname}}
+								p {{noti.msg}}
 
 					li(ng-show="layout.accountBtn" class="childHStdBox")
 						a(class="dropDownNoIcon paddingLR0"): i(class="material-icons") account_circle

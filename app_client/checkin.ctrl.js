@@ -1,11 +1,12 @@
 app
-	.controller('CheckinCtrl', ['$scope','checkinService','$route', CheckinCtrl])
+	.controller('CheckinCtrl', ['$scope','checkinService','$route','authentication','socket', CheckinCtrl])
 
 //Get data to render all current checked in customers
-function CheckinCtrl ($scope, checkinService, $route){
+function CheckinCtrl ($scope, checkinService, $route, authentication, socket){
 	var vm = this;
 	vm.look = {};
 	vm.data = {}; // other data
+	vm.status = {};
 
 	vm.searchResult = {};
 	vm.look.searchCheckingInCustomerResultDiv = false;
@@ -14,33 +15,10 @@ function CheckinCtrl ($scope, checkinService, $route){
 	vm.look.checkInEditDiv = false;
 	vm.look.checkInDiv = false;
 
-	//=========================================================
-	var socket = io();
-	vm.sendTest = function(){
-		socket.emit('chat message', {msg:vm.msg,username:vm.username, receiver:vm.receiverName})
-	}
-	vm.registerTest = function(){
-		socket.emit('register', {username:vm.username})
-	}
-	vm.ele = []
-	socket.on('message', function(msg){
-		console.log(msg)
-	})
-
-     //  socket.on('online', function(msg){
-     //    var anoNumber = msg.filter(function(element){
-     //      return element.username == 'Anonymous'
-     //    }).length
-     //    console.log(anoNumber)
-     //    $('#online span').replaceWith(anoNumber)
-     //  })
-	//=========================================================
-
 	vm.data.services = { // Fix: fetch from server
 		productName: ['Private', 'Common'],
 		price: [100000, 10000]
 	};
-
 	vm.data.otherItems = { // Fix: fetch from server
 		productName: ['', 'Coca', 'Poca', 'Pepsi'],
 		price: [0, 10000, 10000, 10000],
@@ -50,6 +28,11 @@ function CheckinCtrl ($scope, checkinService, $route){
 	vm.data.checkingInCustomer = getDefaultCheckInData ();
 
 	vm.data.editedCheckedInCustomer = {};
+
+	// Socket io send noti to the server
+	vm.sendNoti = function(){
+		socket.emit('sendNoti', vm.msg)
+	}
 
 	// Used to fill check-in data
 	// FIX: should not include hardcode
@@ -159,12 +142,15 @@ function CheckinCtrl ($scope, checkinService, $route){
 		else{ // turn on
 			// turn off checkin list div
 			// turn on edit div
-			// make a copy of the data
+			// make a deep copy of the data
 			// load data to the edit div
 			// other tasks
 
-			// create a deep copy
 			vm.data.editedCheckedInCustomer = JSON.parse(JSON.stringify(vm.data.checkedInList [index]));
+			vm.data.editedCheckedInCustomer.orderline.map (function (x, i, arr){
+				x.quantity = parseInt (x.quantity);
+			});
+
 			vm.data.editedCheckedInCustomer.username = vm.data.editedCheckedInCustomer.customer.lastname + ' ' + vm.data.editedCheckedInCustomer.customer.firstname + '/ ' + vm.data.editedCheckedInCustomer.customer.phone + '/ ' + (vm.data.editedCheckedInCustomer.customer.email ? vm.data.editedCheckedInCustomer.customer.email : '');
 
 			if (vm.data.editedCheckedInCustomer.orderline.length == 1){
@@ -194,8 +180,9 @@ function CheckinCtrl ($scope, checkinService, $route){
 	////////////////////////////////////////////////////////
 	//Checkout Page
 	vm.checkin = function(){
-		checkinService.postCheckIn(vm.user, vm).then(
+		checkinService.createOne (vm.data.checkingInCustomer, vm).then(
 			function success(data){
+				console.log (data)
 				vm.data.checkedInList.push (data);
 				vm.toggleCheckInDiv ();
 			}, 
@@ -207,13 +194,18 @@ function CheckinCtrl ($scope, checkinService, $route){
 
 	vm.updateCheckin = function(){
 		var id = vm.data.editedCheckedInCustomer._id;
+
+		// validate
+		vm.data.editedCheckedInCustomer.orderline.map (function (x, i, arr){
+			if (x.quantity <= 0){
+				arr.splice (i, 1);
+			}
+		});
+
 		checkinService.updateOne (id, vm.data.editedCheckedInCustomer.orderline).then(
 			function (data){
 
 				vm.data.checkedInList[vm.data.currCheckedInIndex].orderline = vm.data.editedCheckedInCustomer.orderline;
-
-				console.log (vm.data.checkedInList[vm.data.currCheckedInIndex].orderline);
-
 				var message = 'Successfully update checked-in information of customer ' + vm.data.editedCheckedInCustomer.username;
 				$scope.layout.updateMessage (message, 'success');
 				vm.toggleCheckInEditDiv ();
@@ -229,11 +221,12 @@ function CheckinCtrl ($scope, checkinService, $route){
 	//////////////// Initialization ///////////////////////
 	checkinService.getDataOrderCheckin ().then(
 		function success(res){
+			vm.status.getCheckinList = true;
 			vm.data.checkedInList = res.data.data;
 		}, 
 		function error(err){
+			vm.status.getCheckinList = false;
 			console.log(err)
 		}
 	);
-
 };

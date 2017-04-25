@@ -108,4 +108,7 @@ function Booking() {
 		requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
 	};
 
+	this.readAngularBooking = function(req, res){
+		helper.angularRender( req, res,'booking')
+	}
 };

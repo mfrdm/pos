@@ -25,7 +25,7 @@ function Others() {
 
 		//var listFile = ['checkin', 'checkout', 'customers', 'assets', 'costs', 'home'];
 		var ctrFileNames = ['checkin', 'checkout','products', 'customers', 'assets', 'costs', 'home', 'depts', 'employees', 'login', 'register'];
-		var serviceFileNames = ['checkin', 'checkout', 'products','customers', 'assets', 'costs', 'home', 'depts','employees','common', 'authentication'];
+		var serviceFileNames = ['checkin', 'checkout', 'products','customers', 'assets', 'costs', 'home', 'depts','employees','common', 'authentication', 'socket'];
 		var directiveFileNames = ['components'];
 
 		var ctrlNum = ctrFileNames.length;
@@ -80,7 +80,7 @@ function Others() {
 	}
 
 	this.readAngularAttendance = function(req, res){
-		helper.angularRender(req, res, 'attendance/attendance')
+		helper.angularRender(req, res, 'attendance')
 	}
 
 };

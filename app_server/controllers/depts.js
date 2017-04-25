@@ -54,6 +54,6 @@ function Depts() {
 
 	//Angular Render Page
 	this.readAngularDepts = function(req, res){
-		helper.angularRender(req, res, 'dept/Dept')
+		helper.angularRender(req, res, 'dept')
 	}
 };

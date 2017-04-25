@@ -20,7 +20,6 @@
     "jsonwebtoken": "^7.3.0",
     "mongoose": "^4.9.1",
     "morgan": "^1.8.1",
-    "node-sass-middleware": "^0.11.0",
     "nodemon": "^1.11.0",
     "passport": "^0.3.2",
     "passport-google-oauth": "^1.0.0",
@@ -30,7 +29,14 @@
     "socket.io": "^1.7.3"
   },
   "devDependencies": {
+    "angular": "^1.6.4",
+    "angular-mocks": "^1.6.4",
+    "angular-ui-router": "^0.4.2",
     "chai": "^3.5.0",
+    "jasmine-core": "^2.5.2",
+    "karma": "^1.6.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-jasmine": "^1.1.0",
     "mocha": "^3.2.0"
   }
 }

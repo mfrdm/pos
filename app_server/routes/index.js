@@ -43,11 +43,11 @@ router.post('/checkin/:cusId/edit', checkinCtrl.updateCheckin); //cusid is order
 router.get('/checkout/invoice/:orderId', checkoutCtrl.readInvoice);
 router.post('/checkout/', auth, checkoutCtrl.checkout); // TEST local authen
 // router.post('/checkout/', checkoutCtrl.checkout);
-router.get('/angular/checkout', checkoutCtrl.readAngularCheckout);
 
 router.get('/bookings', bookingCtrl.readBooking);
 router.post('/bookings/:cusId', bookingCtrl.booking);
 router.post('/bookings/:cusId/edit', bookingCtrl.updateBooking);
+router.get('/angular/bookings', bookingCtrl.readAngularBooking)
 
 router.get('/hr', hrCtrl.readOverview);
 router.get('/hr/employees/employee/:uId', hrCtrl.readOneUser);
@@ -61,6 +61,7 @@ router.get('/assets', assetsCtrl.readSomeAsset);
 router.get('/assets/asset/:assetId', assetsCtrl.readOneAssetById);
 router.post('/assets/create', assetsCtrl.createOneAsset);
 router.post('/assets/asset/:assetid/edit', assetsCtrl.updateOneAsset);
+router.get('/angular/assets', assetsCtrl.readAngularAsset);
 
 router.get('/customer-management', customersCtrl.readOverview);
 router.get('/customers', customersCtrl.readSomeCustomers);
