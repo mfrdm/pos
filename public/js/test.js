@@ -4,6 +4,8 @@ $(document).ready(function(){
 		toggleSidebar()
 	})
 	triggerSidebar()
+	$(document).foundation();
+	$(document).foundation('abide', 'reflow');
 })
 
 

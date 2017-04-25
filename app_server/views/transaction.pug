@@ -120,13 +120,13 @@ div(class="columns row")
 							textarea(class="")
 					div(class='column small-12 paddingLR0')
 						label Amount
-							input(type='text' date-picker='')
+							input(type='text')
 					div(class='column small-12 paddingLR0')
 						label Category
-							input(type='text' date-picker='')
+							input(type='text')
 					div(class='column small-12 paddingLR0')
 						label Department
-							input(type='text' date-picker='')
+							input(type='text')
 					div(class="row column")
 						div(class='column small-centered small-12')
 							input(class="button float-center" type="submit" value="Add")
@@ -138,7 +138,7 @@ div(class="columns row")
 			div(class="column small-12")
 				ul(class="menu clearfix")
 					li(class="float-right marginL15")
-						<a class="button secondary" ng-click="vm.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
+						<a class="button secondary"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
 					li(class="float-right")
 						ul(class="menu")
 							li: label(class="paddingR15 show-for-large") Sort by
@@ -149,10 +149,10 @@ div(class="columns row")
 		div(class="column")
 			div(class="borderT newBox row column")
 				div(class="row column")
-					form(ng-submit="vm.searchCustomers('checkInDiv')")
+					form()
 						div(class="row column")
 							label Phone/Email
-								input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.data.checkingInCustomer.username')
+								input(type="text" placeholder="Enter phone or email to search customer")
 		div(class='row column')
 			div(class="column small-12")
 				div(class="table-scroll newBox")

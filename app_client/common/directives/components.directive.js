@@ -7,32 +7,48 @@ angular
 
 function dateTimePicker (){
 	return {
-		link: function(scope, element, attrs){
-			$(element).fdatepicker({
-				initialDate: '07-05-2017',
-				format: 'dd-mm-yyyy  hh:ii',
-				disableDblClickSelection: true,
-				leftArrow:'<<',
-				rightArrow:'>>',
-				closeButton: false,
-				pickTime: true
-			})
-		}
+		require: 'ngModel',
+		scope: { format: "=" },
+		restrict: 'A',
+		// link: function(scope, element, attrs){
+		// 	$(element).fdatepicker({
+		// 		initialDate: '07-05-2017',
+		// 		format: 'dd-mm-yyyy  hh:ii',
+		// 		disableDblClickSelection: true,
+		// 		leftArrow:'<<',
+		// 		rightArrow:'>>',
+		// 		closeButton: false,
+		// 		pickTime: true
+		// 	})
+		// }
+		link: function(scope, element, attrs, ngModel){
+            if(typeof(scope.format) == "undefined"){ scope.format = "dd-mm-yyyy" }
+            $(element).fdatepicker({format: scope.format}).on('changeDate', function(ev){
+                scope.$apply(function(){
+                    ngModel.$setViewValue(ev.date);
+                }); 
+            })
+        }
 	}
 }
 
 function datePicker (){
 	return {
-		link: function(scope, element, attrs){
-			$(element).fdatepicker({
-				initialDate: '07-05-2017',
-				format: 'dd-mm-yyyy',
-				disableDblClickSelection: true,
-				leftArrow:'<<',
-				rightArrow:'>>',
-				closeButton: false,
-			})
-		}
+		require: 'ngModel',
+		scope: { format: "=" },
+		restrict: 'A',
+		link: function(scope, element, attrs, ngModel){
+            if(typeof(scope.format) == "undefined"){ scope.format = "dd-mm-yyyy" }
+            $(element).fdatepicker({
+            	format: scope.format,
+            	disableDblClickSelection: true,
+            	initialDate: '07-05-2017'
+            }).on('changeDate', function(ev){
+                scope.$apply(function(){
+                    ngModel.$setViewValue(ev.date);
+                }); 
+            })
+        }
 	}
 }
 

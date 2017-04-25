@@ -1,27 +1,24 @@
 var CustomerCtrl = function(checkinService, customerService, $route){
 	var vm = this;
-	vm.tab = 'tab-search';
-	vm.pageTitle = 'Search Customer'
+	vm.tab = 'tab-main';
+	vm.customerInfo = {};
+	vm.customerInfo.edu = {};
 	////////////////////////////////////////////////////////
 	//Setup ng-switch
-	vm.toCreate = function(){
-		vm.tab = 'tab-create'
-		vm.pageTitle = 'Create Customer'
-	}
-	vm.toProfile = function(index){
-		vm.tab = 'tab-profile';
-		vm.customer = vm.results[index]
-		vm.pageTitle = 'Profile Customer'
-	}
-	vm.toSearch = function(){
-		vm.tab = 'tab-search'
-		vm.pageTitle = 'Search Customer'
-		$route.reload();
-	}
-	vm.toEdit = function(){
-		vm.tab = 'tab-edit';
-		vm.pageTitle = 'Edit Customer'
-	}
+	// vm.toCreate = function(){
+	// 	vm.tab = 'tab-create'
+	// }
+	// vm.toProfile = function(index){
+	// 	vm.tab = 'tab-profile';
+	// 	vm.customer = vm.results[index]
+	// }
+	// vm.toSearch = function(){
+	// 	vm.tab = 'tab-search'
+	// 	$route.reload();
+	// }
+	// vm.toEdit = function(){
+	// 	vm.tab = 'tab-edit';
+	// }
 	////////////////////////////////////////////////////////
 	//Search Page
 	vm.searchFunc = function(){
@@ -35,13 +32,24 @@ var CustomerCtrl = function(checkinService, customerService, $route){
 	////////////////////////////////////////////////////////
 	//Create Page
 	vm.createNewCustomer = function(){
-		customerService.postCreateCustomer(vm.formData)
-			.then(function success(res){
-				vm.tab = 'tab-search'
-				$route.reload();
-			}, function error(err){
-				console.log(err)
-			})
+		vm.customerInfo.firstname = vm.firstname
+		vm.customerInfo.lastname = vm.lastname
+		vm.customerInfo.gender = vm.gender
+		vm.customerInfo.birthday = vm.birthday
+		vm.customerInfo.phone = vm.phone
+		vm.customerInfo.email = vm.email
+		vm.customerInfo.edu.school = vm.school
+		vm.customerInfo.edu.title = vm.title
+		vm.customerInfo.edu.start = vm.start
+		vm.customerInfo.edu.end = vm.end
+		console.log(vm.customerInfo)
+		// customerService.postCreateCustomer(vm.customerInfo)
+		// 	.then(function success(res){
+		// 		vm.tab = 'tab-search'
+		// 		$route.reload();
+		// 	}, function error(err){
+		// 		console.log(err)
+		// 	})
 	}
 	////////////////////////////////////////////////////////
 	//Edit Page

@@ -7,7 +7,7 @@ div(class="columns row")
 			div(class="column small-12")
 				ul(class="menu clearfix")
 					li(class="float-right marginL15")
-						<a class="button secondary" ng-click="vm.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
+						<a class="button secondary"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
 					li(class="float-right")
 						ul(class="menu")
 							li: label(class="paddingR15 show-for-large") Sort by
@@ -19,17 +19,17 @@ div(class="columns row")
 		div(class="column")
 			div(class="borderT newBox row column")
 				div(class="row column")
-					form(ng-submit="vm.searchCustomers('checkInDiv')")
+					form()
 						div(class="row column")
 							label Phone/Email
-								input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.data.checkingInCustomer.username')
+								input(type="text" placeholder="Enter phone or email to search customer")
 				div(class='row column')
 					div(class='column small-6 paddingL0')
 						label Location
-							select(name="selectedService" ng-model="vm.data.checkingInCustomer.orderline[0].productName" ng-options="val for val in vm.data.services.productName")
+							select(name="selectedService")
 					div(class='column small-6 paddingR0')
 						label Service
-							select(name="selectedService" ng-model="vm.data.checkingInCustomer.orderline[0].productName" ng-options="val for val in vm.data.services.productName")
+							select(name="selectedService")
 				div(class='row column')
 					div(class='column small-6 paddingL0')
 						label DateTime
@@ -44,7 +44,7 @@ div(class="columns row")
 			div(class="column small-12")
 				ul(class="menu clearfix")
 					li(class="float-right marginL15")
-						<a class="button secondary" ng-click="vm.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
+						<a class="button secondary"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
 					li(class="float-right")
 						ul(class="menu")
 							li: label(class="paddingR15 show-for-large") Sort by
@@ -55,10 +55,10 @@ div(class="columns row")
 		div(class="column")
 			div(class="borderT newBox row column")
 				div(class="row column")
-					form(ng-submit="vm.searchCustomers('checkInDiv')")
+					form()
 						div(class="row column")
 							label Phone/Email
-								input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.data.checkingInCustomer.username')
+								input(type="text" placeholder="Enter phone or email to search customer")
 		div(class='row column')
 			div(class="column small-12")
 				div(class="table-scroll newBox")
