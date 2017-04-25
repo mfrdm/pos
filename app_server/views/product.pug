@@ -1,109 +1,102 @@
-div(ng-switch='vm.tab')
-	div(ng-switch-when='tab-search')
-		div(class='row')
-			div(class='small-12')
-				p(class='pageTitle') {{vm.pageTitle}}
-		//- Search Product
-		form(class="input-group" ng-submit='vm.searchFunc()')
-			input(class="input-group-field" type="text" ng-model='vm.searchInput')
-			div(class="input-group-button")
-				input(type="submit" class="button" value="Submit")
-		div(class='searchResult')
-			table
-				tbody
-					tr(ng-repeat = 'result in vm.results')
-						td(ng-click='vm.toProfile($index)') {{result.name}}
-						td {{result.price}}
-		div(class='row')
-			div(class='columns small-2 small-offset-5')
-				button(type="button" class="button success" ng-click='vm.toCreate()') Create New Product
-	div(ng-switch-when='tab-create')
-		div(class='row')
-			div(class='small-12')
-				p(class='pageTitle') {{vm.pageTitle}}
-		//- Create Customer
-		div(class='row')
-			table(class="columns small-12 medium-6 medium-offset-3")
-				thead
-					tr
-						th Field Name
-						th Field Value
-				tbody
-					form
-						tr
-							td
-								p Product Name
-							td
-								input(placeholder='Type here ...' ng-model='vm.formData.name' required)
-						tr
-							td
-								p Price
-							td
-								input(placeholder='Type here ...' ng-model='vm.formData.price' required)
-						tr
-							td
-								p Category
-							td
-								input(placeholder='Type here ...' ng-model='vm.formData.category' required)
-		div(class='row')
-			div(class='columns small-2 medium-2 medium-offset-3')
-				button(type="button" class="button" ng-click='vm.createNewProduct()') Create
-			div(class='columns small-2 medium-2 medium-offset-2 button-right')
-				button(type="button" class="button" ng-click='vm.toSearch()') Back
-	div(ng-switch-when='tab-profile')
-		div(class='row')
-			div(class='small-12')
-				p(class='pageTitle') {{vm.pageTitle}}
-		//- Profile Product
-		div(class='row')
-			div(class='columns small-12 medium-4 medium-offset-4')
-				table
-					thead
-						tr
-							th Title
-							th Details
-					tbody(class='product-detail')
-						tr
-							td Product Name
-							td {{vm.product.name}}
-						tr
-							td Price
-							td {{vm.product.price}}
-						tr
-							td Category
-							td {{vm.product.category}}
-		div(class='row')
-			div(class='columns small-2 medium-2 medium-offset-3')
-				button(type="button" class="button" ng-click='vm.toEdit()') Edit
-			div(class='columns small-2 medium-2 medium-offset-2 button-right')
-				button(type="button" class="button" ng-click='vm.toSearch()') Back
-	div(ng-switch-when='tab-edit')
-		div(class='row')
-			div(class='small-12')
-				p(class='pageTitle') {{vm.pageTitle}}
-		//- Edit Product
-		div(class='row')
-			div(class='columns small-12 medium-4 medium-offset-4')
-				table
-					thead
-						tr
-							th Title
-							th Details
-					tbody(class='product-detail')
-						tr
-							td Store Name
-							td
-								input(ng-model='vm.product.name')
-						tr
-							td Price
-							td
-								input(ng-model="vm.product.price")
-						tr
-							td Category
-							td
-								input(ng-model="vm.product.category")
-		div(class='row')
-			div(class='columns small-2 medium-2 medium-offset-3')
-				button(type="button" class="button" ng-click='vm.saveEdit()') Save
-			div(class='columns small-2 medium-2 medium-offset-2 button-right')
-				button(type="button" class="button" ng-click='vm.toSearch()') Back
+div(class="columns row")
+	div(class="row colums")
+		div(class="column")
+			h2 Add Product and Service
+		// Create Account
+		div(class="column")
+			div(class="borderT newBox row column")
+				div(class='row column')
+					div(class='column small-6 large-3 paddingL0')
+						label First Name
+							input(type='text')
+					div(class='column small-6 large-3 paddingL0')
+						label Mid Name
+							input(type='text')
+					div(class='column small-6 large-3 paddingL0')
+						label Last Name
+							input(type='text')
+					div(class='column small-6 large-3 paddingL0')
+						label Gender
+							input(type='text')
+					div(class='column small-6 large-3 paddingL0')
+						label Phone
+							input(type='text')
+					div(class='column small-6 large-3 paddingL0')
+						label Email
+							input(type='text')
+					div(class='column small-6 large-3 paddingL0')
+						label Address
+							input(type='text')
+					div(class='column small-6 large-3 paddingL0')
+						label District
+							input(type='text')
+					div(class='column small-6 large-3 paddingL0')
+						label City
+							input(type='text')
+					div(class='column small-6 large-3 paddingL0')
+						label Country
+							input(type='text')
+				div(class="row column")
+					div(class='column small-centered small-12')
+						input(class="button float-center" type="submit" value="Add")
+	div(class="row colums")
+		div(class="column")
+			h2 Products and Services List
+		// Create Account
+		div(class="row column")
+			div(class="column small-12")
+				ul(class="menu clearfix")
+					li(class="float-right marginL15")
+						<a class="button secondary" ng-click="vm.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
+					li(class="float-right")
+						ul(class="menu")
+							li: label(class="paddingR15 show-for-large") Sort by
+							li: select(class="")
+									option(value="name") Name
+									option(value="checkinTime") Check-in time
+									option(value="status") Status
+		div(class="column")
+			div(class="borderT newBox row column")
+				div(class="row column")
+					form(ng-submit="vm.searchCustomers('checkInDiv')")
+						div(class="row column")
+							label Phone/Email
+								input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.data.checkingInCustomer.username')
+		div(class='row column')
+			div(class="column small-12")
+				div(class="table-scroll newBox")
+					table(class="borderAll")
+						thead
+							tr
+								th Name
+								th Price
+								th Description
+								th Unit
+								th Edit
+						tbody
+							tr
+								td Test
+								td Test
+								td Test
+								td Test
+								td
+									button(type="button" class="alert button") Edit
+		ul(class='pagination' role='navigation' aria-label='Pagination')
+			li(class='pagination-previous disabled') Previous
+				span(class='show-for-sr') page
+			li(class='current') 1
+				span(class='show-for-sr')
+			li
+				a(href='#' aria-label='page-2') 2
+			li
+				a(href='#' aria-label='page-3') 3
+			li
+				a(href='#' aria-label='page-4') 4
+			li(class="ellipsis" aria-hidden="true")
+			li
+				a(href='#' aria-label='page-10') 10
+			li
+				a(href='#' aria-label='page-11') 11
+			li(class='pagination-next')
+				a(href="#" aria-label="Next page") Next
+					span(class='show-for-sr') page

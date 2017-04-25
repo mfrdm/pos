@@ -17,7 +17,7 @@ div(class="columns row")
 									option(value="status") Status
 		// Search Area
 		div(class="column")
-			div(class="borderT newBox row column paddingLR15")
+			div(class="borderT newBox row column")
 				div(class="row column")
 					form(ng-submit="vm.searchCustomers('checkInDiv')")
 						div(class="row column")
@@ -33,7 +33,7 @@ div(class="columns row")
 				div(class='row column')
 					div(class='column small-6 paddingL0')
 						label DateTime
-							input(type='text' my-datepicker='')
+							input(type='text' date-time-picker='')
 				div(class="row column")
 						input(class="button" type="submit" value="Booking")
 	div(class="row colums")
@@ -53,9 +53,49 @@ div(class="columns row")
 									option(value="checkinTime") Check-in time
 									option(value="status") Status
 		div(class="column")
-			div(class="borderT newBox row column paddingLR15")
+			div(class="borderT newBox row column")
 				div(class="row column")
 					form(ng-submit="vm.searchCustomers('checkInDiv')")
 						div(class="row column")
 							label Phone/Email
 								input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.data.checkingInCustomer.username')
+		div(class='row column')
+			div(class="column small-12")
+				div(class="table-scroll newBox")
+					table(class="borderAll")
+						thead
+							tr
+								th Name
+								th Location
+								th Service
+								th Date
+								th Time
+								th Config
+						tbody
+							tr
+								td Test
+								td Test
+								td Test
+								td Test
+								td Test
+								td
+									button(type="button" class="alert button") Edit
+		ul(class='pagination' role='navigation' aria-label='Pagination')
+			li(class='pagination-previous disabled') Previous
+				span(class='show-for-sr') page
+			li(class='current') 1
+				span(class='show-for-sr')
+			li
+				a(href='#' aria-label='page-2') 2
+			li
+				a(href='#' aria-label='page-3') 3
+			li
+				a(href='#' aria-label='page-4') 4
+			li(class="ellipsis" aria-hidden="true")
+			li
+				a(href='#' aria-label='page-10') 10
+			li
+				a(href='#' aria-label='page-11') 11
+			li(class='pagination-next')
+				a(href="#" aria-label="Next page") Next
+					span(class='show-for-sr') page

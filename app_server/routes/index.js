@@ -54,7 +54,7 @@ router.get('/hr/employees/employee/:uId', hrCtrl.readOneUser);
 router.post('/hr/employees/employee/:uId/edit', hrCtrl.editOneUser);
 router.get('/angular/employees', hrCtrl.readAngularEmployees);
 
-router.get('/bi', biCtrl.readReport);
+// router.get('/bi', biCtrl.readReport);
 
 // router.get('/assets', auth, assetsCtrl.readSomeAsset); // TEST local authen
 router.get('/assets', assetsCtrl.readSomeAsset);
@@ -88,7 +88,7 @@ router.get('/products/product/:productId', productsCtrl.readOneProductById);
 router.post('/products/product/:productId/edit', productsCtrl.updateOneProduct);
 router.get('/angular/products', productsCtrl.readAngularProducts);
 
-router.get('/angular/attendance', othersCtrl.readAngularAttendance);
+router.get('/angular/attendances', othersCtrl.readAngularAttendance);
 
 // Others
 router.get ('/components/template/message', othersCtrl.getMessageTemplate);

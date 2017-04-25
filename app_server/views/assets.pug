@@ -1,83 +1,177 @@
-h2= data.look.title
+//- h2= data.look.title
 
-//div(ng-include='vm.other.messageTemplate')
+//- //div(ng-include='vm.other.messageTemplate')
 
-div <message-widget message="vm.other.message" message-state="vm.other.messageState" message-div-id="{{ vm.other.messageDivId }}" id="{{ vm.other.messageDivId }}" data-toggler="is-hidden" data-closable class="is-hidden">
+//- div <message-widget message="vm.other.message" message-state="vm.other.messageState" message-div-id="{{ vm.other.messageDivId }}" id="{{ vm.other.messageDivId }}" data-toggler="is-hidden" data-closable class="is-hidden">
 
-div(class='row column')
-	p: button(class="button", data-open="addFormModal", ng-click="vm.getSelectedAsset('add')") Add
+//- div(class='row column')
+//- 	p: button(class="button", data-open="addFormModal", ng-click="vm.getSelectedAsset('add')") Add
 
-div(class="reveal" id="deleteFormModal" data-reveal="true")
-	div(class="row")
-		table
-			thead
-				tr
-					- var assetNames = ['Name', 'Category', 'Quantity', 'Status'];
-					- var twidth = ['30%', '10%', '10%', '10%'];
-					- var assets = data.data;
-					- var assetNum = data.data.length;
-					- var assetNameNum = assetNames.length;
-					- for (var i = 0; i < assetNameNum; i++)
-						th(width=twidth[i])= assetNames[i]
-			tbody
-				tr
-					td {{ vm.formData.name }}
-					td {{ vm.formData.category }}
-					td {{ vm.formData.quantity }}
-					td {{ vm.formData.status }}
+//- div(class="reveal" id="deleteFormModal" data-reveal="true")
+//- 	div(class="row")
+//- 		table
+//- 			thead
+//- 				tr
+//- 					- var assetNames = ['Name', 'Category', 'Quantity', 'Status'];
+//- 					- var twidth = ['30%', '10%', '10%', '10%'];
+//- 					- var assets = data.data;
+//- 					- var assetNum = data.data.length;
+//- 					- var assetNameNum = assetNames.length;
+//- 					- for (var i = 0; i < assetNameNum; i++)
+//- 						th(width=twidth[i])= assetNames[i]
+//- 			tbody
+//- 				tr
+//- 					td {{ vm.formData.name }}
+//- 					td {{ vm.formData.category }}
+//- 					td {{ vm.formData.quantity }}
+//- 					td {{ vm.formData.status }}
 
-	div(class="row")
-		div(class="button-group")
-			<a class="button" ng-click="vm.deleteAsset()" data-close data-toggle="{{ vm.other.messageDivId }}">Delete</a>
-			<a class="button float-right" data-close>Cancel</a>
+//- 	div(class="row")
+//- 		div(class="button-group")
+//- 			<a class="button" ng-click="vm.deleteAsset()" data-close data-toggle="{{ vm.other.messageDivId }}">Delete</a>
+//- 			<a class="button float-right" data-close>Cancel</a>
 
-div(class="reveal" id="addFormModal" data-reveal="true")
-	form
-		div(class="row")
-			div(class="column small-3")
-				label(for="assetNameInput", class="text-right middle") Name
-			div(class="column small-9")
-				input(type="text", placeholder="Asset name", id="assetNameInput", value="{{ vm.formData.name }}", ng-model="vm.formData.name" required)
-		div(class="row")
-			div(class="column small-3")
-				label(for="assetCatInput", class="text-right middle") Category
-			div(class="column small-9")
-				input(type="text", placeholder="Category of the asset", name="category", id="assetCatInput", value="{{ vm.formData.category }}", ng-model="vm.formData.category")
-		div(class="row")
-			div(class="column small-3")
-				label(for="assetQuantity", class="text-right middle") Quantity
-			div(class="column small-9")
-				input(type="text", placeholder="Asset quantity", id="assetQuantity", value="{{ vm.formData.quantity }}", ng-model="vm.formData.quantity")
-		div(class="row")
-			div(class="column small-3")
-				label(for="assetStatus", class="text-right middle") Status
-			div(class="column small-9")
-				input(type="text", placeholder="Asset Status", id="assetStatus", value="{{ vm.formData.status }}", ng-model="vm.formData.status")
+//- div(class="reveal" id="addFormModal" data-reveal="true")
+//- 	form
+//- 		div(class="row")
+//- 			div(class="column small-3")
+//- 				label(for="assetNameInput", class="text-right middle") Name
+//- 			div(class="column small-9")
+//- 				input(type="text", placeholder="Asset name", id="assetNameInput", value="{{ vm.formData.name }}", ng-model="vm.formData.name" required)
+//- 		div(class="row")
+//- 			div(class="column small-3")
+//- 				label(for="assetCatInput", class="text-right middle") Category
+//- 			div(class="column small-9")
+//- 				input(type="text", placeholder="Category of the asset", name="category", id="assetCatInput", value="{{ vm.formData.category }}", ng-model="vm.formData.category")
+//- 		div(class="row")
+//- 			div(class="column small-3")
+//- 				label(for="assetQuantity", class="text-right middle") Quantity
+//- 			div(class="column small-9")
+//- 				input(type="text", placeholder="Asset quantity", id="assetQuantity", value="{{ vm.formData.quantity }}", ng-model="vm.formData.quantity")
+//- 		div(class="row")
+//- 			div(class="column small-3")
+//- 				label(for="assetStatus", class="text-right middle") Status
+//- 			div(class="column small-9")
+//- 				input(type="text", placeholder="Asset Status", id="assetStatus", value="{{ vm.formData.status }}", ng-model="vm.formData.status")
 		
-		div(class="row")
-			<div ng-switch on="vm.other.updateBtnName">
-				<div ng-switch-when="Submit">
-					div(class="column small-3")
-						label(for="updateExplain", class="text-right middle") Reason to update
-					div(class="column small-9")
-						input(type="text", placeholder="Reason to update", id="updateExplain", value="{{ vm.formData.reason }}", ng-model="vm.formData.reason")
-				</div>
-			</div>
-		div(class="row")
-			div(class="button-group")
-				<input class="button", ng-click="vm.updateAsset(vm.otherUpdateMode)" data-toggle="{{ vm.other.messageDivId }}" type="submit" value="{{ vm.other.updateBtnName }}" data-close>
-				<a class="button float-right" data-close> Cancel </a>									
+//- 		div(class="row")
+//- 			<div ng-switch on="vm.other.updateBtnName">
+//- 				<div ng-switch-when="Submit">
+//- 					div(class="column small-3")
+//- 						label(for="updateExplain", class="text-right middle") Reason to update
+//- 					div(class="column small-9")
+//- 						input(type="text", placeholder="Reason to update", id="updateExplain", value="{{ vm.formData.reason }}", ng-model="vm.formData.reason")
+//- 				</div>
+//- 			</div>
+//- 		div(class="row")
+//- 			div(class="button-group")
+//- 				<input class="button", ng-click="vm.updateAsset(vm.otherUpdateMode)" data-toggle="{{ vm.other.messageDivId }}" type="submit" value="{{ vm.other.updateBtnName }}" data-close>
+//- 				<a class="button float-right" data-close> Cancel </a>									
 
-table
-	thead
-		tr
-			- var tableHeaderNames = ['Name', 'Category', 'Quantity', 'Status', 'Edit', 'Delete'];
-			- var twidth = ['30%', '10%', '10%', '10%', '10%', '10%'];
-			- var key = ['name', 'category', 'quantity', 'status'];
-			- var d = data.data;
-			- var rowNum = d.length;
-			- var columnNum = tableHeaderNames.length;
-			- for (var i = 0; i < columnNum; i++)
-				th(width=twidth[i])= tableHeaderNames[i]
-	tbody(id="{{ vm.other.assetDivId }}")
-		tr(ng-repeat="asset in vm.assets", asset-widget, asset="asset", add-form-modal-id="{{ vm.other.addFormModalId }}", delete-form-modal-id="{{ vm.other.deleteFormModalId }}", index="{{ $index }}", delete-action="{{ vm.other.deleteActionName }}", edit-action="{{ vm.other.editActionName }}", asset-list-id="{{ vm.other.assetDivId }}", get-selected-asset="vm.getSelectedAsset (action, index)")
+//- table
+//- 	thead
+//- 		tr
+//- 			- var tableHeaderNames = ['Name', 'Category', 'Quantity', 'Status', 'Edit', 'Delete'];
+//- 			- var twidth = ['30%', '10%', '10%', '10%', '10%', '10%'];
+//- 			- var key = ['name', 'category', 'quantity', 'status'];
+//- 			- var d = data.data;
+//- 			- var rowNum = d.length;
+//- 			- var columnNum = tableHeaderNames.length;
+//- 			- for (var i = 0; i < columnNum; i++)
+//- 				th(width=twidth[i])= tableHeaderNames[i]
+//- 	tbody(id="{{ vm.other.assetDivId }}")
+//- 		tr(ng-repeat="asset in vm.assets", asset-widget, asset="asset", add-form-modal-id="{{ vm.other.addFormModalId }}", delete-form-modal-id="{{ vm.other.deleteFormModalId }}", index="{{ $index }}", delete-action="{{ vm.other.deleteActionName }}", edit-action="{{ vm.other.editActionName }}", asset-list-id="{{ vm.other.assetDivId }}", get-selected-asset="vm.getSelectedAsset (action, index)")
+
+//- div(ng-switch='vm.tab')
+//- 	div(ng-switch-when='tab-search')
+		
+//- 	div(ng-switch-when='tab-create')
+		
+//- 	div(ng-switch-when='tab-profile')
+		
+//- 	div(ng-switch-when='tab-edit')
+div(class="columns row")
+	div(class="row colums")
+		div(class="column")
+			h2 Add Assets
+		// Create Account
+		div(class="column")
+			div(class="borderT newBox row column")
+				div(class='column small-12 paddingLR0')
+					label Name
+						input(type='text')
+				div(class='column small-12 paddingLR0')
+					label Quantity
+						input(type='text')
+				div(class='column small-12 paddingLR0')
+					label Quality
+						input(type='text')
+				div(class='column small-12 paddingLR0')
+					label Location
+						input(type='text')
+			div(class="row column")
+				div(class='column small-centered small-12')
+					input(class="button float-center" type="submit" value="Add")
+	div(class="row colums")
+		div(class="column")
+			h2 Assets List
+		// Create Account
+		div(class="row column")
+			div(class="column small-12")
+				ul(class="menu clearfix")
+					li(class="float-right marginL15")
+						<a class="button secondary" ng-click="vm.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
+					li(class="float-right")
+						ul(class="menu")
+							li: label(class="paddingR15 show-for-large") Sort by
+							li: select(class="")
+									option(value="name") Name
+									option(value="checkinTime") Check-in time
+									option(value="status") Status
+		div(class="column")
+			div(class="borderT newBox row column")
+				div(class="row column")
+					form(ng-submit="vm.searchCustomers('checkInDiv')")
+						div(class="row column")
+							label Phone/Email
+								input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.data.checkingInCustomer.username')
+		div(class='row column')
+			div(class="column small-12")
+				div(class="table-scroll newBox")
+					table(class="borderAll")
+						thead
+							tr
+								th Name
+								th Phone
+								th Email
+								th Birthday
+								th Created By
+								th Edit
+						tbody
+							tr
+								td Test
+								td Test
+								td Test
+								td Test
+								td Test
+								td
+									button(type="button" class="alert button") Edit
+		ul(class='pagination' role='navigation' aria-label='Pagination')
+			li(class='pagination-previous disabled') Previous
+				span(class='show-for-sr') page
+			li(class='current') 1
+				span(class='show-for-sr')
+			li
+				a(href='#' aria-label='page-2') 2
+			li
+				a(href='#' aria-label='page-3') 3
+			li
+				a(href='#' aria-label='page-4') 4
+			li(class="ellipsis" aria-hidden="true")
+			li
+				a(href='#' aria-label='page-10') 10
+			li
+				a(href='#' aria-label='page-11') 11
+			li(class='pagination-next')
+				a(href="#" aria-label="Next page") Next
+					span(class='show-for-sr') page
