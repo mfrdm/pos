@@ -1,34 +1,46 @@
-var CustomerCtrl = function(checkinService, customerService, $route){
+var CustomerCtrl = function(customerService, $route){
 	var vm = this;
 	vm.tab = 'tab-main';
 	vm.customerInfo = {};
+	vm.look = {};
+	vm.searchResult = {};
+	vm.customer = {};
+
 	vm.customerInfo.edu = {};
+	vm.look.customerSearchResultDiv = false;
+	vm.look.fields = ['firstname', 'lastname', 'gender', 'birthday', 'phone', 'email']
 	////////////////////////////////////////////////////////
-	//Setup ng-switch
-	// vm.toCreate = function(){
-	// 	vm.tab = 'tab-create'
-	// }
-	// vm.toProfile = function(index){
-	// 	vm.tab = 'tab-profile';
-	// 	vm.customer = vm.results[index]
-	// }
-	// vm.toSearch = function(){
-	// 	vm.tab = 'tab-search'
-	// 	$route.reload();
-	// }
-	// vm.toEdit = function(){
-	// 	vm.tab = 'tab-edit';
-	// }
+	// Setup ng-switch
+	vm.toMain = function(){
+		vm.tab = 'tab-main'
+	}
+	vm.toProfile = function(index){
+		vm.tab = 'tab-profile';
+	}
+	vm.toEdit = function(){
+		vm.tab = 'tab-edit';
+	}
 	////////////////////////////////////////////////////////
 	//Search Page
 	vm.searchFunc = function(){
-		checkinService.searchCustomers(vm.searchInput)
+
+		customerService.search(vm.searchInput)
 		.then(function success(res){
-			vm.results = res.data.data;
+			vm.searchResult.customers = res.data.data;
+			vm.look.customerSearchResultDiv = true;
+			//Go to view one customer
+			vm.selectCustomerToViewProfile = function(index){
+				vm.tab = 'tab-profile';
+				customerService.readOne(vm.searchResult.customers[index]._id)
+					.then(function success(res){
+						vm.customer.info = res.data.data
+					})
+			}
 		}, function error(err){
 			console.log(err)
 		})
 	}
+	
 	////////////////////////////////////////////////////////
 	//Create Page
 	vm.createNewCustomer = function(){
@@ -42,35 +54,34 @@ var CustomerCtrl = function(checkinService, customerService, $route){
 		vm.customerInfo.edu.title = vm.title
 		vm.customerInfo.edu.start = vm.start
 		vm.customerInfo.edu.end = vm.end
-		console.log(vm.customerInfo)
-		// customerService.postCreateCustomer(vm.customerInfo)
-		// 	.then(function success(res){
-		// 		vm.tab = 'tab-search'
-		// 		$route.reload();
-		// 	}, function error(err){
-		// 		console.log(err)
-		// 	})
+		customerService.createOne(vm.customerInfo)
+			.then(function success(res){
+				console.log(res)
+			}, function error(err){
+				console.log(err)
+			})
 	}
 	////////////////////////////////////////////////////////
 	//Edit Page
 	vm.saveEdit = function(){
+		vm.customerData = {}
+		
+		vm.look.fields.map(function(field){
+			vm.customerData[field] = vm.customer.info[field]
+		})
 		vm.data={
-			$set:{
-				firstname:vm.customer.firstname,
-				lastname:vm.customer.lastname,
-				email:vm.customer.email,
-				birthday:vm.customer.birthday
-			}
+			$set:vm.customerData
 		}
-		customerService.postSaveEdit(vm.customer._id, vm.data)
+
+		customerService.updateOne(vm.customer.info._id, vm.data)
 			.then(function success(res){
 				console.log(res)
-				vm.tab = 'tab-search';
-				$route.reload();
+				$route.reload()
+				vm.tab = 'tab-main';
 			}, function error(err){
 				console.log(err)
 			})
 	}
 }
 
-app.controller('CustomerCtrl', ['checkinService','customerService','$route',CustomerCtrl])
+app.controller('CustomerCtrl', ['customerService','$route',CustomerCtrl])

@@ -22,8 +22,14 @@ function dateTimePicker (){
 		// 	})
 		// }
 		link: function(scope, element, attrs, ngModel){
-            if(typeof(scope.format) == "undefined"){ scope.format = "dd-mm-yyyy" }
-            $(element).fdatepicker({format: scope.format}).on('changeDate', function(ev){
+            if(typeof(scope.format) == "undefined"){ scope.format = "dd.mm.yyyy hh:ii" }
+            $(element).fdatepicker({
+            	format: scope.format,
+            	disableDblClickSelection: true,
+            	initialDate: '07-05-2017',
+            	leftArrow:'<<',
+				rightArrow:'>>'
+            }).on('changeDate', function(ev){
                 scope.$apply(function(){
                     ngModel.$setViewValue(ev.date);
                 }); 
@@ -42,7 +48,9 @@ function datePicker (){
             $(element).fdatepicker({
             	format: scope.format,
             	disableDblClickSelection: true,
-            	initialDate: '07-05-2017'
+            	initialDate: '07-05-2017',
+            	leftArrow:'<<',
+				rightArrow:'>>'
             }).on('changeDate', function(ev){
                 scope.$apply(function(){
                     ngModel.$setViewValue(ev.date);
