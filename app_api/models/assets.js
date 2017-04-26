@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 
 var assetsSchema = mongoose.Schema({
 	name: String,
+	parentCat: Number,
 	category: Number,
 	quantity: Number,
 	createdAt: {type: Date, default: Date.now},

@@ -21,8 +21,8 @@ var customersSchema = mongoose.Schema({
 		explain: String,
 		by: mongoose.Schema.Types.ObjectId
 	}],
-	order: [{orderid:{type: mongoose.Schema.Types.ObjectId}}],
-	booking: [{type:mongoose.Schema.Types.ObjectId}],
+	orders: [{orderId:{type: mongoose.Schema.Types.ObjectId}}],
+	bookings: [{type:mongoose.Schema.Types.ObjectId}],
 });
 
 mongoose.model ('customers', customersSchema);

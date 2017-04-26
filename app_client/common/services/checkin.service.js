@@ -1,4 +1,7 @@
-var checkinService = function($http){
+angular.module ('posApp')
+	.service ('CheckinService', ['$http', CheckinService])
+
+function CheckinService ($http){
 
 	//Search Service
 	this.searchCustomers = function(input){
@@ -9,7 +12,7 @@ var checkinService = function($http){
 			params:{
 				queryInput:JSON.stringify({
 					conditions: {$or: array},
-					projection: null,
+					projection: {firstname: 1, lastname: 1, phone: 1, email: 1},
 					opts: null
 				})
 			}
@@ -17,27 +20,28 @@ var checkinService = function($http){
 	}
 
 	//Get all checked in customer
-	this.getDataOrderCheckin = function(){
+	this.getCheckinList = function(query){
+		query = query ? query : {};
 		return $http({
 			method:'GET',
 			url:'/api/orders',
 			params: {
-				queryInput: JSON.stringify({
-					conditions: {status:1},
-					projection: null,
-					opts: null
-				})
-			}
+				start: query.start ? query.start : new Date(),
+				end: query.end ? query.end : new Date().setDate(new Date().getDate() + 1),
+				storeId: query.storeId,
+				staffId: query.staffId,
+				status: query.status ? query.status : 1, // checked-in only
+			},
 		})
 	}
 
-	//Get data from 1 customer by ID
-	this.getDataOneCustomer = function(id){
-		return $http({
-		method:'GET',
-			url:'api/customers/customer/'+id
-		})
-	}
+	// //Get data from 1 customer by ID
+	// this.getDataOneCustomer = function(id){
+	// 	return $http({
+	// 	method:'GET',
+	// 		url:'api/customers/customer/'+id
+	// 	})
+	// }
 
 	this.createOne = function (userId, data) {
 		return $http({
@@ -47,27 +51,25 @@ var checkinService = function($http){
 		});
 	};
 
-	//Update new Order
-	this.updateOne = function(id, data){
-		return $http({
-			method: 'POST',
-			url: '/api/orders/order/'+ id +'/edit',
-			data: JSON.stringify({
-				$set: { orderline: data }
-			})
-		})
-	};
+	// //Update new Order
+	// this.updateOne = function(id, data){
+	// 	return $http({
+	// 		method: 'POST',
+	// 		url: '/api/orders/order/'+ id +'/edit',
+	// 		data: JSON.stringify({
+	// 			$set: { orderline: data }
+	// 		})
+	// 	})
+	// };
 
-	//Checkout for customer
-	this.postCheckOut = function(id){
-		return $http({
-			url:'/api/orders/order/'+id+'/edit',
-			method:'POST',
-			data:JSON.stringify({
-				status:2
-			})
-		})
-	};
+	// //Checkout for customer
+	// this.postCheckOut = function(id){
+	// 	return $http({
+	// 		url:'/api/orders/order/'+id+'/edit',
+	// 		method:'POST',
+	// 		data:JSON.stringify({
+	// 			status:2
+	// 		})
+	// 	})
+	// };
 }
-
-app.service('checkinService', ['$http', '$window',  checkinService])

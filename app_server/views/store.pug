@@ -1,0 +1,33 @@
+div(class="column row")
+	div(class="column row")
+		div(class="column")
+			h2 Store List
+		// Setting
+		div(class="row column")
+			div(class="column small-3")
+				ul(class="menu")
+					li
+						a(class="button primary" ng-click="vm.toggleCheckInDiv()") 
+							<span class="show-for-large">Check-in</span><i class="material-icons customIcon hide-for-large"> add</i>
+			div(class="column small-9")
+				ul(class="menu clearfix")
+					li(class="float-right marginL15")
+						<a class="button secondary" ng-click="vm.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
+					li(class="float-right")
+						ul(class="menu")
+							li: label(class="paddingR15 show-for-large") Sort by
+							li: select(class="")
+									option(value="name") Name
+									option(value="checkinTime") Check-in time
+									option(value="status") Status
+		// Add A Store
+		div(class="column")
+
+		// Filter
+		div(class="column" ng-show="vm.look.filterDiv")
+
+		// Edit a Store
+		div(class="column" ng-show="vm.look.editStoreDiv")
+
+		// Store List
+		div(class="column" ng-show="vm.look.storeListDiv")

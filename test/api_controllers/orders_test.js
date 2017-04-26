@@ -36,25 +36,21 @@ suite('Orders API test', function() {
 				method:'POST',
 				url:'http://localhost:3000/api/orders/create',
 				body: {
-					total: 1,
 					orderline: [
 						{
 							productId: "58eb2d71a83bc43a426f0bd3",
 							productName: "Private Room",
-							price: 10000,
 							quantity: 1
 						}
 					],
-					customers:{
+					customer:{
 						customerId: "58eb474538671b4224745192",
 						firstname: "duc",
-						lastname: "long"
+						lastname: "long",
+						phone: 34234234,
 					},
 					storeId: "58eb474538671b4224745192",
-					staffId: "58eb474538671b4224745192",	
-					updateAt: {
-						time: new Date('09/15/2017')
-					}
+					staffId: "58eb474538671b4224745192",
 				},
 				json: true
 			}, function(err, res, body){

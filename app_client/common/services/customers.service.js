@@ -13,6 +13,21 @@ var customerService = function($http){
 			data:JSON.stringify(data)
 		})
 	}
+
+	this.readCustomers = function (username){
+		var cond = [{"firstname" : { $regex: username, $options: 'i' }}, {"lastname" : { $regex: username, $options: 'i' }}, {"email" : { $regex: username, $options: 'i' }}, {"phone" : { $regex: username, $options: 'i' }}];
+		return $http({
+			method:'GET',
+			url:'/api/customers',
+			params:{
+				queryInput: JSON.stringify({
+					conditions: { $or: condition },
+					projection: null,
+					opts: null
+				})
+			}
+		})
+	}
 }
 
 app.service('customerService', ['$http',customerService])

@@ -1,5 +1,5 @@
 {
 	"verbose": true,
 	"ext": "js json css pug",
-	"ignore": ["public/*"]
+	"ignore": ["test/**/*"]
 }

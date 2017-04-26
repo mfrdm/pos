@@ -1,4 +1,4 @@
-var app = angular.module ('posApp', ['ngRoute', "checklist-model"]);
+var app = angular.module ('posApp', ['ngRoute']);
 
 app
 	.config (['$routeProvider', config])
@@ -78,18 +78,16 @@ function config ($routeProvider){
 
 // Check if a user has permission to access a certain page or resource
 function checkPermission ($q, authentication) {
-	// if (authentication.isLoggedIn ()){
-	// 	return {
-	// 		pass: true
-	// 	}
-	// }
-	// else{
-	// 	return {
-	// 		pass: false
-	// 	}
-	// }
-
-	return $q.defer().promise
+	if (authentication.isLoggedIn ()){
+		return {
+			pass: true
+		}
+	}
+	else{
+		return {
+			pass: false
+		}
+	}
 }
 
 function LayoutCtrl ($scope, $location) {
