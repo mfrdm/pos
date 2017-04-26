@@ -3,48 +3,102 @@ var dbHelper = require('../../libs/node/dbHelper')
 var requestHelper = require('../../libs/node/requestHelper')
 var request = require('request')
 var apiOptions = helper.getAPIOption();
+var mongoose = require ('mongoose');
+var Orders = mongoose.model ('orders');
+var Customers = mongoose.model ('customers');
 
 module.exports = new Checkin();
 
 function Checkin() {
 	
-	this.checkin = function(req, res) {
-		var apiUrl = apiOptions.server + "/api/orders/create";
-		var view = null;
-		var body = req.body;
-		var dataFilter = null;
-		console.log(req.body)
-		body.customerId = req.params.cusId;
+	// FIX rollback if error
+	this.checkin = function(req, res, next) {
+		try{
+			var id = new mongoose.Types.ObjectId;
+			req.body.data._id = id;
+			var order = new Orders (req.body.data);
+			order.save (function (err, orderData){
+				if (err) { 
+					console.log (err)
+					res.json (err)
+				}
+				else {
+					// update customer order
+					Customers.findByIdAndUpdate (
+						req.params.cusId,
+						{ $push: {orders: id} },
+						{upsert: true},
+						function (err, cusData){
+							if (err) { 
+								console.log (err)
+								res.json (err)
+							}
+							else {
+								// console.log (cusData)
+								res.json ({data: {orderData: orderData, cusData: cusData}});
+							}
+						}
+					)
 
-		var send = function(req, res, view, data, cb){
-			var apiUrl = apiOptions.server + '/api/customers/customer/' + data.customers.customerId + '/edit';
-			var view = null;
-			var dataFilter = null;
-			console.log('check id'+ data._id + typeof data._id)
-			var body = {$push: {"order":{"orderId":data._id}}};
-			var send = function(req, res, view, data, cb){
-				requestHelper.sendJsonRes(res, 200, data)
-			}
-			requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
+				}
+
+			});
+
 		}
-		requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
+		catch (err) {
+			console.log (err)
+			next (err)
+		}
+
+	};
+
+	this.readCheckinList = function (req, res) {
+		Orders.find (
+			{
+				checkinTime: {
+					$gte: req.query.start, 
+					$lt: req.query.end,
+				},
+				status: req.query.status,
+				storeId: mongoose.Types.ObjectId(req.query.storeId)
+			},
+			function (err, docs){
+				if (err){
+					res.json (err);
+				}
+				else {
+					res.json ({data: docs});
+				}
+			}
+		)
 	};
 
 	this.updateCheckin = function(req, res) {
-		//cusid is id of the order
-		var apiUrl = apiOptions.server + "/api/orders/order/"+req.params.cusid+"/edit";
-		var view = null;
-		var body = req.body;
-		var dataFilter = null;
-		body.customerId = req.params.cusid;
-		var send = function(req, res, view, data, cb){
-			requestHelper.sendJsonRes(res, 200, data)
+		try{
+			Orders.findByIdAndUpdate (
+				req.body._id,
+				req.body.data,
+				function (err, orderData){
+					if (err) {
+						console.log (err)
+						res.json (err);
+					}
+					else {
+						res.json ({data: {orderData: orderData}}) 
+					}
+				}
+			);
 		}
-		requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
+		catch (err) {
+			console.log (err)
+			next (err)
+		}
 	};
 
 	//Render ng-view main checkin
 	this.readAngularCheckin = function(req, res) {
 		helper.angularRender( req, res,'checkin/Checkin')
 	};
+
+
 };

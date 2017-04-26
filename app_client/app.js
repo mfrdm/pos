@@ -1,4 +1,4 @@
-var app = angular.module ('posApp', ['ngRoute', "checklist-model"]);
+var app = angular.module ('posApp', ['ngRoute']);
 
 app
 	.config (['$routeProvider', config])
@@ -88,8 +88,6 @@ function checkPermission ($q, authentication) {
 			pass: false
 		}
 	}
-
-	return $q.defer().promise
 }
 
 function LayoutCtrl ($rootScope, $scope, $location, authentication, socket) {

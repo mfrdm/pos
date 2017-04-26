@@ -29,7 +29,7 @@ router.post('/customers/customer/:cusId/edit', customersCtrl.updateOneCustomerBy
 
 router.get('/companies/', companiesCtrl.readSomeComps);
 router.get('/companies/company/:compId', companiesCtrl.readOneCompById);
-router.post('/companies/create', companiesCtrl.createOneComp);
+router.post('/companies/.,mnbvcxz/create', companiesCtrl.createOneComp);
 router.post('/companies/company/:compId/edit', companiesCtrl.updateOneCompById);
 
 router.get('/companies/depts/', deptsCtrl.readSomeDepts);

@@ -1,32 +1,30 @@
 var mongoose = require('mongoose');
 
-var ordersSchema = mongoose.Schema({
+var ordersSchema = new mongoose.Schema({
 	total: Number,
-	orderline: [
-		{
-			productId: {type: mongoose.Schema.Types.ObjectId},
-			productName: {type: String},
-			price: {type: String},
-			quantity: {type: String}
-		}
-	],
+	orderline: [{
+		id: {type: mongoose.Schema.Types.ObjectId, required: true},
+		productName: {type: String, required: true},
+		quantity: {type: String, default: 1, required: true}
+	}],
 	checkinTime: {type: Date, default: Date.now},
 	checkoutTime: {type: Date},
-	customer:{
-		customerId: {type: mongoose.Schema.Types.ObjectId},
-		firstname: {type:String},
-		lastname: {type:String},
-		phone: {type: String},
-		email: {type: String},
+	customer: {
+		id: {type: mongoose.Schema.Types.ObjectId, required: true},
+		firstname: {type:String, required: true},
+		lastname: {type:String, required: true},
+		phone: {type: String, required: true},
+		email: {type: String}, // optional. added if exists
 	},
 	storeId: {type: mongoose.Schema.Types.ObjectId, required: true},
 	staffId: {type: mongoose.Schema.Types.ObjectId, required: true},	
 	status: {type: Number, default: 1}, // 1: checked in, 2: paid and checked out, 3: cancel
 	updateAt: {
-		time: {type: Date, required: true},
+		time: {type: Date},
 		explain: {type: Number},
-		by: mongoose.Schema.Types.ObjectId,
+		by:{type: mongoose.Schema.Types.ObjectId}, // staff id
 	}
 });
 
-mongoose.model ('orders', ordersSchema);
+
+module.exports = mongoose.model ('orders', ordersSchema);

@@ -52,14 +52,14 @@ div(class="columns row")
 				form(ng-submit="vm.checkin ()")
 					div(class="row column")
 						label Service
-							select(name="selectedService" ng-model="vm.data.checkingInCustomer.orderline[0].productName" ng-options="val for val in vm.data.services.productName")
+							select(name="selectedService" ng-model="vm.data.checkingInCustomer.orderline[0].productName" ng-options="val for val in vm.data.serviceNames")
 					div(class="row column")
 						ul(class="menu vertical")
 							li(ng-repeat="item in vm.data.checkingInCustomer.orderline.slice(1)" class="marginB15")
 								div(class="column row")
 									div(class="column small-6 paddingL0")
 										label Other items
-											select(name="{{ 'otherItem' + ($index + 1) }}" ng-model="item.productName" ng-options="val for val in vm.data.otherItems.productName")
+											select(name="{{ 'otherItem' + ($index + 1) }}" ng-model="item.productName" ng-options="val for val in vm.data.otherItemNames")
 									div(class="column small-6 paddingR0")
 										label Quantity
 											input(name="{{ 'otherItemQuantity' + ($index + 1)}}" ng-model="item.quantity" string-to-number type="number" value="{{ item.quantity }}")
@@ -112,14 +112,14 @@ div(class="columns row")
 				form
 					div(class="row column")
 						label Service
-							select(name="selectedService" ng-model="vm.data.editedCheckedInCustomer.orderline[0].productName" ng-options="val for val in vm.data.services.productName")
+							select(name="selectedService" ng-model="vm.data.editedCheckedInCustomer.orderline[0].productName" ng-options="val for val in vm.data.serviceNames")
 					div(class="row column")
 						ul(class="menu vertical")
 							li(ng-repeat="item in vm.data.editedCheckedInCustomer.orderline.slice(1)" class="marginB15")
 								div(class="column row")
 									div(class="column small-6 paddingL0")
 										label Other items
-											select(name="{{ 'selectedOtherItem' + ($index + 1)}}" ng-model="item.productName" ng-options="val for val in vm.data.otherItems.productName")
+											select(name="{{ 'selectedOtherItem' + ($index + 1)}}" ng-model="item.productName" ng-options="val for val in vm.data.otherItemNames")
 									div(class="column small-6 paddingR0")
 										label Quantity
 											input(name="{{ 'otherItemQuantity' + ($index + 1)}}" ng-model="item.quantity" string-to-number type="number" value="{{ item.quantity }}")

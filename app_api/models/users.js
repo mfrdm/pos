@@ -2,6 +2,18 @@ var mongoose = require('mongoose');
 var crypto = require('crypto');
 var jwt = require('jsonwebtoken');
 
+//////////////////// Field Explaination ////////////////////////////
+// roles:
+// - 1: staff;
+// - 2: content admin (modify some data);
+// - 3: admin  
+// Permission:
+// - 1: modify user's own data
+// - 2: modify other user's data
+
+
+
+//////////////////// End //////////////////////////////////////////
 
 var addrSchema = new mongoose.Schema({
 	country: {type: Number, 'default': 1},
@@ -22,13 +34,15 @@ var workexpSchema = new mongoose.Schema({
 	position: {type: Number},
 	desc: String,
 	jobRef: mongoose.Schema.Types.ObjectId, // if get job from this website
-	compName: {type: String},
+	compName: {type: String, required: true},
+	depts: [{name: String, id: mongoose.Schema.Types.ObjectId}],
 	salary: Number,
 	start: {type: Date},
 	end: {type: Date},	
 });
 
 var usersSchema = mongoose.Schema({
+	////////////////////////////////// Profile info
 	firstname: {type: String, required: true},
 	lastname: {type: String, required: true},
 	birthday: {type: Date, required: true},
@@ -38,8 +52,13 @@ var usersSchema = mongoose.Schema({
 	// tempAddress: addrSchema,
 	// perAddress: addrSchema,
 	email: {type: String},
-	// secondEmails: [{type: String}],
-	attendance: [{day: Date, status: Number, explain: String}],
+	secondEmails: [{type: String}],
+	edu: [eduSchema],
+	workexp: [workexpSchema], // past working experience 
+	/////////////////////////////////// Sercurity
+	role: {type: Number, required: true}, //(staff, admin, manager)
+	permissions: [{type: Number, required: true}], // indicate which resource to be about to access
+	////////////////////////////////// Other info
 	createdAt: {type: Date, default: Date.now},
 	updatedAt: [{
 		time: {type: Date}, 
@@ -68,6 +87,8 @@ var usersSchema = mongoose.Schema({
 	},
 	hash: String,
 	salt: String,
+	////////////////////////////////// Business management info
+	attendance: [{attendingDate: Date, status: Number, explain: String}],
 });
 
 

@@ -1,12 +1,17 @@
-app
-	.controller('CheckinCtrl', ['$scope','checkinService','$route','authentication','socket', CheckinCtrl])
+angular.module('posApp')
+	.controller('CheckinCtrl', ['$scope', 'CheckinService', CheckinCtrl])
 
 //Get data to render all current checked in customers
-function CheckinCtrl ($scope, checkinService, $route, authentication, socket){
+function CheckinCtrl ($scope, CheckinService){
 	var vm = this;
 	vm.look = {};
 	vm.data = {}; // other data
 	vm.status = {};
+
+	// TESTING
+	vm.data.storeId = '58fdc7e1fc13ae0e8700008a';
+	vm.data.userId = '58eb474538671b4224745192'; // staff
+	// END
 
 	vm.searchResult = {};
 	vm.look.searchCheckingInCustomerResultDiv = false;
@@ -15,24 +20,43 @@ function CheckinCtrl ($scope, checkinService, $route, authentication, socket){
 	vm.look.checkInEditDiv = false;
 	vm.look.checkInDiv = false;
 
-	vm.data.services = { // Fix: fetch from server
-		productName: ['Private', 'Common'],
-		price: [100000, 10000]
+	vm.data.services = { // FIX: no hardcode
+		'Private': {
+			price: 150000,
+			id: 2312312,
+		},
+		'Common': {
+			price: 10000,
+			id: 31231,
+		},	
 	};
-	vm.data.otherItems = { // Fix: fetch from server
-		productName: ['', 'Coca', 'Poca', 'Pepsi'],
-		price: [0, 10000, 10000, 10000],
-	};  
+
+	vm.data.otherItems = { // FIX: no hardcode
+		'': {
+			price: 0,
+			id: -1,
+		},
+		'Coca': {
+			price: 7000,
+			id: 4233,
+		},
+		'Poca': {
+			price: 7000,
+			id: 243,
+		},
+		'Pepsi': {
+			price: 7000,
+			id: 343,
+		},		
+	};
+
+	vm.data.serviceNames = Object.keys (vm.data.services);
+	vm.data.otherItemNames = Object.keys (vm.data.otherItems);
 
 	vm.data.currCheckedInIndex = -1; 
 	vm.data.checkingInCustomer = getDefaultCheckInData ();
 
 	vm.data.editedCheckedInCustomer = {};
-
-	// Socket io send noti to the server
-	vm.sendNoti = function(){
-		socket.emit('sendNoti', vm.msg)
-	}
 
 	// Used to fill check-in data
 	// FIX: should not include hardcode
@@ -51,20 +75,26 @@ function CheckinCtrl ($scope, checkinService, $route, authentication, socket){
 					quantity: 0,
 				},			
 
-			]
+			],
+			customer: {
+				firstname: '',
+				lastname: '',
+				phone: '',
+				id: '',
+			}
 		}
 	};
 
 	function getDefaultProduct (){
 		return 	{
 			productName: '', //
-			price: 0,
+			id: '',
 			quantity: 0,
 		}
 	};
 
 	vm.searchCustomers = function(which) {
-		checkinService.searchCustomers(vm.data.checkingInCustomer.username)
+		CheckinService.searchCustomers(vm.data.checkingInCustomer.username)
 		.then(function success (res){
 			if (vm.look.checkInDiv && which === 'checkInDiv'){
 				vm.searchResult.checkingInCustomers = res.data.data;
@@ -81,20 +111,21 @@ function CheckinCtrl ($scope, checkinService, $route, authentication, socket){
 	}
 
 	vm.selectCustomerToCheckin = function(index){
-		Object.assign (vm.data.checkingInCustomer, vm.searchResult.checkingInCustomers [index]);
+		vm.data.checkingInCustomer.customer = {
+			id: vm.searchResult.checkingInCustomers [index]._id,
+			firstname: vm.searchResult.checkingInCustomers [index].firstname,
+			lastname: vm.searchResult.checkingInCustomers [index].lastname,
+			phone: vm.searchResult.checkingInCustomers [index].phone,			
+		}
+
 		vm.look.checkingInCustomerSearchResultDiv = false;
-		vm.data.checkingInCustomer.username = vm.data.checkingInCustomer.lastname + ' ' + vm.data.checkingInCustomer.firstname + ' / ' + vm.data.checkingInCustomer.phone + (vm.data.checkingInCustomer.email ? ' / ' + vm.data.checkingInCustomer.email : '');
+		vm.data.checkingInCustomer.username = vm.data.checkingInCustomer.customer.lastname + ' ' + vm.data.checkingInCustomer.customer.firstname + ' / ' + vm.data.checkingInCustomer.customer.phone + (vm.data.checkingInCustomer.customer.email ? ' / ' + vm.data.checkingInCustomer.customer.email : '');
 
 	}
 
-	vm.selectCustomerToEdit = function (index) {
-		Object.assign (vm.data.editedCheckedInCustomer, vm.searchResult.editedCheckedInCustomers [index]);
-		vm.look.editedCustomerSearchResultDiv = false;
-		vm.data.editedCheckedInCustomer.username = vm.data.editedCheckedInCustomer.lastname + ' ' + vm.data.editedCheckedInCustomer.firstname + ' / ' + vm.data.editedCheckedInCustomer.phone;		
-	}
 
 	vm.addMoreOtherItems = function (which){
-		if (which == 'checkingInDiv'){
+		if (which === 'checkingInDiv'){
 			vm.data.checkingInCustomer.orderline.push (getDefaultProduct());
 		}
 		else if (which === 'editedCheckedInDiv'){
@@ -168,7 +199,7 @@ function CheckinCtrl ($scope, checkinService, $route, authentication, socket){
 	//Checkout Page
 	vm.checkout = function(){
 		vm.outTime = new Date();
-		checkinService.postCheckOut(vm.oneOrder._id)
+		CheckinService.postCheckOut(vm.oneOrder._id)
 			.then(function success(res){
 				vm.tab = 'tab-search';
 				$route.reload();
@@ -179,15 +210,39 @@ function CheckinCtrl ($scope, checkinService, $route, authentication, socket){
 
 	////////////////////////////////////////////////////////
 	//Checkout Page
+
+	vm.getTotal = function (orderline) {
+		// var total = 0;
+		// var orderNum = orderline.length;
+		// var items =  {};
+		// Object.assign (items, vm.data.services, vm.data.otherItems);
+
+		// for (var i = 0; i < orderNum; i++) {
+		// 	if 
+		// 	total += (items [orderline [i].productName].price * orderline [i].quantity);
+		// }
+
+		// return total;
+		
+	};
+
 	vm.checkin = function(){
-		checkinService.createOne (vm.data.checkingInCustomer, vm).then(
+		// calculate total
+		vm.data.checkingInCustomer.total = vm.getTotal (vm.data.checkingInCustomer.orderline);
+		vm.data.checkingInCustomer.storeId = vm.data.storeId;
+		vm.data.checkingInCustomer.staffId = vm.data.userId;
+		console.log (vm.data.checkingInCustomer)
+		return
+		CheckinService.createOne (vm.data.checkingInCustomer, vm).then(
 			function success(data){
-				console.log (data)
-				vm.data.checkedInList.push (data);
-				vm.toggleCheckInDiv ();
+				// console.log (data)
+				// vm.data.checkedInList.push (data);
+				// vm.toggleCheckInDiv ();
+				vm.status.checkedin = true;
 			}, 
 			function error(err){
 				console.log(err);
+				vm.status.checkedin = false;
 			}
 		);
 	}
@@ -202,7 +257,7 @@ function CheckinCtrl ($scope, checkinService, $route, authentication, socket){
 			}
 		});
 
-		checkinService.updateOne (id, vm.data.editedCheckedInCustomer.orderline).then(
+		CheckinService.updateOne (id, vm.data.editedCheckedInCustomer.orderline).then(
 			function (data){
 
 				vm.data.checkedInList[vm.data.currCheckedInIndex].orderline = vm.data.editedCheckedInCustomer.orderline;
@@ -219,7 +274,14 @@ function CheckinCtrl ($scope, checkinService, $route, authentication, socket){
 	};
 
 	//////////////// Initialization ///////////////////////
-	checkinService.getDataOrderCheckin ().then(
+	var query = { // TESTING
+		start: '2017-03-01',
+		end: '2017-03-02',
+		storeId: vm.data.storeId,
+		staffId: vm.data.userId,
+	}	
+
+	CheckinService.getCheckinList (query).then(
 		function success(res){
 			vm.status.getCheckinList = true;
 			vm.data.checkedInList = res.data.data;
@@ -229,4 +291,5 @@ function CheckinCtrl ($scope, checkinService, $route, authentication, socket){
 			console.log(err)
 		}
 	);
+
 };

@@ -37,6 +37,7 @@ router.get('/', othersCtrl.angularApp);
 
 // Checkin
 router.get('/angular/checkin', checkinCtrl.readAngularCheckin);
+router.get('/angular/checkin-list', checkinCtrl.readCheckinList);
 router.post('/checkin/:cusId', checkinCtrl.checkin);
 router.post('/checkin/:cusId/edit', checkinCtrl.updateCheckin); //cusid is order id
 
