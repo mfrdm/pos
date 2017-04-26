@@ -50,8 +50,10 @@ module.exports = new function (){
 			if (req.params && req.params[idName]){
 				var idValue = req.params[idName];
 				var update = req.body;
+				console.log(update)
+				console.log(idValue)
 				var query = Model
-					.findByIdAndUpdate (mongoose.Types.ObjectId(idValue), update, {runValidators: true});
+					.findByIdAndUpdate (mongoose.Types.ObjectId(idValue), update, {runValidators: true, safe: true, upsert: true, new : true});
 				requestHelper.stdExec (res, query);
 			}
 			else{

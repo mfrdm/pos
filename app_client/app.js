@@ -141,10 +141,13 @@ function LayoutCtrl ($rootScope, $scope, $location, authentication, socket) {
 	// Get user info for socket io
 	var user = authentication.getCurUser()
 	//Socket function
-	socket.emit('login', {firstname:user.firstname, lastname:user.lastname, email:user.email, phone:user.phone});
-	socket.on('handleNoti', function(msg){
-		$scope.layout.notiAlert(msg)
-	})
+	if(user){
+		socket.emit('login', {firstname:user.firstname, lastname:user.lastname, email:user.email, phone:user.phone});
+		socket.on('handleNoti', function(msg){
+			$scope.layout.notiAlert(msg)
+		})
+	}
+	
 	//=========================================================
 
 	$("body").foundation();

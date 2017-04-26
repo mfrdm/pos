@@ -1,10 +1,24 @@
 var employeeService = function($http){
 	//Search Service
-	this.searchEmployees = function(input){
-		var array = [{"firstname" : { $regex: input, $options: 'i' }}, {"lastname" : { $regex: input, $options: 'i' }}]
+	this.createOne = function(data){
+		return $http({
+			method:'POST',
+			url:'/api/users/create',
+			data:JSON.stringify(data)
+		})
+	}
+	this.updateOne = function(id, data){
+		return $http({
+			method:'POST',
+			url:'/api/users/user/'+id+'/edit',
+			data:JSON.stringify(data)
+		})
+	}
+	this.search = function(input){
+		var array = [{"firstname" : { $regex: input, $options: 'i' }},{"lastname" : { $regex: input, $options: 'i' }},{"email" : { $regex: input, $options: 'i' }}, {"phone" : { $regex: input, $options: 'i' }}]
 		return $http({
 			method:'GET',
-			url:'/api/users/',
+			url:'/api/users',
 			params:{
 				queryInput:JSON.stringify({
 					conditions: {$or: array},
@@ -14,18 +28,10 @@ var employeeService = function($http){
 			}
 		})
 	}
-	this.postCreateEmployee = function(data){
+	this.readOne = function(id){
 		return $http({
-			method:'POST',
-			url:'/api/users/create',
-			data:JSON.stringify(data)
-		})
-	}
-	this.postSaveEdit = function(id, data){
-		return $http({
-			method:'POST',
-			url:'/api/users/user/'+id+'/edit',
-			data:JSON.stringify(data)
+		method:'GET',
+			url:'api/users/user/'+id
 		})
 	}
 }

@@ -22,11 +22,11 @@ function dateTimePicker (){
 		// 	})
 		// }
 		link: function(scope, element, attrs, ngModel){
-            if(typeof(scope.format) == "undefined"){ scope.format = "dd.mm.yyyy hh:ii" }
+            if(typeof(scope.format) == "undefined"){ scope.format = "dd-mm-yyyy hh:ii" }
             $(element).fdatepicker({
             	format: scope.format,
             	disableDblClickSelection: true,
-            	initialDate: '07-05-2017',
+            	initialDate: '07-05-2017 00:00',
             	leftArrow:'<<',
 				rightArrow:'>>'
             }).on('changeDate', function(ev){

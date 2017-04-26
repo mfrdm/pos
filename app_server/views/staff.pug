@@ -1,106 +1,118 @@
-div(class="columns row")
-	div(class="row colums")
-		div(class="column")
-			h2 Create Account
-		// Create Account
-		div(class="column")
-			div(class="borderT newBox row column")
-				div(class='row column')
-					div(class='column small-6 large-3 paddingL0')
-						label First Name
-							input(type='text')
-					div(class='column small-6 large-3 paddingL0')
-						label Mid Name
-							input(type='text')
-					div(class='column small-6 large-3 paddingL0')
-						label Last Name
-							input(type='text')
-					div(class='column small-6 large-3 paddingL0')
-						label Gender
-							input(type='text')
-					div(class='column small-6 large-3 paddingL0')
-						label Phone
-							input(type='text')
-					div(class='column small-6 large-3 paddingL0')
-						label Email
-							input(type='text')
-					div(class='column small-6 large-3 paddingL0')
-						label Address
-							input(type='text')
-					div(class='column small-6 large-3 paddingL0')
-						label District
-							input(type='text')
-					div(class='column small-6 large-3 paddingL0')
-						label City
-							input(type='text')
-					div(class='column small-6 large-3 paddingL0')
-						label Country
-							input(type='text')
-				div(class="row column")
-					div(class='column small-12 paddingL0')
-						input(class="button" type="submit" value="Create")
-						button(class="button float-right") Cancel
-						button(class="button float-right") Reset
-	div(class="row colums")
-		div(class="column")
-			h2 Staff List
-		// Create Account
-		div(class="row column")
-			div(class="column small-12")
-				ul(class="menu clearfix")
-					li(class="float-right marginL15")
-						<a class="button secondary" ng-click="vm.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
-					li(class="float-right")
-						ul(class="menu")
-							li: label(class="paddingR15 show-for-large") Sort by
-							li: select(class="")
-									option(value="name") Name
-									option(value="checkinTime") Check-in time
-									option(value="status") Status
-		div(class="column")
-			div(class="borderT newBox row column")
-				div(class="row column")
-					form(ng-submit="vm.searchCustomers('checkInDiv')")
+div(ng-switch='vm.tab')
+	div(ng-switch-when='tab-main')
+		div(class="columns row")
+			div(class="row colums")
+				div(class="column")
+					h2 Create Account
+				// Create Account
+				div(class="column")
+					div(class="borderT newBox row column")
+						form(class='row column')
+							div(class='column small-6 large-3 paddingL0')
+								label First Name
+									input(type='text' ng-model='vm.firstname' required)
+							div(class='column small-6 large-3 paddingL0')
+								label Last Name
+									input(required type='text' ng-model='vm.lastname')
+							div(class='column small-6 large-3 paddingL0')
+								label Gender
+									input(required type='text' ng-model='vm.gender')
+							div(class='column small-6 large-3 paddingL0')
+								label Birthday
+									input(required type='text' date-picker='' ng-model='vm.birthday' format="dd.mm.yyyy")
+							div(class='column small-6 large-3 paddingL0')
+								label Phone
+									input(required type='text' ng-model='vm.phone')
+							div(class='column small-6 large-3 paddingL0')
+								label Email
+									input(required type='text' ng-model='vm.email')
+							div(class='column small-6 large-3 paddingL0')
+								label Role
+									input(required type='text' ng-model='vm.role')
 						div(class="row column")
-							label Phone/Email
-								input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.data.checkingInCustomer.username')
-		div(class='row column')
-			div(class="column small-12")
-				div(class="table-scroll newBox")
-					table(class="borderAll")
-						thead
-							tr
-								th Name
-								th Phone
-								th Email
-								th Birthday
-								th Created By
-								th Edit
-						tbody
-							tr
-								td Test
-								td Test
-								td Test
-								td Test
-								td Test
-								td
-									button(type="button" class="alert button") Edit
-		ul(class='pagination' role='navigation' aria-label='Pagination')
-			li(class='pagination-previous disabled') Previous
-				span(class='show-for-sr') page
-			li(class='current') 1
-				span(class='show-for-sr')
-			li
-				a(href='#' aria-label='page-2') 2
-			li
-				a(href='#' aria-label='page-3') 3
-			li
-				a(href='#' aria-label='page-4') 4
-			li(class="ellipsis" aria-hidden="true")
-			li
-				a(href='#' aria-label='page-10') 10
-			li
-				a(href='#' aria-label='page-11') 11
-			li(class='pagination-next')
-				a(href="#" aria-label="Next page") Next
-					span(class='show-for-sr') page
+							div(class='column small-12 paddingL0')
+								input(class="button" type="submit" value="Create" ng-click='vm.createNewEmployee()')
+								button(class="button float-right") Cancel
+			div(class="row colums")
+				div(class="column")
+					h2 Employee List
+				// Create Account
+				div(class="row column")
+					div(class="column small-12")
+						ul(class="menu clearfix")
+							li(class="float-right marginL15")
+								<a class="button secondary" ng-click="vm.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
+							li(class="float-right")
+								ul(class="menu")
+									li: label(class="paddingR15 show-for-large") Sort by
+									li: select(class="")
+											option(value="name") Name
+											option(value="checkinTime") Check-in time
+											option(value="status") Status
+				div(class="column")
+					div(class="borderT newBox row column")
+						div(class="row column")
+							form(ng-submit="vm.searchFunc()")
+								div(class="row column")
+									label Phone/Email
+										input(type="text" placeholder="Enter phone or email to search employee" ng-model='vm.searchInput')
+								div(ng-show="vm.look.employeeSearchResultDiv" class="marginB15")
+									div(class="table-scroll")
+										table(class="hover unstriped borderAll")
+											thead
+												tr
+													th No
+													th Last Name
+													th First Name
+													th Email
+													th Created At				
+											tbody
+												tr(ng-repeat='result in vm.searchResult.employees', ng-click='vm.selectemployeeToViewProfile($index)' class="pointerCursor")
+													td {{ $index + 1 }}
+													td {{ result.lastname }}
+													td {{ result.firstname }}
+													td {{ result.email }}
+													td {{ result.createdAt | date: "shortTime" }}  -  {{ result.createdAt | date: "dd MMM yyyy" }}	
+	div(ng-switch-when='tab-profile')
+		div(class="columns row")
+			div(class="row colums")
+				div(class="column")
+					h2 employee Profile
+				// Profile
+				div(class="column")
+					div(class="borderT newBox row column")
+						table(class="striped borderAll")
+							thead
+								tr
+									th(class='text-center') Fields
+									th(class='text-center') Information
+							tbody
+								tr(ng-repeat='field in vm.look.fields')
+									td(class='text-center') {{ field }}
+									td(class='text-center') {{ vm.employee.info[field]}}
+					div(class="row column")
+						div(class='column small-12 paddingLR0')
+							input(class="button warning" type="submit" value="Edit" ng-click='vm.toEdit()')
+							button(class="button float-right" ng-click='vm.toMain()') Cancel
+	div(ng-switch-when='tab-edit')
+		div(class="columns row")
+			div(class="row colums")
+				div(class="column")
+					h2 Edit Profile
+				// Profile
+				div(class="column")
+					div(class="borderT newBox row column")
+						table(class="striped borderAll")
+							thead
+								tr
+									th(class='text-center') Fields
+									th(class='text-center') Information
+							tbody
+								tr(ng-repeat='field in vm.look.fields')
+									td(class='text-center') {{ field }}
+									td
+										input(ng-model= 'vm.employee.info[field]' type='text')
+					div(class="row column")
+						div(class='column small-12 paddingLR0')
+							input(class="button warning" type="submit" value="Save" ng-click='vm.saveEdit()')
+							button(class="button float-right" ng-click='vm.toMain()') Cancel

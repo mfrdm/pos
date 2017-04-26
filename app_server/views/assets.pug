@@ -113,7 +113,7 @@ div(ng-switch='vm.tab')
 								label Status
 									input(required type='number' ng-model='vm.status')
 						div(class="row column")
-							div(class='column small-12 paddingL0')
+							div(class='column small-12 paddingLR0')
 								input(class="button" type="submit" value="Create" ng-click='vm.createNewAsset()')
 								button(class="button float-right") Cancel
 			div(class="row colums")
@@ -163,21 +163,21 @@ div(ng-switch='vm.tab')
 					table(class="borderAll")
 						thead
 							tr
+								th No
 								th Name
-								th Phone
-								th Email
-								th Birthday
-								th Created By
+								th Category
+								th Quantity
+								th Status
 								th Edit
 						tbody
-							tr
-								td Test
-								td Test
-								td Test
-								td Test
-								td Test
+							tr(ng-repeat='item in vm.look.allAssets')
+								td {{$index + 1}}
+								td {{item.name}}
+								td {{item.category}}
+								td {{item.quantity}}
+								td {{item.status}}
 								td
-									button(type="button" class="alert button") Edit
+									button(type="button" class="alert button" ng-click='vm.selectAssetInListToViewProfile($index)') Edit
 		//- ul(class='pagination' role='navigation' aria-label='Pagination')
 		//- 	li(class='pagination-previous disabled') Previous
 		//- 		span(class='show-for-sr') page

@@ -25,3 +25,4 @@ require('./orders');
 require('./costs');
 require('./bookings');
 require('./assets');
+require('./attendances');

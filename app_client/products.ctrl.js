@@ -1,44 +1,55 @@
 var ProductCtrl = function(productService, $route){
 	var vm = this;
-	vm.tab = 'tab-search';
-	vm.pageTitle = 'Search Products'
+	vm.tab = 'tab-main';
+	vm.productInfo = {};
+	vm.look = {};
+	vm.searchResult = {};
+	vm.product = {};
+
+	vm.productInfo.edu = {};
+	vm.look.productSearchResultDiv = false;
+	vm.look.fields = ['name', 'price', 'category']
 	////////////////////////////////////////////////////////
-	//Setup ng-switch
-	vm.toCreate = function(){
-		vm.tab = 'tab-create'
-		vm.pageTitle = 'Create Products'
+	// Setup ng-switch
+	vm.toMain = function(){
+		vm.tab = 'tab-main'
 	}
 	vm.toProfile = function(index){
 		vm.tab = 'tab-profile';
-		vm.pageTitle = 'Profile Products'
-		vm.product = vm.results[index]
-	}
-	vm.toSearch = function(){
-		vm.tab = 'tab-search'
-		vm.pageTitle = 'Search Products'
-		$route.reload();
 	}
 	vm.toEdit = function(){
 		vm.tab = 'tab-edit';
-		vm.pageTitle = 'Edit Products'
 	}
 	////////////////////////////////////////////////////////
 	//Search Page
 	vm.searchFunc = function(){
-		productService.searchProducts(vm.searchInput)
+
+		productService.search(vm.searchInput)
 		.then(function success(res){
-			vm.results = res.data.data
+			vm.searchResult.products = res.data.data;
+			vm.look.productSearchResultDiv = true;
+			//Go to view one product
+			vm.selectproductToViewProfile = function(index){
+				vm.tab = 'tab-profile';
+				productService.readOne(vm.searchResult.products[index]._id)
+					.then(function success(res){
+						vm.product.info = res.data.data
+					})
+			}
 		}, function error(err){
 			console.log(err)
 		})
 	}
+	
 	////////////////////////////////////////////////////////
 	//Create Page
 	vm.createNewProduct = function(){
-		productService.postCreateProduct(vm.formData)
+		vm.productInfo.name = vm.name
+		vm.productInfo.price = vm.price
+		vm.productInfo.category = vm.category
+		productService.createOne(vm.productInfo)
 			.then(function success(res){
-				vm.tab = 'tab-search'
-				$route.reload();
+				console.log(res)
 			}, function error(err){
 				console.log(err)
 			})
@@ -46,17 +57,20 @@ var ProductCtrl = function(productService, $route){
 	////////////////////////////////////////////////////////
 	//Edit Page
 	vm.saveEdit = function(){
-		vm.data = {
-			$set:{
-				name:vm.product.name,
-				managerFullname:vm.product.managerFullname
-			}
+		vm.productData = {}
+		
+		vm.look.fields.map(function(field){
+			vm.productData[field] = vm.product.info[field]
+		})
+		vm.data={
+			$set:vm.productData
 		}
-		productService.postSaveEdit(vm.product._id, vm.data)
+
+		productService.updateOne(vm.product.info._id, vm.data)
 			.then(function success(res){
 				console.log(res)
-				vm.tab = 'tab-search';
-				$route.reload();
+				$route.reload()
+				vm.tab = 'tab-main';
 			}, function error(err){
 				console.log(err)
 			})

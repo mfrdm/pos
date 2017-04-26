@@ -1,24 +1,24 @@
-var productService = function($http){
+var attendanceService = function($http){
 	//Search Service
 	this.createOne = function(data){
 		return $http({
 			method:'POST',
-			url:'/api/products/create',
+			url:'/api/attendances/create',
 			data:JSON.stringify(data)
 		})
 	}
 	this.updateOne = function(id, data){
 		return $http({
 			method:'POST',
-			url:'/api/products/product/'+id+'/edit',
+			url:'/api/attendances/attendance/'+id+'/edit',
 			data:JSON.stringify(data)
 		})
 	}
 	this.search = function(input){
-		var array = [{"name" : { $regex: input, $options: 'i' }}]
+		var array = [{"firstname" : { $regex: input, $options: 'i' }},{"lastname" : { $regex: input, $options: 'i' }},{"email" : { $regex: input, $options: 'i' }}, {"phone" : { $regex: input, $options: 'i' }}]
 		return $http({
 			method:'GET',
-			url:'/api/products',
+			url:'/api/users',
 			params:{
 				queryInput:JSON.stringify({
 					conditions: {$or: array},
@@ -31,9 +31,9 @@ var productService = function($http){
 	this.readOne = function(id){
 		return $http({
 		method:'GET',
-			url:'api/products/product/'+id
+			url:'api/attendances/attendance/'+id
 		})
 	}
 }
 
-app.service('productService', ['$http',productService])
+app.service('attendanceService', ['$http',attendanceService])

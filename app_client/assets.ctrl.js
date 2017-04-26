@@ -11,6 +11,7 @@
 		vm.look = {};
 		vm.searchResult = {};
 		vm.asset = {};
+		vm.look.allAssets = [];
 		vm.look.fields = ['name', 'category', 'quantity', 'status']
 
 		vm.look.assetsSearchResultDiv = false;
@@ -25,6 +26,15 @@
 		vm.toEdit = function(){
 			vm.tab = 'tab-edit';
 		}
+		////////////////////////////////////////////////////////
+		//get all assets
+		assetsService.readSome()
+			.then(function success(res){
+				vm.look.allAssets = res.data.data
+				console.log(vm.look.allAssets)
+			}, function error(err){
+				console.log(err)
+			})
 		////////////////////////////////////////////////////////
 		//Search Page
 		vm.searchFunc = function(){
@@ -44,6 +54,14 @@
 			}, function error(err){
 				console.log(err)
 			})
+		}
+
+		vm.selectAssetInListToViewProfile = function(index){
+			vm.tab = 'tab-profile';
+			assetsService.readOne(vm.look.allAssets[index]._id)
+				.then(function success(res){
+					vm.asset.info = res.data.data
+				})
 		}
 		
 		////////////////////////////////////////////////////////
