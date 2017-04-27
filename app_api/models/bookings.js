@@ -1,9 +1,7 @@
 var mongoose = require('mongoose');
 
 var bookingSchema = mongoose.Schema({
-	customer: {
-		id:{type: mongoose.Schema.Types.ObjectId},
-	},
+	_customer: {type: mongoose.Schema.Types.ObjectId, ref:'customers', required:true},
 	checkinTime: {type: Date, required: true},
 	checkoutTime: {type: Date},
 	storeId: {type: String},

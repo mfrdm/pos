@@ -46,16 +46,17 @@
 					////////////////////////////////////////////////////////
 					//Booking for customer
 					var bookingData = {};
-					bookingData.customer = {}
-					bookingData.customer.id = vm.customer.selected._id
+					bookingData._customer = vm.customer.selected._id
 					bookingData.checkinTime = vm.customer.checkinTime
+
 					vm.createNewBooking = function(){
-						bookingService.createOne(bookingData)
-							.then(function success(res){
-								console.log(res)
-							}, function error(err){
-								console.log(err)
-							})
+						console.log(bookingData)
+						// bookingService.createOne(bookingData)
+						// 	.then(function success(res){
+						// 		console.log(res)
+						// 	}, function error(err){
+						// 		console.log(err)
+						// 	})
 					}
 				}
 			}, function error(err){
