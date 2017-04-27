@@ -45,18 +45,18 @@
 					vm.look.customerSearchResultDiv = false;
 					////////////////////////////////////////////////////////
 					//Booking for customer
-					var bookingData = {};
-					bookingData._customer = vm.customer.selected._id
-					bookingData.checkinTime = vm.customer.checkinTime
 
 					vm.createNewBooking = function(){
+						var bookingData = {};
+						bookingData._customer = vm.customer.results[index]._id
+						bookingData.checkinTime = vm.customer.checkinTime
 						console.log(bookingData)
-						// bookingService.createOne(bookingData)
-						// 	.then(function success(res){
-						// 		console.log(res)
-						// 	}, function error(err){
-						// 		console.log(err)
-						// 	})
+						bookingService.createOne(bookingData)
+							.then(function success(res){
+								console.log(res)
+							}, function error(err){
+								console.log(err)
+							})
 					}
 				}
 			}, function error(err){

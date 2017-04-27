@@ -39,7 +39,7 @@ div(ng-switch='vm.tab')
 				div(class='row column')
 					div(class='column small-6 paddingL0')
 						label DateTime
-							input(type='text' date-picker='' format="dd.mm.yyyy" ng-model='vm.customer.checkinTime')
+							input(type='text' date-change="changeDate" date-time format="dd-MM-yyyy HH:mm" ng-model='vm.customer.checkinTime')
 				div(class="row column")
 					div(class='column small-12 paddingLR0')
 						input(class="button" value="Booking" ng-click='vm.createNewBooking()')
