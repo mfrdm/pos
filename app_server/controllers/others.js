@@ -25,7 +25,7 @@ function Others() {
 
 		//var listFile = ['checkin', 'checkout', 'customers', 'assets', 'costs', 'home'];
 		var ctrFileNames = ['checkin', 'checkout','products', 'customers', 'assets', 'costs', 'home', 'depts', 'employees', 'login', 'register', 'booking', 'attendance'];
-		var serviceFileNames = ['checkin', 'checkout', 'products','customers', 'assets', 'costs', 'home', 'depts','employees','common', 'authentication', 'socket', 'attendance', 'booking'];
+		var serviceFileNames = ['checkin', 'checkout', 'products','customers', 'assets', 'costs', 'home', 'depts','employees','common', 'authentication', 'socket', 'attendance', 'booking', 'other'];
 		var directiveFileNames = ['components'];
 
 		var ctrlNum = ctrFileNames.length;

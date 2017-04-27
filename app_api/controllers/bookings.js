@@ -69,34 +69,34 @@ function Booking() {
 	this.updateOneBookingById = function(req, res) {
 		//////// Validate input
 		// Check if required input is provided
-		if (!req.body.userId) {
-			requestHelper.sendJsonRes (res, 400, {message: 'Invalid input'});
-			return			
-		}
+		// if (!req.body.userId) {
+		// 	requestHelper.sendJsonRes (res, 400, {message: 'Invalid input'});
+		// 	return			
+		// }
 
 		// Check user permission to update
 		// FIX
-		function checkUserPermission (userId){
-			if (userId == 'invalid value') return false
-			return true
-		}
+		// function checkUserPermission (userId){
+		// 	if (userId == 'invalid value') return false
+		// 	return true
+		// }
 
-		if (!checkUserPermission(req.body.userId)){
-			requestHelper.sendJsonRes (res, 403, {message: 'No permission'});
-			return	
-		}
+		// if (!checkUserPermission(req.body.userId)){
+		// 	requestHelper.sendJsonRes (res, 403, {message: 'No permission'});
+		// 	return	
+		// }
 
 		// check checkinTime valid
 		// FIX
-		function checkCheckinTime (t){
-			if (t == 'invalid value') return false
-			return true
-		}
+		// function checkCheckinTime (t){
+		// 	if (t == 'invalid value') return false
+		// 	return true
+		// }
 
-		if (!checkCheckinTime (req.body.checkinTime)){
-			requestHelper.sendJsonRes (res, 400, {message: 'Invalid input'});
-			return			
-		}
+		// if (!checkCheckinTime (req.body.checkinTime)){
+		// 	requestHelper.sendJsonRes (res, 400, {message: 'Invalid input'});
+		// 	return			
+		// }
 
 		dbHelper.updateOneById(req, res, BookingModel, 'bookingId');
 

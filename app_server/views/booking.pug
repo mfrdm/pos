@@ -3,53 +3,15 @@ div(ng-switch='vm.tab')
 		div(class="columns row")
 			div(class="row colums")
 				div(class="column")
-					h2 Add Booking
-				// Create Account
-				div(class="column")
-			div(class="borderT newBox row column")
-				div(class="row column")
-					form(ng-submit='vm.searchCustomer()')
-						div(class="row column")
-							label Phone/Email
-								input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.customer.input')
-					div(ng-show="vm.look.customerSearchResultDiv" class="marginB15")
-						div(class="table-scroll")
-							table(class="hover unstriped borderAll")
-								thead
-									tr
-										th No
-										th Firstname
-										th Lastname
-										th Email
-										th Phone
-								tbody
-									tr(ng-repeat='result in vm.customer.results', ng-click='vm.selectCustomerToBook($index)' class="pointerCursor")
-										td {{ $index + 1 }}
-										td {{ result.firstname }}
-										td {{ result.lastname }}
-										td {{ result.email }}
-										td {{ result.phone }}
-				div(class='row column')
-					div(class='column small-6 paddingL0')
-						label Location
-							select(name="selectedService")
-					div(class='column small-6 paddingR0')
-						label Service
-							select(name="selectedService")
-				div(class='row column')
-					div(class='column small-6 paddingL0')
-						label DateTime
-							input(type='text' date-change="changeDate" date-time format="dd-MM-yyyy HH:mm" ng-model='vm.customer.checkinTime')
-				div(class="row column")
-					div(class='column small-12 paddingLR0')
-						input(class="button" value="Booking" ng-click='vm.createNewBooking()')
-						button(class="button float-right") Cancel
-			div(class="row colums")
-				div(class="column")
 					h2 Booking List
-				// Create Account
+				//Booking Toggle Button********************************************************//
 				div(class="row column")
-					div(class="column small-12")
+					div(class="column small-3")
+						ul(class="menu")
+							li
+								a(class="button primary" ng-click="vm.toggleBookingDiv()") 
+									<span class="show-for-large">Booking</span><i class="material-icons customIcon hide-for-large"> add</i>
+					div(class="column small-9")
 						ul(class="menu clearfix")
 							li(class="float-right marginL15")
 								<a class="button secondary" ng-click="vm.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
@@ -60,6 +22,54 @@ div(ng-switch='vm.tab')
 											option(value="name") Name
 											option(value="checkinTime") Check-in time
 											option(value="status") Status
+				//Booking Toggle Content********************************************************//
+				div(class="column")
+					div(class="borderT newBox row column paddingLR0" ng-show='vm.look.bookingDiv')
+						div(class="row column")
+							form(ng-submit='vm.searchCustomer()')
+								div(class="row column")
+									label Phone/Email
+										input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.customer.input')
+							div(ng-show="vm.look.customerSearchResultDiv" class="marginB15")
+								div(class="table-scroll")
+									table(class="hover unstriped borderAll")
+										thead
+											tr
+												th No
+												th Firstname
+												th Lastname
+												th Email
+												th Phone
+										tbody
+											tr(ng-repeat='result in vm.customer.results', ng-click='vm.selectCustomerToBook($index)' class="pointerCursor")
+												td {{ $index + 1 }}
+												td {{ result.firstname }}
+												td {{ result.lastname }}
+												td {{ result.email }}
+												td {{ result.phone }}
+								div(class="row column")
+									div(class='column small-12 paddingLR0')
+										input(class="button warning" type="submit" value="Reset Search Results" ng-click='vm.resetSearch()')
+						div(class='row column')
+							div(class='column small-6 paddingL0')
+								label Location
+									select(name="selectedLocation" ng-model="vm.customer.location" ng-options="val.name for val in vm.data.locationNames")
+							div(class='column small-6 paddingLR0')
+								label Service
+									select(name="selectedService" ng-model="vm.customer.service" ng-options="val.name for val in vm.data.serviceNames")
+							div(class='column small-6 paddingL0')
+								label Quantity
+									input(type="number" ng-model="vm.customer.quantity")
+							div(class='column small-6 paddingLR0')
+								label DateTime
+									input(type='text' date-change="changeDate" date-time format="dd-MM-yyyy HH:mm" ng-model='vm.customer.checkinTime')
+							div(class='column small-12 paddingL0')
+								label Other requirements
+									textarea(type='text' ng-model='vm.customer.message')
+						div(class="row column")
+							div(class='column small-12 paddingLR0')
+								input(class="button success" ng-confirm-click='Are you sure to add new booking' confirmed-click='vm.createNewBooking()' type="submit" value="Add Booking")
+								button(class="button float-right") Cancel
 				div(class="column")
 					div(class="borderT newBox row column")
 						div(class="row column")
@@ -76,7 +86,6 @@ div(ng-switch='vm.tab')
 													th Firstname
 													th Lastname
 													th Email
-													th Phone
 													th Edit
 													th Delete
 													th Checkin
@@ -86,7 +95,6 @@ div(ng-switch='vm.tab')
 													td {{ result.firstname }}
 													td {{ result.lastname }}
 													td {{ result.email }}
-													td {{ result.phone }}
 													td
 														button(type="button" class="warning button" ng-click='vm.selectBookingToViewProfile($index)') Edit
 													td
@@ -102,63 +110,76 @@ div(ng-switch='vm.tab')
 								th No
 								th Name
 								th Email
-								th Phone
 								th Checkin Time
-								th Edit
+								th Checkin Date
+								th Status
 								th Delete
 								th Checkin
 						tbody
-							tr(ng-repeat='item in vm.look.allBooking')
+							tr(ng-repeat='item in vm.look.allBooking' class="pointerCursor" ng-click='vm.toProfile($index)')
 								td {{$index + 1}}
-								td {{item.lastname}} {{item.firstname}}
-								td {{item.email}}
-								td {{item.phone}}
-								td {{item.checkinTime}}
-								td
-									button(type="button" class="warning button" ng-click='vm.selectBookingToViewProfile($index)') Edit
+								td {{item.customer.lastname}} {{item.customer.firstname}}
+								td {{item.customer.email}}
+								td {{item.checkinTime | date:'shortTime'}}
+								td {{item.checkinTime | date:'dd/MM/yyyy'}}
+								td {{item.status}}
 								td
 									button(type="button" class="alert button" ng-click='vm.selectBookingToDelete($index)') Delete
 								td
 									button(type="button" class="success button" ng-click='vm.selectBookingToCheckin($index)') Checkin
-	//- div(ng-switch-when='tab-profile')
-	//- 	div(class="columns row")
-	//- 		div(class="row colums")
-	//- 			div(class="column")
-	//- 				h2 Asset Details
-	//- 			// Profile
-	//- 			div(class="column")
-	//- 				div(class="borderT newBox row column")
-	//- 					table(class="striped borderAll")
-	//- 						thead
-	//- 							tr
-	//- 								th(class='text-center') Fields
-	//- 								th(class='text-center') Information
-	//- 						tbody
-	//- 							tr(ng-repeat='field in vm.look.fields')
-	//- 								td(class='text-center') {{ field }}
-	//- 								td(class='text-center') {{ vm.asset.info[field]}}
-	//- 				div(class="row column")
-	//- 					div(class='column small-12 paddingLR0')
-	//- 						input(class="button warning" type="submit" value="Edit" ng-click='vm.toEdit()')
-	//- 						button(class="button float-right" ng-click='vm.toMain()') Cancel
-	//- div(ng-switch-when='tab-edit')
-	//- 	div(class="columns row")
-	//- 		div(class="row colums")
-	//- 			div(class="column")
-	//- 				h2 Edit Asset
-	//- 			// Profile
-	//- 			div(class="column")
-	//- 				div(class="borderT newBox row column")
-	//- 					table(class="striped borderAll")
-	//- 						thead
-	//- 							tr
-	//- 								th(class='text-center') Fields
-	//- 								th(class='text-center') Information
-	//- 						tbody
-	//- 							tr(ng-repeat='field in vm.look.fields')
-	//- 								td(class='text-center') {{ field }}
-	//- 								td
-	//- 									input(ng-model= 'vm.asset.info[field]' type='text')
+	div(ng-switch-when='tab-profile')
+		div(class="columns row")
+			div(class="row colums")
+				div(class="column")
+					h2 Asset Details
+				// Profile
+				div(class="column")
+					div(class="borderT newBox row column")
+						table(class="striped borderAll")
+							thead
+								tr
+									th(class='text-center') Fields
+									th(class='text-center') Information
+							tbody
+								tr
+									td(class='text-center') Name
+									td(class='text-center') {{vm.booking.customer.lastname}} {{vm.booking.customer.firstname}}
+								tr
+									td(class='text-center') Email
+									td(class='text-center') {{vm.booking.customer.email}}
+								tr
+									td(class='text-center') Product
+									td(class='text-center') {{vm.booking.productName}}
+					div(class="row column")
+						div(class='column small-12 paddingLR0')
+							input(class="button warning" type="submit" value="Edit" ng-click='vm.toEdit()')
+							button(class="button float-right" ng-click='vm.toMain()') Cancel
+	div(ng-switch-when='tab-edit')
+		div(class="columns row")
+			div(class="row colums")
+				div(class="column")
+					h2 Edit Asset
+				// Profile
+				div(class="column")
+					div(class="borderT newBox row column")
+						table(class="striped borderAll")
+							thead
+								tr
+									th(class='text-center') Fields
+									th(class='text-center') Information
+							tbody
+								tr
+									td(class='text-center') Product
+									td(class='text-center')
+										input(class='column small-12 paddingLR0' ng-model='vm.booking.productName' type='text')
+								tr
+									td(class='text-center') Status
+									td(class='text-center')
+										input(class='column small-12 paddingLR0' ng-model='vm.booking.status' type='text')
+								tr
+									td(class='text-center') Checkin Time
+									td(class='text-center')
+										input(class='column small-12 paddingLR0' ng-model='vm.booking.checkinTime' type='text')
 					div(class="row column")
 						div(class='column small-12 paddingLR0')
 							input(class="button warning" type="submit" value="Save" ng-click='vm.saveEdit()')

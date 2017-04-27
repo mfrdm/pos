@@ -20,6 +20,23 @@ function bookingService ($http){
 		})
 	}
 
+	this.searchBooking = function(input){
+		var array = [{"customer.firstname" : { $regex: input, $options: 'i' }},
+		{"customer.lastname" : { $regex: input, $options: 'i' }}, 
+		{"customer.email" : { $regex: input, $options: 'i' }}]
+		return $http({
+			method:'GET',
+			url:'/api/bookings',
+			params:{
+				queryInput:JSON.stringify({
+					conditions: {$or: array},
+					projection: null,
+					opts: null
+				})
+			}
+		})
+	}
+
 	this.readSome = function (){
 		var url = '/api/bookings';
 		return $http.get (url);				
