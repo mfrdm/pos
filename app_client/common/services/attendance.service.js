@@ -14,14 +14,27 @@ var attendanceService = function($http){
 			data:JSON.stringify(data)
 		})
 	}
-	this.search = function(input){
+	this.searchEmployees = function(type,input){
 		var array = [{"firstname" : { $regex: input, $options: 'i' }},{"lastname" : { $regex: input, $options: 'i' }},{"email" : { $regex: input, $options: 'i' }}, {"phone" : { $regex: input, $options: 'i' }}]
 		return $http({
 			method:'GET',
-			url:'/api/users',
+			url:'/api/'+type,
 			params:{
 				queryInput:JSON.stringify({
 					conditions: {$or: array},
+					projection: null,
+					opts: null
+				})
+			}
+		})
+	}
+	this.searchAttendancesById = function(id){
+		return $http({
+			method:'GET',
+			url:'/api/attendances',
+			params:{
+				queryInput:JSON.stringify({
+					conditions: {'employeeId': id},
 					projection: null,
 					opts: null
 				})

@@ -54,7 +54,14 @@ var EmployeeCtrl = function(employeeService,attendanceService, $route){
 		employeeService.createOne(vm.employeeInfo)
 			.then(function success(res){
 				console.log(res.data.data._id)
-				attendanceService.createOne({employeeId:res.data.data._id})
+				attendanceService.createOne(
+					{
+						employeeId:res.data.data._id,
+						firstname:res.data.data.firstname,
+						lastname:res.data.data.lastname,
+						email:res.data.data.email,
+						phone:res.data.data.phone
+					})
 					.then(function success(res){
 						console.log(res)
 					})

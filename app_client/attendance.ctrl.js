@@ -10,6 +10,7 @@ var AttendanceCtrl = function(attendanceService, $route, $filter){
 	vm.attendanceInfo.edu = {};
 	vm.look.attendanceSearchResultDiv = false;
 	vm.look.selectEmployeeResultDiv = false;
+	vm.look.attendanceOneEmployeeDiv = false;
 	vm.look.fields = ['name', 'price', 'category']
 
 	vm.selectedEmployeeId = ''
@@ -27,7 +28,7 @@ var AttendanceCtrl = function(attendanceService, $route, $filter){
 	////////////////////////////////////////////////////////
 	//Search Employee for create new Attendance
 	vm.searchEmployees = function(){
-		attendanceService.search(vm.searchInputEmployee)
+		attendanceService.searchEmployees('users',vm.searchInputEmployee)
 		.then(function success(res){
 			vm.searchResultEmployees.employees = res.data.data;
 			vm.look.selectEmployeeResultDiv = true;
@@ -35,6 +36,13 @@ var AttendanceCtrl = function(attendanceService, $route, $filter){
 			vm.selectEmployeeToGetData = function(index){
 				vm.searchInputEmployee = vm.searchResultEmployees.employees[index].firstname +' '+ vm.searchResultEmployees.employees[index].lastname
 				vm.selectedEmployeeId = vm.searchResultEmployees.employees[index]._id
+				attendanceService.searchAttendancesById(vm.selectedEmployeeId)
+					.then(function success(res){
+						console.log(res.data.data[0])
+						vm.attendanceId = res.data.data[0]._id
+					}, function error(err){
+						console.log(err)
+					})
 				vm.look.selectEmployeeResultDiv = false;
 			}
 		}, function error(err){
@@ -43,24 +51,23 @@ var AttendanceCtrl = function(attendanceService, $route, $filter){
 	}
 	////////////////////////////////////////////////////////
 	//Search Page
-	// vm.searchFunc = function(){
+	vm.searchFunc = function(){
 
-	// 	attendanceService.search(vm.searchInput)
-	// 	.then(function success(res){
-	// 		vm.searchResult.attendances = res.data.data;
-	// 		vm.look.attendanceSearchResultDiv = true;
-	// 		//Go to view one attendance
-	// 		vm.selectattendanceToViewProfile = function(index){
-	// 			vm.tab = 'tab-profile';
-	// 			attendanceService.readOne(vm.searchResult.attendances[index]._id)
-	// 				.then(function success(res){
-	// 					vm.attendance.info = res.data.data
-	// 				})
-	// 		}
-	// 	}, function error(err){
-	// 		console.log(err)
-	// 	})
-	// }
+		attendanceService.searchEmployees('attendances',vm.searchInput)
+		.then(function success(res){
+			vm.searchResult.attendances = res.data.data;
+			console.log(res);
+			vm.look.attendanceSearchResultDiv = true;
+			//Go to view one attendance
+			vm.selectAttendanceToViewTime = function(index){
+				vm.look.oneAttendance = vm.searchResult.attendances[index].workingTime
+				console.log(vm.look.oneAttendance)
+				vm.look.attendanceOneEmployeeDiv = true;
+			}
+		}, function error(err){
+			console.log(err)
+		})
+	}
 	
 	////////////////////////////////////////////////////////
 	//Create Page
@@ -78,7 +85,7 @@ var AttendanceCtrl = function(attendanceService, $route, $filter){
 				}
 			}
 		}
-		attendanceService.updateOne(vm.attendanceInfo.id, data)
+		attendanceService.updateOne(vm.attendanceId, data)
 			.then(function success(res){
 				console.log(res)
 			}, function error(err){
@@ -87,25 +94,25 @@ var AttendanceCtrl = function(attendanceService, $route, $filter){
 	}
 	////////////////////////////////////////////////////////
 	//Edit Page
-	vm.saveEdit = function(){
-		vm.attendanceData = {}
+	// vm.saveEdit = function(){
+	// 	vm.attendanceData = {}
 		
-		vm.look.fields.map(function(field){
-			vm.attendanceData[field] = vm.attendance.info[field]
-		})
-		vm.data={
-			$set:vm.attendanceData
-		}
+	// 	vm.look.fields.map(function(field){
+	// 		vm.attendanceData[field] = vm.attendance.info[field]
+	// 	})
+	// 	vm.data={
+	// 		$set:vm.attendanceData
+	// 	}
 
-		attendanceService.updateOne(vm.attendance.info._id, vm.data)
-			.then(function success(res){
-				console.log(res)
-				$route.reload()
-				vm.tab = 'tab-main';
-			}, function error(err){
-				console.log(err)
-			})
-	}
+	// 	attendanceService.updateOne(vm.attendance.info._id, vm.data)
+	// 		.then(function success(res){
+	// 			console.log(res)
+	// 			$route.reload()
+	// 			vm.tab = 'tab-main';
+	// 		}, function error(err){
+	// 			console.log(err)
+	// 		})
+	// }
 }
 
 app.controller('AttendanceCtrl', ['attendanceService','$route','$filter',AttendanceCtrl])

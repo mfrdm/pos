@@ -36,7 +36,7 @@
 				console.log(err)
 			})
 		////////////////////////////////////////////////////////
-		//Search Page
+		//Search Asset
 		vm.searchFunc = function(){
 			assetsService.search(vm.searchInput)
 			.then(function success(res){
