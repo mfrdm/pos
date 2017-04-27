@@ -31,10 +31,12 @@ function Checkout() {
 	};
 
 	this.checkout = function(req, res) {
-		
+		// calculate total amount, considering promotion code, and add to db
+		// return invoice data 
+
 		var apiUrl = apiOptions.server + "/api/orders/order/"+req.body.orderId+"/edit";
 		var view = null;
-		var body = {"$set":{"status":"2", "checkoutTime":Date.now()}};
+		var body = {"$set": {"status":"2", "checkoutTime":Date.now()}};
 		var dataFilter = null;
 		var send = function(req, res, view, data, cb){
 			requestHelper.sendJsonRes(res, 200, data);

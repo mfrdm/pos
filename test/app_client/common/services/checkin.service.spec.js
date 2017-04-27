@@ -32,7 +32,7 @@ describe ('Service: CheckinService', function (){
 
 	}));
 
-	it ('should display checkin list', function (){
+	xit ('should display checkin list', function (){
 		
 		CheckinService.getCheckinList ({staffId: 1221, storeId: 343}).then(
 			function (data){

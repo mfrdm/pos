@@ -13,7 +13,7 @@ var customersSchema = mongoose.Schema({
 	gender: {type: Number, required: true},
 	birthday: {type: Date, required: true},
 	phone: {type: String, required: true},
-	email: {type: String, required: true},
+	email: {type: String}, // manually
 	edu: [eduSchema],
 	createdAt: {type: Date, default: Date.now},
 	updatedAt: [{
@@ -22,7 +22,8 @@ var customersSchema = mongoose.Schema({
 		by: mongoose.Schema.Types.ObjectId
 	}],
 	orders: [{orderId:{type: mongoose.Schema.Types.ObjectId}}],
-	bookings: [{type:mongoose.Schema.Types.ObjectId}],
+	bookings: [{type: mongoose.Schema.Types.ObjectId}],
+	promoteCode: [{code: String, expire: Date,}],
 });
 
 mongoose.model ('customers', customersSchema);

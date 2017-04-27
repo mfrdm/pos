@@ -1,7 +1,8 @@
-var assert = require("assert"); // node.js core module
+var assert = require('assert'); // node.js core module
 var request = require('request');
 
-suite('User Api test', function() {
+
+// suite('User Api test', function() {
 	// suite('Find some customers by given criteria', function(done) {
 	// 	test('should return some customers', function(done) {
 	// 		request({
@@ -28,26 +29,26 @@ suite('User Api test', function() {
 	// 	});
 	// });
 
-	suite('create customers', function(done) {
-		test('should create new customers', function(done) {
-			request({
-				method:'POST',
-				url:'http://localhost:3000/api/customers/create',
-				body: {
-					firstname:'trong',
-					lastname:'hoang',
-					gender:1,
-					birthday: new Date('09/10/1994'),
-					phone:'2345',
-					email:'adf@gmail.com'
-				},
-				json: true
-			}, function(err, res, body){
-				assert.equal(res.statusCode, 201);
-				done();
-			})
-		});
-	});
+	// suite('create customers', function(done) {
+	// 	test('should create new customers', function(done) {
+	// 		request({
+	// 			method:'POST',
+	// 			url:'http://localhost:3000/api/customers/create',
+	// 			body: {
+	// 				firstname:'trong',
+	// 				lastname:'hoang',
+	// 				gender:1,
+	// 				birthday: new Date('09/10/1994'),
+	// 				phone:'2345',
+	// 				email:'adf@gmail.com'
+	// 			},
+	// 			json: true
+	// 		}, function(err, res, body){
+	// 			assert.equal(res.statusCode, 201);
+	// 			done();
+	// 		})
+	// 	});
+	// });
 
 	// suite('Find and update one customers by given ID', function(done) {
 	// 	test('should return one customers and update', function(done) {
@@ -64,4 +65,4 @@ suite('User Api test', function() {
 	// 		})
 	// 	});
 	// });
-});
+// });

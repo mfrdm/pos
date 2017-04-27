@@ -36,7 +36,7 @@ function CheckinCtrl ($scope, CheckinService){
 			price: 0,
 			id: -1,
 		},
-		'Coca': {
+		'Coca Cola': {
 			price: 7000,
 			id: 4233,
 		},
@@ -66,12 +66,11 @@ function CheckinCtrl ($scope, CheckinService){
 			orderline: [
 				{
 					productName: 'Common', // default service
-					price: 10000, //
 					quantity: 1,
+					id: vm.data.services['Common'].id,
 				},
 				{
 					productName: '', //
-					price: 0,
 					quantity: 0,
 				},			
 
@@ -208,34 +207,42 @@ function CheckinCtrl ($scope, CheckinService){
 			})
 	};
 
-	////////////////////////////////////////////////////////
-	//Checkout Page
 
+	// FIX: later send request to server to calculate the total. Can still use it when offline
 	vm.getTotal = function (orderline) {
-		// var total = 0;
-		// var orderNum = orderline.length;
-		// var items =  {};
-		// Object.assign (items, vm.data.services, vm.data.otherItems);
+		var total = 0;
+		var orderNum = orderline.length;
+		var items =  {};
+		Object.assign (items, vm.data.services, vm.data.otherItems);
 
-		// for (var i = 0; i < orderNum; i++) {
-		// 	if 
-		// 	total += (items [orderline [i].productName].price * orderline [i].quantity);
-		// }
+		for (var i = 0; i < orderNum; i++) {
+			if (orderline [i].productName) {
+				total += (items [orderline [i].productName].price * orderline [i].quantity);
+			}
+		}
 
-		// return total;
-		
+		return total;
+
 	};
 
 	vm.checkin = function(){
-		// calculate total
+		// before checkin
+
 		vm.data.checkingInCustomer.total = vm.getTotal (vm.data.checkingInCustomer.orderline);
 		vm.data.checkingInCustomer.storeId = vm.data.storeId;
 		vm.data.checkingInCustomer.staffId = vm.data.userId;
-		console.log (vm.data.checkingInCustomer)
-		return
-		CheckinService.createOne (vm.data.checkingInCustomer, vm).then(
+
+		// update id in orderline
+		var items =  {};
+		Object.assign (items, vm.data.services, vm.data.otherItems);
+
+		vm.data.checkingInCustomer.orderline.map (function (x, i, array){
+			x.id = items [x.productName];
+		});
+
+		CheckinService.createOne (vm.data.checkingInCustomer.customer.id, vm.data.checkingInCustomer).then(
 			function success(data){
-				// console.log (data)
+				console.log (data)
 				// vm.data.checkedInList.push (data);
 				// vm.toggleCheckInDiv ();
 				vm.status.checkedin = true;

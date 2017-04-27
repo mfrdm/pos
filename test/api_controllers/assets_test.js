@@ -3,42 +3,42 @@ var request = require ('request');
 var helper = require ('../../libs/node/helper');
 var TestHelper =  require ('../../libs/node/testHelper');
 
-suite ('Test assets API.', function (){
-	// setup
-	var server = helper.getAPIOption().server;
+// suite ('Test assets API.', function (){
+// 	// setup
+// 	var server = helper.getAPIOption().server;
 
-	suite ('Read some assets.', function (){
-		var url = server + '/api/assets';
-		var qs = {
-			userId: 'xxxx',
-			status: 1,
-		};
+// 	suite ('Read some assets.', function (){
+// 		var url = server + '/api/assets';
+// 		var qs = {
+// 			userId: 'xxxx',
+// 			status: 1,
+// 		};
 
-		var th = new TestHelper ({url: url, method: 'GET', qs: qs});
+// 		var th = new TestHelper ({url: url, method: 'GET', qs: qs});
 
-		test ('Should detect required input is not provided', function (done){
-			th.testRequiredInput (done);
-		});
+// 		test ('Should detect required input is not provided', function (done){
+// 			th.testRequiredInput (done);
+// 		});
 
-		test ('Should detect status is in invalid format', function (done){
-			var oldStatus = qs.status;
-			qs.status = 'invalid format';
-			th.testInputFormat (done, qs);
-			qs.status = oldStatus;
-		});		
+// 		test ('Should detect status is in invalid format', function (done){
+// 			var oldStatus = qs.status;
+// 			qs.status = 'invalid format';
+// 			th.testInputFormat (done, qs);
+// 			qs.status = oldStatus;
+// 		});		
 
-		test ('Should detect status value is within valid range', function (done){
-			var oldStatus = qs.status;
-			qs.status = 'invalid value';
-			th.testInputValue (done, qs);
-			qs.status = oldStatus;
-		});	
+// 		test ('Should detect status value is within valid range', function (done){
+// 			var oldStatus = qs.status;
+// 			qs.status = 'invalid value';
+// 			th.testInputValue (done, qs);
+// 			qs.status = oldStatus;
+// 		});	
 
-		test ('Should detect user has no permission to read assets', function (done){
-			th.testPermission (done, 'no permission');	
-		});
+// 		test ('Should detect user has no permission to read assets', function (done){
+// 			th.testPermission (done, 'no permission');	
+// 		});
 
-	});
+// 	});
 
 	// suite ('Read one asset by Id.', function (){
 	// 	var assetId = 2132132;
@@ -146,4 +146,4 @@ suite ('Test assets API.', function (){
 	// });
 
 
-});
+// });

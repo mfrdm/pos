@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 
 var ordersSchema = new mongoose.Schema({
 	total: Number,
+	promoteCode: [{type: String}],
 	orderline: [{
 		id: {type: mongoose.Schema.Types.ObjectId, required: true},
 		productName: {type: String, required: true},

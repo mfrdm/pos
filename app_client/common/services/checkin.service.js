@@ -47,7 +47,7 @@ function CheckinService ($http){
 		return $http({
 			method:'POST',
 			url:'/checkin/' + userId,
-			data: JSON.stringify(data),
+			data: JSON.stringify({data: data}),
 		});
 	};
 

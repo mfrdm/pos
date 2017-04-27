@@ -2,34 +2,34 @@ var helper = require('../../libs/node/helper');
 var dbHelper = require('../../libs/node/dbHelper');
 var requestHelper = require('../../libs/node/requestHelper');
 var mongoose = require('mongoose');
-var CostsModel = mongoose.model('costs');
+var TransModel = mongoose.model('transactions');
 
-module.exports = new Costs();
+module.exports = new Transactions();
 
-function Costs() {
+function Transactions () {
 
-	this.readSomeCosts = function(req, res) {
+	this.readSomeTrans = function(req, res) {
 		// TESTING
-		var amount = [100000, 200000, 2000000, 3000000];
-		var desc = ['For open day','For open day', 'For open day', 'For open day'];
-		var costType = [1,3,4,5];
-		var createdAt = ['2017-01-03', '2017-01-03', '2017-01-03', '2017-01-03'];
-		var updatedAt = ['2017-01-03', '2017-01-03', '2017-01-03', '2017-01-03'];	
+		// var amount = [100000, 200000, 2000000, 3000000];
+		// var desc = ['For open day','For open day', 'For open day', 'For open day'];
+		// var costType = [1,3,4,5];
+		// var createdAt = ['2017-01-03', '2017-01-03', '2017-01-03', '2017-01-03'];
+		// var updatedAt = ['2017-01-03', '2017-01-03', '2017-01-03', '2017-01-03'];	
 
-		var d = [];
+		// var d = [];
 
-		for (var i = 0; i < amount.length; i++){
-			d.push ({
-				amount: amount [i],
-				desc: desc [i],
-				costType: costType [i],
-				createdAt: createdAt[i],
-				updatedAt: updatedAt[i]
-			});
-		}
+		// for (var i = 0; i < amount.length; i++){
+		// 	d.push ({
+		// 		amount: amount [i],
+		// 		desc: desc [i],
+		// 		costType: costType [i],
+		// 		createdAt: createdAt[i],
+		// 		updatedAt: updatedAt[i]
+		// 	});
+		// }
 
-		res.json (d)
-		return
+		// res.json (d)
+		// return
 
 		// END
 
@@ -77,11 +77,11 @@ function Costs() {
 			return
 		}
 
-		dbHelper.findSome (req, res, CostsModel);
+		dbHelper.findSome (req, res, TransModel);
 
 	};
 
-	this.readOneCostById = function(req, res) {
+	this.readOneTransById = function(req, res) {
 		// FIX
 		function checkProvidRequiredInput (data){
 			if (!data.userId) return false
@@ -104,10 +104,10 @@ function Costs() {
 			return
 		}
 
-		dbHelper.findOneById (req, res, CostsModel, 'costId');
+		dbHelper.findOneById (req, res, TransModel, 'costId');
 	};
 
-	this.createOneCost = function(req, res) {
+	this.createOneTrans = function(req, res) {
 		// FIX
 		function checkProvidRequiredInput (data){
 			if (!data.userId || !data.amount || !data.costType) return false
@@ -141,10 +141,10 @@ function Costs() {
 			return
 		}
 
-		dbHelper.insertOne (req, res, CostsModel);
+		dbHelper.insertOne (req, res, TransModel);
 	};
 
-	this.updateOneCostById = function(req, res) {
+	this.updateOneTransById = function(req, res) {
 		// FIX
 		function checkProvidRequiredInput (data){
 			if (!data.userId || !data.amount || !data.costType) return false
@@ -178,7 +178,7 @@ function Costs() {
 			return
 		}
 
-		dbHelper.updateOneById(req, res, CostsModel, 'costId');
+		dbHelper.updateOneById(req, res, TransModel, 'transId');
 	};
 
 };

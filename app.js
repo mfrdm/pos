@@ -5,7 +5,6 @@ var express = require('express'),
     logger = require('morgan'),
     cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
-    //uglifyJs = require("uglify-js"),
     app = express(),
     passport = require('passport'),
     session = require('express-session');
