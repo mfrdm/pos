@@ -6,8 +6,8 @@ var apiOptions = helper.getAPIOption();
 if (process.env.CONNECTED_DB == 'local'){
 	var host = 'localhost';
 	var port = 27017;
-	var username = 'contentAdmin';
-	var passwd = 'greenspace';
+	var username = '';
+	var passwd = '';
 	var db = 'pos';	
 }
 else {
