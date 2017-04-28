@@ -1,8 +1,14 @@
 var mongoose = require('mongoose');
 
+var getTotal = function (val) {
+	if (this.promoteCode === 'GSCHUALANG50'){
+		return val * 0.5
+	}
+}
+
 var ordersSchema = new mongoose.Schema({
-	total: Number,
-	promoteCode: [{type: String}],
+	total: {type: Number, get: getTotal, min: 0},
+	promoteCode: [{type: String}], // expect only one code applied at a time
 	orderline: [{
 		id: {type: mongoose.Schema.Types.ObjectId, required: true},
 		productName: {type: String, required: true},

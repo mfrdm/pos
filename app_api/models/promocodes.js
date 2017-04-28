@@ -8,4 +8,4 @@ var promocodesSchema = mongoose.Schema ({
 	promoType: {type: Number, default: 1}, // default: apply to one
 });
 
-mongoose.model ('promocodes', promocodesSchema);
+module.exports = mongoose.model ('promocodes', promocodesSchema);

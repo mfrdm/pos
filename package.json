@@ -6,9 +6,11 @@
     "start": "node ./bin/www",
     "test": "mocha --ui tdd --recursive"
   },
-  "author": "Bruce Pham",
+  "author": "Hiep Pham <phammanhhiep89@gmail.com>",
+  "contributors": [{"name": "Bruce Pham", "email": ""}],
   "license": "ISC",
   "dependencies": {
+    "async": "^2.3.0",
     "body-parser": "^1.17.1",
     "checklist-model": "^0.11.0",
     "cookie-parser": "^1.4.3",
