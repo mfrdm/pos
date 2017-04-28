@@ -1,0 +1,116 @@
+div(ng-switch='vm.tab')
+	div(ng-switch-when='tab-main')
+		div(class="columns row")
+			div(class="row colums")
+				div(class="column")
+					h2 Check working time
+				// Create Account
+				div(class="column")
+					div(class="borderT newBox row column")
+						div(class="row column")
+							form(ng-submit="vm.searchEmployees()")
+								div(class="row column")
+									label Search for employees
+										input(type="text" placeholder="Enter name,phone or email to search employees" ng-model='vm.searchInputEmployee')
+								div( class="marginB15" ng-show='vm.look.selectEmployeeResultDiv')
+									div(class="table-scroll")
+										table(class="hover unstriped borderAll")
+											thead
+												tr
+													th No
+													th Lastname
+													th Firstname
+													th Email
+													th Phone				
+											tbody
+												tr(ng-repeat='result in vm.searchResultEmployees.employees', ng-click='vm.selectEmployeeToGetData($index)' class="pointerCursor")
+													td {{ $index + 1 }}
+													td {{ result.lastname }}
+													td {{ result.firstname }}
+													td {{ result.email }}
+													td {{ result.phone }}
+											
+				div(class="column")
+					div(class="borderT newBox row column")
+						form(class='row column')
+							div(class='column small-12 large-6 paddingL0')
+								label Start time
+									input(required type='text' ng-model='vm.start' date-time-picker='' format='dd.mm.yyyy.hh.ii')
+							div(class='column small-12 large-6 paddingLR0')
+								label End time
+									input(required type='text' ng-model='vm.end' date-time-picker='' format='dd.mm.yyyy.hh.ii')
+						div(class="row column")
+							div(class='column small-12 paddingL0')
+								input(class="button" type="submit" value="Create" ng-click='vm.updateNewAttendance()')
+								button(class="button float-right") Cancel
+			div(class="row colums")
+				div(class="column")
+					h2 Attendances
+				// Create Account
+				div(class="row column")
+					div(class="column small-12")
+						ul(class="menu clearfix")
+							li(class="float-right marginL15")
+								<a class="button secondary" ng-click="vm.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
+							li(class="float-right")
+								ul(class="menu")
+									li: label(class="paddingR15 show-for-large") Sort by
+									li: select(class="")
+											option(value="name") Name
+											option(value="checkinTime") Check-in time
+											option(value="status") Status
+				div(class="column")
+					div(class="borderT newBox row column")
+						div(class="row column")
+							form(ng-submit="vm.searchFunc()")
+								div(class="row column")
+									label Employees
+										input(type="text" placeholder="Enter phone or email to search employee" ng-model='vm.searchInput')
+								div( class="marginB15" ng-show='vm.look.attendanceSearchResultDiv')
+									div(class="table-scroll")
+										table(class="hover unstriped borderAll")
+											thead
+												tr
+													th No
+													th Firstname
+													th Lastname
+											tbody
+												tr(ng-repeat='result in vm.searchResult.attendances', ng-click='vm.selectAttendanceToViewTime($index)' class="pointerCursor")
+													td {{ $index + 1 }}
+													td {{ result.firstname }}
+													td {{ result.lastname }}
+								div( class="marginB15" ng-show='vm.look.attendanceOneEmployeeDiv')
+									div(class="table-scroll")
+										table(class="hover unstriped borderAll")
+											thead
+												tr
+													th No
+													th Start
+													th End
+											tbody
+												tr(ng-repeat='result in vm.look.oneAttendance' class="pointerCursor")
+													td {{ $index + 1 }}
+													td {{ result.startTime }}
+													td {{ result.endTime }}
+	div(ng-switch-when='tab-edit')
+		div(class="columns row")
+			div(class="row colums")
+				div(class="column")
+					h2 Edit Profile
+				// Profile
+				div(class="column")
+					div(class="borderT newBox row column")
+						table(class="striped borderAll")
+							thead
+								tr
+									th(class='text-center') Fields
+									th(class='text-center') Information
+							tbody
+								tr(ng-repeat='field in vm.look.fields')
+									td(class='text-center') {{ field }}
+									td
+										input(ng-model= 'vm.product.info[field]' type='text')
+					div(class="row column")
+						div(class='column small-12 paddingLR0')
+							input(class="button warning" type="submit" value="Save" ng-click='vm.saveEdit()')
+							button(class="button float-right" ng-click='vm.toMain()') Cancel

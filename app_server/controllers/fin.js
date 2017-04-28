@@ -40,7 +40,7 @@ function Fin() {
 			}
 		};	
 				
-		res.render ('costManagement', {data: data});		
+		res.render ('transaction', {data: data});		
 
 
 		// var apiUrl = apiOptions.server + '/api/costs/';
@@ -50,19 +50,19 @@ function Fin() {
 
 	this.readOneCostById = function(req, res) {
 		var apiUrl = apiOptions.server + '/api/costs/cost/' + req.params['costId'];
-		var view = 'costManagement';
+		var view = 'transaction';
 		requestHelper.readApi (req, res, apiUrl, view);
 	};
 
 	this.createOneCost = function(req, res) {
 		var apiUrl = apiOptions.server + '/api/costs/create';
-		var view = 'costManagement';
+		var view = 'transaction';
 		requestHelper.postApi (req, res, apiUrl, view);
 	};
 
 	this.updateOneCost = function(req, res) {
 		var apiUrl = apiOptions.server + '/api/costs/cost/' + req.params['costId'] + '/edit';
-		var view = 'costManagement';
+		var view = 'transaction';
 		requestHelper.postApi (req, res, apiUrl, view);
 	};
 

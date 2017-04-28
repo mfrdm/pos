@@ -27,3 +27,4 @@ require('./transactions');
 require('./bookings');
 require('./assets');
 require('./promocodes');
+require('./attendances');

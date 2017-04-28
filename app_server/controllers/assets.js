@@ -106,4 +106,8 @@ function Assets() {
 		requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
 	};
 
+	this.readAngularAsset = function(req, res){
+		helper.angularRender( req, res,'assets')
+	}
+
 };

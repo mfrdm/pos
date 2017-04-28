@@ -1,10 +1,24 @@
 var productService = function($http){
 	//Search Service
-	this.searchProducts = function(input){
+	this.createOne = function(data){
+		return $http({
+			method:'POST',
+			url:'/api/products/create',
+			data:JSON.stringify(data)
+		})
+	}
+	this.updateOne = function(id, data){
+		return $http({
+			method:'POST',
+			url:'/api/products/product/'+id+'/edit',
+			data:JSON.stringify(data)
+		})
+	}
+	this.search = function(input){
 		var array = [{"name" : { $regex: input, $options: 'i' }}]
 		return $http({
 			method:'GET',
-			url:'/api/products/',
+			url:'/api/products',
 			params:{
 				queryInput:JSON.stringify({
 					conditions: {$or: array},
@@ -14,18 +28,10 @@ var productService = function($http){
 			}
 		})
 	}
-	this.postCreateProduct = function(data){
+	this.readOne = function(id){
 		return $http({
-			method:'POST',
-			url:'/api/products/create',
-			data:JSON.stringify(data)
-		})
-	}
-	this.postSaveEdit = function(id, data){
-		return $http({
-			method:'POST',
-			url:'/api/products/product/'+id+'/edit',
-			data:JSON.stringify(data)
+		method:'GET',
+			url:'api/products/product/'+id
 		})
 	}
 }

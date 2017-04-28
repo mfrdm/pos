@@ -39,12 +39,15 @@ div(class="columns row")
 											th Email
 											th Phone				
 									tbody
-										tr(ng-repeat='result in vm.searchResult.checkingInCustomers', ng-click='vm.selectCustomerToCheckin($index)' class="pointerCursor")
-											td {{ $index + 1 }}
-											td {{ result.lastname }}
-											td {{ result.firstname }}
-											td {{ result.email }}
-											td {{ result.phone }}
+										tr(ng-repeat='noti in vm.noties')
+											td {{noti.firstname}}
+											td {{noti.msg}}
+										//- tr(ng-repeat='result in vm.searchResult.checkingInCustomers', ng-click='vm.selectCustomerToCheckin($index)' class="pointerCursor")
+										//- 	td {{ $index + 1 }}
+										//- 	td {{ result.lastname }}
+										//- 	td {{ result.firstname }}
+										//- 	td {{ result.email }}
+										//- 	td {{ result.phone }}
 				
 				form(ng-submit="vm.checkin ()")
 					div(class="row column")
@@ -83,8 +86,7 @@ div(class="columns row")
 							label(for="checkedInTime3days") 3 days ago
 						div(class="row column")
 							input(type="radio" name="checkedInTime" value="today" id="checkedInTime7days" required)
-							label(for="checkedInTime7days") 7 days ago
-					
+							label(for="checkedInTime7days") 7 days ago	
 					fieldset(class="column column-block")
 						legend Status
 						div(class="row column")
@@ -154,4 +156,9 @@ div(class="columns row")
 								button(type="button" class="warning button" ng-click="vm.toggleCheckInEditDiv ($index)") Checkout
 							td
 								button(type="button" class="alert button" ng-click="vm.toggleCheckInEditDiv ($index)") Edit
-
+	div(id='online')
+		span
+		p anonymous are online
+	form(id="message" ng-submit='vm.sendNoti()')
+		input(ng-model="vm.msg" autocomplete="off")
+		button(type="button" class="success button" ) Send

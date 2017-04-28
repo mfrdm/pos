@@ -1,31 +1,36 @@
 var customerService = function($http){
-	this.postCreateCustomer = function(data){
+	this.createOne = function(data){
 		return $http({
 			method:'POST',
 			url:'/api/customers/create',
 			data:JSON.stringify(data)
 		})
 	}
-	this.postSaveEdit = function(id, data){
+	this.updateOne = function(id, data){
 		return $http({
 			method:'POST',
 			url:'/api/customers/customer/'+id+'/edit',
 			data:JSON.stringify(data)
 		})
 	}
-
-	this.readCustomers = function (username){
-		var cond = [{"firstname" : { $regex: username, $options: 'i' }}, {"lastname" : { $regex: username, $options: 'i' }}, {"email" : { $regex: username, $options: 'i' }}, {"phone" : { $regex: username, $options: 'i' }}];
+	this.search = function(input){
+		var array = [{"email" : { $regex: input, $options: 'i' }}, {"phone" : { $regex: input, $options: 'i' }}]
 		return $http({
 			method:'GET',
 			url:'/api/customers',
 			params:{
-				queryInput: JSON.stringify({
-					conditions: { $or: condition },
+				queryInput:JSON.stringify({
+					conditions: {$or: array},
 					projection: null,
 					opts: null
 				})
 			}
+		})
+	}
+	this.readOne = function(id){
+		return $http({
+		method:'GET',
+			url:'api/customers/customer/'+id
 		})
 	}
 }

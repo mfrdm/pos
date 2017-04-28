@@ -5,6 +5,7 @@
 
 	function authentication ($window, $http) {
 		var tokenKey = 'posAppToken';
+		var thisObj = this;
 		this.saveToken = function (token) {
 			$window.localStorage [tokenKey] = token;
 		};
@@ -45,14 +46,15 @@
 		this.logout = function (beforeAction, afterAction){
 			beforeAction ();
 			$window.localStorage.removeItem (tokenKey);
+			$window.location.href = '/';
 			afterAction ();
 		};
 
 		this.isLoggedIn = function (){
-			this.token = this.getToken ();
-			if (this.token){
-				this.payload = JSON.parse ($window.atob(this.token.split('.')[1]));
-				return this.payload.exp > Date.now () / 1000;
+			thisObj.token = thisObj.getToken ();
+			if (thisObj.token){
+				thisObj.payload = JSON.parse ($window.atob(thisObj.token.split('.')[1]));
+				return thisObj.payload.exp > Date.now () / 1000;
 			}	
 			else {
 				return false
@@ -60,12 +62,13 @@
 		};
 
 		this.getCurUser = function (){
-			if (this.isLoggedIn ()){
+			if (thisObj.isLoggedIn ()){
 				return {
-					email: payload.email,
-					phone: payload.phone,
-					firstname: payload.firstname,
-					lastname: payload.lastname,
+					id: thisObj.payload._id,
+					email: thisObj.payload.email,
+					phone: thisObj.payload.phone,
+					firstname: thisObj.payload.firstname,
+					lastname: thisObj.payload.lastname,
 				}
 			}
 		};

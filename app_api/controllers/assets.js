@@ -11,30 +11,30 @@ function Assets() {
 
 	this.readSomeAssets = function(req, res, next) {
 
-		var names = ['table', 'cup', 'laptop', 'chair'];
-		var categories = [1,2,3,1];
-		var quantities = [1,3,4,5];
-		var statuses = [1,1,2,2]; // quality of asset	
+		// var names = ['table', 'cup', 'laptop', 'chair'];
+		// var categories = [1,2,3,1];
+		// var quantities = [1,3,4,5];
+		// var statuses = [1,1,2,2]; // quality of asset	
 
-		var d = [];
+		// var d = [];
 
-		for (var i = 0; i < names.length; i++){
-			d.push ({
-				name: names [i],
-				category: categories [i],
-				quantity: quantities [i],
-				status: statuses[i],
-			});
-		}
+		// for (var i = 0; i < names.length; i++){
+		// 	d.push ({
+		// 		name: names [i],
+		// 		category: categories [i],
+		// 		quantity: quantities [i],
+		// 		status: statuses[i],
+		// 	});
+		// }
 
-		res.json (d)
-		return
+		// res.json (d)
+		// return
 
 		// FIX
-		function checkProvidRequiredInput (data){
-			if (!data.userId || !data.status) return false
-			return true
-		}
+		// function checkProvidRequiredInput (data){
+		// 	if (!data.userId || !data.status) return false
+		// 	return true
+		// }
 
 		// FIX
 		function checkValueFormat (status){
@@ -49,52 +49,52 @@ function Assets() {
 		}		
 
 		// FIX
-		function checkUserPermission (userId){
-			if (userId == 'no permission') return false
-			return true
-		}		
+		// function checkUserPermission (userId){
+		// 	if (userId == 'no permission') return false
+		// 	return true
+		// }		
 
-		if (!checkProvidRequiredInput(req.query)){
-			throw new errorHelper.InputRequiredError ();
-		}
+		// if (!checkProvidRequiredInput(req.query)){
+		// 	throw new errorHelper.InputRequiredError ();
+		// }
 
-		if (!checkValueFormat(req.query.status)){
-			throw new errorHelper.InvalidFormatError ();
-		}
+		// if (!checkValueFormat(req.query.status)){
+		// 	throw new errorHelper.InvalidFormatError ();
+		// }
 
-		if  (!checkValue(req.query.status)){
-			throw new errorHelper.InvalidValueError ();
-		}
+		// if  (!checkValue(req.query.status)){
+		// 	throw new errorHelper.InvalidValueError ();
+		// }
 
-		if (!checkUserPermission(req.query.userId)){
-			throw new errorHelper.NoPermissionError ();
-		}
+		// if (!checkUserPermission(req.query.userId)){
+		// 	throw new errorHelper.NoPermissionError ();
+		// }
 
 		dbHelper.findSome (req, res, AssetsModel);
 	};
 
 	this.readOneAssetById = function(req, res) {
 		// FIX
-		function checkUserPermission (userId){
-			if (userId == 'no permission') return false
-			return true
-		}
+		// function checkUserPermission (userId){
+		// 	if (userId == 'no permission') return false
+		// 	return true
+		// }
 
 		// FIX
-		function checkProvidRequiredInput (data){
-			if (!data.userId || !data.assetId) return false
-			return true
-		}
+		// function checkProvidRequiredInput (data){
+		// 	if (!data.userId || !data.assetId) return false
+		// 	return true
+		// }
 
-		if (!checkProvidRequiredInput(req.query)){
-			requestHelper.sendJsonRes (res, 400, {message: 'Input required'});
-			return
-		}
+		// if (!checkProvidRequiredInput(req.query)){
+		// 	requestHelper.sendJsonRes (res, 400, {message: 'Input required'});
+		// 	return
+		// }
 
-		if (!checkUserPermission(req.query.userId)){
-			requestHelper.sendJsonRes (res, 400, {message: 'No permission'});
-			return
-		}
+		// if (!checkUserPermission(req.query.userId)){
+		// 	requestHelper.sendJsonRes (res, 400, {message: 'No permission'});
+		// 	return
+		// }
 
 		dbHelper.findOneById (req, res, AssetsModel, 'assetId');
 
@@ -109,19 +109,19 @@ function Assets() {
 
 		// FIX
 		function checkInputValue (data){
-			if (data.name == 'invalid value' || data.assetCategory == 'invalid value' || data.quantity == 'invalid value' || data.status == 'invalid value') return false
+			if (data.name == 'invalid value' || data.category == 'invalid value' || data.quantity == 'invalid value' || data.status == 'invalid value') return false
 			return true
 		}
 
 		// FIX
 		function checkInputFormat (data){
-			if (data.name == 'invalid format' || data.assetCategory == 'invalid format' || data.quantity == 'invalid format' || data.status == 'invalid format') return false
+			if (data.name == 'invalid format' || data.category == 'invalid format' || data.quantity == 'invalid format' || data.status == 'invalid format') return false
 			return true
 		}
 
 		// FIX
 		function checkProvidRequiredInput (data){
-			if (!data.userId || !data.quantity || !data.assetCategory || !data.status || !data.name) return false
+			if (!data.userId || !data.quantity || !data.category || !data.status || !data.name) return false
 			return true
 		}
 
@@ -151,33 +151,33 @@ function Assets() {
 
 	this.updateOneAssetById = function(req, res) {
 		// FIX
-		function checkUserPermission (userId){
-			if (userId == 'no permission') return false
-			return true
-		}
+		// function checkUserPermission (userId){
+		// 	if (userId == 'no permission') return false
+		// 	return true
+		// }
 
 		// FIX
-		function checkProvidRequiredInput (data){
-			if (!data.userId || !data.quantity || !data.assetCategory || !data.status || !data.name) return false
-			return true
-		}
+		// function checkProvidRequiredInput (data){
+		// 	if (!data.userId || !data.quantity || !data.category || !data.status || !data.name) return false
+		// 	return true
+		// }
 
 		// FIX
 		function checkInputValue (data){
-			if (data.name == 'invalid value' || data.assetCategory == 'invalid value' || data.quantity == 'invalid value' || data.status == 'invalid value') return false
+			if (data.name == 'invalid value' || data.category == 'invalid value' || data.quantity == 'invalid value' || data.status == 'invalid value') return false
 			return true
 		}
 
 		// FIX
 		function checkInputFormat (data){
-			if (data.name == 'invalid format' || data.assetCategory == 'invalid format' || data.quantity == 'invalid format' || data.status == 'invalid format') return false
+			if (data.name == 'invalid format' || data.category == 'invalid format' || data.quantity == 'invalid format' || data.status == 'invalid format') return false
 			return true
 		}
 
-		if (!checkProvidRequiredInput(req.body)){
-			requestHelper.sendJsonRes (res, 400, {message: 'Input required'});
-			return
-		}
+		// if (!checkProvidRequiredInput(req.body)){
+		// 	requestHelper.sendJsonRes (res, 400, {message: 'Input required'});
+		// 	return
+		// }
 
 		if (!checkInputValue(req.body)){
 			requestHelper.sendJsonRes (res, 400, {message: 'Invalid value'});
@@ -189,10 +189,10 @@ function Assets() {
 			return
 		}
 
-		if (!checkUserPermission(req.body.userId)){
-			requestHelper.sendJsonRes (res, 400, {message: 'No permission'});
-			return
-		}
+		// if (!checkUserPermission(req.body.userId)){
+		// 	requestHelper.sendJsonRes (res, 400, {message: 'No permission'});
+		// 	return
+		// }
 
 		dbHelper.updateOneById(req, res, AssetsModel, 'assetId');
 

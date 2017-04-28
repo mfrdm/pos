@@ -22,7 +22,7 @@ var customersSchema = mongoose.Schema({
 		by: mongoose.Schema.Types.ObjectId
 	}],
 	orders: [{orderId:{type: mongoose.Schema.Types.ObjectId}}],
-	bookings: [{type: mongoose.Schema.Types.ObjectId}],
+	bookings: [{type:mongoose.Schema.Types.ObjectId, ref:'bookings'}],
 	promoteCode: [{code: String, expire: Date,}],
 });
 

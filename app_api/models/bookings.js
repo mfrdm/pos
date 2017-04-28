@@ -1,7 +1,13 @@
 var mongoose = require('mongoose');
 
 var bookingSchema = mongoose.Schema({
-	customerId: {type: mongoose.Schema.Types.ObjectId},
+	// _customer: {type: mongoose.Schema.Types.ObjectId, ref:'customers', required:true},//Fix: may ref instead of embedded name
+	customer:{
+		id: {type: mongoose.Schema.Types.ObjectId},
+		firstname: String,
+		lastname: String,
+		email: String
+	},
 	checkinTime: {type: Date, required: true},
 	checkoutTime: {type: Date}, 
 	storeId: {type: String},

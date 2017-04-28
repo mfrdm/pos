@@ -67,6 +67,6 @@ function Hr() {
 
 	//Angular
 	this.readAngularEmployees = function(req, res){
-		helper.angularRender(req, res, 'staff/Staff')
+		helper.angularRender(req, res, 'staff')
 	}
 };

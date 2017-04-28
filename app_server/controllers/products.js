@@ -34,6 +34,6 @@ function Products () {
 
 	//Angular
 	this.readAngularProducts = function(req, res){
-		helper.angularRender(req, res, 'products/Product')
+		helper.angularRender(req, res, 'product')
 	}
 };

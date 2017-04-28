@@ -50,8 +50,10 @@ module.exports = new function (){
 			if (req.params && req.params[idName]){
 				var idValue = req.params[idName];
 				var update = req.body;
+				console.log(update)
+				console.log(idValue)
 				var query = Model
-					.findByIdAndUpdate (mongoose.Types.ObjectId(idValue), update, {runValidators: true});
+					.findByIdAndUpdate (mongoose.Types.ObjectId(idValue), update, {runValidators: true, safe: true, upsert: true, new : true});
 				requestHelper.stdExec (res, query);
 			}
 			else{
@@ -91,8 +93,21 @@ module.exports = new function (){
 	this.findSome = function(req, res, Model, next) {
 		try{
 			var queryInput = req.query.queryInput ? JSON.parse (req.query.queryInput) : {conditions: null, projection: null, opts: null}; // queyInput is a js object being stringified
-			console.log(queryInput)
 			var query = Model.find(queryInput.conditions, queryInput.projection, queryInput.opts);
+			requestHelper.stdExec (res, query, next);
+		}
+		catch(ex){
+			console.log(ex)
+			requestHelper.sendJsonRes (res, 500, {message: ex});
+		}
+	};
+
+	this.findSomePopulate = function(req, res, Model, next) {
+		try{
+			var queryInput = req.query.queryInput ? JSON.parse (req.query.queryInput) : {conditions: null, projection: null, opts: null, populate: null}; // queyInput is a js object being stringified
+			var query = Model
+				.find(queryInput.conditions, queryInput.projection, queryInput.opts)
+				.populate(queryInput.populate)
 			requestHelper.stdExec (res, query, next);
 		}
 		catch(ex){

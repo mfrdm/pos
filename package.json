@@ -10,7 +10,11 @@
   "contributors": [{"name": "Bruce Pham", "email": ""}],
   "license": "ISC",
   "dependencies": {
+<<<<<<< HEAD
     "async": "^2.3.0",
+=======
+    "angular-datepicker": "^1.0.5",
+>>>>>>> fb26a020be2767cf727bf72de4b512a51d56e711
     "body-parser": "^1.17.1",
     "checklist-model": "^0.11.0",
     "cookie-parser": "^1.4.3",
@@ -27,7 +31,8 @@
     "passport-google-oauth": "^1.0.0",
     "passport-local": "^1.0.0",
     "pug": "^2.0.0-beta11",
-    "request": "^2.81.0"
+    "request": "^2.81.0",
+    "socket.io": "^1.7.3"
   },
   "devDependencies": {
     "angular": "^1.6.4",

@@ -1,0 +1,195 @@
+//- h2= data.look.title
+//- p: button(class="button", data-open="addFormModal", ng-click="vm.resetFormData()") Add
+
+//- div(class="reveal" id="deleteFormModal" data-reveal="true")
+//- 	div(class="row")
+//- 		table
+//- 			thead
+//- 				tr
+//- 				- var tableHeaderNames = ['Category', 'Amount', 'Describe', 'Created At', 'Updated At'];
+//- 				- var twidth = ['20%', '10%', '20%', '15%', '15%'];
+//- 				- var columnNum = tableHeaderNames.length;
+//- 				- for (var i = 0; i < columnNum; i++)
+//- 					th(width=twidth[i])= tableHeaderNames[i]
+//- 			tbody
+//- 				tr
+//- 					td {{ vm.formData.costType }}
+//- 					td {{ vm.formData.amount }}
+//- 					td {{ vm.formData.desc }}
+//- 					td {{ vm.formData.createdAt }}
+//- 					td {{ vm.formData.updatedAt }}
+
+//- 	div(class="row")
+//- 		div(class="button-group")
+//- 			a(class="button") Delete
+//- 			a(class="button float-right") Cancel
+
+//- div(class="reveal" id="addFormModal" data-reveal="true")
+//- 	form
+//- 		div(class="row")
+//- 			div(class="column small-3")
+//- 				label(for="costCategory", class="text-right middle") Category
+//- 			div(class="column small-9")
+//- 				input(type="text", placeholder="Category of the cost", id="costCategory", value="{{ vm.formData.costType }}")
+//- 		div(class="row")
+//- 			div(class="column small-3")
+//- 				label(for="costAmount", class="text-right middle") Amount
+//- 			div(class="column small-9")
+//- 				input(type="text", placeholder="Cost amount", id="costAmount", value="{{ vm.formData.amount }}")
+//- 		div(class="row")
+//- 			div(class="column small-3")
+//- 				label(for="costDesc", class="text-right middle") Describe
+//- 			div(class="column small-9")
+//- 				input(type="text", placeholder="Descibe cost", id="costDesc", value="{{ vm.formData.desc }}")
+//- 		div(class="row")
+//- 			div(class="column small-3")
+//- 				label(for="updateExplain", class="text-right middle") Reason to update
+//- 			div(class="column small-9")
+//- 				input(type="text", placeholder="Reason to update", id="updateExplain", value="{{ vm.formData.reason }}")
+//- 		div(class="row")
+//- 			div(class="button-group")
+//- 				a(class="button") Create
+//- 				a(class="button float-right") Cancel									
+//- table
+//- 	thead
+//- 		tr
+//- 			- var tableHeaderNames = ['Category', 'Amount', 'Describe', 'Created At', 'Updated At', 'Edit', 'Delete'];
+//- 			- var twidth = ['20%', '10%', '20%', '15%', '15%', '10%', '10%'];
+//- 			- var d = data.data;
+//- 			- var key = ['costType', 'amount', 'desc', 'createdAt', 'updatedAt'];
+//- 			- var rowNum = d.length;
+//- 			- var columnNum = tableHeaderNames.length;
+//- 			- for (var i = 0; i < columnNum; i++)
+//- 				th(width=twidth[i])= tableHeaderNames[i]
+//- 	tbody
+//- 		tr(ng-repeat="c in vm.costs")
+//- 			td {{ c.costType }}
+//- 			td {{ c.amount | currency: ""}}
+//- 			td {{ c.desc }}
+//- 			td {{ c.createdAt | date: "dd MMM yyyy" }}
+//- 			td {{ c.updatedAt | date: "dd-mm-yyyy" }}
+//- 			td: a(class="button warning", data-open="addFormModal", ng-click="vm.getFormData($index)") Edit
+//- 			td: a(class="button alert", data-open="deleteFormModal", ng-click="vm.getFormData($index)") Delete
+
+//- div(ng-switch='vm.tab')
+//- 	div(ng-switch-when='tab-search')
+		
+//- 	div(ng-switch-when='tab-create')
+		
+//- 	div(ng-switch-when='tab-profile')
+		
+//- 	div(ng-switch-when='tab-edit')
+div(class="columns row")
+	div(class="row colums")
+		div(class="column")
+			h2 Summary
+		// Create Account
+		div(class="column")
+			div(class="borderT newBox row column")
+				div(class='row column')
+					div(class='column small-12 paddingLR0')
+						label Source
+							select(class="")
+								option(value="GS") Green Space
+								option(value="GS") Green Space
+								option(value="GS") Green Space
+					div(class='column small-6 paddingL0')
+						label Start Date
+							input(type='text' date-picker='')
+					div(class='column small-6 paddingLR0')
+						label End Date
+							input(type='text' date-picker='')
+					div(class='column small-12 paddingLR0')
+						p Revenue: 
+							span 100,000,000
+					div(class='column small-12 paddingLR0')
+						p Cost: 
+							span 10,000,000
+					div(class='column small-12 paddingLR0')
+						p Profit: 
+							span 90,000,000
+	div(class="row colums")
+		div(class="column")
+			h2 Add a transaction 
+		// Add transaction
+		div(class="column")
+			div(class="borderT newBox row column")
+				div(class='row column')
+					div(class='column small-12 paddingLR0')
+						label Description
+							textarea(class="")
+					div(class='column small-12 paddingLR0')
+						label Amount
+							input(type='text')
+					div(class='column small-12 paddingLR0')
+						label Category
+							input(type='text')
+					div(class='column small-12 paddingLR0')
+						label Department
+							input(type='text')
+					div(class="row column")
+						div(class='column small-centered small-12')
+							input(class="button float-center" type="submit" value="Add")
+	div(class="row colums")
+		div(class="column")
+			h2 Transaction List
+		// Setting
+		div(class="row column")
+			div(class="column small-12")
+				ul(class="menu clearfix")
+					li(class="float-right marginL15")
+						<a class="button secondary"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
+					li(class="float-right")
+						ul(class="menu")
+							li: label(class="paddingR15 show-for-large") Sort by
+							li: select(class="")
+									option(value="name") Name
+									option(value="checkinTime") Check-in time
+									option(value="status") Status
+		div(class="column")
+			div(class="borderT newBox row column")
+				div(class="row column")
+					form()
+						div(class="row column")
+							label Phone/Email
+								input(type="text" placeholder="Enter phone or email to search customer")
+		div(class='row column')
+			div(class="column small-12")
+				div(class="table-scroll newBox")
+					table(class="borderAll")
+						thead
+							tr
+								th Name
+								th Location
+								th Service
+								th Date
+								th Time
+								th Config
+						tbody
+							tr
+								td Test
+								td Test
+								td Test
+								td Test
+								td Test
+								td
+									button(type="button" class="alert button") Edit
+		ul(class='pagination' role='navigation' aria-label='Pagination')
+			li(class='pagination-previous disabled') Previous
+				span(class='show-for-sr') page
+			li(class='current') 1
+				span(class='show-for-sr')
+			li
+				a(href='#' aria-label='page-2') 2
+			li
+				a(href='#' aria-label='page-3') 3
+			li
+				a(href='#' aria-label='page-4') 4
+			li(class="ellipsis" aria-hidden="true")
+			li
+				a(href='#' aria-label='page-10') 10
+			li
+				a(href='#' aria-label='page-11') 11
+			li(class='pagination-next')
+				a(href="#" aria-label="Next page") Next
+					span(class='show-for-sr') page

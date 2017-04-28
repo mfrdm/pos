@@ -4,13 +4,10 @@ var requestHelper = require('../../libs/node/requestHelper')
 var request = require('request')
 var apiOptions = helper.getAPIOption()
 
-module.exports = new Bi();
+module.exports = new Assets();
 
-function Bi() {
+function Assets() {
 
-	this.readReport = function(req, res) {
-		// later
-		res.json ('Built later')
-	};
+	
 
 };

@@ -6,16 +6,19 @@ html(ng-app='posApp')
 		meta(charset="utf-8")
 		// Let browser know website is optimized for mobile
 		meta(name='viewport', content='width=device-width, initial-scale=1.0')
-
+		base(href='/')
 		title= data.look.title
 		link(rel="stylesheet", href='/vendor/css/foundation.min.css')
+		link(type="text/css" media="screen" rel="stylesheet" href='/vendor/css/responsive-tables.css')
 		link(rel="stylesheet", href="https://fonts.googleapis.com/icon?family=Material+Icons")
 		link(rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css")
+		link(rel="stylesheet" href="/vendor/css/angularjs-datetime-picker.min.css")
 		//link(rel="stylesheet", href='/css/test.css')
 		if (data.look.css && data.look.css[0])
 			- var cssFileNum = data.look.css.length
 			- for (var i = 0; i < cssFileNum; i++)
 				link(rel="stylesheet", href='/css/' + data.look.css[i] + '.css')
+
 	body(ng-controller="LayoutCtrl")
 		nav(class="show-for-large top-bar paddingLR0" id="topNavBar")
 			div(class="medium-2 columns")
@@ -28,18 +31,21 @@ html(ng-app='posApp')
 				ul(class="menu dropdown float-right stdBox paddingLR15 stdBoxRight" data-dropdown-menu)
 					li(class="childHStdBox"): a(class="button" href="#!/login" ng-show="layout.loginBtn") Login
 					li(ng-show="layout.notiBtn" class="childHStdBox")
-						a(class="dropDownNoIcon paddingLR0"): i(class="material-icons") notifications
-						ul(class="menu")
-							- var notiData = ['Pham Manh Hiep booked a private room at 20:00', 'Pham Manh Hiep book a common spot at 21:00'];
-							- for (var i=0; i < notiData.length; i ++)
-								li(class="menu-text")= notiData[i]
+						a(ng-style='layout.style' class="dropDownNoIcon paddingLR0"): i(class="material-icons") notifications
+						ul(class="menu noti" )
+							// - var notiData = ['Pham Manh Hiep booked a private room at 20:00', 'Pham Manh Hiep book a common spot at 21:00'];
+							// - for (var i=0; i < notiData.length; i ++)
+							// 	li(class="menu-text")= notiData[i]
+							li(ng-repeat='noti in layout.notifications')
+								p {{noti.firstname}}
+								p {{noti.msg}}
 
 					li(ng-show="layout.accountBtn" class="childHStdBox")
 						a(class="dropDownNoIcon paddingLR0"): i(class="material-icons") account_circle
 						ul(class="menu")
 							li: a Profile
 							li: a Setting
-							li: a Logout
+							li(ng-click='layout.logout()'): a Logout
 
 
 		div(class="title-bar text-center" data-responsive-toggle="mainMenu" data-hide-for="large")
@@ -83,9 +89,13 @@ html(ng-app='posApp')
 		script(src="/vendor/js/angular.min.js")
 		script(src='/vendor/js/angular-route.min.js')
 		script(src='/vendor/js/checklist-model.min.js')
-		script(src="/vendor/js/jquery-3.1.1.min.js")
+		script(type="text/javascript" src="/vendor/js/jquery-2.1.0.min.js")
+		script(src="/js/test.js")
 		script(src="/vendor/js/what-input.js")
 		script(src="/vendor/js/foundation.min.js")
+		script(src='/vendor/js/angularjs-datetime-picker.js')
+		script(type="text/javascript" src="/vendor/js/responsive-tables.js")
+		script(src="/socket.io/socket.io.js")
 		if (data.look.js && data.look.js[0])
 			- var jsFileNum = data.look.js.length
 			- for (var i = 0; i < jsFileNum; i++)

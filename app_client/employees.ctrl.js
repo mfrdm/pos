@@ -1,44 +1,70 @@
-var EmployeeCtrl = function(employeeService, $route){
+var EmployeeCtrl = function(employeeService,attendanceService, $route){
 	var vm = this;
-	vm.tab = 'tab-search';
-	vm.pageTitle = 'Search Staff'
+	vm.tab = 'tab-main';
+	vm.employeeInfo = {};
+	vm.look = {};
+	vm.searchResult = {};
+	vm.employee = {};
+
+	vm.employeeInfo.edu = {};
+	vm.look.employeeSearchResultDiv = false;
+	vm.look.fields = ['firstname', 'lastname', 'gender', 'birthday', 'phone', 'email']
 	////////////////////////////////////////////////////////
-	//Setup ng-switch
-	vm.toCreate = function(){
-		vm.tab = 'tab-create'
-		vm.pageTitle = 'Create Staff'
+	// Setup ng-switch
+	vm.toMain = function(){
+		vm.tab = 'tab-main'
 	}
 	vm.toProfile = function(index){
 		vm.tab = 'tab-profile';
-		vm.pageTitle = 'Profile Staff'
-		vm.employee = vm.results[index]
-	}
-	vm.toSearch = function(){
-		vm.tab = 'tab-search'
-		vm.pageTitle = 'Search Staff'
-		$route.reload();
 	}
 	vm.toEdit = function(){
 		vm.tab = 'tab-edit';
-		vm.pageTitle = 'Edit Staff'
 	}
 	////////////////////////////////////////////////////////
 	//Search Page
 	vm.searchFunc = function(){
-		employeeService.searchEmployees(vm.searchInput)
+
+		employeeService.search(vm.searchInput)
 		.then(function success(res){
-			vm.results = res.data.data
+			vm.searchResult.employees = res.data.data;
+			vm.look.employeeSearchResultDiv = true;
+			//Go to view one employee
+			vm.selectemployeeToViewProfile = function(index){
+				vm.tab = 'tab-profile';
+				employeeService.readOne(vm.searchResult.employees[index]._id)
+					.then(function success(res){
+						vm.employee.info = res.data.data
+					})
+			}
 		}, function error(err){
 			console.log(err)
 		})
 	}
+	
 	////////////////////////////////////////////////////////
 	//Create Page
 	vm.createNewEmployee = function(){
-		employeeService.postCreateEmployee(vm.formData)
+		vm.employeeInfo.firstname = vm.firstname
+		vm.employeeInfo.lastname = vm.lastname
+		vm.employeeInfo.gender = vm.gender
+		vm.employeeInfo.birthday = vm.birthday
+		vm.employeeInfo.phone = vm.phone
+		vm.employeeInfo.email = vm.email
+		vm.employeeInfo.role = vm.role
+		employeeService.createOne(vm.employeeInfo)
 			.then(function success(res){
-				vm.tab = 'tab-search'
-				$route.reload();
+				console.log(res.data.data._id)
+				attendanceService.createOne(
+					{
+						employeeId:res.data.data._id,
+						firstname:res.data.data.firstname,
+						lastname:res.data.data.lastname,
+						email:res.data.data.email,
+						phone:res.data.data.phone
+					})
+					.then(function success(res){
+						console.log(res)
+					})
 			}, function error(err){
 				console.log(err)
 			})
@@ -46,21 +72,24 @@ var EmployeeCtrl = function(employeeService, $route){
 	////////////////////////////////////////////////////////
 	//Edit Page
 	vm.saveEdit = function(){
-		vm.data = {
-			$set:{
-				firstname:vm.employee.firstname,
-				lastname:vm.employee.lastname
-			}
+		vm.employeeData = {}
+		
+		vm.look.fields.map(function(field){
+			vm.employeeData[field] = vm.employee.info[field]
+		})
+		vm.data={
+			$set:vm.employeeData
 		}
-		employeeService.postSaveEdit(vm.employee._id, vm.data)
+
+		employeeService.updateOne(vm.employee.info._id, vm.data)
 			.then(function success(res){
 				console.log(res)
-				vm.tab = 'tab-search';
-				$route.reload();
+				$route.reload()
+				vm.tab = 'tab-main';
 			}, function error(err){
 				console.log(err)
 			})
 	}
 }
 
-app.controller('EmployeeCtrl', ['employeeService','$route',EmployeeCtrl])
+app.controller('EmployeeCtrl', ['employeeService','attendanceService','$route',EmployeeCtrl])

@@ -12,6 +12,7 @@ var ordersCtrl = require("../controllers/orders");
 var transCtrl = require("../controllers/transactions");
 var bookingCtrl = require("../controllers/bookings");
 var assetsCtrl = require("../controllers/assets");
+var attendancesCtrl = require("../controllers/attendances");
 
 router.post ('/register', authCtrl.register);
 router.post ('/login', authCtrl.login);
@@ -40,6 +41,11 @@ router.get('/products/', productsCtrl.readSomeProducts);
 router.get('/products/product/:productId', productsCtrl.readOneProductById);
 router.post('/products/create', productsCtrl.createOneProduct);
 router.post('/products/product/:productId/edit', productsCtrl.updateOneProductById);
+
+router.get('/attendances/', attendancesCtrl.readSomeAttendances);
+router.get('/attendances/attendance/:attendanceId', attendancesCtrl.readOneAttendanceById);
+router.post('/attendances/create', attendancesCtrl.createOneAttendance);
+router.post('/attendances/attendance/:attendanceId/edit', attendancesCtrl.updateOneAttendanceById);
 
 router.get('/orders/', ordersCtrl.readSomeOrders);
 router.get('/orders/order/:orderId', ordersCtrl.readOneOrderById);

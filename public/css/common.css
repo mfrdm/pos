@@ -195,5 +195,10 @@ label {
 @media print, screen and (min-width: 40em){
 	#top-menu-btn{
 		left: .9375rem;
+<<<<<<< HEAD
 	}
 }
+=======
+	}	
+}
+>>>>>>> fb26a020be2767cf727bf72de4b512a51d56e711
