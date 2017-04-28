@@ -117,6 +117,7 @@
 						bookingService.createOne(bookingData)
 							.then(function success(res){
 								console.log(res)
+								$route.reload();
 							}, function error(err){
 								console.log(err)
 							})
