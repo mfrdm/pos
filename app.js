@@ -1,6 +1,7 @@
 require('dotenv').load();
 
 var express = require('express'),
+    url = require ('url'),
     path = require('path'),
     logger = require('morgan'),
     cookieParser = require('cookie-parser'),
@@ -38,14 +39,24 @@ app.use(session({ secret: 'anythingyouwanttotype' })); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 
-// Use routes
+// // Use routes
+// var ANGULAR_URLS = ['/checkin', '/bookings', '/login'];
+// var angularBaseRoute = '/';
+// app.use (function (req, res, next){
+    
+//     var parts = url.parse (req.url);
+
+//     for (var i=0; i < ANGULAR_URLS.length; i++){
+//         if (parts.pathname.indexOf (ANGULAR_URLS[i]) === 0){
+//             console.log (ANGULAR_URLS[i], parts.pathname)
+//             return res.redirect (angularBaseRoute);
+//         }
+//     }
+
+//     return next ();
+// });
+
 app.use('/', routes);
-
-// app.use(function (req, res, next){
-//     console.log ('back to stage');
-//     next ()
-// })
-
 app.use('/api', routesApi);
 
 // catch 404 and forward to error handler
@@ -57,7 +68,7 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-
+    console.log (err)
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};

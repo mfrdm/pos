@@ -1,7 +1,7 @@
 var MGDB = require('../../libs/node/db').MGDB;
 
 if (process.env.NODE_ENV === 'development'){
-	var host = 'localhost';
+	var host = '127.0.0.1';
 }
 
 else if (process.env.NODE_ENV === 'production'){

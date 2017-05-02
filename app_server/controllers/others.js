@@ -53,12 +53,7 @@ function Others() {
 
 		for (var i=0; i < directiveNum; i++){
 			data.look.js.push ('common/directives/' + directiveFileNames[i] + '.directive.js');
-		}
-
-		// for (var i=0; i<listFile.length; i++){
-		// 	data.look.js.push(listFile[i]+'.ctrl.js')
-		// 	data.look.js.push('common/services/'+listFile[i]+'.service.js')
-		// }			
+		}		
 
 		res.render ('layout', {data: data});
 	}
@@ -82,5 +77,6 @@ function Others() {
 	this.readAngularAttendance = function(req, res){
 		helper.angularRender(req, res, 'attendance')
 	}
+
 
 };
