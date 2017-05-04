@@ -1,17 +1,7 @@
 var MGDB = require('../../libs/node/db').MGDB;
 
-<<<<<<< HEAD
-// FIX: should use local when cannot connect to remote db
-if (process.env.CONNECTED_DB == 'local'){
-	var host = 'localhost';
-	var port = 27017;
-	var username = '';
-	var passwd = '';
-	var db = 'pos';	
-=======
 if (process.env.NODE_ENV === 'development'){
 	var host = '127.0.0.1';
->>>>>>> 8fc1e0f819d5404c4772ab6de2b690785ea3b6f9
 }
 
 else if (process.env.NODE_ENV === 'production'){
