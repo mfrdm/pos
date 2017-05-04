@@ -26,6 +26,7 @@ div(ng-switch='vm.tab')
 				div(class="column")
 					div(class="borderT newBox row column paddingLR0" ng-show='vm.look.bookingDiv')
 						div(class="row column")
+							//Search customer to book for them ********************************************************//
 							form(ng-submit='vm.searchCustomer()')
 								div(class="row column")
 									label Phone/Email
@@ -63,44 +64,46 @@ div(ng-switch='vm.tab')
 							div(class='column small-6 paddingLR0')
 								label DateTime
 									input(type='text' date-change="changeDate" date-time format="dd-MM-yyyy HH:mm" ng-model='vm.customer.checkinTime')
-							div(class='column small-12 paddingL0')
+							div(class='column small-12 paddingLR0')
 								label Other requirements
 									textarea(type='text' ng-model='vm.customer.message')
 						div(class="row column")
 							div(class='column small-12 paddingLR0')
 								input(class="button success" ng-confirm-click='Are you sure to add new booking' confirmed-click='vm.createNewBooking()' type="submit" value="Add Booking")
 								button(class="button float-right") Cancel
+				//Search Booking********************************************************//
 				div(class="column")
 					div(class="borderT newBox row column")
 						div(class="row column")
 							form(ng-submit="vm.searchBooking()")
 								div(class="row column")
 									label Name
-										input(type="text" placeholder="Enter name to search asset" ng-model='vm.booking.input')
-								div(ng-show="vm.look.bookingSearchResultDiv" class="marginB15")
-									div(class="table-scroll")
-										table(class="hover unstriped borderAll")
-											thead
-												tr
-													th No
-													th Firstname
-													th Lastname
-													th Email
-													th Edit
-													th Delete
-													th Checkin
-											tbody
-												tr(ng-repeat='result in vm.booking.results' class="pointerCursor")
-													td {{ $index + 1 }}
-													td {{ result.firstname }}
-													td {{ result.lastname }}
-													td {{ result.email }}
-													td
-														button(type="button" class="warning button" ng-click='vm.selectBookingToViewProfile($index)') Edit
-													td
-														button(type="button" class="alert button" ng-click='vm.selectBookingToDelete($index)') Delete
-													td
-														button(type="button" class="success button" ng-click='vm.selectBookingToCheckin($index)') Checkin
+										input(type="text" placeholder="Enter name to search booking" ng-model='vm.booking.input')
+							div(ng-show="vm.look.bookingSearchResultDiv" class="marginB15")
+								div(class="table-scroll")
+									table(class="hover unstriped borderAll")
+										thead
+											tr
+												th No
+												th Name
+												th Email
+												th Checkin Time
+												th Checkin Date
+												th Status
+												th Delete
+												th Checkin
+										tbody
+											tr(ng-repeat='result in vm.booking.results' class="pointerCursor" ng-click='vm.toProfileAfterSearch($index)')
+												td {{ $index + 1 }}
+												td {{ result.customer.lastname }} {{ result.customer.firstname }}
+												td {{ result.customer.email }}
+												td {{ result.checkinTime | date:'shortTime'}}
+												td {{ result.checkinTime | date:'dd/MM/yyyy'}}
+												td {{ result.status }}
+												td
+													button(type="button" class="alert button" ng-click='vm.deleteBookingAfterSearch($index)') Delete
+												td
+													button(type="button" class="success button") Checkin
 		div(class='row column')
 			div(class="column small-12 paddingLR0")
 				div(class="table-scroll newBox")
@@ -124,14 +127,14 @@ div(ng-switch='vm.tab')
 								td {{item.checkinTime | date:'dd/MM/yyyy'}}
 								td {{item.status}}
 								td
-									button(type="button" class="alert button" ng-click='vm.selectBookingToDelete($index)') Delete
+									button(type="button" class="alert button" ng-click='vm.deleteBooking($index)') Delete
 								td
-									button(type="button" class="success button" ng-click='vm.selectBookingToCheckin($index)') Checkin
+									button(type="button" class="success button") Checkin
 	div(ng-switch-when='tab-profile')
 		div(class="columns row")
 			div(class="row colums")
 				div(class="column")
-					h2 Asset Details
+					h2 Booking Details
 				// Profile
 				div(class="column")
 					div(class="borderT newBox row column")
@@ -158,7 +161,7 @@ div(ng-switch='vm.tab')
 		div(class="columns row")
 			div(class="row colums")
 				div(class="column")
-					h2 Edit Asset
+					h2 Edit Booking
 				// Profile
 				div(class="column")
 					div(class="borderT newBox row column")
@@ -182,5 +185,5 @@ div(ng-switch='vm.tab')
 										input(class='column small-12 paddingLR0' ng-model='vm.booking.checkinTime' type='text')
 					div(class="row column")
 						div(class='column small-12 paddingLR0')
-							input(class="button warning" type="submit" value="Save" ng-click='vm.saveEdit()')
+							input(class="button warning" type="submit" value="Save" ng-confirm-click='Are you sure to save your edit' confirmed-click='vm.saveEdit()')
 							button(class="button float-right" ng-click='vm.toMain()') Cancel

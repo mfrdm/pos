@@ -1,10 +1,10 @@
 var deptService = function($http){
 	//Search Service
-	this.searchDepts = function(input){
+	this.search = function(input){
 		var array = [{"name" : { $regex: input, $options: 'i' }}]
 		return $http({
 			method:'GET',
-			url:'/api/companies/depts/',
+			url:'/api/companies/depts',
 			params:{
 				queryInput:JSON.stringify({
 					conditions: {$or: array},
@@ -14,19 +14,34 @@ var deptService = function($http){
 			}
 		})
 	}
-	this.postCreateDept = function(data){
+
+	this.readSome = function (){
+		var url = '/api/companies/depts';
+		return $http.get (url);				
+	};
+	this.readOne = function(id){
 		return $http({
-			method:'POST',
-			url:'/api/depts/create',
-			data:JSON.stringify(data)
+		method:'GET',
+			url:'api/depts/dept/'+id
 		})
 	}
-	this.postSaveEdit = function(id, data){
-		return $http({
-			method:'POST',
-			url:'/api/depts/dept/'+id+'/edit',
-			data:JSON.stringify(data)
-		})
+
+	this.updateOne = function (id, data){
+		var url = '/api/depts/dept/' + id + '/edit';
+		return $http.post (url, data);	
+	}
+
+	// this.deleteOne = function (id){
+	// 	// var url = '/api/depts/dept/' + id + '/delete';
+	// 	// return $http.post (url, {});
+	// 	var deferObj = $q.defer ();
+	// 	deferObj.resolve ()
+	// 	return deferObj.promise
+	// }
+
+	this.createOne = function (data){
+		var url = '/api/depts/create/';
+		return $http.post (url, data);
 	}
 }
 

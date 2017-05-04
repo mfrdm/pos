@@ -35,13 +35,13 @@ function assetsService ($http, $q){
 		return $http.post (url, data);	
 	}
 
-	this.deleteOne = function (id){
-		// var url = '/api/assets/asset/' + id + '/delete';
-		// return $http.post (url, {});
-		var deferObj = $q.defer ();
-		deferObj.resolve ()
-		return deferObj.promise
-	}
+	// this.deleteOne = function (id){
+	// 	// var url = '/api/assets/asset/' + id + '/delete';
+	// 	// return $http.post (url, {});
+	// 	var deferObj = $q.defer ();
+	// 	deferObj.resolve ()
+	// 	return deferObj.promise
+	// }
 
 	this.createOne = function (data){
 		var url = '/api/assets/create/';

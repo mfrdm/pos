@@ -19,7 +19,7 @@ div(ng-switch='vm.tab')
 									input(required type='text' ng-model='vm.gender')
 							div(class='column small-6 large-3 paddingL0')
 								label Birthday
-									input(required type='text' date-picker='' ng-model='vm.birthday' format="dd.mm.yyyy")
+									input(type='text' date-change="changeDate" date-time format="dd-MM-yyyy" min-view='date' ng-model='vm.birthday')
 							div(class='column small-6 large-3 paddingL0')
 								label Phone
 									input(required type='text' ng-model='vm.phone')
@@ -34,13 +34,13 @@ div(ng-switch='vm.tab')
 									input(required type='text' ng-model='vm.title')
 							div(class='column small-6 large-3 paddingL0')
 								label Start
-									input(required type='text' date-picker='' ng-model='vm.start' format="dd.mm.yyyy")
+									input(type='text' date-change="changeDate" date-time format="dd-MM-yyyy" min-view='date' ng-model='vm.start')
 							div(class='column small-6 large-3 paddingL0')
 								label End
-									input(required type='text' date-picker='' ng-model='vm.end' format="dd.mm.yyyy")
+									input(type='text' date-change="changeDate" date-time format="dd-MM-yyyy" min-view='date' ng-model='vm.end')
 						div(class="row column")
 							div(class='column small-12 paddingL0')
-								input(class="button" type="submit" value="Create" ng-click='vm.createNewCustomer()')
+								input(class="button" type="submit" value="Create" ng-confirm-click='Are you sure to create new customer' confirmed-click='vm.createNewCustomer()')
 								button(class="button float-right") Cancel
 			div(class="row colums")
 				div(class="column")
@@ -123,5 +123,5 @@ div(ng-switch='vm.tab')
 										input(ng-model= 'vm.customer.info[field]' type='text')
 					div(class="row column")
 						div(class='column small-12 paddingLR0')
-							input(class="button warning" type="submit" value="Save" ng-click='vm.saveEdit()')
+							input(class="button warning" type="submit" value="Save" ng-confirm-click='Are you sure to save your edit' confirmed-click='vm.saveEdit()')
 							button(class="button float-right" ng-click='vm.toMain()') Cancel

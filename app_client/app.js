@@ -11,8 +11,8 @@ app
 	.controller ('ErrorCtrl', [ErrorCtrl])
 
 function config ($locationProvider, $routeProvider){
-	$locationProvider.html5Mode (true);
-	$locationProvider.hashPrefix ('!');		
+	// $locationProvider.html5Mode (true);
+	// $locationProvider.hashPrefix ('!');		
 	$routeProvider
 		.when ('/login', {
 			templateUrl: '/login',
