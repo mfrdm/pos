@@ -9,12 +9,16 @@ var bookingSchema = mongoose.Schema({
 		email: String
 	},
 	checkinTime: {type: Date, required: true},
-	checkoutTime: {type: Date},
-	// _storeId: {type: mongoose.Schema.Types.ObjectId, ref:'depts'}, ///Fix: may ref instead of store name
-	// _productId: {type: mongoose.Schema.Types.ObjectId, ref:'products'},
-	storeName: {type:String},
-	productName: {type:String},
-	status: {type:Number, default: 3}, // 1:accepted, 2:refused, 3:waiting, 4:cancel
+	checkoutTime: {type: Date}, 
+	storeId: {type: String},
+	promoteCode: [{type: String}],
+	orderline: [
+		{
+			productId: {type: mongoose.Schema.Types.ObjectId},
+			quantity: Number,
+		}
+	],
+	status: {type:Number, default: 1}, 
 	updatedAt: [{
 		time: {type: Date}, 
 		explain: String,
@@ -22,7 +26,7 @@ var bookingSchema = mongoose.Schema({
 	}],
 	createdAt: {type: Date, default: Date.now},
 	message: String, // other requirements from the customer
-	quantity: Number,
+	
 });
 
 mongoose.model ('bookings', bookingSchema);

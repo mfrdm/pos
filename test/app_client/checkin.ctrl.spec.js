@@ -47,13 +47,13 @@ describe ('Controller: CheckinCtrl', function (){
 	});
 
 	xdescribe ('Check-in', function (){
-		// it ('should display check-in form when "check-in" btn being clicked', function (){
-		// 	expect(true).toEqual (false);
-		// });
+		it ('should display check-in form when "check-in" btn being clicked', function (){
+			expect(true).toEqual (false);
+		});
 
-		// it ('should submit check-in successfully', function (){
+		it ('should submit check-in successfully', function (){
 
-		// });
+		});
 	})
 
 	xdescribe ('Select a user to check-in', function (){
@@ -68,7 +68,21 @@ describe ('Controller: CheckinCtrl', function (){
 		it ('should add other data before submit')
 
 		it ('should calculate total correctly', function (){
-			var ctrl = createController (); 
+			var ctrl = createController ();
+			var orderline = [
+				{
+					productName: 'Common',
+					quantity: 1,
+				},
+				{
+					productName: 'Coca Cola',
+					quantity: 1,
+				},				
+			];
+
+			var total = ctrl.getTotal (orderline);
+			
+			expect (total).toEqual (ctrl.data.services['Common'].price * 1 + ctrl.data.otherItems['Coca Cola'].price * 1)
 		})
 	});
 

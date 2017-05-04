@@ -9,7 +9,7 @@ var companiesCtrl = require("../controllers/companies");
 var deptsCtrl = require("../controllers/depts");
 var productsCtrl = require("../controllers/products");
 var ordersCtrl = require("../controllers/orders");
-var costsCtrl = require("../controllers/costs");
+var transCtrl = require("../controllers/transactions");
 var bookingCtrl = require("../controllers/bookings");
 var assetsCtrl = require("../controllers/assets");
 var attendancesCtrl = require("../controllers/attendances");
@@ -52,10 +52,10 @@ router.get('/orders/order/:orderId', ordersCtrl.readOneOrderById);
 router.post('/orders/create', ordersCtrl.createOneOrder);
 router.post('/orders/order/:orderId/edit', ordersCtrl.updateOneOrderById);
 
-router.get('/costs/', costsCtrl.readSomeCosts);
-router.get('/costs/cost/:costId', costsCtrl.readOneCostById);
-router.post('/costs/create', costsCtrl.createOneCost);
-router.post('/costs/cost/:costId/edit', costsCtrl.updateOneCostById);
+router.get('/transs/', transCtrl.readSomeTrans);
+router.get('/transs/trans/:transId', transCtrl.readOneTransById);
+router.post('/transs/create', transCtrl.createOneTrans);
+router.post('/transs/trans/:transId/edit', transCtrl.updateOneTransById);
 
 router.get('/bookings/', bookingCtrl.readSomeBookings);
 router.get('/bookings/booking/:bookingId', bookingCtrl.readOneBookingById);

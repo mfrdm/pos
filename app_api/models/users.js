@@ -2,19 +2,6 @@ var mongoose = require('mongoose');
 var crypto = require('crypto');
 var jwt = require('jsonwebtoken');
 
-//////////////////// Field Explaination ////////////////////////////
-// roles:
-// - 1: staff;
-// - 2: content admin (modify some data);
-// - 3: admin  
-// Permission:
-// - 1: modify user's own data
-// - 2: modify other user's data
-
-
-
-//////////////////// End //////////////////////////////////////////
-
 var addrSchema = new mongoose.Schema({
 	country: {type: Number, 'default': 1},
 	state: {type: Number}, // or city

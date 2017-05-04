@@ -9,21 +9,24 @@ var addrSchema = new mongoose.Schema({
 });
 
 var companiesSchema = mongoose.Schema({
-	name: {type:String},
-	ceoFullname: String,
+	name: {type:String, required: true},
+	representative: {type: String, required: true}, // CEO or others ...
 	founded: Date,
 	parentComp: mongoose.Schema.Types.ObjectId,
 	childComps: [mongoose.Schema.Types.ObjectId],
 	deptList: [mongoose.Schema.Types.ObjectId],
-	contact: [String],
-	email: [String],
+	phone: [{type:String}], // phone
+	email: [{type:String}],
 	address: [addrSchema],
-	createdAt: {type: Date, required: true},
+	createdAt: {type: Date, default: Date.now},
 	updatedAt: {
 		time: {type: Date}, 
 		explain: String,
 		by: mongoose.Schema.Types.ObjectId
 	},
+	active: {type: Boolean, default: true},
+	deactiveAt: {type: Date},
+
 });
 
 mongoose.model ('companies', companiesSchema);

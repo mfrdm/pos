@@ -5,22 +5,20 @@ module.exports = new function() {
     // importing
     // NEED TO FIX
     this.getAPIOption = function(host, port) {
-        var defaultPort = 3000;
-        var defaultDbName = 'pos';
-
-        var defaultHost = "http://localhost";
+        var devPort = 3000;
+        var devHost = "http://localhost";
+        var devServer = devHost + ':' + devPort
 
         var apiOptions = {
-            server: defaultHost + ":" + defaultPort,
-            dbName: 'test',
+            server: devServer,
         };
 
-        if (process.env.NODE_ENV === 'production') {
-            host = host ? host : defaultHost;
-            port = port ? port : defaultPort;
-            apiOptions.server = host + ":" + port; // FIX: CHANGE later
-            apiOptions.dbName = defaultDbName;
+        if (host || port) {
+            host = host ? host : devHost;
+            port = port ? port : devPort;
+            apiOptions.server = host + ":" + port;
         }
+
         return apiOptions
     };
 

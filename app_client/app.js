@@ -1,16 +1,18 @@
 var app = angular.module ('posApp', ['ngRoute', 'datePicker']);
 
 app
-	.config (['$routeProvider', config])
+	.config (['$locationProvider', '$routeProvider', config])
 	.run(function($rootScope) {
 	    $rootScope.$on('$viewContentLoaded', function () {
 	        $("#mainContentDiv").foundation(); // initialize elements in ng-view
 	    });
 	})
 	.controller ('LayoutCtrl', ['$rootScope','$scope', '$location','authentication','socket', LayoutCtrl])	
+	.controller ('ErrorCtrl', [ErrorCtrl])
 
-
-function config ($routeProvider){
+function config ($locationProvider, $routeProvider){
+	$locationProvider.html5Mode (true);
+	$locationProvider.hashPrefix ('!');		
 	$routeProvider
 		.when ('/login', {
 			templateUrl: '/login',
@@ -38,12 +40,12 @@ function config ($routeProvider){
 			controller: 'costsCtrl',
 			controllerAs: 'vm',
 		})
-		.when("/checkin", {
+		.when('/checkin', {
 			templateUrl : "/angular/checkin",
 			controller:"CheckinCtrl",
 			controllerAs:"vm"
 		})
-		.when("/customers", {
+		.when('/customers', {
 			templateUrl : "/angular/customers",
 			controller: "CustomerCtrl",
 			controllerAs:'vm'
@@ -63,17 +65,22 @@ function config ($routeProvider){
 			controller: "ProductCtrl",
 			controllerAs: 'vm'
 		})
-		.when("/hr", {
+		.when('/hr', {
 			templateUrl: "/angular/employees",
 			controller: "EmployeeCtrl",
 			controllerAs: 'vm'
 		})
-		.when("/bookings", {
+		.when('/bookings', {
 			templateUrl: "/angular/bookings",
 			controller: "BookingCtrl",
 			controllerAs: 'vm'
 		})
-		.otherwise ({redirectTo: '/login'});
+		.when ('/error', {
+			templateUrl: "/error",
+			controller: "ErrorCtrl",
+			controllerAs: 'vm'			
+		})
+		.otherwise ({redirectTo: '/error'});	
 };
 
 // Check if a user has permission to access a certain page or resource
@@ -88,6 +95,10 @@ function checkPermission ($q, authentication) {
 			pass: false
 		}
 	}
+}
+
+function ErrorCtrl (){
+
 }
 
 function LayoutCtrl ($rootScope, $scope, $location, authentication, socket) {

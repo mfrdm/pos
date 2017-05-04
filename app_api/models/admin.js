@@ -1,19 +1,67 @@
 var mongoose = require('mongoose');
 
 /* Explain:
-- Roles:
-	+ 1: staff; permission: 1;
-	+ 2: content admin (some permissions); permission: 2;
-	+ 3: manager (some permission); permission: 3;
-	+ 100: admin (All permissions); permission: 100;
-- Permission:
-	+ 1: modify user's profile data
-	+ 2: modify other user's data
-	+ 3: modify business data 
-	+ 100: modify everything on the database
-- Active (for user or customer) 
-	+ true: is using the system
-	+ false: deactive. no longer use the system
+role = [
+	{value: 1, name: 'Staff'},
+	{value: 2, name: 'Content admin'},
+	{value: 3, name: 'Manager'},
+	{value: 100, name: 'Admin'},
+]
+permission = [
+	{value: 1, name: 'Modify user's profile data'},
+	{value: 2, name: 'Modify other user's data'},
+	{value: 3, name: 'Modify business data'},
+	{value: 4, name: 'Modify everything on the database'},
+]
+
+active = [
+	{value: true, name: 'Active'},
+	{value: false, name: 'Deactive'},	
+] 
+
+gender = [
+	{value: 1, name: 'Male'},
+	{value: 1, name: 'Female'},
+	{value: 1, name: 'Other'},
+]
+
+transStatus = [
+	{value: 1, name: 'Done'},
+	{value: 2, name: 'Pending'},
+	{value: 3, name: 'Return'},
+	{value: 4, name: 'Cancel'},
+]
+
+transType = [
+	{value: 1, name: 'in'}, // revenue, ...
+	{value: 2, name: 'out'}, // cost	
+]
+
+assetStatus = [
+	{value: 1, name: 'New'},
+	{value: 2, name: 'Used but good'},
+	{value: 3, name: 'Used'},
+],
+
+bookingStatus = [
+	{value: '1', name: 'Accept'},
+	{value: '2', name: 'Refuse'},
+	{value: '3', name: 'Pending'},
+	{value: '4', name: 'Cancel'},
+],
+
+promoType = [
+	{value: 1, name: 'Apply to one'},
+	{value: 2, name: 'Apply to all'},
+	{value: 3, name: 'Apply to some'},
+]
+
+productCat = [
+	{value: 1, name: 'Main'}, 
+	{value: 2, name: 'Soft drink'},
+	{value: 3, name: 'Fast food'},
+	{value: 4, name: 'Snack'},
+]
 */
 
 var adminSchema = new mongoose.Schema({
@@ -30,6 +78,10 @@ var adminSchema = new mongoose.Schema({
 	},
 	active: [{value: Boolean, name: String}], 
 	gender: [{value: Number, name: String}],
-	transCat: [value: Number, name: String],
-	assetCat: [value: Number, name: String],
+	transStatus: [{value: Number, name: String}],
+	transType: [{value: Number, name: String}],
+	assetStatus: [{value: Number, name: String}],
+	bookingStatus: [{value: Number, name: String}],
+	promoType: [{value: Number, name: String}],
+	productCat: [{value: Number, name: String}],
 });

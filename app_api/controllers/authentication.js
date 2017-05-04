@@ -2,7 +2,7 @@ var helper = require('../../libs/node/helper');
 var dbHelper = require('../../libs/node/dbHelper');
 var requestHelper = require('../../libs/node/requestHelper');
 var mongoose = require('mongoose');
-var UserModel = mongoose.model ('users');
+var UsersModel = mongoose.model ('users');
 var passport = require ('passport');
 
 module.exports = new Authentication ();
@@ -29,17 +29,24 @@ function Authentication () {
 			return requestHelper.sendJsonRes (res, 400, {message: 'Created account'});
 		}
 
-		dbHelper.insertOne (req, res, UserModel, 
-			function (user, data) {
-				console.log (user)
-				user.setPassword (data.password);
-			},
-			function (user, res, data) {
-				var token = user.generateJwt ();
-				requestHelper.sendJsonRes (res, 201, {token: token})
-			}
-		);
-
+		try {
+			var user = new UsersModel (req.body)
+			user.setPassword (data.password);
+			user.save (function (err, data){
+				if (err) {
+					console.log (err);
+					next (err);
+				}
+				else {
+					var token = user.generateJwt ();
+					requestHelper.sendJsonRes (res, 201, {token: token})					
+				}
+			});
+		}
+		catch (err) {
+			console.log (err);
+			next (err);
+		}
 	};
 
 	this.login = function (req, res) {

@@ -14,6 +14,8 @@ function Checkin() {
 	// FIX rollback if error
 	this.checkin = function(req, res, next) {
 		try{
+			console.log (req.body)
+
 			var id = new mongoose.Types.ObjectId;
 			req.body.data._id = id;
 			var order = new Orders (req.body.data);
