@@ -2,18 +2,22 @@ angular
 	.module ('posApp')
 	.directive ('messageWidget', [messageWidget])
 	.directive ('assetWidget', [assetWidget])
-	.directive ('ngConfirmClick', [ngConfirmClick])
+	.directive ('confirm', [confirm])
 
-function ngConfirmClick(){
+function confirm(){
 	return {
-        link: function (scope, element, attr) {
-            var msg = attr.ngConfirmClick || "Are you sure?";
-            var clickAction = attr.confirmedClick;
-            element.bind('click',function (event) {
-                if ( window.confirm(msg) ) {
-                    scope.$eval(clickAction)
-                }
-            });
+		restrict: 'A',
+        link: function (scope, element, attrs) {
+        	var $element = angular.element(element);
+			$element.bind('submit', function(event) {
+				var message = attrs.confirm;
+				var conf = confirm(message);
+				if(!conf){
+					event.stopImmediatePropagation();
+					event.preventDefault();
+				}
+				scope.$apply();
+			})
         }
     };
 }
