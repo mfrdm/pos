@@ -51,9 +51,9 @@ bookingStatus = [
 ],
 
 promoType = [
-	{value: 1, name: 'Apply to one'},
+	{value: 1, name: 'Apply to specific one'},
 	{value: 2, name: 'Apply to all'},
-	{value: 3, name: 'Apply to some'},
+	{value: 3, name: 'Apply to some or groups'},
 ]
 
 productCat = [

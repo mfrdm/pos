@@ -20,6 +20,7 @@ var companiesCtrl = require("../controllers/companies");
 var othersCtrl = require("../controllers/others");
 var deptsCtrl = require("../controllers/depts");
 var productsCtrl = require("../controllers/products");
+var promoCodesCtrl = require ('../controllers/promoCodes.ctrl')
 
 router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
 router.get('/auth/google/callback', 
@@ -41,8 +42,9 @@ router.get('/angular/checkin-list', checkinCtrl.readCheckinList);
 router.post('/checkin/:cusId', checkinCtrl.checkin);
 router.post('/checkin/:cusId/edit', checkinCtrl.updateCheckin); //cusid is order id
 
-router.get('/checkout/invoice/:orderId', checkoutCtrl.readInvoice);
-router.post('/checkout/', auth, checkoutCtrl.checkout); // TEST local authen
+router.get('/checkout/invoice/:orderId', checkoutCtrl.createInvoice);
+router.get('/checkout', checkoutCtrl.checkout);
+// router.post('/checkout/', auth, checkoutCtrl.checkout); // TEST local authen
 // router.post('/checkout/', checkoutCtrl.checkout);
 
 router.get('/bookings', bookingCtrl.readBooking);
@@ -90,6 +92,11 @@ router.post('/products/product/:productId/edit', productsCtrl.updateOneProduct);
 router.get('/angular/products', productsCtrl.readAngularProducts);
 
 router.get('/angular/attendances', othersCtrl.readAngularAttendance);
+
+router.get ('/promo-codes', promoCodesCtrl.readSomeCodes);
+router.get ('/promo-codes/code/:codeId', promoCodesCtrl.readOneCodeById);
+router.post ('/promo-codes/create', promoCodesCtrl.createOneCode);
+router.post ('/promo-codes/code/:codeId', promoCodesCtrl.updateOneCode);
 
 // Others
 router.get ('/components/template/message', othersCtrl.getMessageTemplate);

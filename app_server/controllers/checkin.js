@@ -14,14 +14,14 @@ function Checkin() {
 	// FIX rollback if error
 	this.checkin = function(req, res, next) {
 		try{
-			console.log (req.body)
+			// console.log (req.body)
 
 			var id = new mongoose.Types.ObjectId;
 			req.body.data._id = id;
 			var order = new Orders (req.body.data);
 			order.save (function (err, orderData){
 				if (err) { 
-					console.log (err)
+					// console.log (err)
 					res.json (err)
 				}
 				else {
@@ -32,12 +32,12 @@ function Checkin() {
 						{upsert: true},
 						function (err, cusData){
 							if (err) { 
-								console.log (err)
+								// console.log (err)
 								res.json (err)
 							}
 							else {
 								// console.log (cusData)
-								res.json ({data: {orderData: orderData, cusData: cusData}});
+								res.json ({order: orderData, customer: cusData});
 							}
 						}
 					)
@@ -48,7 +48,7 @@ function Checkin() {
 
 		}
 		catch (err) {
-			console.log (err)
+			// console.log (err)
 			next (err)
 		}
 
@@ -82,7 +82,7 @@ function Checkin() {
 				req.body.data,
 				function (err, orderData){
 					if (err) {
-						console.log (err)
+						// console.log (err)
 						res.json (err);
 					}
 					else {
@@ -92,7 +92,7 @@ function Checkin() {
 			);
 		}
 		catch (err) {
-			console.log (err)
+			// console.log (err)
 			next (err)
 		}
 	};
