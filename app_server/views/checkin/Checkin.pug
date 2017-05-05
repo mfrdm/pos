@@ -54,7 +54,7 @@ div(class="columns row")
 											td {{ result.email }}
 											td {{ result.phone }}
 				
-				form(ng-submit="vm.ctrl.checkin ()" confirm='Are you sure to checkin')
+				form(ng-submit="vm.ctrl.checkin ()" confirm-submit ='Are you sure to checkin')
 					div(class="row column")
 						label Service
 							select(name="selectedService" ng-model="vm.model.customer.checkingInData.orderline[0].productName" ng-options="val for val in vm.model.customer.serviceNames.slice(0,2)")

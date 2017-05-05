@@ -2,21 +2,18 @@ angular
 	.module ('posApp')
 	.directive ('messageWidget', [messageWidget])
 	.directive ('assetWidget', [assetWidget])
-	.directive ('confirm', [confirm])
+	.directive ('confirmSubmit', [confirmSubmit])
 
-function confirm(){
+function confirmSubmit(){
 	return {
 		restrict: 'A',
-        link: function (scope, element, attrs) {
-        	var $element = angular.element(element);
-			$element.bind('submit', function(event) {
-				var message = attrs.confirm;
-				var conf = confirm(message);
-				if(!conf){
+        compile: function (element, attrs) {
+			element.on('submit', function(event) {
+				var message = attrs.confirmSubmit ? attrs.confirmSubmit : "Are you sure?";
+				if(!confirm(message)){
 					event.stopImmediatePropagation();
 					event.preventDefault();
 				}
-				scope.$apply();
 			})
         }
     };
