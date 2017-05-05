@@ -13,7 +13,7 @@ div(class="columns row")
 			div(class="column small-9")
 				ul(class="menu clearfix")
 					li(class="float-right marginL15")
-						<a class="button secondary" ng-click="vm.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
+						<a class="button secondary" ng-click="vm.ctrl.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
 					li(class="float-right")
 						ul(class="menu")
 							li: label(class="paddingR15 show-for-large") Sort by
@@ -75,9 +75,8 @@ div(class="columns row")
 					div(class="row column")
 						input(class="button" type="submit" value="Submit")
 						button(class="button float-right" ng-click="vm.ctrl.toggleCheckInDiv()") Cancel
-
 		// Filter
-		//div(class="column" ng-show="vm.look.filterDiv")
+		div(class="column" ng-show="vm.model.dom.filterDiv")
 			form(class="borderT newBox row column")
 				div(class="row column marginB15 small-up-2 medium-up-3")
 					fieldset(class="column column-block")
@@ -152,14 +151,14 @@ div(class="columns row")
 							th Checkout
 							th Edit
 					tbody
-						//tr(ng-repeat="customer in vm.model.customer.checkedInList | orderBy:vm.order")
-							//- td {{ $index + 1 }}
-							//- td {{ customer.customer.firstname }} {{customer.customer.lastname}}
-							//- td {{ customer.customer.phone }}
-							//- td {{ customer.checkinTime | date:'dd/MM/yyyy' }}
-							//- td {{ customer.checkinTime | date: 'shortTime' }}
-							//- td {{ customer.orderline[0].productName	}}
-							//- td
-							//- 	button(type="button" class="warning button" ng-click="vm.ctrl.dom.toggleCheckInEditDiv ($index)") Checkout
-							//- td
-							//- 	button(type="button" class="alert button" ng-click="vm.ctrl.dom.toggleCheckInEditDiv ($index)") Edit
+						tr(ng-repeat="customer in vm.model.customer.checkedInList")
+							td {{ $index + 1 }}
+							td {{ customer.customer.firstname }} {{customer.customer.lastname}}
+							td {{ customer.customer.phone }}
+							td {{ customer.checkinTime | date:'dd/MM/yyyy' }}
+							td {{ customer.checkinTime | date: 'shortTime' }}
+							td {{ customer.orderline[0].productName	}}
+							td
+								button(type="button" class="warning button" ng-click="vm.ctrl.dom.toggleCheckInEditDiv ($index)") Checkout
+							td
+								button(type="button" class="alert button" ng-click="vm.ctrl.dom.toggleCheckInEditDiv ($index)") Edit

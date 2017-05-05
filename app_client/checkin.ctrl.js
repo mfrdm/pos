@@ -31,11 +31,6 @@ function CheckinCtrl ($scope, CheckinService){
 
 	// };
 
-	// vm.toggleFilterDiv = function (){
-	// 	if (!vm.look.filterDiv) vm.look.filterDiv = true;
-	// 	else vm.look.filterDiv = false;
-	// };
-
 	// vm.toggleCheckInDiv = function (){
 	// 	if (!vm.look.checkInDiv){
 	// 		vm.look.checkInDiv = true;
@@ -121,24 +116,7 @@ function CheckinCtrl ($scope, CheckinService){
 	// };
 
 	//////////////// Initialization ///////////////////////
-	// var query = { // TESTING
-	// 	start: '2017-03-01',
-	// 	end: '2017-03-02',
-	// 	storeId: vm.data.storeId,
-	// 	staffId: vm.data.userId,
-	// }	
-
-	// CheckinService.getCheckinList (query).then(
-	// 	function success(res){
-	// 		vm.status.getCheckinList = true;
-	// 		vm.data.checkedInList = res.data.data;
-	// 	}, 
-	// 	function error(err){
-	// 		vm.status.getCheckinList = false;
-	// 		console.log(err)
-	// 	}
-	// );
-
+	
 	//////////////////////////////////////////////////////////////////
 
 	vm.model = {};
@@ -154,6 +132,7 @@ function CheckinCtrl ($scope, CheckinService){
 	}//anything related to DOM
 	vm.model.dom.checkInListDiv = true;
 	vm.model.dom.checkInDiv = false;
+	vm.model.dom.filterDiv = false;
 
 	vm.model.customer = {}//Any thing related to customer
 
@@ -300,6 +279,11 @@ function CheckinCtrl ($scope, CheckinService){
 		// }
 	};
 
+	vm.ctrl.toggleFilterDiv = function (){
+		if (!vm.model.dom.filterDiv) vm.model.dom.filterDiv = true;
+		else vm.model.dom.filterDiv = false;
+	};
+
 	vm.ctrl.checkin = function(){
 		// before checkin
 
@@ -341,4 +325,24 @@ function CheckinCtrl ($scope, CheckinService){
 			vm.model.customer.checkingInData = getDefaultCheckInData ();
 		}
 	}
+
+	//Get checkin List
+	var query = { // TESTING
+		start: '2017-03-01',
+		end: '2017-03-02',
+		storeId: vm.model.customer.storeId,
+		staffId: vm.model.customer.userId,
+	}	
+
+	CheckinService.getCheckinList (query).then(
+		function success(res){
+			// vm.status.getCheckinList = true;
+			vm.model.customer.checkedInList = res.data.data;
+		}, 
+		function error(err){
+			// vm.status.getCheckinList = false;
+			console.log(err)
+		}
+	);
+
 };

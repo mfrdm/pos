@@ -21,8 +21,8 @@ active = [
 
 gender = [
 	{value: 1, name: 'Male'},
-	{value: 1, name: 'Female'},
-	{value: 1, name: 'Other'},
+	{value: 2, name: 'Female'},
+	{value: 3, name: 'Other'},
 ]
 
 transStatus = [
