@@ -26,11 +26,11 @@ function Checkout() {
 			}
 			else{
 				if (foundOrder.promocodes.length){ 
-					var promocodeIds = foundOrder.promocodes.map (function (x, i, arr){
-						return x._id
+					var codeNames = foundOrder.promocodes.map (function (x, i, arr){
+						return x.name;
 					});
 
-					Promocodes.find ({_id: {$in: promocodeIds}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1}, function (err, foundCodes){
+					Promocodes.find ({name: {$in: codeNames}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1}, function (err, foundCodes){
 						if (err){
 							next (err)
 							return

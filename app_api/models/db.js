@@ -13,7 +13,6 @@ else if (process.env.NODE_ENV === 'production'){
 var port = process.env.DB_PORT;
 var username = process.env.DB_USERNAME;
 var passwd = process.env.DB_PWS;
-	
 
 var mgdb = new MGDB (host, port, db, username, passwd);
 

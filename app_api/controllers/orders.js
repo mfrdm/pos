@@ -12,12 +12,12 @@ function Orders() {
 		try {
 			OrdersModel.find (
 				{
-					checkinTime: {
-						$gte: req.query.start, 
-						$lt: req.query.end,
-					},
-					status: req.query.status,
-					storeId: mongoose.Types.ObjectId(req.query.storeId)
+					// checkinTime: {
+					// 	$gte: req.query.start, 
+					// 	$lt: req.query.end,
+					// },
+					//status: req.query.status,
+					// storeId: mongoose.Types.ObjectId(req.query.storeId)
 				},
 				function (err, docs){
 					if (err){

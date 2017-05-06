@@ -14,7 +14,10 @@ var customerService = function($http){
 		})
 	}
 	this.search = function(input){
-		var array = [{"email" : { $regex: input, $options: 'i' }}, {"phone" : { $regex: input, $options: 'i' }}]
+		var array = [{"email" : { $regex: input, $options: 'i' }},
+		{"phone" : { $regex: input, $options: 'i' }},
+		{"lastname" : { $regex: input, $options: 'i' }},
+		{"firstname" : { $regex: input, $options: 'i' }}]
 		return $http({
 			method:'GET',
 			url:'/api/customers',

@@ -23,7 +23,6 @@ describe ('Checkout', function (){
 			order = {
 				promocodes:[{
 					name: 'YEUGREENSPACE',
-					_id: '590c4e04b1640f33e8d4149b',
 				}],
 				orderline: [ 
 					{ "productName" : "Common", "_id" : new mongoose.Types.ObjectId("58ff58e6e53ef40f4dd664cd"), "quantity" : 1, price: 10000 }, 
@@ -51,7 +50,7 @@ describe ('Checkout', function (){
 						return
 					}
 					else{
-						newOrder = res.body.order;
+						newOrder = res.body.data;
 					}
 					done ()
 				});
@@ -68,7 +67,7 @@ describe ('Checkout', function (){
 			});
 		});
 
-		xit ('should read and return invoice successfully', function (done){
+		it ('should read and return invoice successfully', function (done){
 			chai.request (server)
 				.get ('/checkout/invoice/' + newOrder._id)
 				.end (function (err, res){
@@ -166,14 +165,13 @@ describe ('Checkout', function (){
 
 	});
 
-	describe ('Confirm checkout', function (){
+	xdescribe ('Confirm checkout', function (){
 		var order, expectedUsage, newOrder;
 		beforeEach (function (done){
 			expectedUsage = 0.3;
 			order = {
 				promocodes:[{
 					name: 'YEUGREENSPACE',
-					_id: '590c4e04b1640f33e8d4149b',
 				}],
 				orderline: [ 
 					{ "productName" : "Common", "_id" : new mongoose.Types.ObjectId("58ff58e6e53ef40f4dd664cd"), "quantity" : 1, price: 10000 }, 
@@ -201,7 +199,7 @@ describe ('Checkout', function (){
 						return
 					}
 					else{
-						newOrder = res.body.order;
+						newOrder = res.body.data;
 						chai.request (server)
 							.get ('/checkout/invoice/' + newOrder._id)
 							.end (function (err, res){
