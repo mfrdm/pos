@@ -1,8 +1,13 @@
 var mongoose = require('mongoose');
 
 // method to convert a value according to a promotion code
-var convert = function (val){
-	return val
+var redeem = function (code, val){
+	if (code.toLowerCase () == 'yeugreenspace'){
+		return Number((val * 0.5).toFixed(1))
+	}
+	else{ // not found any code
+		return val
+	}
 }
 
 var promocodesSchema = mongoose.Schema ({
@@ -14,6 +19,6 @@ var promocodesSchema = mongoose.Schema ({
 	createdAt: {type: Date, default: Date.now},
 });
 
-promocodesSchema.statics.convert = convert;
+promocodesSchema.statics.redeem = redeem;
 
 module.exports = mongoose.model ('promocodes', promocodesSchema);

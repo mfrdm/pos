@@ -103,4 +103,8 @@ function Checkin() {
 	};
 
 
+	this.cancelCheckin = function (req, res) {
+		
+	}
+
 };

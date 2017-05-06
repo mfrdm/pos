@@ -66,7 +66,7 @@ describe ('Check-in', function (){
 
 		it.skip ('should create a check-in record and update customer order data on /checkin POST', function (done){
 			chai.request (server)
-				.post ('/checkin/58ff58e6e53ef40f4dd664cd')
+				.post ('/checkin/customer/58ff58e6e53ef40f4dd664cd')
 				.send (body)
 				.end (function (err, res){
 					// if (err) console.log (err.stack)
@@ -81,7 +81,7 @@ describe ('Check-in', function (){
 
 		it.skip ('should be invalid when required input is not provided on /checkin POST', function (done){
 			chai.request (server)
-				.post ('/checkin/58ff58e6e53ef40f4dd664cd')
+				.post ('/checkin/customer/58ff58e6e53ef40f4dd664cd')
 				.send ({data: {}})
 				.end (function (err, res){
 					// console.log (res.body);
@@ -129,7 +129,7 @@ describe ('Check-in', function (){
 
 		it.skip ('should successfully edit all data of a checked-in record', function (done){
 			chai.request (server)
-				.post ('/checkin/58ff58e6e53ef40f4dd664cd/edit')
+				.post ('/checkin/customer/58ff58e6e53ef40f4dd664cd/edit')
 				.send (body)
 				.end (function (err, res){
 					res.should.have.status (200);

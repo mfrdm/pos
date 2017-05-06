@@ -25,7 +25,7 @@ function Checkout() {
 				return
 			}
 			else{
-				if (foundOrder.promocodes.length){
+				if (foundOrder.promocodes.length){ 
 					var promocodeIds = foundOrder.promocodes.map (function (x, i, arr){
 						return x._id
 					});
@@ -43,50 +43,41 @@ function Checkout() {
 							foundOrder.promocodes = foundCodes;
 							foundOrder.usage = foundOrder.getUsageTime ();
 							foundOrder.total = foundOrder.getTotal ();
-							console.log ('total', foundOrder.total);
-							res.json ({data: foundOrder})
+
+							foundOrder.total = foundCodes.reduce (function (acc, val){
+								return Promocodes.redeem (val.name, acc);
+							}, foundOrder.total);
+							res.json ({data: foundOrder});
 						}
 					})
 				}
 				else{
+					foundOrder.usage = foundOrder.getUsageTime ();
+					foundOrder.total = foundOrder.getTotal ();				
 					res.json ({data: foundOrder})
 				}
 				
 			}
 		})
 
-		// Promocodes.find ({name: req.body.data.Promocodes.name}, function (err, data){
-		// 	if (err){
-		// 		// console.log (err)
-		// 		next ()
-		// 		return
-		// 	}
-			
-		// 	if (!data){
-		// 		res.json ({data: {}});
-		// 		return
-		// 	}
-
-		// 	else{
-		// 		res.json ({data: data})
-		// 	}
-
-
-		// })
-
 	};
 
-	this.checkout = function(req, res) {
-		// calculate total amount, considering promotion code, and add to db
-		// // return invoice data 
+	this.confirmCheckout = function(req, res) {
+		var total = req.body.data.total;
+		var usage = req.body.data.usage;
+		var status = 2;
+		Orders.findOneAndUpdate ({_id: req.body.data._id}, {$set: {status: status, total: total, usage: usage}}, {new: true, fields: {usage: 1, total: 1, status: 1}}, function (err, data){
+			if (err){
+				next (err)
+				return
+			}
+			if (data && Object.keys (data).length){
+				res.json ({data: data});
+			}
+			else{
+				next ()
+			}
 
-		// var apiUrl = apiOptions.server + "/api/orders/order/"+req.body.orderId+"/edit";
-		// var view = null;
-		// var body = {"$set": {"status":"2", "checkoutTime":Date.now()}};
-		// var dataFilter = null;
-		// var send = function(req, res, view, data, cb){
-		// 	requestHelper.sendJsonRes(res, 200, data);
-		// }
-		// requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
+		})
 	};
 };

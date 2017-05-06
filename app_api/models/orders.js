@@ -3,21 +3,24 @@ var mongoose = require('mongoose');
 // method to calculate total usage time
 function getUsageTime (){
 	var h = (new Date (this.checkoutTime) - new Date (this.checkinTime)) / (60 * 60 * 1000);
-	return Number(h.toFixed(1))
+	return Number(h.toFixed(1));
 }
 
 function getTotal (){
-	var val = this.orderline.reduce (function (acc, val){
+	var order = this;
+	var result = order.orderline.reduce (function (acc, val){
 		var total;
-		if (val.productName == 'private' || val.productName == 'common'){
-			total = val.quantity * val.price * this.usage
+		if (val.productName.toLowerCase() == 'private' || val.productName.toLowerCase() == 'common'){
+			total = val.quantity * val.price * order.usage + acc;
 		}
 		else{
-			total = val.quantity * val.price;
+			total = val.quantity * val.price + acc;
 		}
 
 		return total 
 	}, 0);
+
+	return result
 }
 
 var ordersSchema = new mongoose.Schema({
