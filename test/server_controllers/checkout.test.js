@@ -14,28 +14,39 @@ chai.use (chaiHttp);
 describe ('Checkout', function (){
 	this.timeout(3000);
 
-	xdescribe ('Create invoice', function (){
+	describe ('Create invoice', function (){
 		var order;
-		var newOrder;
+		var newOrder, newCustomer;
 		var expectedUsage;
 		
 		beforeEach (function (done){
+			var customer = {
+				_id: new mongoose.Types.ObjectId (),
+				firstname: 'XXX',
+				email: 'hiep@mail.com',
+				password: '123456',
+				lastname: 'YYY',
+				phone: '099284323121',
+				birthday: new Date ('1989-10-01'),
+				gender: 1,
+			};
+
 			expectedUsage = 0.3;
 			order = {
 				promocodes:[{
 					name: 'YEUGREENSPACE',
 				}],
 				orderline: [ 
-					{ "productName" : "Common", "_id" : new mongoose.Types.ObjectId("58ff58e6e53ef40f4dd664cd"), "quantity" : 1, price: 10000 }, 
+					{ "productName" : "Group Common", "_id" : new mongoose.Types.ObjectId("58ff58e6e53ef40f4dd664cd"), "quantity" : 1, price: 15000 }, 
 					{ "productName" : "Coca", "_id" : new mongoose.Types.ObjectId("58ff58e6e53ef40f4dd664cd"), "quantity" : 2, price: 10000 }, 
 					{ "productName" : "Poca", "_id" : new mongoose.Types.ObjectId("58ff58e6e53ef40f4dd664cd"), "quantity" : 1, price: 10000 } 
 				],
 				customer:{
-					_id: "58ff58e6e53ef40f4dd664cd",
-					firstname: 'Hiep',
-					lastname: 'Pham',
-					phone: '0965284281',
-					email: 'hiep@yahoo.com',
+					_id: customer._id,
+					firstname: customer.firstname,
+					lastname: customer.lastname,
+					phone: customer.phone,
+					email: customer.email,
 				},
 				storeId: "58eb474538671b4224745192",
 				staffId: "58eb474538671b4224745192",
@@ -43,29 +54,46 @@ describe ('Checkout', function (){
 			};
 
 			chai.request (server)
-				.post ('/checkin/customer/' + order.customer._id)
-				.send ({data: order})
+				.post ('/customers/create')
+				.send ({data: customer})
 				.end (function (err, res){
-					if (err) {
-						console.log (err);
+					if (err){
+						console.log (err)
 						return
 					}
-					else{
-						newOrder = res.body.data;
-					}
-					done ()
+					newCustomer = res.body.data;
+					chai.request (server)
+						.post ('/checkin/customer/' + order.customer._id)
+						.send ({data: order})
+						.end (function (err, res){
+							if (err) {
+								console.log (err);
+								return
+							}
+							newOrder = res.body.data;
+
+							done ()
+						});
 				});
 		});
 
 		afterEach (function (done){
-			Orders.remove ({'_id': newOrder._id}, function (err, data){
+			Customers.remove ({_id: newCustomer._id}, function (err, data){
 				if (err){
 					console.log (err)
 					return
 				}
 
-				done ();
-			});
+				Orders.remove ({'_id': newOrder._id}, function (err, data){
+					if (err){
+						console.log (err)
+						return
+					}
+
+					done ();
+				});
+
+			})
 		});
 
 		xit ('should read and return invoice successfully', function (done){
@@ -73,7 +101,7 @@ describe ('Checkout', function (){
 				.get ('/checkout/invoice/' + newOrder._id)
 				.end (function (err, res){
 					if (err){
-						// console.log (err)
+						console.log (err)
 					}
 
 					res.should.have.status (200);
@@ -145,7 +173,7 @@ describe ('Checkout', function (){
 
 
 		xit ('should calculate correct total with promocode', function (done){
-			expectedTotal = 0.5 * (order.orderline[0].price * expectedUsage * order.orderline[0].quantity  + order.orderline[1].price * order.orderline[1].quantity + order.orderline[2].price * order.orderline[2].quantity);
+			expectedTotal = (order.orderline[0].price * expectedUsage * order.orderline[0].quantity  + order.orderline[1].price * order.orderline[1].quantity + order.orderline[2].price * order.orderline[2].quantity) / 2;
 			chai.request (server)
 				.get ('/checkout/invoice/' + newOrder._id)
 				.end (function (err, res){
@@ -161,14 +189,14 @@ describe ('Checkout', function (){
 		});
 
 
-		xit ('should validate promotion code')
-		xit ('should save invoice into db before return data to client')
+		it ('should validate promotion code')
+		it ('should save invoice into db before return data to client')
 
-		xit ('should be invalid when not found required input')
+		it ('should be invalid when not found required input')
 
 	});
 
-	describe ('Checkout exception', function (){
+	xdescribe ('Checkout exception', function (){
 		var newOrder, newCustomer;
 
 		afterEach (function (done){
@@ -277,7 +305,9 @@ describe ('Checkout', function (){
 				})
 		})
 
-		it ('should return correct total and usage when a customer uses a combo');
+		xit ('should return correct total and usage when a customer uses a combo', function (done){
+
+		});
 
 		it ('should return correct total and usage when a customer uses a combo and uses more than expected time')
 
