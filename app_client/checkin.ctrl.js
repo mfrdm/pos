@@ -26,7 +26,12 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	vm.model.customer.storeId = '58fdc7e1fc13ae0e8700008a';
 	vm.model.customer.userId = '58eb474538671b4224745192'; // staff
 	// END
-
+	CheckinService.readSomeProducts()
+		.then(function success(res){
+			console.log(res)
+		}, function error(err){
+			console.log(err)
+		})
 	vm.model.customer.services = { // FIX: no hardcode
 		//Services pull from Products model
 		'Private': {
@@ -218,8 +223,15 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	vm.model.customer.checkingInData.promocodes = []
 	vm.ctrl.checkin = function(){
 		// before checkin
-
-		vm.model.customer.checkingInData.total = '';
+		if(vm.model.customer.checkingInData.promocodes.length > 0){
+			if(typeof vm.model.customer.checkingInData.promocodes == 'string'){
+				vm.model.customer.checkingInData.promocodes = vm.model.customer.checkingInData.promocodes.split(/[ .:;?!~,`"&|()<>{}\[\]\r\n/\\]+/)
+			}
+			
+			vm.model.customer.checkingInData.promocodes = vm.model.customer.checkingInData.promocodes.map(function(ele){
+				return {name:ele}
+			})
+		}
 		vm.model.customer.checkingInData.storeId = vm.model.customer.storeId;
 		vm.model.customer.checkingInData.staffId = vm.model.customer.userId;
 
@@ -233,10 +245,9 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		vm.model.customer.checkingInData.orderline = vm.model.customer.checkingInData.orderline.filter(function(ele){
 			return ele.productName != ''
 		})
-		if(typeof vm.model.customer.checkingInData.promocodes == 'string'){
-			vm.model.customer.checkingInData.promocodes = vm.model.customer.checkingInData.promocodes.split(/[ .:;?!~,`"&|()<>{}\[\]\r\n/\\]+/)
-		}
 		
+
+		console.log(vm.model.customer.checkingInData)
 		CheckinService.createOne (vm.model.customer.checkingInData.customer.id, vm.model.customer.checkingInData).then(
 			function success(data){
 				console.log (data.data)
@@ -246,6 +257,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			}, 
 			function error(err){
 				console.log(err);
+				$window.alert('Something wrong, please check it')
 				//vm.status.checkedin = false;
 			}
 		);

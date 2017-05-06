@@ -63,6 +63,12 @@ function CheckinService ($http, $q){
 	// 		url:'api/customers/customer/'+id
 	// 	})
 	// }
+	this.readSomeProducts = function(){
+		return $http({
+			method:'GET',
+			url:'/api/products'
+		})
+	}
 
 	this.createOne = function (userId, data) {
 		return $http({
