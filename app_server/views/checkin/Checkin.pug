@@ -113,7 +113,7 @@ div(class="columns row")
 						//- div(class="row column")
 						//- 	input(type="checkbox" name="checkoutStatus" value="out" id="checkoutStatusOut" required ng-model='vm.model.checkbox.status.out' ng-change='vm.ctrl.selectCheckbox()')
 						//- 	label(for="checkoutStatusOut") Out
-						select(ng-model='vm.model.filter.status' ng-options='key as value for (key , value) in vm.model.statusOptions')
+						select(ng-model='vm.model.filter.status' ng-options='key as value for (key , value) in vm.model.statusOptions' ng-init='vm.model.filter.status=1')
 							option
 
 					fieldset(class="column column-block")

@@ -138,7 +138,7 @@ ul.listOrder li i{
 
 /*Checkout Div*/
 #checkoutDiv{
-	position: absolute;
+	position: fixed;
 	background-color: #fff;
 	top:0;
 	left:0;
