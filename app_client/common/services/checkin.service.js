@@ -30,7 +30,7 @@ function CheckinService ($http, $q){
 				// end: query.end ? query.end : new Date().setDate(new Date().getDate() + 1),
 				// storeId: query.storeId,
 				// staffId: query.staffId,
-				status: query.status ? query.status : 1, // checked-in only
+				//status: query.status ? query.status : 1, // checked-in only
 			},
 		})
 		// return $q.resolve({

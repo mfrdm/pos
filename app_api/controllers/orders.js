@@ -16,7 +16,7 @@ function Orders() {
 					// 	$gte: req.query.start, 
 					// 	$lt: req.query.end,
 					// },
-					status: req.query.status,
+					//status: req.query.status,
 					// storeId: mongoose.Types.ObjectId(req.query.storeId)
 				},
 				function (err, docs){
