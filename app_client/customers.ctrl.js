@@ -1,10 +1,11 @@
-var CustomerCtrl = function(customerService, $route, $window){
+var CustomerCtrl = function($scope, customerService, $route, $window){
 	var vm = this;
 
 	vm.tab = 'tab-main';
 	////////////////////////////////////////////////////////
 	vm.model = {};
 	vm.ctrl = {};
+
 	////////////////////////////////////////////////////////
 	// Setup ng-switch
 	vm.ctrl.toMain = function(){
@@ -144,9 +145,10 @@ var CustomerCtrl = function(customerService, $route, $window){
 	////////////////////////////////////////////////////////
 	//Create Page
 	vm.ctrl.createNewCustomer = function(){
-		console.log(vm.model.customer.newCustomerData)
 		customerService.createOne(vm.model.customer.newCustomerData)
 			.then(function success(res){
+				console.log(res)
+				$scope.layout.currentCustomer = res.data.data;
 				$window.location.href = '/#!/checkin'
 			}, function error(err){
 				console.log(err)
@@ -179,4 +181,4 @@ var CustomerCtrl = function(customerService, $route, $window){
 	}
 }
 
-app.controller('CustomerCtrl', ['customerService','$route','$window',CustomerCtrl])
+app.controller('CustomerCtrl', ['$scope', 'customerService','$route','$window',CustomerCtrl])

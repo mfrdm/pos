@@ -56,6 +56,33 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			// id: '58eb474538671b4224745167',
 		},		
 	};
+	///////////////////////////////////////////////////////////////
+
+	function getCheckinCurrentCreatedCus (){
+		return {
+			orderline: [
+				{
+					productName: 'Common', // default service
+					quantity: 1,
+					id: vm.model.customer.services['Common'].id,
+				},
+				{
+					productName: '', //Add more
+					quantity: 0,
+				},			
+
+			],
+			customer: {
+				firstname: $scope.layout.currentCustomer.firstname,
+				lastname: $scope.layout.currentCustomer.lastname,
+				phone: $scope.layout.currentCustomer.phone[0],
+				id: $scope.layout.currentCustomer._id,
+			}
+		}
+	}
+
+	
+	////////////////////////////////////////////////////////////////
 	function getDefaultCheckInData (){
 		return {
 			orderline: [
@@ -177,7 +204,11 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		if (!vm.model.dom.filterDiv) vm.model.dom.filterDiv = true;
 		else vm.model.dom.filterDiv = false;
 	};
-
+	if($scope.layout.currentCustomer){
+		vm.model.dom.checkInDiv = true;
+		vm.model.customer.checkingInData = getCheckinCurrentCreatedCus();
+		vm.model.search.username = $scope.layout.currentCustomer.lastname +' '+ $scope.layout.currentCustomer.firstname + ' / ' +$scope.layout.currentCustomer.email[0]
+	}
 	vm.ctrl.checkin = function(){
 		// before checkin
 
@@ -217,6 +248,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		}
 		
 		console.log(checkDuplicate());
+		console.log(vm.model.customer.checkingInData)
 		
 		CheckinService.createOne (vm.model.customer.checkingInData.customer.id, vm.model.customer.checkingInData).then(
 			function success(data){
