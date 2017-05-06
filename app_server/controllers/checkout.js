@@ -1,9 +1,4 @@
-// var helper = require('../../libs/node/helper')
-// var dbHelper = require('../../libs/node/dbHelper')
-// var requestHelper = require('../../libs/node/requestHelper')
-// var request = require('request')
-// var apiOptions = helper.getAPIOption();
-
+var moment = require ('moment');
 var mongoose = require ('mongoose');
 var Promocodes = mongoose.model ('promocodes');
 var Orders = mongoose.model ('orders');
@@ -25,6 +20,8 @@ function Checkout() {
 				return
 			}
 			else{
+				foundOrder.checkoutTime = foundOrder.checkoutTime ? foundOrder.checkoutTime : moment ();
+				
 				if (foundOrder.promocodes.length){ 
 					var codeNames = foundOrder.promocodes.map (function (x, i, arr){
 						return x.name;
