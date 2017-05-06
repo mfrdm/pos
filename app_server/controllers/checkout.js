@@ -20,14 +20,16 @@ function Checkout() {
 				return
 			}
 			else{
+				console.log (2)
 				foundOrder.checkoutTime = foundOrder.checkoutTime ? foundOrder.checkoutTime : moment ();
-				
+
 				if (foundOrder.promocodes.length){ 
 					var codeNames = foundOrder.promocodes.map (function (x, i, arr){
 						return x.name;
 					});
 
 					Promocodes.find ({name: {$in: codeNames}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1}, function (err, foundCodes){
+						console.log (1)
 						if (err){
 							next (err)
 							return

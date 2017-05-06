@@ -5,7 +5,7 @@ var productsSchema = mongoose.Schema({
 	price: {type:Number},
 	category: Number,
 	createdAt: {type: Date, default: Date.now},
-	updateAt: [{
+	updatedAt: [{
 		time: Date,
 		explain: String, 
 		by: mongoose.Schema.Types.ObjectId,

@@ -17,6 +17,11 @@ var promocodesSchema = mongoose.Schema ({
 	desc: {type: String}, // describe what is the promotion about and how to apply
 	promoType: {type: Number, default: 1}, // default: apply to one
 	createdAt: {type: Date, default: Date.now},
+	updatedAt: [{ 
+		time: {type: Date},
+		explain: String,
+		by: mongoose.Schema.Types.ObjectId,
+	}],
 });
 
 promocodesSchema.statics.redeem = redeem;

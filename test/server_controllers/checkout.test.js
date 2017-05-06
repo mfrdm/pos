@@ -14,7 +14,7 @@ chai.use (chaiHttp);
 describe ('Checkout', function (){
 	this.timeout(3000);
 
-	describe ('Create invoice', function (){
+	xdescribe ('Create invoice', function (){
 		var order;
 		var newOrder;
 		var expectedUsage;
@@ -68,7 +68,7 @@ describe ('Checkout', function (){
 			});
 		});
 
-		it ('should read and return invoice successfully', function (done){
+		xit ('should read and return invoice successfully', function (done){
 			chai.request (server)
 				.get ('/checkout/invoice/' + newOrder._id)
 				.end (function (err, res){
@@ -84,7 +84,7 @@ describe ('Checkout', function (){
 				});
 		});
 
-		it ('should get promotion code when exist', function (done){
+		xit ('should get promotion code when exist', function (done){
 			chai.request (server)
 				.get ('/checkout/invoice/' + newOrder._id)
 				.end (function (err, res){
@@ -98,7 +98,7 @@ describe ('Checkout', function (){
 				});		
 		});
 
-		it ('should calculate correct usage time', function (done){
+		xit ('should calculate correct usage time', function (done){
 			chai.request (server)
 				.get ('/checkout/invoice/' + newOrder._id)
 				.end (function (err, res){
@@ -113,7 +113,7 @@ describe ('Checkout', function (){
 				});		
 		});
 
-		it ('should calculate correct total without promotion', function (done){
+		xit ('should calculate correct total without promotion', function (done){
 			order.promocodes = [];
 			var expectedTotal = order.orderline[0].price * expectedUsage * order.orderline[0].quantity  + order.orderline[1].price * order.orderline[1].quantity + order.orderline[2].price * order.orderline[2].quantity;
 			chai.request (server)
@@ -125,7 +125,7 @@ describe ('Checkout', function (){
 						return
 					}
 					else{
-						newOrder = res.body.order;
+						newOrder = res.body.data;
 						chai.request (server)
 							.get ('/checkout/invoice/' + newOrder._id)
 							.end (function (err, res){
@@ -142,6 +142,7 @@ describe ('Checkout', function (){
 					}
 				});				
 		});	
+
 
 		it ('should calculate correct total with promocode', function (done){
 			expectedTotal = 0.5 * (order.orderline[0].price * expectedUsage * order.orderline[0].quantity  + order.orderline[1].price * order.orderline[1].quantity + order.orderline[2].price * order.orderline[2].quantity);
@@ -167,7 +168,7 @@ describe ('Checkout', function (){
 
 	});
 
-	xdescribe ('Checkout exception', function (){
+	describe ('Checkout exception', function (){
 		var newOrder;
 
 		afterEach (function (done){
@@ -181,17 +182,77 @@ describe ('Checkout', function (){
 			});
 		});
 
-		it ('should return correct total when usage is lower than a threshold', function (done){
+		it ('should return correct total usage when meeting discount conditions')
 
-			var expectedUsage = 0.11;
+		it ('should return correct total and usage when a customer buys combo');
+
+		it ('should return correct total and usage when a customer buys combo and uses more than expected time')
+
+		xit ('should return correct total and usage when a customer is a student', function (done){
+			// var expectedUsage = 2;
+			// var order = {
+			// 	promocodes:[{
+			// 		name: 'YEUGREENSPACE',
+			// 		name: 'SINHVIENGREENSPACE',
+			// 	}],
+			// 	orderline: [ 
+			// 		{ "productName" : "Common", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 15000 }, 
+			// 		{ "productName" : "Coca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 2, price: 10000 }, 
+			// 		{ "productName" : "Poca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000 } 
+			// 	],
+			// 	customer:{
+			// 		_id: "58ff58e6e53ef40f4dd664cd",
+			// 		firstname: 'Hiep',
+			// 		lastname: 'Pham',
+			// 		phone: '0965284281',
+			// 		email: 'hiep@yahoo.com',
+			// 	},
+			// 	storeId: "58eb474538671b4224745192",
+			// 	staffId: "58eb474538671b4224745192",
+			// 	checkoutTime: moment ().add (expectedUsage, 'hours'),			
+			// };
+
+			// var expectedTotal = (10000 * order.orderline[0].quantity * expectedUsage + order.orderline[1].price * order.orderline[1].quantity + order.orderline[2].price * order.orderline[2].quantity) / 2;
+
+			// chai.request (server)
+			// 	.post ('/checkin/customer/' + order.customer._id)
+			// 	.send ({data: order})
+			// 	.end (function (err, res){
+			// 		if (err) {
+			// 			console.log (err);
+			// 			return
+			// 		}
+			// 		else{
+			// 			newOrder = res.body.data;
+			// 			chai.request (server)
+			// 				.get ('/checkout/invoice/' + newOrder._id)
+			// 				.end (function (err, res){
+			// 					if (err){
+			// 						// console.log (err)
+			// 					}
+			// 					res.should.have.status (200);
+			// 					res.body.data.should.to.exist;
+			// 					res.body.data.usage.should.to.equal (expectedUsage);
+			// 					res.body.data.total.should.to.equal (expectedTotal);
+			// 					done ();
+			// 				});	
+
+			// 		}
+			// 	});
+
+		});
+
+		xit ('should return correct total when usage is lower than a threshold', function (done){
+
+			var expectedUsage = 0;
 			var order = {
 				promocodes:[{
 					name: 'YEUGREENSPACE',
 				}],
 				orderline: [ 
-					{ "productName" : "Common", "_id" : new mongoose.Types.ObjectId("58ff58e6e53ef40f4dd664cd"), "quantity" : 1, price: 10000 }, 
-					{ "productName" : "Coca", "_id" : new mongoose.Types.ObjectId("58ff58e6e53ef40f4dd664cd"), "quantity" : 2, price: 10000 }, 
-					{ "productName" : "Poca", "_id" : new mongoose.Types.ObjectId("58ff58e6e53ef40f4dd664cd"), "quantity" : 1, price: 10000 } 
+					{ "productName" : "Common", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000 }, 
+					{ "productName" : "Coca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 2, price: 10000 }, 
+					{ "productName" : "Poca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000 } 
 				],
 				customer:{
 					_id: "58ff58e6e53ef40f4dd664cd",
@@ -205,7 +266,7 @@ describe ('Checkout', function (){
 				checkoutTime: moment ().add (expectedUsage, 'hours'),			
 			};
 
-			var expectedTotal = order.orderline[0].price * order.orderline[0].quantity + order.orderline[1].price * order.orderline[1].quantity + order.orderline[2].price * order.orderline[2].quantity;
+			var expectedTotal = (order.orderline[1].price * order.orderline[1].quantity + order.orderline[2].price * order.orderline[2].quantity) / 2;
 
 			chai.request (server)
 				.post ('/checkin/customer/' + order.customer._id)
@@ -217,7 +278,6 @@ describe ('Checkout', function (){
 					}
 					else{
 						newOrder = res.body.data;
-						console.log (newOrder)
 						chai.request (server)
 							.get ('/checkout/invoice/' + newOrder._id)
 							.end (function (err, res){
@@ -232,14 +292,19 @@ describe ('Checkout', function (){
 							});	
 
 					}
-
-					done ();
 				});
 
 		})
 
-		it ('should return correct total and usage when start time is less than open time')
-		it ('should return correct total and usage when end time is less than close time')		
+		// should never happen!!!
+		xit ('should return correct total and usage when start time is less than open time', function (done){
+
+		});
+
+		// should never happen!!!
+		xit ('should return correct total and usage when end time is less than close time', function (done){
+
+		});	
 	})
 
 	xdescribe ('Confirm checkout', function (){
