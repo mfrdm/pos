@@ -4,9 +4,12 @@ var requestHelper = require('../../libs/node/requestHelper')
 var request = require('request')
 var apiOptions = helper.getAPIOption()
 
-module.exports = new Customers();
+var mongoose = require ('mongoose');
+var Customers = mongoose.model ('customers');
 
-function Customers() {
+module.exports = new CustomersCtrl();
+
+function CustomersCtrl() {
 
 	this.readOverview = function(req, res) {
 		var data = {
@@ -65,15 +68,18 @@ function Customers() {
 		requestHelper.readApi(req, res, apiUrl, view, qs, dataFilter, send);
 	};
 
-	this.createOneCustomer = function(req, res) {
-		var apiUrl = apiOptions.server + "/api/customers/create/";
-		var view = null;
-		var body = req.body;
-		var dataFilter = null;
-		var send = function(req, res, view, data, cb){
-			requestHelper.sendJsonRes(res, 200, data)
-		}
-		requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
+	this.createOneCustomer = function(req, res, next) {
+		var newCustomer = new Customers (req.body.data);
+		newCustomer.save (function (err, cus){
+			if (err){
+				next (err);
+				return 
+			}
+			else{
+				res.json ({data: cus});
+			}
+		});
+
 	};
 
 	this.updateOneCustomer = function(req, res) {

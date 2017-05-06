@@ -6,6 +6,7 @@ customer.edu.title = [
 	{value: 1, name: 'undergraduate'},
 	{value: 2, name: 'graduate'},
 	{value: 3, name: 'doc'},
+	{value: 4, name: 'highSchool'},
 ]
 
 

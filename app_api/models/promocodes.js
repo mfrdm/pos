@@ -11,9 +11,16 @@ var redeem = function (code, val){
 }
 
 // not actually code. But discount when meet condition, checked programmatically
-var discount = function (code, val){
-	if (code.toLowerCase () === 'sinhvien'){
-
+var discount = function (code, product){
+	if (code.toLowerCase () === 'student'){
+		var name = product.productName.toLowerCase();
+		
+		if (name === 'group common' || name === 'individual common'){
+			return 10000
+		}
+		else{
+			return product.price
+		}
 	}
 }
 
@@ -32,5 +39,6 @@ var promocodesSchema = mongoose.Schema ({
 });
 
 promocodesSchema.statics.redeem = redeem;
+promocodesSchema.statics.discount = discount;
 
 module.exports = mongoose.model ('promocodes', promocodesSchema);

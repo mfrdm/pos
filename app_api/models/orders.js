@@ -11,7 +11,7 @@ function getTotal (){
 
 	var result = order.orderline.reduce (function (acc, val){
 		var total;
-		if (val.productName.toLowerCase() == 'private' || val.productName.toLowerCase() == 'common'){
+		if (val.productName.toLowerCase() == 'group private' || val.productName.toLowerCase() == 'group common' || val.productName.toLowerCase() == 'individual common'){
 			total = val.quantity * val.price * order.usage + acc;
 		}
 		else{

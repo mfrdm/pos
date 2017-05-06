@@ -2,12 +2,32 @@ var moment = require ('moment');
 var mongoose = require ('mongoose');
 var Promocodes = mongoose.model ('promocodes');
 var Orders = mongoose.model ('orders');
-
+var Customers = mongoose.model ('customers');
 module.exports = new Checkout();
 
 function Checkout() {
 
 	this.createInvoice = function(req, res, next) {
+
+		// FIX: should not assume the current title is the lastest one in the edu array
+		function isStudent (cus){
+			var title = cus.edu[cus.edu.length-1].title;
+			return title == 1
+		};
+
+		function getDiscount (customer, foundOrder){
+			if (customer.edu.length){
+				var discountCode;
+				if (isStudent (customer)){
+					discountCode = 'student';
+				}
+
+				foundOrder.orderline = foundOrder.orderline.map (function (x, i, arr){
+					x.price = Promocodes.discount (discountCode, x);
+					return x
+				});
+			}			
+		};
 
 		Orders.findOne ({_id: req.params.orderId}, function (err, foundOrder){
 			if (err){
@@ -20,7 +40,6 @@ function Checkout() {
 				return
 			}
 			else{
-				console.log (2)
 				foundOrder.checkoutTime = foundOrder.checkoutTime ? foundOrder.checkoutTime : moment ();
 
 				if (foundOrder.promocodes.length){ 
@@ -29,7 +48,6 @@ function Checkout() {
 					});
 
 					Promocodes.find ({name: {$in: codeNames}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1}, function (err, foundCodes){
-						console.log (1)
 						if (err){
 							next (err)
 							return
@@ -40,24 +58,56 @@ function Checkout() {
 						}
 						else{
 							foundOrder.promocodes = foundCodes;
-							foundOrder.usage = foundOrder.getUsageTime ();
-							foundOrder.total = foundOrder.getTotal ();
+							Customers.findOne ({_id: foundOrder.customer._id}, {'edu': 1}, function (err, foundCustomer){
+								if (err) {
+									next (err)
+									return
+								}
 
-							foundOrder.total = foundCodes.reduce (function (acc, val){
-								return Promocodes.redeem (val.name, acc);
-							}, foundOrder.total);
-							res.json ({data: foundOrder});
+								if (foundCustomer){
+									getDiscount (foundCustomer, foundOrder);
+
+									foundOrder.usage = foundOrder.getUsageTime ();
+
+									foundOrder.total = foundOrder.getTotal ();
+
+									foundOrder.total = foundCodes.reduce (function (acc, val){
+										return Promocodes.redeem (val.name, acc);
+									}, foundOrder.total);
+
+
+									res.json ({data: foundOrder});
+
+								}	
+								else{
+									next ()
+								}
+							})
 						}
-					})
+					});
 				}
 				else{
-					foundOrder.usage = foundOrder.getUsageTime ();
-					foundOrder.total = foundOrder.getTotal ();				
-					res.json ({data: foundOrder})
+					Customers.findOne ({_id: foundOrder.customer._id}, {'edu': 1}, function (err, foundCustomer){
+						if (err) {
+							next (err)
+							return
+						}
+
+						if (foundCustomer){
+							getDiscount (foundCustomer, foundOrder);
+
+							foundOrder.usage = foundOrder.getUsageTime ();
+							foundOrder.total = foundOrder.getTotal ();				
+							res.json ({data: foundOrder})
+						}
+						else{
+							next ()
+						}
+					});
 				}
 				
-			}
-		})
+			};
+		});
 
 	};
 
