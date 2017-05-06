@@ -7,7 +7,7 @@ app
 	        $("#mainContentDiv").foundation(); // initialize elements in ng-view
 	    });
 	})
-	.controller ('LayoutCtrl', ['$rootScope','$scope', '$location','authentication','socket', LayoutCtrl])	
+	.controller ('LayoutCtrl', ['$rootScope','$scope', '$location','authentication', LayoutCtrl])	
 	.controller ('ErrorCtrl', [ErrorCtrl])
 
 function config ($locationProvider, $routeProvider){
@@ -106,7 +106,7 @@ function ErrorCtrl (){
 
 }
 
-function LayoutCtrl ($rootScope, $scope, $location, authentication, socket) {
+function LayoutCtrl ($rootScope, $scope, $location, authentication) {
 	$scope.layout = {};
 	$scope.layout.loginBtn = true;
 	$scope.layout.customerNumber = 100; // TESTING
@@ -144,23 +144,23 @@ function LayoutCtrl ($rootScope, $scope, $location, authentication, socket) {
 		authentication.logout(beforeAction, afterAction)
 	}
 
-	$scope.layout.notiAlert = function(msg){
-		console.log(msg)
-		$scope.layout.notifications.push(msg)
-		$scope.layout.style={color:'red'}
-		$rootScope.$digest();
-		console.log($scope.layout.notifications)
-	}
+	// $scope.layout.notiAlert = function(msg){
+	// 	console.log(msg)
+	// 	$scope.layout.notifications.push(msg)
+	// 	$scope.layout.style={color:'red'}
+	// 	$rootScope.$digest();
+	// 	console.log($scope.layout.notifications)
+	// }
 	// Socket io=========================================================
 	// Get user info for socket io
-	var user = authentication.getCurUser()
-	//Socket function
-	if(user){
-		socket.emit('login', {firstname:user.firstname, lastname:user.lastname, email:user.email, phone:user.phone});
-		socket.on('handleNoti', function(msg){
-			$scope.layout.notiAlert(msg)
-		})
-	}
+	// var user = authentication.getCurUser()
+	// //Socket function
+	// if(user){
+	// 	socket.emit('login', {firstname:user.firstname, lastname:user.lastname, email:user.email, phone:user.phone});
+	// 	socket.on('handleNoti', function(msg){
+	// 		$scope.layout.notiAlert(msg)
+	// 	})
+	// }
 	
 	//=========================================================
 

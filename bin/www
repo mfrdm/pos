@@ -6,7 +6,7 @@
 var app = require('../app');
 var debug = require('debug')('erp:server');
 var http = require('http');
-var socketApp = require('./socket');
+// var socketApp = require('./socket');
 
 /**
  * Get port from environment and store in Express.
@@ -30,7 +30,7 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-socketApp(server);
+// socketApp(server);
 
 /**
  * Normalize a port into a number, string, or false.

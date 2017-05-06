@@ -163,18 +163,18 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	}
 
 	//Get total money
-	vm.ctrl.getTotal = function (orderline) {
-		var total = 0;
-		var orderNum = orderline.length;
-		var items =  {};
-		Object.assign (items, vm.model.customer.services, vm.model.customer.otherItems);
-		for (var i = 0; i < orderNum; i++) {
-			if (orderline [i].productName) {
-				total += (items [orderline [i].productName].price * orderline [i].quantity);
-			}
-		}
-		return total;
-	};
+	// vm.ctrl.getTotal = function (orderline) {
+	// 	var total = 0;
+	// 	var orderNum = orderline.length;
+	// 	var items =  {};
+	// 	Object.assign (items, vm.model.customer.services, vm.model.customer.otherItems);
+	// 	for (var i = 0; i < orderNum; i++) {
+	// 		if (orderline [i].productName) {
+	// 			total += (items [orderline [i].productName].price * orderline [i].quantity);
+	// 		}
+	// 	}
+	// 	return total;
+	// };
 
 	//Toogle Filter Div
 	vm.ctrl.toggleFilterDiv = function (){
@@ -219,7 +219,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	vm.ctrl.checkin = function(){
 		// before checkin
 
-		vm.model.customer.checkingInData.total = vm.ctrl.getTotal (vm.model.customer.checkingInData.orderline);
+		vm.model.customer.checkingInData.total = '';
 		vm.model.customer.checkingInData.storeId = vm.model.customer.storeId;
 		vm.model.customer.checkingInData.staffId = vm.model.customer.userId;
 
@@ -290,12 +290,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			vm.model.dom.checkInListDiv = true;
 			vm.model.customer.editedCheckedInCustomer = {}; // reset
 		}
-		else{ // turn on
-			// turn off checkin list div
-			// turn on edit div
-			// make a deep copy of the data
-			// load data to the edit div
-			// other tasks
+		else{
 			vm.model.customer.editedCheckedInCustomer = vm.model.customer.checkedInList[index];
 			vm.model.customer.editedCheckedInCustomer.orderline.map (function (x, i, arr){
 				x.quantity = parseInt (x.quantity);

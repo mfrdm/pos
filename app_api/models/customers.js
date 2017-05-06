@@ -9,6 +9,16 @@ var eduSchema = new mongoose.Schema({
 	end: {type: Date, required: true} 
 });	
 
+var combosSchema = new mongoose.Schema ({
+	_id: mongoose.Schema.Types.ObjectId, 
+	value: String,
+	product: {
+		_id: mongoose.Schema.Types.ObjectId,
+		name: String,
+	},
+	expired: Date,
+});
+
 var customersSchema = mongoose.Schema({
 	firstname: {type:String, required: true},
 	middlename: {type:String},
@@ -27,6 +37,13 @@ var customersSchema = mongoose.Schema({
 	orders: [{orderId:{type: mongoose.Schema.Types.ObjectId}}],
 	bookings: [{type:mongoose.Schema.Types.ObjectId, ref:'bookings'}],
 	promoteCode: [{code: String, expire: Date,}],
+	balance: {
+		oneDay: [combosSchema],
+		threeDays: [combosSchema],
+		oneMonth: [combosSchema],
+		threeMonths: [combosSchema],
+		oneYear: [combosSchema],	
+	},
 	////////// Login Google
 	google: { // not complete
 		token: String,
@@ -44,6 +61,7 @@ var customersSchema = mongoose.Schema({
 	///////// Login local
 	hash: String, 
 	salt: String,
+
 
 });
 

@@ -8,6 +8,7 @@ function getUsageTime (){
 
 function getTotal (){
 	var order = this;
+
 	var result = order.orderline.reduce (function (acc, val){
 		var total;
 		if (val.productName.toLowerCase() == 'private' || val.productName.toLowerCase() == 'common'){
@@ -23,9 +24,16 @@ function getTotal (){
 	return result
 }
 
+var combosSchema = new mongoose.Schema({
+	name: String,
+	usage: Number, // percentage
+	createdAt: {type: Date, default: Date.now},
+}); 
+
 var ordersSchema = new mongoose.Schema({
 	total: {type: Number, min: 0},
 	usage: {type: Number, min: 0}, // in minutes
+	combos: [combosSchema],
 	promocodes: [{
 		_id: mongoose.Schema.Types.ObjectId,
 		name: String,

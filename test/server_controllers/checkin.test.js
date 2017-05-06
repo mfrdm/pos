@@ -1,9 +1,3 @@
-// var assert = require('assert'); // node.js core module
-// var request = require('request');
-// var helper = require ('../../libs/node/helper');
-// var TestHelper =  require ('../../libs/node/testHelper');
-// var dateFormat = require ('dateFormat');
-
 process.env.NODE_ENV = 'development';
 var chai = require ('chai');
 var chaiHttp = require ('chai-http');
@@ -153,6 +147,8 @@ xdescribe ('Check-in', function (){
 
 		it ('should be invalid when the same item displays more than one time in orderline')
 		it ('should be invalid no items in orderline')
+
+		it ('should have createdAt time correct with time of local zone')
 
 		xit ('should be invalid when required input is not provided', function (done){
 			chai.request (server)
