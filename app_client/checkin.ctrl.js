@@ -1,7 +1,6 @@
 angular.module('posApp')
 	.controller('CheckinCtrl', ['$scope', '$window','$route','CheckinService', CheckinCtrl])
 
-//Get data to render all current checked in customers
 function CheckinCtrl ($scope, $window, $route, CheckinService){
 	var vm = this;
 
@@ -14,7 +13,6 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	vm.model.dom = {
 		messageSearchResult: false,
 		checkingInCustomerSearchResult: false,
-		// editedCustomerSearchResult: false
 	}//anything related to DOM
 	vm.model.dom.checkInListDiv = true;
 	vm.model.dom.checkInDiv = false;
@@ -57,7 +55,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		},		
 	};
 	///////////////////////////////////////////////////////////////
-
+	//Get customer data from current created Customer
 	function getCheckinCurrentCreatedCus (){
 		return {
 			orderline: [
@@ -83,6 +81,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 
 	
 	////////////////////////////////////////////////////////////////
+	// Default checkin data
 	function getDefaultCheckInData (){
 		return {
 			orderline: [
@@ -106,13 +105,12 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		}
 	};
 	vm.model.customer.serviceNames = Object.keys (vm.model.customer.services);
-	vm.model.customer.serviceNames.copy = angular.copy(vm.model.customer.services);
+
+	//Set default value for the order
 	vm.model.customer.checkingInData = getDefaultCheckInData ();
-	
 	//vm.model.customer.checkingInData is data sent to check in
-
+	
 	vm.model.customer.editedCheckedInCustomer = {};
-
 	// Used to fill check-in data
 	// FIX: should not include hardcode
 	
@@ -124,17 +122,9 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			quantity: 0,
 		}
 	};
-	//Close an item
-	vm.ctrl.closeAnItem = function(index, which){
-		if(which === 'checkInDiv' && vm.model.dom.checkInDiv){
-			vm.model.customer.checkingInData.orderline.splice(index, 1)
-		}else if(which === 'editedCheckedInDiv'){
-			console.log(vm.model.customer.editedCheckedInCustomer.orderline)
-			vm.model.customer.editedCheckedInCustomer.orderline.splice(index, 1)
-		}
-		
-	}
 
+	//////////////////////////////////////////////////////////////
+	//Controller Search
 	vm.ctrl.searchCustomers = function(which) {
 		CheckinService.searchCustomers(vm.model.search.username)
 		.then(function success (res){
@@ -157,7 +147,8 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			console.log(err)
 		});
 	}
-
+	//////////////////////////////////////////////////////////////
+	//Controller Search
 	vm.ctrl.selectCustomerToCheckin = function(index){
 		vm.model.customer.checkingInData.customer = {
 			id: vm.model.search.userResults [index]._id,
@@ -171,12 +162,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		vm.model.search.username = vm.model.search.userResults[index].lastname + ' ' + vm.model.search.userResults[index].firstname + ' / ' + vm.model.search.userResults[index].phone[0] + (vm.model.search.userResults[index].email[0] ? ' / ' + vm.model.search.userResults[index].email[0] : '');
 	}
 
-	// vm.ctrl.changeSelected = function(serviceName){
-	// 	vm.model.customer.serviceNames = vm.model.customer.serviceNames.filter(function(ele){
-	// 		return ele != serviceName
-	// 	})
-	// }
-
+	//Get total money
 	vm.ctrl.getTotal = function (orderline) {
 		var total = 0;
 		var orderNum = orderline.length;
@@ -190,15 +176,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		return total;
 	};
 
-	vm.ctrl.addMoreOtherItems = function (which){
-		if (which === 'checkingInDiv'){
-			vm.model.customer.checkingInData.orderline.push (getDefaultProduct());
-		}
-		else if (which === 'editedCheckedInDiv'){
-			vm.model.customer.editedCheckedInCustomer.orderline.push (getDefaultProduct());
-		}
-	};
-
+	//Toogle Filter Div
 	vm.ctrl.toggleFilterDiv = function (){
 		if (!vm.model.dom.filterDiv) vm.model.dom.filterDiv = true;
 		else vm.model.dom.filterDiv = false;
@@ -210,23 +188,32 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	}
 
 	//When select one service, options will reduce
-	vm.model.selectedItem = {}
+	vm.model.selectedItem = {};
+	var count = 0;
 	vm.ctrl.selectService = function(){
-		
-		var validateItems = vm.model.customer.checkingInData.orderline.filter(function(ele){
-				return ele.productName == vm.model.selectedItem.name
+		vm.model.customer.checkingInData.orderline.map(function(ele){
+				if(ele.productName == vm.model.selectedItem.name){
+					count += 1;
+				}
 			})
-		console.log(validateItems)
-		if(validateItems.length == 0 && vm.model.selectedItem.quantity >0 && vm.model.selectedItem.name){
+		if(count == 0 && vm.model.selectedItem.quantity >0 && vm.model.selectedItem.name){
 			vm.model.customer.checkingInData.orderline.push({
 				productName:vm.model.selectedItem.name,
 				quantity: vm.model.selectedItem.quantity
-			})
+			});
+			count = 0;
 		}
+		count = 0;
+		
 	}
 
 	vm.ctrl.deleteSelectService = function(index){
-		vm.model.customer.checkingInData.orderline.splice(index)
+		// vm.model.selectedItem = vm.model.selectedItem.filter(function(ele){
+		// 	return ele.name != vm.model.customer.checkingInData.orderline[index]
+		// });
+		vm.model.customer.checkingInData.orderline.splice(index+2)
+		// vm.model.customer.checkingInData.orderline.splice(index)
+
 	}
 	vm.model.customer.checkingInData.promoteCode = ['1234', '12312']
 	vm.ctrl.checkin = function(){
