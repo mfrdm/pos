@@ -1,6 +1,14 @@
 var mongoose = require('mongoose');
 
 /* Explain:
+
+customer.edu.title = [
+	{value: 1, name: 'undergraduate'},
+	{value: 2, name: 'graduate'},
+	{value: 3, name: 'doc'},
+]
+
+
 role = [
 	{value: 1, name: 'Staff'},
 	{value: 2, name: 'Content admin'},
@@ -62,6 +70,7 @@ productCat = [
 	{value: 3, name: 'Fast food'},
 	{value: 4, name: 'Snack'},
 ]
+
 */
 
 var adminSchema = new mongoose.Schema({

@@ -182,11 +182,22 @@ describe ('Checkout', function (){
 			});
 		});
 
-		it ('should return correct total usage when meeting discount conditions')
+		it ('should return correct total usage when meeting discount conditions', function (done){
+			var customer = {
+				firstname: 'XXX',
+				lastname: 'YYY',
+				birthday: new Date ('1989-10-01'),
+				gender: 1,
+				edu: {
+					title: 1,
+					start: new Date ('2017-01-01')
+				}
+			}
+		})
 
-		it ('should return correct total and usage when a customer buys combo');
+		it ('should return correct total and usage when a customer uses a combo');
 
-		it ('should return correct total and usage when a customer buys combo and uses more than expected time')
+		it ('should return correct total and usage when a customer uses a combo and uses more than expected time')
 
 		xit ('should return correct total and usage when a customer is a student', function (done){
 			// var expectedUsage = 2;
