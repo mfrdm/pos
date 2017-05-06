@@ -81,7 +81,6 @@ xdescribe ('Check-in', function (){
 			})
 		});
 
-
 		xit ('should create a check-in record and update customer order when no promocode provided', function (done){
 			order.promocodes = [];
 			chai.request (server)
@@ -170,6 +169,11 @@ xdescribe ('Check-in', function (){
 					done ();
 				});		
 		});
+	});
+
+	xdescribe ('Check-in exception', function (){
+		it ('Return correct total and usage when using combo')
+		it ('Update correct remain of combo when used in checkout')
 	});
 
 	xdescribe ('Edit checked-in', function (){

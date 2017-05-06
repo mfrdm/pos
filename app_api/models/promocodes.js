@@ -10,6 +10,13 @@ var redeem = function (code, val){
 	}
 }
 
+// not actually code. But discount when meet condition, checked programmatically
+var discount = function (code, val){
+	if (code.toLowerCase () === 'sinhvien'){
+
+	}
+}
+
 var promocodesSchema = mongoose.Schema ({
 	name: {type: String, required: true},
 	start: {type: Date, required: true},

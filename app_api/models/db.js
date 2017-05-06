@@ -29,3 +29,5 @@ require('./bookings');
 require('./assets');
 require('./promocodes');
 require('./attendances');
+require('./combos');
+require('./comboOrders');

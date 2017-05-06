@@ -6,7 +6,7 @@ var eduSchema = new mongoose.Schema({
 	school: {type: String, required: true},
 	title: {type: String, required: true}, // master, graduate, 
 	start: {type: Date, required: true},
-	end: {type: Date, required: true} 
+	end: {type: Date, required: true}, // max = start + 6 years
 });	
 
 var combosSchema = new mongoose.Schema ({
@@ -25,7 +25,7 @@ var customersSchema = mongoose.Schema({
 	lastname: {type:String, required: true},
 	gender: {type: Number, required: true},
 	birthday: {type: Date, required: true},
-	phone: [{type: String, required: true}],
+	phone: [{type: String}],
 	email: [{type: String}], // manuallt required in some cases
 	edu: [eduSchema],
 	createdAt: {type: Date, default: Date.now},

@@ -1,5 +1,5 @@
 var mongoose = require ('mongoose');
-var Combos = require ('combos');
+var Combos = mongoose.model ('combos');
 
 module.exports = new CombosCtrl();
 
