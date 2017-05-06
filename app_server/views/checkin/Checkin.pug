@@ -57,7 +57,7 @@ div(class="columns row")
 				form(ng-submit="vm.ctrl.checkin ()" confirm-submit = "Are you sure to check")
 					div(class="row column")
 						label Promotion Code
-							input(type='text' ng-model='vm.model.customer.checkingInData.promoteCode')
+							input(type='text' ng-model='vm.model.customer.checkingInData.promocodes')
 					div(class="row column")
 						label Service
 							select(name="selectedService" ng-model="vm.model.customer.checkingInData.orderline[0].productName" ng-options="val for val in vm.model.customer.serviceNames.slice(0,2)")

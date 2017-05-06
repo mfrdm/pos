@@ -13,6 +13,7 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 	}
 	vm.ctrl.toProfile = function(index){
 		vm.tab = 'tab-profile';
+
 	}
 	vm.ctrl.toEdit = function(index){
 		vm.tab = 'tab-edit';
@@ -20,96 +21,22 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 		vm.model.customer.editProfile.phone.map(function(ele){
 			ele =  parseInt(ele)
 		})
+		// vm.model.customer.editProfile.edu.title = vm.model.customer.selectCustomerTitleConvert[vm.model.customer.profile.edu[0].title];
 	}
 	////////////////////////////////////////////////////////
 	vm.model.customer = {};//Anything about customer
 	vm.model.dom = {};//Anything about DOM
 	vm.model.search = {};//Anything about Search
 
+	vm.model.customer.selectCustomerTitleConvert = {
+		1: 'Undergraduate',
+		2: 'Graduate',
+		3: 'Doctorate'
+	}
+
 	vm.model.customer.newCustomerData = {}//Model contain info to create new customer
 	vm.model.form = {}//Anything about form data
 	vm.model.sorting = {}//Model for sorting a list search result
-	vm.model.form.newCustomerData = [
-		{
-			label:'First Name',
-			type: 'text',
-			model:'firstname',
-			require: 'true',
-			min:''
-		},
-		{
-			label:'Middle Name',
-			type: 'text',
-			model:'middlename',
-			require: 'false',
-		},
-		{
-			label:'Last Name',
-			type: 'text',
-			model:'lastname',
-			require: 'true',
-		},
-		{
-			label:'Gender',
-			model:'gender',
-			require: 'true',
-			options:{
-				1: 'Male',
-				2: 'Female',
-				3: 'Others'
-			}
-		},
-		{
-			label:'Birthday',
-			type: 'date',
-			model:'birthday',
-			require: 'true',
-		},
-		{
-			label:'Phone',
-			type: 'number',
-			model:'phone',
-			require: 'true',
-			min: 0
-		},
-		{
-			label:'Email',
-			type: 'email',
-			model:'email',
-			require: 'false',
-		},
-		{
-			label:'School/ University',
-			type: 'text',
-			model:'edu.school',
-			require: 'true',
-		},
-		{
-			label:'Title in School/University',
-			type: 'text',
-			model:'edu.title',
-			require: 'true',
-		},
-		{
-			label:'Start at University',
-			type: 'date',
-			model:'edu.start',
-			require: 'true',
-		},
-		{
-			label:'End at University',
-			type: 'date',
-			model:'edu.end',
-			require: 'true',
-		},
-		{
-			label:'Promotion Code',
-			type: 'text',
-			model:'promoteCode.code',
-			require: 'false',
-		},
-	]
-
 
 	vm.model.dom.customerSearchResultDiv = false;
 	vm.model.dom.CreateCustomerDiv = false;
@@ -126,7 +53,6 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 
 		customerService.search(vm.model.search.input)
 		.then(function success(res){
-			console.log(res)
 			vm.model.search.customerList = res.data.data;
 			vm.model.dom.customerSearchResultDiv = true;
 			//Go to view one customer
@@ -135,6 +61,7 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 				customerService.readOne(vm.model.search.customerList[index]._id)
 					.then(function success(res){
 						vm.model.customer.profile = res.data.data
+						console.log(vm.model.customer.profile)
 					})
 			}
 		}, function error(err){
@@ -147,9 +74,14 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 	vm.ctrl.createNewCustomer = function(){
 		customerService.createOne(vm.model.customer.newCustomerData)
 			.then(function success(res){
-				console.log(res)
-				$scope.layout.currentCustomer = res.data.data;
-				$window.location.href = '/#!/checkin'
+				if(res.status == 201){
+					$window.alert('Create new customer successfully')
+					$scope.layout.currentCustomer = res.data.data;
+					$window.location.href = '/#!/checkin'
+				}else{
+					$window.alert('Failed when creating new customer, please check')
+				}
+				
 			}, function error(err){
 				console.log(err)
 			})
@@ -160,9 +92,11 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 		var data={
 			$set:{
 				lastname:vm.model.customer.editProfile.lastname,
-				firstname:vm.model.customer.editProfile.firstname
-			},
-			$push:{
+				middlename:vm.model.customer.editProfile.lastname,
+				firstname:vm.model.customer.editProfile.firstname,
+				edu:{
+					school: vm.model.customer.editProfile.edu[0].school
+				},
 				email:vm.model.customer.editProfile.email[0],
 				phone: vm.model.customer.editProfile.phone[0]
 			}

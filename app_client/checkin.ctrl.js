@@ -26,7 +26,12 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	vm.model.customer.storeId = '58fdc7e1fc13ae0e8700008a';
 	vm.model.customer.userId = '58eb474538671b4224745192'; // staff
 	// END
-
+	CheckinService.readSomeProducts()
+		.then(function success(res){
+			console.log(res)
+		}, function error(err){
+			console.log(err)
+		})
 	vm.model.customer.services = { // FIX: no hardcode
 		//Services pull from Products model
 		'Private': {
@@ -163,18 +168,18 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	}
 
 	//Get total money
-	vm.ctrl.getTotal = function (orderline) {
-		var total = 0;
-		var orderNum = orderline.length;
-		var items =  {};
-		Object.assign (items, vm.model.customer.services, vm.model.customer.otherItems);
-		for (var i = 0; i < orderNum; i++) {
-			if (orderline [i].productName) {
-				total += (items [orderline [i].productName].price * orderline [i].quantity);
-			}
-		}
-		return total;
-	};
+	// vm.ctrl.getTotal = function (orderline) {
+	// 	var total = 0;
+	// 	var orderNum = orderline.length;
+	// 	var items =  {};
+	// 	Object.assign (items, vm.model.customer.services, vm.model.customer.otherItems);
+	// 	for (var i = 0; i < orderNum; i++) {
+	// 		if (orderline [i].productName) {
+	// 			total += (items [orderline [i].productName].price * orderline [i].quantity);
+	// 		}
+	// 	}
+	// 	return total;
+	// };
 
 	//Toogle Filter Div
 	vm.ctrl.toggleFilterDiv = function (){
@@ -184,7 +189,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	if($scope.layout.currentCustomer){
 		vm.model.dom.checkInDiv = true;
 		vm.model.customer.checkingInData = getCheckinCurrentCreatedCus();
-		vm.model.search.username = $scope.layout.currentCustomer.lastname +' '+ $scope.layout.currentCustomer.firstname + ' / ' +$scope.layout.currentCustomer.email[0]
+		vm.model.search.username = $scope.layout.currentCustomer.lastname +' '+ ($scope.layout.currentCustomer.middlename ? $scope.layout.currentCustomer.middlename : '') + ' '+ $scope.layout.currentCustomer.firstname + ($scope.layout.currentCustomer.email[0] ? '/' + $scope.layout.currentCustomer.email[0]:'')
 	}
 
 	//When select one service, options will reduce
@@ -215,11 +220,18 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		// vm.model.customer.checkingInData.orderline.splice(index)
 
 	}
-	vm.model.customer.checkingInData.promoteCode = ['1234', '12312']
+	vm.model.customer.checkingInData.promocodes = []
 	vm.ctrl.checkin = function(){
 		// before checkin
-
-		vm.model.customer.checkingInData.total = vm.ctrl.getTotal (vm.model.customer.checkingInData.orderline);
+		if(vm.model.customer.checkingInData.promocodes.length > 0){
+			if(typeof vm.model.customer.checkingInData.promocodes == 'string'){
+				vm.model.customer.checkingInData.promocodes = vm.model.customer.checkingInData.promocodes.split(/[ .:;?!~,`"&|()<>{}\[\]\r\n/\\]+/)
+			}
+			
+			vm.model.customer.checkingInData.promocodes = vm.model.customer.checkingInData.promocodes.map(function(ele){
+				return {name:ele}
+			})
+		}
 		vm.model.customer.checkingInData.storeId = vm.model.customer.storeId;
 		vm.model.customer.checkingInData.staffId = vm.model.customer.userId;
 
@@ -233,24 +245,22 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		vm.model.customer.checkingInData.orderline = vm.model.customer.checkingInData.orderline.filter(function(ele){
 			return ele.productName != ''
 		})
-		if(typeof vm.model.customer.checkingInData.promoteCode == 'string'){
-			vm.model.customer.checkingInData.promoteCode = vm.model.customer.checkingInData.promoteCode.split(/[ .:;?!~,`"&|()<>{}\[\]\r\n/\\]+/)
-		}
 		
-		console.log(vm.model.customer.checkingInData.promoteCode)
 
-		// CheckinService.createOne (vm.model.customer.checkingInData.customer.id, vm.model.customer.checkingInData).then(
-		// 	function success(data){
-		// 		console.log (data.data)
-		// 		vm.model.customer.checkedInList.push (data.data.data.orderData);
-		// 		// vm.toggleCheckInDiv ();
-		// 		//vm.status.checkedin = true;
-		// 	}, 
-		// 	function error(err){
-		// 		console.log(err);
-		// 		//vm.status.checkedin = false;
-		// 	}
-		// );
+		console.log(vm.model.customer.checkingInData)
+		CheckinService.createOne (vm.model.customer.checkingInData.customer.id, vm.model.customer.checkingInData).then(
+			function success(data){
+				console.log (data.data)
+				vm.model.customer.checkedInList.push (data.data.data.orderData);
+				// vm.toggleCheckInDiv ();
+				//vm.status.checkedin = true;
+			}, 
+			function error(err){
+				console.log(err);
+				$window.alert('Something wrong, please check it')
+				//vm.status.checkedin = false;
+			}
+		);
 	}
 
 	//Toggle Ctrl
@@ -290,12 +300,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			vm.model.dom.checkInListDiv = true;
 			vm.model.customer.editedCheckedInCustomer = {}; // reset
 		}
-		else{ // turn on
-			// turn off checkin list div
-			// turn on edit div
-			// make a deep copy of the data
-			// load data to the edit div
-			// other tasks
+		else{
 			vm.model.customer.editedCheckedInCustomer = vm.model.customer.checkedInList[index];
 			vm.model.customer.editedCheckedInCustomer.orderline.map (function (x, i, arr){
 				x.quantity = parseInt (x.quantity);

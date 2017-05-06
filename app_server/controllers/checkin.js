@@ -13,6 +13,7 @@ module.exports = new Checkin();
 function Checkin() {
 	this.checkin = function(req, res, next) {
 		var order = new Orders (req.body.data);
+		console.log(order)
 		if (order.promocodes.length){
 			var codeNames = order.promocodes.map (function (x, i, arr){
 				return x.name;

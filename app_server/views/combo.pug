@@ -1,0 +1,70 @@
+div(class="columns row")
+	div(class="row colums")
+		div(class="column")
+			h2 Combo
+		// Check-in
+		div(class="column")
+			div(class="borderT newBox row column paddingLR15")
+				div(class="row column")
+					form(ng-submit="vm.ctrl.searchCustomers()")
+						div(class="row column")
+							label Phone/Email
+								input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.model.search.username')
+						div(ng-show='vm.model.dom.messageSearchResult' class='marginB15')
+							div(class='callout alert')
+								p No Search Result? Or {{vm.model.search.messageNoResult}}
+									span: a(href='/#!/customers') Create new customer
+						div(ng-show="vm.model.dom.customerSearchResult" class="marginB15")
+							div(class="table-scroll")
+								table(class="hover unstriped borderAll")
+									thead
+										tr
+											th No
+											th Last Name
+											th First Name
+											th Email
+											th Phone				
+									tbody
+										tr(ng-repeat='noti in vm.noties')
+											td {{noti.firstname}}
+											td {{noti.msg}}
+										tr(ng-repeat='result in vm.model.search.userResults' ng-click='vm.ctrl.selectCustomerToGetCombo($index)' class="pointerCursor")
+											td {{ $index + 1 }}
+											td {{ result.lastname }}
+											td {{ result.firstname }}
+											td {{ result.email[0] }}
+											td {{ result.phone[0] }}
+				
+				form(ng-submit="vm.ctrl.combo ()" confirm-submit = "Are you sure to check")
+					
+					div(class='row column' ng-show='vm.model.dom.selected')
+						label Selected Combo
+							table
+								thead
+									tr
+										th Combo Name
+										th Product
+										th Quantity
+										th Delete
+								tbody
+									tr(ng-repeat='combo in vm.model.combo.selected')
+										td {{combo.value}}
+										td {{combo.product.name}}
+										td {{combo.quantity}}
+										td
+											input(class="button alert marginB0" type="submit" value="Delete" ng-click='vm.ctrl.deleteCombo($index); $event.preventDefault()')
+					div(class="row column")
+						div(class="column small-6 paddingL0")
+							label Select Combo - Value
+								select( ng-model="vm.model.combo.add.value" ng-options="val for val in vm.model.combo.listOptions.value")
+						div(class="column small-6 paddingL0")
+							label Select Combo - Room
+								select( ng-model="vm.model.combo.add.room" ng-options="val for val in vm.model.combo.listOptions.room")
+						div(class="column small-5 paddingL0")
+							label Quantity
+								input( ng-model="vm.model.combo.add.quantity" string-to-number type="number" min='0')
+						div(class="column small-1 paddingR0 paddingT30 marginB0 text-center")
+							input(class="button marginB0" type="submit" value="Add" ng-click='vm.ctrl.addCombo(); $event.preventDefault()')
+					div(class="row column")
+						input(class="button" type="submit" value="Submit")
+		

@@ -23,7 +23,6 @@ var productsCtrl = require("../controllers/products");
 var promoCodesCtrl = require ('../controllers/promoCodes.ctrl')
 var combosCtrl = require ('../controllers/combos.ctrl');
 
-
 router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
 router.get('/auth/google/callback', 
 	passport.authenticate(
@@ -58,6 +57,8 @@ router.get('/hr', hrCtrl.readOverview);
 router.get('/hr/employees/employee/:uId', hrCtrl.readOneUser);
 router.post('/hr/employees/employee/:uId/edit', hrCtrl.editOneUser);
 router.get('/angular/employees', hrCtrl.readAngularEmployees);
+
+router.get('/angular/combo', combosCtrl.readAngularCombo);
 
 // router.get('/bi', biCtrl.readReport);
 

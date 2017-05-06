@@ -7,4 +7,8 @@ function CombosCtrl() {
 	this.purchaseCombos = function (){
 		
 	}
+
+	this.readAngularCombo = function(req, res){
+		helper.angularRender( req, res,'combo')
+	}
 }
