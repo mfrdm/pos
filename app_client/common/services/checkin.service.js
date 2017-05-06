@@ -67,7 +67,7 @@ function CheckinService ($http, $q){
 	this.createOne = function (userId, data) {
 		return $http({
 			method:'POST',
-			url:'/checkin/' + userId,
+			url:'/checkin/customer/' + userId,
 			data: JSON.stringify({data: data}),
 		});
 		// return $q.resolve({data: data})

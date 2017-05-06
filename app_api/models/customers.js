@@ -3,10 +3,10 @@ var crypto = require('crypto');
 var jwt = require('jsonwebtoken');
 
 var eduSchema = new mongoose.Schema({
-	school: {type: String, required: true},
-	title: {type: String, required: true}, // master, graduate, 
-	start: {type: Date, required: true},
-	end: {type: Date, required: true}, // max = start + 6 years
+	school: {type: String},
+	title: {type: String}, // master, graduate, 
+	start: {type: Date},
+	end: {type: Date}, // max = start + 6 years
 });	
 
 var combosSchema = new mongoose.Schema ({

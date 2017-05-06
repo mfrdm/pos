@@ -184,7 +184,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	if($scope.layout.currentCustomer){
 		vm.model.dom.checkInDiv = true;
 		vm.model.customer.checkingInData = getCheckinCurrentCreatedCus();
-		vm.model.search.username = $scope.layout.currentCustomer.lastname +' '+ $scope.layout.currentCustomer.firstname + ' / ' +$scope.layout.currentCustomer.email[0]
+		vm.model.search.username = $scope.layout.currentCustomer.lastname +' '+ ($scope.layout.currentCustomer.middlename ? $scope.layout.currentCustomer.middlename : '') + ' '+ $scope.layout.currentCustomer.firstname + ($scope.layout.currentCustomer.email[0] ? '/' + $scope.layout.currentCustomer.email[0]:'')
 	}
 
 	//When select one service, options will reduce
@@ -215,7 +215,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		// vm.model.customer.checkingInData.orderline.splice(index)
 
 	}
-	vm.model.customer.checkingInData.promoteCode = ['1234', '12312']
+	vm.model.customer.checkingInData.promocodes = []
 	vm.ctrl.checkin = function(){
 		// before checkin
 
@@ -233,24 +233,22 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		vm.model.customer.checkingInData.orderline = vm.model.customer.checkingInData.orderline.filter(function(ele){
 			return ele.productName != ''
 		})
-		if(typeof vm.model.customer.checkingInData.promoteCode == 'string'){
-			vm.model.customer.checkingInData.promoteCode = vm.model.customer.checkingInData.promoteCode.split(/[ .:;?!~,`"&|()<>{}\[\]\r\n/\\]+/)
+		if(typeof vm.model.customer.checkingInData.promocodes == 'string'){
+			vm.model.customer.checkingInData.promocodes = vm.model.customer.checkingInData.promocodes.split(/[ .:;?!~,`"&|()<>{}\[\]\r\n/\\]+/)
 		}
 		
-		console.log(vm.model.customer.checkingInData.promoteCode)
-
-		// CheckinService.createOne (vm.model.customer.checkingInData.customer.id, vm.model.customer.checkingInData).then(
-		// 	function success(data){
-		// 		console.log (data.data)
-		// 		vm.model.customer.checkedInList.push (data.data.data.orderData);
-		// 		// vm.toggleCheckInDiv ();
-		// 		//vm.status.checkedin = true;
-		// 	}, 
-		// 	function error(err){
-		// 		console.log(err);
-		// 		//vm.status.checkedin = false;
-		// 	}
-		// );
+		CheckinService.createOne (vm.model.customer.checkingInData.customer.id, vm.model.customer.checkingInData).then(
+			function success(data){
+				console.log (data.data)
+				vm.model.customer.checkedInList.push (data.data.data.orderData);
+				// vm.toggleCheckInDiv ();
+				//vm.status.checkedin = true;
+			}, 
+			function error(err){
+				console.log(err);
+				//vm.status.checkedin = false;
+			}
+		);
 	}
 
 	//Toggle Ctrl
