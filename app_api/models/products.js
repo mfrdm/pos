@@ -5,12 +5,12 @@ var productsSchema = mongoose.Schema({
 	price: {type:Number},
 	category: Number,
 	createdAt: {type: Date, default: Date.now},
-	updateAt: {
+	updateAt: [{
 		time: Date,
 		explain: String, 
 		by: mongoose.Schema.Types.ObjectId,
-	},
-	compId: mongoose.Schema.Types.ObjectId
+	}],
+	compId: mongoose.Schema.Types.ObjectId, // should be mixed. Can be products of other companies
 });
 
 mongoose.model ('products', productsSchema);
