@@ -28,16 +28,16 @@ div(ng-switch='vm.tab')
 					form(class="borderT newBox row column" ng-submit='vm.ctrl.createNewCustomer()' confirm-submit ='Are you sure to Create New Customer')
 						ul(class="menu vertical row column")
 							li(class="marginB15")
-								div(class="column small-3 paddingL0" ng-repeat='item in vm.model.form.newCustomerData.slice(0,3)')
+								div(class="column small-12 paddingL0" ng-repeat='item in vm.model.form.newCustomerData.slice(0,3)')
 									label {{item.label}}
 										input(type="{{item.type}}" ng-model='vm.model.customer.newCustomerData[item.model]' ng-required="{{item.require}}" min='{{item.min}}' max='{{item.max}}')
-								div(class="column small-3 paddingL0" ng-repeat='item in vm.model.form.newCustomerData.slice(3,4)')
+								div(class="column small-12 paddingL0" ng-repeat='item in vm.model.form.newCustomerData.slice(3,4)')
 									label {{item.label}}
 										select(ng-model='vm.model.customer.newCustomerData[item.model]' ng-required="{{item.require}}" ng-options="key as value for (key , value) in {{item.options}}")
 											option
-								div(class="column small-3 paddingL0" ng-repeat='item in vm.model.form.newCustomerData.slice(4)')
+								div(class="column small-12 paddingL0" ng-repeat='item in vm.model.form.newCustomerData.slice(4)')
 									label {{item.label}}
-										input(type="{{item.type}}" ng-model='vm.model.customer.newCustomerData[item.model]' ng-required="{{item.require}}" min='{{item.min}}' max='{{item.max}}')
+										input(type="{{item.type}}" ng-model='vm.model.customer.newCustomerData[item.model]' ng-required="{{item.require}}" min='{{item.min}}' max='{{item.max}}' pattern='{{item.pattern}}')
 						div(class="row column paddingT15")
 							input(class="button" type="submit" value="Submit")
 				div(class="column")

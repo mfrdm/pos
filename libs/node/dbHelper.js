@@ -92,6 +92,7 @@ module.exports = new function (){
 
 	this.findSome = function(req, res, Model, next) {
 		try{
+			console.log(req.query.queryInput)
 			var queryInput = req.query.queryInput ? JSON.parse (req.query.queryInput) : {conditions: null, projection: null, opts: null}; // queyInput is a js object being stringified
 			var query = Model.find(queryInput.conditions, queryInput.projection, queryInput.opts);
 			requestHelper.stdExec (res, query, next);

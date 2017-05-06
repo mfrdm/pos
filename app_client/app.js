@@ -75,6 +75,11 @@ function config ($locationProvider, $routeProvider){
 			controller: "BookingCtrl",
 			controllerAs: 'vm'
 		})
+		.when('/combo', {
+			templateUrl: "/angular/combo",
+			controller: "ComboCtrl",
+			controllerAs: 'vm'
+		})
 		.when ('/error', {
 			templateUrl: "/error",
 			controller: "ErrorCtrl",

@@ -21,6 +21,7 @@ var othersCtrl = require("../controllers/others");
 var deptsCtrl = require("../controllers/depts");
 var productsCtrl = require("../controllers/products");
 var promoCodesCtrl = require ('../controllers/promoCodes.ctrl')
+var comboCtrl = require ('../controllers/combo')
 
 router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
 router.get('/auth/google/callback', 
@@ -55,6 +56,8 @@ router.get('/hr', hrCtrl.readOverview);
 router.get('/hr/employees/employee/:uId', hrCtrl.readOneUser);
 router.post('/hr/employees/employee/:uId/edit', hrCtrl.editOneUser);
 router.get('/angular/employees', hrCtrl.readAngularEmployees);
+
+router.get('/angular/combo', comboCtrl.readAngularCombo);
 
 // router.get('/bi', biCtrl.readReport);
 

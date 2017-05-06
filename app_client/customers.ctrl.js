@@ -31,11 +31,10 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 	vm.model.sorting = {}//Model for sorting a list search result
 	vm.model.form.newCustomerData = [
 		{
-			label:'First Name',
+			label:'Last Name',
 			type: 'text',
-			model:'firstname',
+			model:'lastname',
 			require: 'true',
-			min:''
 		},
 		{
 			label:'Middle Name',
@@ -44,10 +43,11 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 			require: 'false',
 		},
 		{
-			label:'Last Name',
+			label:'First Name',
 			type: 'text',
-			model:'lastname',
+			model:'firstname',
 			require: 'true',
+			min:''
 		},
 		{
 			label:'Gender',
@@ -64,6 +64,7 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 			type: 'date',
 			model:'birthday',
 			require: 'true',
+			pattern: '[0-9]{4}-[0-9]{2}-[0-9]{2}'
 		},
 		{
 			label:'Phone',
@@ -85,7 +86,7 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 			require: 'true',
 		},
 		{
-			label:'Title in School/University',
+			label:'Title in School/University (Student/Master/...)',
 			type: 'text',
 			model:'edu.title',
 			require: 'true',
