@@ -10,7 +10,7 @@ var ordersSchema = new mongoose.Schema({
 	total: {type: Number, get: getTotal, min: 0},
 	promoteCode: [{type: String}], // expect only one code applied at a time
 	orderline: [{
-		id: {type: mongoose.Schema.Types.ObjectId, required: true},
+		// id: {type: mongoose.Schema.Types.ObjectId, required: true},
 		productName: {type: String, required: true},
 		quantity: {type: String, default: 1, required: true}
 	}],

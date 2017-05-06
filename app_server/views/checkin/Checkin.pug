@@ -64,12 +64,12 @@ div(class="columns row")
 								div(class="column row")
 									div(class="column small-6 paddingL0")
 										label Other items
-											select( ng-model="item.productName" ng-options="val for val in vm.model.customer.serviceNames")
+											select( ng-model="item.productName" ng-options="val for val in vm.model.customer.serviceNames.slice(3)")
 									div(class="column small-5 paddingL0")
 										label Quantity
 											input( ng-model="item.quantity" string-to-number type="number" min='0')
 									div(class="column small-1 paddingR0 text-center")
-										i(class="material-icons pointerCursor" ng-click='vm.ctrl.closeAnItem($index+1)') close
+										i(class="material-icons pointerCursor" ng-click='vm.ctrl.closeAnItem($index+1, "checkInDiv")') close
 						div(class="marginB15")
 							a(ng-click="vm.ctrl.addMoreOtherItems ('checkingInDiv')") Add more items
 					div(class="row column")
@@ -112,30 +112,30 @@ div(class="columns row")
 							label(for="serviceTypeCommon") Common
 		
 		// Edit check-in
-		//div(class="column" ng-show="vm.look.checkInEditDiv")
+		div(class="column" ng-show="vm.model.dom.checkInEditDiv")
 			div(class="newBox")
-				h3 Edit checked-in customer: {{ vm.data.editedCheckedInCustomer.username}}
+				h3 Edit checked-in customer: {{ vm.model.customer.editedCheckedInCustomer.username}}
 				form
 					div(class="row column")
 						label Service
-							select(name="selectedService" ng-model="vm.data.editedCheckedInCustomer.orderline[0].productName" ng-options="val for val in vm.data.serviceNames")
+							select(name="selectedService" ng-model="vm.model.customer.editedCheckedInCustomer.orderline[0].productName" ng-options="val for val in vm.model.customer.serviceNames.slice(0,2)")
 					div(class="row column")
-						ul(class="menu vertical")
-							li(ng-repeat="item in vm.data.editedCheckedInCustomer.orderline.slice(1)" class="marginB15")
+						ul(class="menu vertical listOrder")
+							li(ng-repeat="item in vm.model.customer.editedCheckedInCustomer.orderline.slice(1)" class="marginB15")
 								div(class="column row")
 									div(class="column small-6 paddingL0")
 										label Other items
-											select(name="{{ 'selectedOtherItem' + ($index + 1)}}" ng-model="item.productName" ng-options="val for val in vm.data.otherItemNames")
-									div(class="column small-6 paddingR0")
+											select( ng-model="item.productName" ng-options="val for val in vm.model.customer.serviceNames.slice(2)")
+									div(class="column small-5 paddingR0")
 										label Quantity
-											input(name="{{ 'otherItemQuantity' + ($index + 1)}}" ng-model="item.quantity" string-to-number type="number" value="{{ item.quantity }}")
+											input(ng-model="item.quantity" string-to-number type="number" value="{{ item.quantity }}" min='0')
+									div(class="column small-1 paddingR0 text-center")
+										i(class="material-icons pointerCursor" ng-click='vm.ctrl.closeAnItem($index+1, "editedCheckedInDiv")') close
 						div(class="marginB15")
-							a(ng-click="vm.addMoreOtherItems ('editedCheckedInDiv')") Add more items
+							a(ng-click="vm.ctrl.addMoreOtherItems ('editedCheckedInDiv')") Add more items
 					div(class="row column")
-						input(class="button" type="submit" value="Submit" ng-click="vm.updateCheckin ()")
-						button(class="button float-right" ng-click="vm.toggleCheckInEditDiv()") Cancel
-
-
+						input(class="button" type="submit" value="Submit" ng-click="vm.ctrl.updateCheckin ()")
+						button(class="button float-right" ng-click="vm.ctrl.reload()") Cancel
 		// Check-in list
 		div(class="column" ng-show="vm.model.dom.checkInListDiv")
 			div(class="table-scroll newBox")
@@ -159,6 +159,50 @@ div(class="columns row")
 							td {{ customer.checkinTime | date: 'shortTime' }}
 							td {{ customer.orderline[0].productName	}}
 							td
-								button(type="button" class="warning button" ng-click="vm.ctrl.dom.toggleCheckInEditDiv ($index)") Checkout
+								button(type="button" class="warning button" ng-click="vm.ctrl.toggleCheckOutDiv ($index)") Checkout
 							td
-								button(type="button" class="alert button" ng-click="vm.ctrl.dom.toggleCheckInEditDiv ($index)") Edit
+								button(type="button" class="alert button" ng-click="vm.ctrl.toggleCheckInEditDiv ($index)") Edit
+
+//Invoice
+div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
+	div(class='row column paddingT45')
+		div(class="row column small-6 text-center small-push-3")
+			h2 Invoice for {{vm.model.customer.checkoutCustomer.customer.lastname}} {{vm.model.customer.checkoutCustomer.customer.firstname}}
+		// Profile
+		div(class="row column small-6 small-push-3")
+			div(class="borderT newBox row column")
+				table(class="striped borderAll")
+					thead
+						tr
+							th(class='text-center') Fields
+							th(class='text-center') Information
+					tbody
+						tr
+							td(class='text-center') Lastname
+							td(class='text-center') {{ vm.model.customer.checkoutCustomer.customer.lastname}}
+						tr
+							td(class='text-center') Firstname
+							td(class='text-center') {{ vm.model.customer.checkoutCustomer.customer.firstname}}
+						tr
+							td(class='text-center') Phone
+							td(class='text-center') {{ vm.model.customer.checkoutCustomer.customer.phone}}
+						tr
+
+							td(class='text-center') Checkin Date
+							td(class='text-center') {{ vm.model.customer.checkoutCustomer.checkinTime | date:'dd/MM/yyyy'}}
+						tr
+
+							td(class='text-center') Checkin Time
+							td(class='text-center') {{ vm.model.customer.checkoutCustomer.checkinTime | date:'shortTime'}}
+						tr(ng-repeat='service in vm.model.customer.checkoutCustomer.orderline')
+							td(class='text-center') Service
+							td(class='text-center') {{ service.productName}}
+						tr
+
+							td(class='text-center') Total Money
+							td(class='text-center') {{ vm.model.customer.checkoutCustomer.total}}
+			div(class="row column")
+				div(class='column small-12 paddingLR0')
+					input(class="button success" type="submit" value="Confirm" ng-click='vm.ctrl.confirmCheckout()')
+					button(class="button float-right" ng-click='vm.ctrl.reload()') Cancel
+	

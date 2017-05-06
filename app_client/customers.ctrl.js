@@ -13,8 +13,12 @@ var CustomerCtrl = function(customerService, $route, $window){
 	vm.ctrl.toProfile = function(index){
 		vm.tab = 'tab-profile';
 	}
-	vm.ctrl.toEdit = function(){
+	vm.ctrl.toEdit = function(index){
 		vm.tab = 'tab-edit';
+		vm.model.customer.editProfile = angular.copy(vm.model.customer.profile)
+		vm.model.customer.editProfile.phone.map(function(ele){
+			ele =  parseInt(ele)
+		})
 	}
 	////////////////////////////////////////////////////////
 	vm.model.customer = {};//Anything about customer
@@ -63,7 +67,7 @@ var CustomerCtrl = function(customerService, $route, $window){
 		{
 			label:'Phone',
 			type: 'number',
-			model:'phone[0]',
+			model:'phone',
 			require: 'true',
 			min: 0
 		},
@@ -100,7 +104,7 @@ var CustomerCtrl = function(customerService, $route, $window){
 		{
 			label:'Promotion Code',
 			type: 'text',
-			model:'promoteCode[0]',
+			model:'promoteCode.code',
 			require: 'false',
 		},
 	]
@@ -151,16 +155,20 @@ var CustomerCtrl = function(customerService, $route, $window){
 	////////////////////////////////////////////////////////
 	//Edit Page
 	vm.ctrl.saveEdit = function(){
-		vm.customerData = {}
-		
-		vm.model.dom.fields.map(function(field){
-			vm.customerData[field] = vm.customer.info[field]
-		})
-		vm.data={
-			$set:vm.customerData
+		var data={
+			$set:{
+				lastname:vm.model.customer.editProfile.lastname,
+				firstname:vm.model.customer.editProfile.firstname
+			},
+			$push:{
+				email:vm.model.customer.editProfile.email[0],
+				phone: vm.model.customer.editProfile.phone[0]
+			}
 		}
 
-		customerService.updateOne(vm.customer.info._id, vm.data)
+		console.log(data)
+
+		customerService.updateOne(vm.model.customer.editProfile._id, data)
 			.then(function success(res){
 				console.log(res)
 				$route.reload()

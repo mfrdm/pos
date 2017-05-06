@@ -1,123 +1,9 @@
 angular.module('posApp')
-	.controller('CheckinCtrl', ['$scope', 'CheckinService', CheckinCtrl])
+	.controller('CheckinCtrl', ['$scope', '$window','$route','CheckinService', CheckinCtrl])
 
 //Get data to render all current checked in customers
-function CheckinCtrl ($scope, CheckinService){
+function CheckinCtrl ($scope, $window, $route, CheckinService){
 	var vm = this;
-	// vm.look = {};
-	// vm.data = {}; // other data
-	// vm.status = {};
-
-	// vm.searchResult = {};
-	// vm.look.searchCheckingInCustomerResultDiv = false;
-	// vm.look.searchEditedCustomerResultDiv = false;
-	// vm.look.checkInListDiv = true;
-	// vm.look.checkInEditDiv = false;
-	// vm.look.checkInDiv = false;
-
-	// // WAIT
-	// vm.removeOtherItems = function (index, which){
-	// 	if (which == 'checkingInDiv'){
-	// 		if (vm.model.customer.checkingInData.orderline.length == 1){
-	// 			// do nothing & send message that cannot remove when there is only one item
-	// 		}
-	// 		else {
-	// 			vm.model.customer.checkingInData.orderline.splice (index, 1);
-	// 		}
-	// 	}
-	// 	else if (which === 'editCheckedInDiv'){
-
-	// 	}
-
-	// };
-
-	// vm.toggleCheckInDiv = function (){
-	// 	if (!vm.look.checkInDiv){
-	// 		vm.look.checkInDiv = true;
-	// 	}
-	// 	else{
-	// 		vm.look.checkInDiv = false;
-	// 		vm.model.customer.checkingInData = getDefaultCheckInData ();
-	// 	}
-	// };
-
-	// vm.toggleCheckInEditDiv = function (index) {
-	// 	if (vm.look.checkInEditDiv){ // turn off
-	// 		vm.look.checkInEditDiv = false;
-	// 		vm.look.checkInListDiv = true;
-	// 		vm.data.editedCheckedInCustomer = {}; // reset
-	// 	}
-	// 	else{ // turn on
-	// 		// turn off checkin list div
-	// 		// turn on edit div
-	// 		// make a deep copy of the data
-	// 		// load data to the edit div
-	// 		// other tasks
-
-	// 		vm.data.editedCheckedInCustomer = JSON.parse(JSON.stringify(vm.data.checkedInList [index]));
-	// 		vm.data.editedCheckedInCustomer.orderline.map (function (x, i, arr){
-	// 			x.quantity = parseInt (x.quantity);
-	// 		});
-
-	// 		vm.data.editedCheckedInCustomer.username = vm.data.editedCheckedInCustomer.customer.lastname + ' ' + vm.data.editedCheckedInCustomer.customer.firstname + '/ ' + vm.data.editedCheckedInCustomer.customer.phone + '/ ' + (vm.data.editedCheckedInCustomer.customer.email ? vm.data.editedCheckedInCustomer.customer.email : '');
-
-	// 		if (vm.data.editedCheckedInCustomer.orderline.length == 1){
-	// 			vm.data.editedCheckedInCustomer.orderline.push (getDefaultProduct());
-	// 		}
-
-	// 		vm.look.checkInEditDiv = true;
-	// 		vm.look.checkInListDiv = false;
-	// 		vm.data.currCheckedInIndex = index;
-	// 	}
-	// };
-
-
-	////////////////////////////////////////////////////////
-	//Checkout Page
-	// vm.checkout = function(){
-	// 	vm.outTime = new Date();
-	// 	CheckinService.postCheckOut(vm.oneOrder._id)
-	// 		.then(function success(res){
-	// 			vm.tab = 'tab-search';
-	// 			$route.reload();
-	// 		}, function error(err){
-	// 			console.log(err);
-	// 		})
-	// };
-
-
-	// FIX: later send request to server to calculate the total. Can still use it when offline
-
-
-	// vm.updateCheckin = function(){
-	// 	var id = vm.data.editedCheckedInCustomer._id;
-
-	// 	// validate
-	// 	vm.data.editedCheckedInCustomer.orderline.map (function (x, i, arr){
-	// 		if (x.quantity <= 0){
-	// 			arr.splice (i, 1);
-	// 		}
-	// 	});
-
-	// 	CheckinService.updateOne (id, vm.data.editedCheckedInCustomer.orderline).then(
-	// 		function (data){
-
-	// 			vm.data.checkedInList[vm.data.currCheckedInIndex].orderline = vm.data.editedCheckedInCustomer.orderline;
-	// 			var message = 'Successfully update checked-in information of customer ' + vm.data.editedCheckedInCustomer.username;
-	// 			$scope.layout.updateMessage (message, 'success');
-	// 			vm.toggleCheckInEditDiv ();
-	// 		},
-	// 		function (err){
-	// 			console.log (err)
-	// 			var message = err;
-	// 			$scope.layout.updateMessage (message, 'alert');
-	// 		}
-	// 	);
-	// };
-
-	//////////////// Initialization ///////////////////////
-	
-	//////////////////////////////////////////////////////////////////
 
 	vm.model = {};
 	vm.ctrl = {};
@@ -133,6 +19,8 @@ function CheckinCtrl ($scope, CheckinService){
 	vm.model.dom.checkInListDiv = true;
 	vm.model.dom.checkInDiv = false;
 	vm.model.dom.filterDiv = false;
+	vm.model.dom.checkInEditDiv = false;
+	vm.model.dom.checkOutDiv = false;
 
 	vm.model.customer = {}//Any thing related to customer
 
@@ -145,27 +33,27 @@ function CheckinCtrl ($scope, CheckinService){
 		//Services pull from Products model
 		'Private': {
 			price: 150000,
-			id: 2312312,
+			// id: '58eb474538671b4224745195',
 		},
 		'Common': {
 			price: 10000,
-			id: 31231,
+			// id: '58eb474538671b4224745198',
 		},
 		'': {
 			price: 0,
-			id: -1,
+			// id: -1,
 		},
 		'Coca Cola': {
 			price: 7000,
-			id: 4233,
+			// id: '58eb474538671b4224745123',
 		},
 		'Poca': {
 			price: 7000,
-			id: 243,
+			// id: '58eb474538671b4224745164',
 		},
 		'Pepsi': {
 			price: 7000,
-			id: 343,
+			// id: '58eb474538671b4224745167',
 		},		
 	};
 	function getDefaultCheckInData (){
@@ -210,9 +98,14 @@ function CheckinCtrl ($scope, CheckinService){
 		}
 	};
 	//Close an item
-	vm.ctrl.closeAnItem = function(index){
-		vm.model.customer.checkingInData.orderline.splice(index, 1)
-		console.log(vm.model.customer.checkingInData.orderline)
+	vm.ctrl.closeAnItem = function(index, which){
+		if(which === 'checkInDiv' && vm.model.dom.checkInDiv){
+			vm.model.customer.checkingInData.orderline.splice(index, 1)
+		}else if(which === 'editedCheckedInDiv'){
+			console.log(vm.model.customer.editedCheckedInCustomer.orderline)
+			vm.model.customer.editedCheckedInCustomer.orderline.splice(index, 1)
+		}
+		
 	}
 
 	vm.ctrl.searchCustomers = function(which) {
@@ -247,7 +140,8 @@ function CheckinCtrl ($scope, CheckinService){
 		}
 
 		vm.model.dom.checkingInCustomerSearchResult = false;
-		vm.model.search.username = vm.model.customer.checkingInData.customer.lastname + ' ' + vm.model.customer.checkingInData.customer.firstname + ' / ' + vm.model.customer.checkingInData.customer.phone + (vm.model.customer.checkingInData.customer.email ? ' / ' + vm.model.customer.checkingInData.customer.email : '');
+		console.log(vm.model.search.userResults[index])
+		vm.model.search.username = vm.model.search.userResults[index].lastname + ' ' + vm.model.search.userResults[index].firstname + ' / ' + vm.model.search.userResults[index].phone[0] + (vm.model.search.userResults[index].email[0] ? ' / ' + vm.model.search.userResults[index].email[0] : '');
 	}
 
 	// vm.ctrl.changeSelected = function(serviceName){
@@ -274,9 +168,9 @@ function CheckinCtrl ($scope, CheckinService){
 			vm.model.customer.checkingInData.orderline.push (getDefaultProduct());
 			console.log(vm.model.customer.checkingInData.orderline)
 		}
-		// else if (which === 'editedCheckedInDiv'){
-		// 	vm.data.editedCheckedInCustomer.orderline.push (getDefaultProduct());
-		// }
+		else if (which === 'editedCheckedInDiv'){
+			vm.model.customer.editedCheckedInCustomer.orderline.push (getDefaultProduct());
+		}
 	};
 
 	vm.ctrl.toggleFilterDiv = function (){
@@ -299,12 +193,35 @@ function CheckinCtrl ($scope, CheckinService){
 			x.id = items [x.productName];
 		});
 
-		console.log(vm.model.customer.checkingInData)
+		var orderlineList = (vm.model.customer.checkingInData.orderline)
+
+		var checkDuplicate = function(){
+			var duplicateValues = []
+			orderlineList.map(function(ele, index){
+				orderlineList.filter(function(val, ind){
+					if(val.productName == ele.productName && index != ind){
+						if(duplicateValues.length>0){
+							duplicateValues.map(function(element){
+								if(val.productName != element){
+									duplicateValues.push(val.productName)
+								}
+							})
+						}else{
+							duplicateValues.push(val.productName)
+						}
+						
+					}
+				});
+			})
+			return duplicateValues;
+		}
 		
-		CheckinService.createOne (vm.model.customer.checkingInData.id, vm.model.customer.checkingInData).then(
+		console.log(checkDuplicate());
+		
+		CheckinService.createOne (vm.model.customer.checkingInData.customer.id, vm.model.customer.checkingInData).then(
 			function success(data){
-				console.log (data)
-				// vm.data.checkedInList.push (data);
+				console.log (data.data.data.orderData)
+				vm.model.customer.checkedInList.push (data.data.data.orderData);
 				// vm.toggleCheckInDiv ();
 				//vm.status.checkedin = true;
 			}, 
@@ -337,6 +254,7 @@ function CheckinCtrl ($scope, CheckinService){
 	CheckinService.getCheckinList (query).then(
 		function success(res){
 			// vm.status.getCheckinList = true;
+			console.log(res.data.data)
 			vm.model.customer.checkedInList = res.data.data;
 		}, 
 		function error(err){
@@ -344,5 +262,58 @@ function CheckinCtrl ($scope, CheckinService){
 			console.log(err)
 		}
 	);
+
+	//Toggle Edit check in
+	vm.ctrl.toggleCheckInEditDiv = function (index) {
+		if (vm.model.dom.checkInEditDiv){ // turn off
+			vm.model.dom.checkInEditDiv = false;
+			vm.model.dom.checkInListDiv = true;
+			vm.model.customer.editedCheckedInCustomer = {}; // reset
+		}
+		else{ // turn on
+			// turn off checkin list div
+			// turn on edit div
+			// make a deep copy of the data
+			// load data to the edit div
+			// other tasks
+			vm.model.customer.editedCheckedInCustomer = vm.model.customer.checkedInList[index];
+			vm.model.customer.editedCheckedInCustomer.orderline.map (function (x, i, arr){
+				x.quantity = parseInt (x.quantity);
+			});
+			console.log(vm.model.customer.editedCheckedInCustomer)
+			vm.model.customer.editedCheckedInCustomer.username = vm.model.customer.editedCheckedInCustomer.customer.lastname + ' ' + vm.model.customer.editedCheckedInCustomer.customer.firstname;
+
+			if (vm.model.customer.editedCheckedInCustomer.orderline.length == 1){
+				vm.model.customer.editedCheckedInCustomer.orderline.push (getDefaultProduct());
+			}
+
+			vm.model.dom.checkInEditDiv = true;
+			vm.model.dom.checkInListDiv = false;
+		}
+	};
+
+	vm.ctrl.toggleCheckOutDiv = function(index){
+		vm.model.dom.checkOutDiv = true;
+		console.log(vm.model.customer.checkedInList[index])
+		vm.model.customer.checkoutCustomer = vm.model.customer.checkedInList[index]
+		vm.ctrl.confirmCheckout = function(){
+			CheckinService.postCheckOut(vm.model.customer.checkoutCustomer._id)
+				.then(function success(res){
+					$route.reload();
+				})
+		}
+	}
+
+	vm.ctrl.reload = function (){
+		$route.reload();
+	}
+
+	//Update check in
+	vm.ctrl.updateCheckin = function(){
+		CheckinService.updateOne(vm.model.customer.editedCheckedInCustomer._id, vm.model.customer.editedCheckedInCustomer.orderline)
+		.then(function success(res){
+			console.log(res)
+		})
+	}
 
 };

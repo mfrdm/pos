@@ -1,5 +1,145 @@
+/*///////////////// Dimension /////////////////*/
+
+.width100percent {
+	width: 100%!important;
+}
+
+.marginLR15 {
+	margin-left: .9375rem!important;
+	margin-right: .9375rem!important;
+}
+
+.marginLR0 {
+	margin-left: 0!important;
+	margin-right: 0!important;
+}
+
+.marginB15 {
+	margin-bottom: .9375rem;
+}
+
+.marginB0 {
+	margin-bottom: 0!important;
+}
+
+.marginL15 {
+	margin-left: .9375rem;
+}
+
+
+.marginAll15 {
+	margin: .9375rem;
+}
+
+.marginTB15 {
+	margin-top: .9375rem;
+	margin-bottom: .9375rem;
+}
+
+.marginB30 {
+	margin-top: 1.875rem;
+}
+
+.marginT100 {
+	margin-top: 6.25rem;
+}
+
+
+.paddingLR15 {
+	padding-left: .9375rem!important;
+	padding-right: .9375rem!important;	
+}
+
+.paddingLR0 {
+	padding-left: 0!important;
+	padding-right: 0!important;	
+}
+
+.paddingR0 {
+	padding-right: 0!important;
+}
+
+.paddingL0 {
+	padding-left: 0!important;
+}
+
+.paddingAll0 {
+	padding: 0!important;
+}
+
+.paddingT15 {
+	padding-top: .9375rem;
+}
+
+.paddingR15 {
+	padding-right: .9375rem;
+}
+
+.paddingL15 {
+	padding-left: .9375rem;
+}
+
+.paddingAll15 {
+	padding: .9375rem!important;
+}
+
+.paddingTB15 {
+	padding-top: .9375rem;
+	padding-bottom: .9375rem;
+}
+
+.paddingLR45 {
+	padding-left: 2.8125rem!important;
+	padding-right: 2.8125rem!important;	
+}
+
+.paddingT45 {
+	padding-top: 2.8125rem;
+}
+
+.paddingB45 {
+	padding-bottom: 2.8125rem;
+}
+
+.paddingL45 {
+	padding-left: 2.8125rem;
+}
+
+.paddingR45 {
+	padding-right: 2.8125rem;
+}
+
+.paddingAll45 {
+	padding: 2.8125rem;
+}
+
+.paddingTB45 {
+	padding-top: 2.8125rem;
+	padding-bottom: 2.8125rem;
+}
+
+.paddingAll30 {
+	padding-left: 1.875rem;
+	padding-right: 1.875rem;
+	padding-top: 1.875rem;
+	padding-bottom: 1.875rem;
+} 
+
+
 /*Checkin*/
 ul.listOrder li i{
 	line-height: 2;
 	padding-top: 25px;
+}
+
+/*Checkout Div*/
+#checkoutDiv{
+	position: absolute;
+	background-color: #fff;
+	top:0;
+	left:0;
+	width: 100%;
+	height: 100%;
+	min-height: 100vh;
+	z-index: 1;
 }

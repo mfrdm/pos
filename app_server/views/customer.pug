@@ -62,15 +62,44 @@ div(ng-switch='vm.tab')
 													td {{ $index + 1 }}
 													td {{ result.lastname }}
 													td {{ result.firstname }}
-													td {{ result.email }}
+													td {{ result.email[0] }}
 													td {{ result.createdAt | date: "shortTime" }}  -  {{ result.createdAt | date: "dd MMM yyyy" }}	
 	div(ng-switch-when='tab-profile')
 		div(class="columns row")
+			div(class="column")
+				h2 Customer Profile
+			// Profile
+			div(class="column")
+				div(class="borderT newBox row column")
+					table(class="striped borderAll")
+						thead
+							tr
+								th(class='text-center') Fields
+								th(class='text-center') Information
+						tbody
+							tr
+								td(class='text-center') Lastname
+								td(class='text-center') {{ vm.model.customer.profile.lastname}}
+							tr
+								td(class='text-center') Firstname
+								td(class='text-center') {{ vm.model.customer.profile.firstname}}
+							tr
+								td(class='text-center') Gender
+								td(class='text-center') {{ vm.model.customer.profile.gender}}
+							tr
+								td(class='text-center') Birthday
+								td(class='text-center') {{ vm.model.customer.profile.birthday | date:'dd-MM-yyyy'}}
+				div(class="row column")
+					div(class='column small-12 paddingLR0')
+						input(class="button warning" type="submit" value="Edit" ng-click='vm.ctrl.toEdit()')
+						button(class="button float-right" ng-click='vm.ctrl.toMain()') Cancel
+	div(ng-switch-when='tab-edit')
+		div(class="columns row")
 			div(class="row colums")
 				div(class="column")
-					h2 Customer Profile
+					h2 Edit Profile
 				// Profile
-				div(class="column")
+				form(class="column" ng-submit='vm.ctrl.saveEdit()')
 					div(class="borderT newBox row column")
 						table(class="striped borderAll")
 							thead
@@ -80,39 +109,21 @@ div(ng-switch='vm.tab')
 							tbody
 								tr
 									td(class='text-center') Lastname
-									td(class='text-center') {{ vm.model.customer.profile.lastname}}
+									td(class='text-center')
+										input(type='text' value='{{ vm.model.customer.editProfile.lastname}}' ng-model='vm.model.customer.editProfile.lastname')
 								tr
 									td(class='text-center') Firstname
-									td(class='text-center') {{ vm.model.customer.profile.firstname}}
+									td(class='text-center')
+										input(type='text' value='{{ vm.model.customer.editProfile.firstname}}' ng-model='vm.model.customer.editProfile.firstname')
 								tr
-									td(class='text-center') Gender
-									td(class='text-center') {{ vm.model.customer.profile.gender}}
+									td(class='text-center') Email
+									td(class='text-center')
+										input(type='email' value='{{ vm.model.customer.editProfile.email[0]}}' ng-model='vm.model.customer.editProfile.email')
 								tr
-									td(class='text-center') Birthday
-									td(class='text-center') {{ vm.model.customer.profile.birthday | date:'dd-MM-yyyy'}}
+									td(class='text-center') Phone
+									td(class='text-center')
+										input(type='text' value='{{ vm.model.customer.editProfile.phone[0]}}' ng-model='vm.model.customer.editProfile.phone')
 					div(class="row column")
 						div(class='column small-12 paddingLR0')
-							input(class="button warning" type="submit" value="Edit" ng-click='vm.ctrl.toEdit()')
+							input(class="button warning" type="submit" value="Save")
 							button(class="button float-right" ng-click='vm.ctrl.toMain()') Cancel
-	div(ng-switch-when='tab-edit')
-		div(class="columns row")
-			div(class="row colums")
-				div(class="column")
-					h2 Edit Profile
-				// Profile
-				div(class="column")
-					div(class="borderT newBox row column")
-						table(class="striped borderAll")
-							thead
-								tr
-									th(class='text-center') Fields
-									th(class='text-center') Information
-							tbody
-								tr(ng-repeat='field in vm.model.dom.fields')
-									td(class='text-center') {{ field }}
-									td
-										input(ng-model= 'vm.customer.info[field]' type='text')
-					div(class="row column")
-						div(class='column small-12 paddingLR0')
-							input(class="button warning" type="submit" value="Save" ng-confirm-click='Are you sure to save your edit' confirmed-click='vm.saveEdit()')
-							button(class="button float-right" ng-click='vm.toMain()') Cancel
