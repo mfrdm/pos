@@ -21,6 +21,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	vm.model.dom.checkOutDiv = false;
 
 	vm.model.customer = {}//Any thing related to customer
+	vm.model.customer.services = {}//All products
 
 	// TESTING
 	vm.model.customer.storeId = '58fdc7e1fc13ae0e8700008a';
@@ -28,37 +29,54 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	// END
 	CheckinService.readSomeProducts()
 		.then(function success(res){
-			console.log(res)
+			res.data.data.map(function(ele){
+				vm.model.customer.services[ele.name] = {
+					price: ele.price,
+					_id: ele._id,
+					category: ele.category
+				}
+			})
+			vm.model.customer.serviceNames = Object.keys (vm.model.customer.services);
+
+			//Set default value for the order
+			vm.model.customer.checkingInData = getDefaultCheckInData ();
+			//vm.model.customer.checkingInData is data sent to check in
+			
+			vm.model.customer.editedCheckedInCustomer = {};
 		}, function error(err){
 			console.log(err)
 		})
-	vm.model.customer.services = { // FIX: no hardcode
-		//Services pull from Products model
-		'Private': {
-			price: 150000,
-			// id: '58eb474538671b4224745195',
-		},
-		'Common': {
-			price: 10000,
-			// id: '58eb474538671b4224745198',
-		},
-		'': {
-			price: 0,
-			// id: -1,
-		},
-		'Coca Cola': {
-			price: 7000,
-			// id: '58eb474538671b4224745123',
-		},
-		'Poca': {
-			price: 7000,
-			// id: '58eb474538671b4224745164',
-		},
-		'Pepsi': {
-			price: 7000,
-			// id: '58eb474538671b4224745167',
-		},		
-	};
+	// vm.model.customer.services = { // FIX: no hardcode
+	// 	//Services pull from Products model
+	// 	'group private': {
+	// 		price: 15000,
+	// 		id: '58eb474538671b4224745195',
+	// 	},
+	// 	'group common': {
+	// 		price: 10000,
+	// 		id: '58eb474538671b4224745198'
+	// 	},
+	// 	'individual common':{
+	// 		price: 12000,
+	// 		id: '58eb474538671b4224745133'
+	// 	},
+	// 	'': {
+	// 		price: 0,
+	// 		id: -1
+	// 	},
+	// 	'Coca Cola': {
+	// 		price: 7000,
+	// 		id: '58eb474538671b4224745123'
+	// 	},
+	// 	'Poca': {
+	// 		price: 7000,
+	// 		id: '58eb474538671b4224745164',
+	// 	},
+	// 	'Pepsi': {
+	// 		price: 7000,
+	// 		id: '58eb474538671b4224745167',
+	// 	},		
+	// };
 	///////////////////////////////////////////////////////////////
 	//Get customer data from current created Customer
 	function getCheckinCurrentCreatedCus (){
@@ -109,13 +127,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			}
 		}
 	};
-	vm.model.customer.serviceNames = Object.keys (vm.model.customer.services);
-
-	//Set default value for the order
-	vm.model.customer.checkingInData = getDefaultCheckInData ();
-	//vm.model.customer.checkingInData is data sent to check in
 	
-	vm.model.customer.editedCheckedInCustomer = {};
 	// Used to fill check-in data
 	// FIX: should not include hardcode
 	
@@ -156,30 +168,17 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	//Controller Search
 	vm.ctrl.selectCustomerToCheckin = function(index){
 		vm.model.customer.checkingInData.customer = {
-			id: vm.model.search.userResults [index]._id,
+			_id: vm.model.search.userResults [index]._id,
 			firstname: vm.model.search.userResults [index].firstname,
 			lastname: vm.model.search.userResults [index].lastname,
-			phone: vm.model.search.userResults [index].phone,			
+			phone: vm.model.search.userResults [index].phone[0],			
 		}
+		vm.model.customer.checkingInData.promocodes = vm.model.search.userResults [index].promoteCode
 
 		vm.model.dom.checkingInCustomerSearchResult = false;
 		console.log(vm.model.search.userResults[index])
 		vm.model.search.username = vm.model.search.userResults[index].lastname + ' ' + vm.model.search.userResults[index].firstname + ' / ' + vm.model.search.userResults[index].phone[0] + (vm.model.search.userResults[index].email[0] ? ' / ' + vm.model.search.userResults[index].email[0] : '');
 	}
-
-	//Get total money
-	// vm.ctrl.getTotal = function (orderline) {
-	// 	var total = 0;
-	// 	var orderNum = orderline.length;
-	// 	var items =  {};
-	// 	Object.assign (items, vm.model.customer.services, vm.model.customer.otherItems);
-	// 	for (var i = 0; i < orderNum; i++) {
-	// 		if (orderline [i].productName) {
-	// 			total += (items [orderline [i].productName].price * orderline [i].quantity);
-	// 		}
-	// 	}
-	// 	return total;
-	// };
 
 	//Toogle Filter Div
 	vm.ctrl.toggleFilterDiv = function (){
@@ -220,40 +219,40 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		// vm.model.customer.checkingInData.orderline.splice(index)
 
 	}
-	vm.model.customer.checkingInData.promocodes = []
 	vm.ctrl.checkin = function(){
 		// before checkin
-		if(vm.model.customer.checkingInData.promocodes.length > 0){
-			if(typeof vm.model.customer.checkingInData.promocodes == 'string'){
-				vm.model.customer.checkingInData.promocodes = vm.model.customer.checkingInData.promocodes.split(/[ .:;?!~,`"&|()<>{}\[\]\r\n/\\]+/)
-			}
-			
+		if(vm.model.customer.checkingInData.promocodes.length > 0 && typeof vm.model.customer.checkingInData.promocodes == 'string'){
+			vm.model.customer.checkingInData.promocodes = vm.model.customer.checkingInData.promocodes.split(/[ .:;?!~,`"&|()<>{}\[\]\r\n/\\]+/)
 			vm.model.customer.checkingInData.promocodes = vm.model.customer.checkingInData.promocodes.map(function(ele){
 				return {name:ele}
 			})
+		}else{
+			vm.model.customer.checkingInData.promocodes = []
 		}
+
+		
 		vm.model.customer.checkingInData.storeId = vm.model.customer.storeId;
 		vm.model.customer.checkingInData.staffId = vm.model.customer.userId;
 
 		// update id in orderline
-		var items =  {};
-		Object.assign (items, vm.model.customer.services, vm.model.customer.otherItems);
 
-		vm.model.customer.checkingInData.orderline.map (function (x, i, array){
-			x.id = items [x.productName];
-		});
+		
 		vm.model.customer.checkingInData.orderline = vm.model.customer.checkingInData.orderline.filter(function(ele){
 			return ele.productName != ''
 		})
+
+		vm.model.customer.checkingInData.orderline.map (function (x){
+			x._id = vm.model.customer.services [x.productName]._id;
+			x.price = vm.model.customer.services [x.productName].price;
+		});
 		
 
 		console.log(vm.model.customer.checkingInData)
-		CheckinService.createOne (vm.model.customer.checkingInData.customer.id, vm.model.customer.checkingInData).then(
+		CheckinService.createOne (vm.model.customer.checkingInData.customer._id, vm.model.customer.checkingInData).then(
 			function success(data){
 				console.log (data.data)
 				vm.model.customer.checkedInList.push (data.data.data.orderData);
-				// vm.toggleCheckInDiv ();
-				//vm.status.checkedin = true;
+				$route.reload();				
 			}, 
 			function error(err){
 				console.log(err);
@@ -317,16 +316,25 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		}
 	};
 
-	vm.ctrl.toggleCheckOutDiv = function(index){
+	vm.ctrl.getInvoiceForCheckout = function(index){
 		vm.model.dom.checkOutDiv = true;
 		console.log(vm.model.customer.checkedInList[index])
-		vm.model.customer.checkoutCustomer = vm.model.customer.checkedInList[index]
-		vm.ctrl.confirmCheckout = function(){
-			CheckinService.postCheckOut(vm.model.customer.checkoutCustomer._id)
-				.then(function success(res){
-					$route.reload();
-				})
-		}
+		CheckinService.readInvoice(vm.model.customer.checkedInList[index]._id)
+			.then(function success(res){
+				console.log(res.data.data)
+				vm.model.customer.checkoutCustomer = res.data.data;
+			}, function error(err){
+				console.log(err)
+			})
+	}
+
+	vm.ctrl.confirmCheckout = function(){
+		CheckinService.confirmCheckout(vm.model.customer.checkoutCustomer)
+			.then(function success(res){
+				console.log(res)
+			}, function error(err){
+				console.log(err)
+			})
 	}
 
 	vm.ctrl.reload = function (){

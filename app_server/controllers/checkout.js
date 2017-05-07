@@ -110,6 +110,7 @@ function Checkout() {
 	};
 
 	this.confirmCheckout = function(req, res) {
+		console.log(req.body)
 		var total = req.body.data.total;
 		var usage = req.body.data.usage;
 		var status = 2;

@@ -1,6 +1,14 @@
-var ProductCtrl = function(productService, $route){
+var ProductCtrl = function(productService, $route, $window){
 	var vm = this;
 	vm.tab = 'tab-main';
+
+	vm.model = {};
+	vm.ctrl = {};
+
+	vm.model.product = {}
+	vm.model.product.selectedForCreateProduct = {}
+	//vm.model.product.selectedForCreateProduct: input model for new product
+	
 	vm.productInfo = {};
 	vm.look = {};
 	vm.searchResult = {};
@@ -43,13 +51,11 @@ var ProductCtrl = function(productService, $route){
 	
 	////////////////////////////////////////////////////////
 	//Create Page
-	vm.createNewProduct = function(){
-		vm.productInfo.name = vm.name
-		vm.productInfo.price = vm.price
-		vm.productInfo.category = vm.category
-		productService.createOne(vm.productInfo)
+	vm.ctrl.createNewProduct = function(){
+		productService.createOne(vm.model.product.selectedForCreateProduct)
 			.then(function success(res){
 				console.log(res)
+				$window.alert('Create new product successfully')
 			}, function error(err){
 				console.log(err)
 			})
@@ -77,4 +83,4 @@ var ProductCtrl = function(productService, $route){
 	}
 }
 
-app.controller('ProductCtrl', ['productService','$route',ProductCtrl])
+app.controller('ProductCtrl', ['productService','$route','$window',ProductCtrl])

@@ -8,10 +8,9 @@ function getUsageTime (){
 
 function getTotal (){
 	var order = this;
-
 	var result = order.orderline.reduce (function (acc, val){
 		var total;
-		if (val.productName.toLowerCase() == 'group private' || val.productName.toLowerCase() == 'group common' || val.productName.toLowerCase() == 'individual common'){
+		if (val.productName.toLowerCase() == 'common' || val.productName.toLowerCase() == 'group common' || val.productName.toLowerCase() == 'individual common'){
 			total = val.quantity * val.price * order.usage + acc;
 		}
 		else{

@@ -157,7 +157,6 @@ div(class="columns row")
 					thead
 						tr
 							th No
-							th Status
 							th Name
 							th Phone
 							th Date
@@ -168,14 +167,13 @@ div(class="columns row")
 					tbody
 						tr(ng-repeat="customer in vm.model.customer.checkedInList | filter:vm.model.filter")
 							td {{ $index + 1 }}
-							td {{ customer.status}}
 							td {{ customer.customer.firstname }} {{customer.customer.lastname}}
 							td {{ customer.customer.phone }}
 							td {{ customer.checkinTime | date:'dd/MM/yyyy' }}
 							td {{ customer.checkinTime | date: 'shortTime' }}
 							td {{ customer.orderline[0].productName	}}
 							td
-								button(type="button" class="warning button" ng-click="vm.ctrl.toggleCheckOutDiv ($index)") Checkout
+								button(type="button" class="warning button" ng-click="vm.ctrl.getInvoiceForCheckout ($index)") Checkout
 							td
 								button(type="button" class="alert button" ng-click="vm.ctrl.toggleCheckInEditDiv ($index)") Edit
 
@@ -210,6 +208,14 @@ div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
 
 							td(class='text-center') Checkin Time
 							td(class='text-center') {{ vm.model.customer.checkoutCustomer.checkinTime | date:'shortTime'}}
+						tr
+
+							td(class='text-center') Checkout Date
+							td(class='text-center') {{ vm.model.customer.checkoutCustomer.checkoutTime | date:'dd/MM/yyyy'}}
+						tr
+
+							td(class='text-center') Checkout Time
+							td(class='text-center') {{ vm.model.customer.checkoutCustomer.checkoutTime | date:'shortTime'}}
 						tr(ng-repeat='service in vm.model.customer.checkoutCustomer.orderline')
 							td(class='text-center') Service
 							td(class='text-center') {{ service.productName}}

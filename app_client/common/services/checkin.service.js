@@ -12,7 +12,7 @@ function CheckinService ($http, $q){
 			params:{
 				queryInput:JSON.stringify({
 					conditions: {$or: array},
-					projection: {firstname: 1, lastname: 1, phone: 1, email: 1},
+					projection: {firstname: 1, lastname: 1, phone: 1, email: 1, promoteCode:1},
 					opts: null
 				})
 			}
@@ -91,13 +91,18 @@ function CheckinService ($http, $q){
 	};
 
 	//Checkout for customer
-	this.postCheckOut = function(id){
+	this.confirmCheckout = function(order){
 		return $http({
-			url:'/api/orders/order/'+id+'/edit',
+			url:'/checkout',
 			method:'POST',
-			data:JSON.stringify({
-				status:2
-			})
+			data:JSON.stringify({data:order})
 		})
 	};
+
+	this.readInvoice = function(id){
+		return $http({
+			url: '/checkout/invoice/'+id,
+			method:'GET'
+		})
+	}
 }
