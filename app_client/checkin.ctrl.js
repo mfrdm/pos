@@ -27,8 +27,21 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	vm.model.customer.storeId = '58fdc7e1fc13ae0e8700008a';
 	vm.model.customer.userId = '58eb474538671b4224745192'; // staff
 	// END
+	vm.model.listMainProducts = []
+	vm.model.listOtherProducts = []
 	CheckinService.readSomeProducts()
 		.then(function success(res){
+			console.log(res.data.data)
+			vm.model.listMainProducts = res.data.data.map(function(ele){
+				if(ele.category == 1){
+					return ele.name
+				}
+			}).filter(function(ele){return ele != undefined})
+			vm.model.listOtherProducts = res.data.data.map(function(ele){
+				if(ele.category != 1){
+					return ele.name
+				}
+			}).filter(function(ele){return ele != undefined})
 			res.data.data.map(function(ele){
 				vm.model.customer.services[ele.name] = {
 					price: ele.price,
@@ -43,6 +56,41 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			//vm.model.customer.checkingInData is data sent to check in
 			
 			vm.model.customer.editedCheckedInCustomer = {};
+
+			//Get customer data from current created Customer
+			function getCheckinCurrentCreatedCus (){
+				console.log()
+				return {
+					orderline: [
+						{
+							productName: 'Individual Common', // default service
+							quantity: 1,
+							_id: vm.model.customer.services['Individual Common']._id,
+						},
+						{
+							productName: '', //Add more
+							quantity: 0,
+						},			
+
+					],
+					customer: {
+						firstname: $scope.layout.currentCustomer.firstname,
+						lastname: $scope.layout.currentCustomer.lastname,
+						phone: $scope.layout.currentCustomer.phone[0],
+						id: $scope.layout.currentCustomer._id,
+					}
+				}
+			}
+			//Toogle Filter Div
+			vm.ctrl.toggleFilterDiv = function (){
+				if (!vm.model.dom.filterDiv) vm.model.dom.filterDiv = true;
+				else vm.model.dom.filterDiv = false;
+			};
+			if($scope.layout.currentCustomer){
+				vm.model.dom.checkInDiv = true;
+				vm.model.customer.checkingInData = getCheckinCurrentCreatedCus();
+				vm.model.search.username = $scope.layout.currentCustomer.lastname +' '+ ($scope.layout.currentCustomer.middlename ? $scope.layout.currentCustomer.middlename : '') + ' '+ $scope.layout.currentCustomer.firstname + ($scope.layout.currentCustomer.email[0] ? '/' + $scope.layout.currentCustomer.email[0]:'')
+			}
 		}, function error(err){
 			console.log(err)
 		})
@@ -78,29 +126,6 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	// 	},		
 	// };
 	///////////////////////////////////////////////////////////////
-	//Get customer data from current created Customer
-	function getCheckinCurrentCreatedCus (){
-		return {
-			orderline: [
-				{
-					productName: 'Common', // default service
-					quantity: 1,
-					id: vm.model.customer.services['Common'].id,
-				},
-				{
-					productName: '', //Add more
-					quantity: 0,
-				},			
-
-			],
-			customer: {
-				firstname: $scope.layout.currentCustomer.firstname,
-				lastname: $scope.layout.currentCustomer.lastname,
-				phone: $scope.layout.currentCustomer.phone[0],
-				id: $scope.layout.currentCustomer._id,
-			}
-		}
-	}
 
 	
 	////////////////////////////////////////////////////////////////
@@ -109,9 +134,9 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		return {
 			orderline: [
 				{
-					productName: 'Common', // default service
+					productName: 'Individual Common', // default service
 					quantity: 1,
-					id: vm.model.customer.services['Common'].id,
+					_id: vm.model.customer.services['Individual Common']._id,
 				},
 				{
 					productName: '', //Add more
@@ -135,7 +160,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	function getDefaultProduct (){
 		return 	{
 			productName: '', //
-			id: '',
+			_id: '',
 			quantity: 0,
 		}
 	};
@@ -180,21 +205,11 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		vm.model.search.username = vm.model.search.userResults[index].lastname + ' ' + vm.model.search.userResults[index].firstname + ' / ' + vm.model.search.userResults[index].phone[0] + (vm.model.search.userResults[index].email[0] ? ' / ' + vm.model.search.userResults[index].email[0] : '');
 	}
 
-	//Toogle Filter Div
-	vm.ctrl.toggleFilterDiv = function (){
-		if (!vm.model.dom.filterDiv) vm.model.dom.filterDiv = true;
-		else vm.model.dom.filterDiv = false;
-	};
-	if($scope.layout.currentCustomer){
-		vm.model.dom.checkInDiv = true;
-		vm.model.customer.checkingInData = getCheckinCurrentCreatedCus();
-		vm.model.search.username = $scope.layout.currentCustomer.lastname +' '+ ($scope.layout.currentCustomer.middlename ? $scope.layout.currentCustomer.middlename : '') + ' '+ $scope.layout.currentCustomer.firstname + ($scope.layout.currentCustomer.email[0] ? '/' + $scope.layout.currentCustomer.email[0]:'')
-	}
-
 	//When select one service, options will reduce
 	vm.model.selectedItem = {};
 	var count = 0;
 	vm.ctrl.selectService = function(){
+		console.log(vm.model.selectedItem)
 		vm.model.customer.checkingInData.orderline.map(function(ele){
 				if(ele.productName == vm.model.selectedItem.name){
 					count += 1;
@@ -221,7 +236,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	}
 	vm.ctrl.checkin = function(){
 		// before checkin
-		if(vm.model.customer.checkingInData.promocodes.length > 0 && typeof vm.model.customer.checkingInData.promocodes == 'string'){
+		if(vm.model.customer.checkingInData.promocodes.length && vm.model.customer.checkingInData.promocodes.length > 0 && typeof vm.model.customer.checkingInData.promocodes == 'string'){
 			vm.model.customer.checkingInData.promocodes = vm.model.customer.checkingInData.promocodes.split(/[ .:;?!~,`"&|()<>{}\[\]\r\n/\\]+/)
 			vm.model.customer.checkingInData.promocodes = vm.model.customer.checkingInData.promocodes.map(function(ele){
 				return {name:ele}

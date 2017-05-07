@@ -51,8 +51,8 @@ div(class="columns row")
 											td {{ $index + 1 }}
 											td {{ result.lastname }}
 											td {{ result.firstname }}
-											td {{ result.email }}
-											td {{ result.phone }}
+											td {{ result.email[0] }}
+											td {{ result.phone[0] }}
 				
 				form(ng-submit="vm.ctrl.checkin ()" confirm-submit = "Are you sure to check")
 					div(class="row column")
@@ -60,7 +60,7 @@ div(class="columns row")
 							input(type='text' ng-model='vm.model.customer.checkingInData.promocodes')
 					div(class="row column")
 						label Service
-							select(name="selectedService" ng-model="vm.model.customer.checkingInData.orderline[0].productName" ng-options="val for val in vm.model.customer.serviceNames.slice(0,2)")
+							select(name="selectedService" ng-model="vm.model.customer.checkingInData.orderline[0].productName" ng-options="val for val in vm.model.listMainProducts")
 					div(class='row column')
 						label Selected Items
 							table
@@ -78,7 +78,7 @@ div(class="columns row")
 					div(class="row column")
 						div(class="column small-6 paddingL0")
 							label Add Items
-								select( ng-model="vm.model.selectedItem.name" ng-options="val for val in vm.model.customer.serviceNames.slice(3)")
+								select( ng-model="vm.model.selectedItem.name" ng-options="val for val in vm.model.listOtherProducts")
 						div(class="column small-5 paddingL0")
 							label Quantity
 								input( ng-model="vm.model.selectedItem.quantity" string-to-number type="number" min='0')
@@ -176,6 +176,9 @@ div(class="columns row")
 								button(type="button" class="warning button" ng-click="vm.ctrl.getInvoiceForCheckout ($index)") Checkout
 							td
 								button(type="button" class="alert button" ng-click="vm.ctrl.toggleCheckInEditDiv ($index)") Edit
+
+//Confirm checkin order list
+
 
 //Invoice
 div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')

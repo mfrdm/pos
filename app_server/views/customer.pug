@@ -57,10 +57,10 @@ div(ng-switch='vm.tab')
 										select(ng-model='vm.model.customer.newCustomerData.edu.title' required ng-options="key as value for (key , value) in {1: 'Undergraduate',2: 'Graduate',3: 'Doctorate'}")
 								div(class="column small-12 paddingL0")
 									label Start at University
-										input(type="date" ng-model='vm.model.customer.newCustomerData.edu.start')
+										input(type="number" min='1900' max='2020' ng-model='vm.model.customer.newCustomerData.edu.start')
 								div(class="column small-12 paddingL0")
 									label End at University
-										input(type="date" ng-model='vm.model.customer.newCustomerData.edu.end')
+										input(type="number" min='1900' max='2020' ng-model='vm.model.customer.newCustomerData.edu.end')
 
 						div(class="row column paddingT15")
 							input(class="button" type="submit" value="Submit")
