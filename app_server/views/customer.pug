@@ -41,9 +41,6 @@ div(ng-switch='vm.tab')
 									label Gender
 										select(ng-model='vm.model.customer.newCustomerData.gender' required ng-options="key as value for (key , value) in {1: 'Male',2: 'Female',3: 'Others'}")
 								div(class="column small-12 paddingL0")
-									label Birthday
-										input(type="date" ng-model='vm.model.customer.newCustomerData.birthday' required)
-								div(class="column small-12 paddingL0")
 									label Phone
 										input(type="text" ng-model='vm.model.customer.newCustomerData.phone' required)
 								div(class="column small-12 paddingL0")
@@ -55,12 +52,12 @@ div(ng-switch='vm.tab')
 								div(class="column small-12 paddingL0")
 									label Title at school/university
 										select(ng-model='vm.model.customer.newCustomerData.edu.title' required ng-options="key as value for (key , value) in {1: 'Undergraduate',2: 'Graduate',3: 'Doctorate'}")
-								div(class="column small-12 paddingL0")
-									label Start at University
-										input(type="number" min='1900' max='2020' ng-model='vm.model.customer.newCustomerData.edu.start')
-								div(class="column small-12 paddingL0")
-									label End at University
-										input(type="number" min='1900' max='2020' ng-model='vm.model.customer.newCustomerData.edu.end')
+								//- div(class="column small-12 paddingL0")
+								//- 	label Start at University
+								//- 		input(type="number" min='1900' max='2020' ng-model='vm.model.input.start')
+								//- div(class="column small-12 paddingL0")
+								//- 	label End at University
+								//- 		input(type="number" min='1900' max='2020' ng-model='vm.model.input.end')
 
 						div(class="row column paddingT15")
 							input(class="button" type="submit" value="Submit")

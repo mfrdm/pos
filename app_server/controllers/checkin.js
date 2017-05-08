@@ -25,7 +25,6 @@ function Checkin() {
 					console.log(err)
 					next (err);
 				}
-				console.log(foundCodes, 'testttt')
 				if (Object.keys (foundCodes).length){
 					
 					order.save (function (err, newOrder){

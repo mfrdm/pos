@@ -8,9 +8,13 @@ function getUsageTime (){
 
 function getTotal (){
 	var order = this;
+	console.log(order)
 	var result = order.orderline.reduce (function (acc, val){
 		var total;
-		if (val.productName.toLowerCase() == 'group private' || val.productName.toLowerCase() == 'group common' || val.productName.toLowerCase() == 'individual common'){
+		// if (val.productName.toLowerCase() == 'group private' || val.productName.toLowerCase() == 'group common' || val.productName.toLowerCase() == 'individual common'){
+		// 	total = val.quantity * val.price * order.usage + acc;
+		// }
+		if (val.productName == "Phòng Chung Dành Cho Cá Nhân" || val.productName == "Phòng Chung Dành Cho Nhóm" || val.productName == "Phòng Nhóm Riêng 10 - 15 Người" || val.productName == "Phòng Nhóm Riêng 20 - 35 Người"){
 			total = val.quantity * val.price * order.usage + acc;
 		}
 		else{

@@ -27,6 +27,7 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 	vm.model.customer = {};//Anything about customer
 	vm.model.dom = {};//Anything about DOM
 	vm.model.search = {};//Anything about Search
+	vm.model.input = {};//input field model for start and end of school
 
 	vm.model.customer.selectCustomerTitleConvert = {
 		1: 'Undergraduate',
@@ -72,13 +73,14 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 	////////////////////////////////////////////////////////
 	//Create Page
 	vm.ctrl.createNewCustomer = function(){
-		vm.model.customer.newCustomerData.edu.start = new Date(vm.model.customer.newCustomerData.edu.start, 0,1)
-		vm.model.customer.newCustomerData.edu.end = new Date(vm.model.customer.newCustomerData.edu.end, 0,1)
+		// vm.model.customer.newCustomerData.edu.start = new Date(vm.model.input.start, 0,1)
+		// vm.model.customer.newCustomerData.edu.end = new Date(vm.model.input.end, 0,1)
 		customerService.createOne(vm.model.customer.newCustomerData)
 			.then(function success(res){
 				if(res.status == 201){
 					$window.alert('Create new customer successfully')
 					$scope.layout.currentCustomer = res.data.data;
+					console.log($scope.layout.currentCustomer)
 					$window.location.href = '/#!/checkin'
 				}else{
 					$window.alert('Failed when creating new customer, please check')

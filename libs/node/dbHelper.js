@@ -53,7 +53,7 @@ module.exports = new function (){
 				console.log(update)
 				console.log(idValue)
 				var query = Model
-					.findByIdAndUpdate (mongoose.Types.ObjectId(idValue), update, {runValidators: true, safe: true, upsert: true, new : true});
+					.findByIdAndUpdate (mongoose.Types.ObjectId(idValue), update, {runValidators: true});
 				requestHelper.stdExec (res, query);
 			}
 			else{

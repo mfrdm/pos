@@ -26,6 +26,7 @@ function Checkout() {
 					x.price = Promocodes.discount (discountCode, x);
 					return x
 				});
+				console.log(foundOrder, 'heheheh')
 			}			
 		};
 
@@ -66,14 +67,11 @@ function Checkout() {
 
 								if (foundCustomer){
 									getDiscount (foundCustomer, foundOrder);
-
 									foundOrder.usage = foundOrder.getUsageTime ();
 									foundOrder.total = foundOrder.getTotal ();
-									console.log (foundOrder.total)
 									foundOrder.total = foundCodes.reduce (function (acc, val){
 										return Promocodes.redeem (val.name, acc);
 									}, foundOrder.total);
-									console.log (foundOrder.total)
 									res.json ({data: foundOrder});
 
 								}	
@@ -93,9 +91,8 @@ function Checkout() {
 
 						if (foundCustomer){
 							getDiscount (foundCustomer, foundOrder);
-
 							foundOrder.usage = foundOrder.getUsageTime ();
-							foundOrder.total = foundOrder.getTotal ();				
+							foundOrder.total = foundOrder.getTotal ();	
 							res.json ({data: foundOrder})
 						}
 						else{
