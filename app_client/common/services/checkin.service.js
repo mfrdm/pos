@@ -8,7 +8,7 @@ function CheckinService ($http, $q){
 		var array = [{"firstname" : { $regex: input, $options: 'i' }}, {"lastname" : { $regex: input, $options: 'i' }}]
 		return $http({
 			method:'GET',
-			url:'/api/customers/populate',
+			url:'/api/customers',
 			params:{
 				queryInput:JSON.stringify({
 					conditions: {$or: array},
