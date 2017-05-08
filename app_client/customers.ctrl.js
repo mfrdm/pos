@@ -75,6 +75,8 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 	vm.ctrl.createNewCustomer = function(){
 		// vm.model.customer.newCustomerData.edu.start = new Date(vm.model.input.start, 0,1)
 		// vm.model.customer.newCustomerData.edu.end = new Date(vm.model.input.end, 0,1)
+		vm.model.customer.newCustomerData.birthday = new Date(vm.model.input.year+'.'+vm.model.input.month+'.'+vm.model.input.day)
+		console.log(vm.model.customer.newCustomerData)
 		customerService.createOne(vm.model.customer.newCustomerData)
 			.then(function success(res){
 				if(res.status == 201){

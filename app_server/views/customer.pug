@@ -28,21 +28,28 @@ div(ng-switch='vm.tab')
 					form(class="borderT newBox row column" ng-submit='vm.ctrl.createNewCustomer()' confirm-submit ='Are you sure to Create New Customer')
 						ul(class="menu vertical row column")
 							li(class="marginB15")
-								div(class="column small-12 paddingL0")
+								div(class="column small-4 paddingL0")
 									label Lastname
 										input(type="text" ng-model='vm.model.customer.newCustomerData.lastname' required)
-								div(class="column small-12 paddingL0")
+								div(class="column small-4 paddingL0")
 									label Middle name
 										input(type="text" ng-model='vm.model.customer.newCustomerData.middlename')
-								div(class="column small-12 paddingL0")
+								div(class="column small-4 paddingL0")
 									label Firstname
 										input(type="text" ng-model='vm.model.customer.newCustomerData.firstname' required)
 								div(class="column small-12 paddingL0")
 									label Gender
 										select(ng-model='vm.model.customer.newCustomerData.gender' required ng-options="key as value for (key , value) in {1: 'Male',2: 'Female',3: 'Others'}")
-								div(class="column small-12 paddingL0")
-									label Birthday
-										input(type="date" ng-model='vm.model.customer.newCustomerData.birthday' required)
+								div(class="column small-4 paddingL0")
+									label Day
+										input(type="number" ng-model='vm.model.input.day' required min='1' max='31')
+								div(class="column small-4 paddingL0")
+									label Month
+										input(type="number" ng-model='vm.model.input.month' required min='1' max='12')
+								div(class="column small-4 paddingL0")
+									label Year
+										input(type="number" ng-model='vm.model.input.year' required min='1900' max='2020')
+
 								div(class="column small-12 paddingL0")
 									label Phone
 										input(type="text" ng-model='vm.model.customer.newCustomerData.phone' required)
