@@ -41,6 +41,9 @@ div(ng-switch='vm.tab')
 									label Gender
 										select(ng-model='vm.model.customer.newCustomerData.gender' required ng-options="key as value for (key , value) in {1: 'Male',2: 'Female',3: 'Others'}")
 								div(class="column small-12 paddingL0")
+									label Birthday
+										input(type="date" ng-model='vm.model.customer.newCustomerData.birthday' required)
+								div(class="column small-12 paddingL0")
 									label Phone
 										input(type="text" ng-model='vm.model.customer.newCustomerData.phone' required)
 								div(class="column small-12 paddingL0")

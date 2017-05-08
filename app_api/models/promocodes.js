@@ -23,6 +23,7 @@ var discount = function (code, product){
 			return product.price
 		}
 	}
+	return product.price
 }
 
 var promocodesSchema = mongoose.Schema ({

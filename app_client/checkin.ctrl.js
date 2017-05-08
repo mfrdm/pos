@@ -10,6 +10,23 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	vm.model.search = {}//Any things related to search
 	vm.model.search.messageNoResult = 'No search result? Or '
 
+	//Filter
+	vm.model.filter = {};
+	vm.model.orderBy = {};
+	vm.model.statusOptions = {
+		1:'Checkin', 2:'Checkout'
+	}
+	vm.model.orderOptions = {
+		'customer.firstname':'Firstname A-Z',
+		'-customer.firstname':'Firstname Z-A',
+		'checkinTime': 'Checkin Time Farthest',
+		'-checkinTime': 'Checkin Time Lastest'
+	}
+	vm.ctrl.testOrder = function(){
+		console.log(vm.model.orderBy)
+	}
+
+
 	vm.model.dom = {
 		messageSearchResult: false,
 		checkingInCustomerSearchResult: false,
@@ -32,7 +49,6 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	vm.model.listOtherProducts = []
 	CheckinService.readSomeProducts()
 		.then(function success(res){
-			console.log(res.data.data)
 			vm.model.listMainProducts = res.data.data.map(function(ele){
 				if(ele.category == 1){
 					return ele.name
@@ -50,17 +66,16 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 					category: ele.category
 				}
 			})
+
 			vm.model.customer.serviceNames = Object.keys (vm.model.customer.services);
 			//Set default value for the order
 			vm.model.customer.checkingInData = getDefaultCheckInData ();
-			console.log(vm.model.customer.checkingInData)
 			//vm.model.customer.checkingInData is data sent to check in
 			
 			vm.model.customer.editedCheckedInCustomer = {};
 
 			//Get customer data from current created Customer
 			function getCheckinCurrentCreatedCus (){
-				console.log()
 				return {
 					orderline: [
 						{
@@ -76,6 +91,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 					],
 					customer: {
 						firstname: $scope.layout.currentCustomer.firstname,
+						middlename: $scope.layout.currentCustomer.middlename,
 						lastname: $scope.layout.currentCustomer.lastname,
 						phone: $scope.layout.currentCustomer.phone[0],
 						_id: $scope.layout.currentCustomer._id,
@@ -84,9 +100,14 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			}
 			//Toogle Filter Div
 			vm.ctrl.toggleFilterDiv = function (){
-				if (!vm.model.dom.filterDiv) vm.model.dom.filterDiv = true;
+				if (!vm.model.dom.filterDiv) {
+					vm.model.dom.filterDiv = true;
+					vm.model.dom.checkInEditDiv = false;
+					vm.model.dom.checkInDiv = false;
+				}
 				else vm.model.dom.filterDiv = false;
 			};
+
 			if($scope.layout.currentCustomer){
 				vm.model.dom.checkInDiv = true;
 				vm.model.customer.checkingInData = getCheckinCurrentCreatedCus();
@@ -95,40 +116,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		}, function error(err){
 			console.log(err)
 		})
-	// vm.model.customer.services = { // FIX: no hardcode
-	// 	//Services pull from Products model
-	// 	'group private': {
-	// 		price: 15000,
-	// 		id: '58eb474538671b4224745195',
-	// 	},
-	// 	'group common': {
-	// 		price: 10000,
-	// 		id: '58eb474538671b4224745198'
-	// 	},
-	// 	"Phòng Chung Dành Cho Cá Nhân":{
-	// 		price: 12000,
-	// 		id: '58eb474538671b4224745133'
-	// 	},
-	// 	'': {
-	// 		price: 0,
-	// 		id: -1
-	// 	},
-	// 	'Coca Cola': {
-	// 		price: 7000,
-	// 		id: '58eb474538671b4224745123'
-	// 	},
-	// 	'Poca': {
-	// 		price: 7000,
-	// 		id: '58eb474538671b4224745164',
-	// 	},
-	// 	'Pepsi': {
-	// 		price: 7000,
-	// 		id: '58eb474538671b4224745167',
-	// 	},		
-	// };
-	///////////////////////////////////////////////////////////////
 
-	
 	////////////////////////////////////////////////////////////////
 	// Default checkin data
 	function getDefaultCheckInData (){
@@ -147,6 +135,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			],
 			customer: {
 				firstname: '',
+				middlename: '',
 				lastname: '',
 				phone: '',
 				_id: '',
@@ -171,7 +160,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	vm.ctrl.searchCustomers = function(which) {
 		CheckinService.searchCustomers(vm.model.search.username)
 		.then(function success (res){
-			console.log(res)
+			console.log(res.data.data)
 			if(res.data.data.length == 0){
 				vm.model.dom.messageSearchResult = true;
 				vm.model.dom.checkingInCustomerSearchResult = false;
@@ -181,10 +170,6 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 					vm.model.dom.checkingInCustomerSearchResult = true;
 					vm.model.dom.messageSearchResult = false;
 				}
-				// else if (vm.look.checkInEditDiv && which === 'checkInEditDiv'){
-				// 	vm.searchResult.editedCheckedInCustomers = res.data.data;
-				// 	vm.look.dom.editedCustomerSearchResult = true;
-				// }
 			}
 		}, function error (err){
 			console.log(err)
@@ -196,6 +181,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		vm.model.customer.checkingInData.customer = {
 			_id: vm.model.search.userResults [index]._id,
 			firstname: vm.model.search.userResults [index].firstname,
+			middlename: vm.model.search.userResults [index].middlename,
 			lastname: vm.model.search.userResults [index].lastname,
 			phone: vm.model.search.userResults [index].phone[0],			
 		}
@@ -203,7 +189,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 
 		vm.model.dom.checkingInCustomerSearchResult = false;
 		console.log(vm.model.search.userResults[index])
-		vm.model.search.username = vm.model.search.userResults[index].lastname + ' ' + vm.model.search.userResults[index].firstname + ' / ' + vm.model.search.userResults[index].phone[0] + (vm.model.search.userResults[index].email[0] ? ' / ' + vm.model.search.userResults[index].email[0] : '');
+		vm.model.search.username = vm.model.search.userResults[index].lastname + ' ' +vm.model.search.userResults[index].middlename+ ' ' + vm.model.search.userResults[index].firstname + ' / ' + vm.model.search.userResults[index].phone[0] + (vm.model.search.userResults[index].email[0] ? ' / ' + vm.model.search.userResults[index].email[0] : '');
 	}
 
 	//When select one service, options will reduce
@@ -311,6 +297,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		if (!vm.model.dom.checkInDiv){
 			vm.model.dom.checkInDiv = true;
 			vm.model.dom.checkInEditDiv = false;
+			vm.model.dom.filterDiv = false;
 		}
 		else{
 			vm.model.dom.checkInDiv = false;
@@ -342,6 +329,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			vm.model.dom.checkInEditDiv = true;
 			vm.model.dom.checkInDiv = false;
 			vm.model.dom.checkInListDiv = true;
+			vm.model.dom.filterDiv = false;
 			var index = vm.model.customer.checkedInList.indexOf(item);
 
 			vm.model.customer.editedCheckedInCustomer = {}; // reset
@@ -414,14 +402,5 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			console.log(res)
 		})
 	}
-
-
-	//Filter
-	vm.model.filter = {};
-	vm.model.statusOptions = {
-		1:'Checkin', 2:'Checkout'
-	}
-
-
 
 };

@@ -52,6 +52,7 @@ var ordersSchema = new mongoose.Schema({
 	customer: {
 		_id: {type: mongoose.Schema.Types.ObjectId, required: true},
 		firstname: {type:String, required: true},
+		middlename: {type:String},
 		lastname: {type:String, required: true},
 		phone: {type: String, required: true},
 		email: {type: String}, // optional. added if exists
