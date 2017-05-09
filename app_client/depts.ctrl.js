@@ -60,12 +60,11 @@ function DeptCtrl(deptService, $route){
 		//Create Page
 		vm.createNewStore = function(){
 			vm.storeInfo.name = vm.name
-			vm.storeInfo.managerFullname = vm.managerFullname
+			vm.storeInfo.manager = vm.manager
 			vm.storeInfo.contact.email = vm.contactEmail
 			vm.storeInfo.contact.phone = vm.contactPhone
 			deptService.createOne(vm.storeInfo)
 				.then(function success(res){
-					console.log(res)
 					$route.reload()
 				}, function error(err){
 					console.log(err)

@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 var deptsSchema = mongoose.Schema({
 	name: {type:String},
-	manger: {
+	manager: {
 		type:String
 	},
 	staffList: [mongoose.Schema.Types.ObjectId],

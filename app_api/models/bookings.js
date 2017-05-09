@@ -5,20 +5,21 @@ var bookingSchema = mongoose.Schema({
 	customer:{
 		id: {type: mongoose.Schema.Types.ObjectId},
 		firstname: String,
+		middlename: String,
 		lastname: String,
 		email: String
 	},
 	checkinTime: {type: Date, required: true},
 	checkoutTime: {type: Date}, 
 	storeId: {type: String},
-	promoteCode: [{type: String}],
+	// promoteCode: [{type: String}],
 	orderline: [
 		{
 			productId: {type: mongoose.Schema.Types.ObjectId},
 			quantity: Number,
 		}
 	],
-	status: {type:Number, default: 1}, 
+	status: {type:Number, default: 3}, 
 	updatedAt: [{
 		time: {type: Date}, 
 		explain: String,

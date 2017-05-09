@@ -20,7 +20,7 @@ div(class="columns row")
 							li: select(ng-model="vm.model.orderBy" ng-options="key as value for (key , value) in vm.model.orderOptions" ng-change='vm.ctrl.testOrder()')
 		// Check-in
 		div(class="column")
-			div(class="borderT newBox row column paddingLR15" ng-show="vm.model.dom.checkInDiv")
+			div(class="borderT newBox row column paddingLR15 callout primary" ng-show="vm.model.dom.checkInDiv")
 				div(class="row column")
 					form(ng-submit="vm.ctrl.searchCustomers('checkInDiv')")
 						div(class="row column")
@@ -94,7 +94,7 @@ div(class="columns row")
 						button(class="button float-right warning" ng-click="vm.ctrl.reload(); $event.preventDefault()") Cancel
 		// Filter
 		div(class="column" ng-show="vm.model.dom.filterDiv")
-			div(class="borderT newBox row column")
+			div(class="borderT newBox row column callout secondary")
 				div(class="marginB15 column small-12 large-4")
 					legend Status
 					select(ng-model='vm.model.filter.status' ng-options='key as value for (key , value) in vm.model.statusOptions' ng-init='vm.model.filter.status=1')
@@ -108,41 +108,42 @@ div(class="columns row")
 
 		
 		// Edit check-in
-		div(class="column borderT newBox" ng-show="vm.model.dom.checkInEditDiv")
-			form(ng-submit="vm.ctrl.edit ()")
-				h3 {{ vm.model.customer.editedCheckedInCustomer.customer.lastname}} {{ vm.model.customer.editedCheckedInCustomer.customer.middlename}} {{ vm.model.customer.editedCheckedInCustomer.customer.firstname}}
-				//Main service for edit
-				div(class="row column")
-					label Service
-						select(name="selectedService" ng-model="vm.model.customer.editedCheckedInCustomer.orderline[0].productName" ng-options="val for val in vm.model.listMainProducts")
-				
-				//Other services for edit
-				div(class='row column')
-					label Selected Items
-						table
-							thead
-								tr
-									th Product
-									th Quantity
-									th Delete
-							tbody
-								tr(ng-repeat='product in vm.model.customer.editedCheckedInCustomer.orderline.slice(1)')
-									td {{product.productName}}
-									td {{product.quantity}}
-									td
-										input(class="button alert marginB0" type="submit" value="Delete" ng-click='vm.ctrl.deleteSelectEditService($index); $event.preventDefault()')
-				div(class="row column")
-					div(class="column small-6 paddingL0")
-						label Add Items
-							select( ng-model="vm.model.selectedToEditItem.name" ng-options="val for val in vm.model.listOtherProducts")
-					div(class="column small-5 paddingL0")
-						label Quantity
-							input( ng-model="vm.model.selectedToEditItem.quantity" string-to-number type="number" min='0')
-					div(class="column small-1 paddingR0 paddingT30 marginB0 text-center")
-						input(class="button marginB0 success" type="submit" value="Add" ng-click='vm.ctrl.selectServiceToEdit(); $event.preventDefault()')
-				div(class="row column")
-					input(class="button" type="submit" value="Submit")
-					button(class="button float-right warning" ng-click="vm.ctrl.reload(); $event.preventDefault()") Cancel
+		div(class="column" ng-show="vm.model.dom.checkInEditDiv")
+			div(class='borderT newBox row column paddingLR15 callout alert')
+				form(ng-submit="vm.ctrl.edit ()" confirm-submit = "Are you sure to edit")
+					h3 {{ vm.model.customer.editedCheckedInCustomer.customer.lastname}} {{ vm.model.customer.editedCheckedInCustomer.customer.middlename}} {{ vm.model.customer.editedCheckedInCustomer.customer.firstname}}
+					//Main service for edit
+					div(class="row column")
+						label Service
+							select(name="selectedService" ng-model="vm.model.customer.editedCheckedInCustomer.orderline[0].productName" ng-options="val for val in vm.model.listMainProducts")
+					
+					//Other services for edit
+					div(class='row column')
+						label Selected Items
+							table
+								thead
+									tr
+										th Product
+										th Quantity
+										th Delete
+								tbody
+									tr(ng-repeat='product in vm.model.customer.editedCheckedInCustomer.orderline.slice(1)')
+										td {{product.productName}}
+										td {{product.quantity}}
+										td
+											input(class="button alert marginB0" type="submit" value="Delete" ng-click='vm.ctrl.deleteSelectEditService($index); $event.preventDefault()')
+					div(class="row column")
+						div(class="column small-6 paddingL0")
+							label Add Items
+								select( ng-model="vm.model.selectedToEditItem.name" ng-options="val for val in vm.model.listOtherProducts")
+						div(class="column small-5 paddingL0")
+							label Quantity
+								input( ng-model="vm.model.selectedToEditItem.quantity" string-to-number type="number" min='0')
+						div(class="column small-1 paddingR0 paddingT30 marginB0 text-center")
+							input(class="button marginB0 success" type="submit" value="Add" ng-click='vm.ctrl.selectServiceToEdit(); $event.preventDefault()')
+					div(class="row column")
+						input(class="button" type="submit" value="Submit")
+						button(class="button float-right warning" ng-click="vm.ctrl.reload(); $event.preventDefault()") Cancel
 		// Check-in list
 		div(class="column" ng-show="vm.model.dom.checkInListDiv")
 			div(class="table-scroll newBox")
@@ -178,7 +179,7 @@ div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
 	div(class='row column paddingT45 borderT newBox')
 		div(class="row column small-12 text-center large-6large-push-3")
 			h2 Invoice for {{vm.model.customer.checkoutCustomer.customer.lastname}} {{vm.model.customer.checkoutCustomer.customer.middlename}} {{vm.model.customer.checkoutCustomer.customer.firstname}}
-		div(class="row column small-12 large-6 large-push-3 invoice")
+		form(class="row column small-12 large-6 large-push-3 invoice" ng-submit='vm.ctrl.confirmCheckout()' confirm-submit = "Are you sure to checkout")
 			div(class="borderT newBox row column")
 				table(class="striped borderAll")
 					tbody
@@ -224,6 +225,6 @@ div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
 								span {{ vm.model.customer.checkoutCustomer.total}}
 			div(class="row column")
 				div(class='column small-12 large-paddingLR0')
-					input(class="paddingL15 button success" type="submit" value="Confirm" ng-click='vm.ctrl.confirmCheckout()')
+					input(class="paddingL15 button success" type="submit" value="Confirm")
 					button(class=" paddingR15 button float-right" ng-click='vm.ctrl.reload()') Cancel
 	

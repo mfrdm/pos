@@ -40,7 +40,7 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 	vm.model.sorting = {}//Model for sorting a list search result
 
 	vm.model.dom.customerSearchResultDiv = false;
-	vm.model.dom.CreateCustomerDiv = false;
+	vm.model.dom.CreateCustomerDiv = true;
 
 	////////////////////////////////////////////////////////
 	//Toggle Div

@@ -9,7 +9,14 @@
 		vm.tab = 'tab-main';
 		vm.look = {};
 		vm.customer = {};
-		vm.booking = {}
+		vm.booking = {};
+
+		vm.customer.intime = {}
+		vm.customer.outtime = {}
+		vm.customer.intime.year = 2017;
+		vm.customer.outtime.year = 2017;
+		vm.customer.intime.minute = 0;
+		vm.customer.outtime.minute = 0;
 
 		vm.data = {};
 		vm.data.serviceNames = []
@@ -17,6 +24,10 @@
 
 		vm.look.bookingDiv = false;
 		vm.look.bookingSearchResultDiv = false;
+
+		vm.reload = function(){
+			$route.reload();
+		}
 		////////////////////////////////////////////////////////
 		// Setup ng-switch
 		vm.toMain = function(){
@@ -40,13 +51,15 @@
 		//Get products list
 		otherService.readSome('products')
 			.then(function success(res){
-				vm.data.serviceNames = res.data.data
+				vm.data.serviceNames = res.data.data.filter(function(ele){return ele.category == 1})
+				console.log(vm.data.serviceNames)
 			}, function error(err){
 				console.log(err)
 			})
 		otherService.readSome('companies/depts')
 			.then(function success(res){
 				vm.data.locationNames = res.data.data
+				console.log(vm.data.locationNames)
 			}, function error(err){
 				console.log(err)
 			})
@@ -95,7 +108,7 @@
 				//Go to view one customer
 				vm.selectCustomerToBook = function(index){
 					console.log(vm.customer.results[index])
-					vm.customer.selected = vm.customer.results[index].lastname + ' ' +vm.customer.results[index].firstname
+					vm.customer.selected = vm.customer.results[index].lastname + ' ' +vm.customer.results[index].middlename+ ' ' +vm.customer.results[index].firstname
 					vm.customer.input = vm.customer.selected;
 					vm.look.customerSearchResultDiv = false;
 					////////////////////////////////////////////////////////
@@ -103,16 +116,24 @@
 					
 					vm.createNewBooking = function(){
 						var bookingData = {};
+						bookingData.orderline = {}
 						bookingData.customer = {}
 						bookingData.customer.id = vm.customer.results[index]._id
 						bookingData.customer.firstname = vm.customer.results[index].firstname
 						bookingData.customer.lastname = vm.customer.results[index].lastname
-						bookingData.customer.email = vm.customer.results[index].email
-						bookingData.checkinTime = vm.customer.checkinTime
+						bookingData.customer.middlename = vm.customer.results[index].middlename
+						bookingData.customer.email = vm.customer.results[index].email[0]
+						bookingData.checkinTime = new Date(vm.customer.intime.year, vm.customer.intime.month - 1, vm.customer.intime.day, vm.customer.intime.hour, vm.customer.intime.minute)
+						bookingData.checkoutTime = new Date(vm.customer.outtime.year, vm.customer.outtime.month - 1, vm.customer.outtime.day, vm.customer.outtime.hour, vm.customer.outtime.minute)
 						bookingData.message = vm.customer.message
-						bookingData.storeName = vm.customer.location.name;
-						bookingData.productName = vm.customer.service.name;
-						bookingData.quantity = vm.customer.quantity;
+						// bookingData.storeName = vm.customer.location.name;
+						// bookingData.productName = vm.customer.service.name;
+
+						// bookingData.storeId = 
+						bookingData.orderline.quantity = vm.customer.quantity;
+						console.log(vm.customer.service.name)
+						bookingData.orderline.productId = vm.data.serviceNames.filter(function(ele){return ele.name == vm.customer.service.name})[0]._id
+						bookingData.storeId = vm.data.locationNames.filter(function(ele){return ele.name == vm.customer.location.name})[0]._id
 						console.log(bookingData)
 						bookingService.createOne(bookingData)
 							.then(function success(res){

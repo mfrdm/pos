@@ -33,7 +33,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	}//anything related to DOM
 	vm.model.dom.checkInListDiv = true;
 	vm.model.dom.checkInDiv = false;
-	vm.model.dom.filterDiv = false;
+	vm.model.dom.filterDiv = true;
 	vm.model.dom.checkInEditDiv = false;
 	vm.model.dom.checkOutDiv = false;
 

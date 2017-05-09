@@ -23,25 +23,25 @@
 }
 
 .marginL15 {
-	margin-left: .9375rem;
+	margin-left: .9375rem!important;
 }
 
 
 .marginAll15 {
-	margin: .9375rem;
+	margin: .9375rem!important;
 }
 
 .marginTB15 {
-	margin-top: .9375rem;
-	margin-bottom: .9375rem;
+	margin-top: .9375rem!important;
+	margin-bottom: .9375rem!important;
 }
 
 .marginB30 {
-	margin-top: 1.875rem;
+	margin-top: 1.875rem!important;
 }
 
 .marginT100 {
-	margin-top: 6.25rem;
+	margin-top: 6.25rem!important;
 }
 
 
@@ -68,15 +68,15 @@
 }
 
 .paddingT15 {
-	padding-top: .9375rem;
+	padding-top: .9375rem!important;
 }
 
 .paddingR15 {
-	padding-right: .9375rem;
+	padding-right: .9375rem!important;
 }
 
 .paddingL15 {
-	padding-left: .9375rem;
+	padding-left: .9375rem!important;
 }
 
 .paddingAll15 {
@@ -84,8 +84,8 @@
 }
 
 .paddingTB15 {
-	padding-top: .9375rem;
-	padding-bottom: .9375rem;
+	padding-top: .9375rem!important;
+	padding-bottom: .9375rem!important;
 }
 
 .paddingLR45 {
@@ -94,39 +94,39 @@
 }
 
 .paddingT45 {
-	padding-top: 2.8125rem;
+	padding-top: 2.8125rem!important;
 }
 
 .paddingB45 {
-	padding-bottom: 2.8125rem;
+	padding-bottom: 2.8125rem!important;
 }
 
 .paddingL45 {
-	padding-left: 2.8125rem;
+	padding-left: 2.8125rem!important;
 }
 
 .paddingR45 {
-	padding-right: 2.8125rem;
+	padding-right: 2.8125rem!important;
 }
 
 .paddingAll45 {
-	padding: 2.8125rem;
+	padding: 2.8125rem!important;
 }
 
 .paddingTB45 {
-	padding-top: 2.8125rem;
-	padding-bottom: 2.8125rem;
+	padding-top: 2.8125rem!important;
+	padding-bottom: 2.8125rem!important;
 }
 
 .paddingAll30 {
-	padding-left: 1.875rem;
-	padding-right: 1.875rem;
-	padding-top: 1.875rem;
-	padding-bottom: 1.875rem;
+	padding-left: 1.875rem!important;
+	padding-right: 1.875rem!important;
+	padding-top: 1.875rem!important;
+	padding-bottom: 1.875rem!important;
 } 
 
 .paddingT30{
-	padding-top: 1.875rem;
+	padding-top: 1.875rem!important;
 }
 
 @media print, screen and (min-width: 64em){
@@ -231,10 +231,9 @@ ul.listOrder li i{
 
 /*Selected Item Div*/
 .selectedItemDiv{
-	background-color: #e6e6e6;
 	padding: 15px;
 	margin-bottom: 15px;
-	
+	border: 2px solid #69a9d3;
 }
 
 .selectedItemDiv label{
@@ -248,9 +247,8 @@ ul.listOrder li i{
 
 /*main checkin section*/
 .mainSectionCheckin{
-	background-color: rgba(238, 144, 91, 0.69);
 	padding: 15px;
-
+	border: 2px solid #69a9d3;
 }
 
 /* Invoice checkout*/

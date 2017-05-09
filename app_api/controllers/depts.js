@@ -21,7 +21,6 @@ function Depts() {
 	};
 
 	this.updateOneDeptById = function(req, res) {
-		console.log(req.body)
 		dbHelper.updateOneById(req, res, DeptsModel, 'deptId')
 	};
 
