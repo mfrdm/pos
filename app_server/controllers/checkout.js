@@ -69,11 +69,9 @@ function Checkout() {
 
 									foundOrder.usage = foundOrder.getUsageTime ();
 									foundOrder.total = foundOrder.getTotal ();
-									console.log (foundOrder.total)
 									foundOrder.total = foundCodes.reduce (function (acc, val){
 										return Promocodes.redeem (val.name, acc);
 									}, foundOrder.total);
-									console.log (foundOrder.total)
 									res.json ({data: foundOrder});
 
 								}	
@@ -99,7 +97,7 @@ function Checkout() {
 							res.json ({data: foundOrder})
 						}
 						else{
-							next ()
+							next ();
 						}
 					});
 				}

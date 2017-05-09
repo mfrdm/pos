@@ -59,6 +59,7 @@ router.post('/hr/employees/employee/:uId/edit', hrCtrl.editOneUser);
 router.get('/angular/employees', hrCtrl.readAngularEmployees);
 
 router.get('/angular/combo', combosCtrl.readAngularCombo);
+router.post ('/combos/buy', combosCtrl.buy)
 
 // router.get('/bi', biCtrl.readReport);
 
@@ -101,7 +102,7 @@ router.get ('/promo-codes/code/:codeId', promoCodesCtrl.readOneCodeById);
 router.post ('/promo-codes/create', promoCodesCtrl.createOneCode);
 router.post ('/promo-codes/code/:codeId', promoCodesCtrl.updateOneCode);
 
-router.post ('/combos/customer/:customerId', combosCtrl.purchaseCombos);
+// router.post ('/combos/customer/:customerId', combosCtrl.purchaseCombos);
 
 // Others
 router.get ('/components/template/message', othersCtrl.getMessageTemplate);
