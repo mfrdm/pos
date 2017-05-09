@@ -183,8 +183,12 @@ div(class="columns row")
 //Invoice
 div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
 	div(class='row column paddingT45')
-		div(class="row column small-12 text-center large-6large-push-3")
-			h2 Invoice for {{vm.model.customer.checkoutCustomer.customer.lastname}} {{vm.model.customer.checkoutCustomer.customer.middlename}} {{vm.model.customer.checkoutCustomer.customer.firstname}}
+		div(class='row coumn header-invoice-img text-center')
+			img(src='/img/logo.png')
+		div(class='row coumn header-invoice text-center')
+			h4 Địa chỉ: Số nhà 70, ngách 23, ngõ 82, Chùa Láng, Láng Thượng, Đống Đa, Hà Nội
+			h4 Liên hệ: 097 785 55 94
+			h4 Website: greenspace-cw.com
 		form(class="row column small-12 large-6 large-push-3 invoice" ng-submit='vm.ctrl.confirmCheckout()' confirm-submit = "Are you sure to checkout")
 			div(class="borderT newBox row column")
 				table(class="borderAll")
@@ -214,7 +218,6 @@ div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
 							td(class='text-center hightlight') {{ service.productName}}
 							td(class='text-center hightlight' width="150") {{ service.quantity}}
 						tr
-
 							th(class='text-center') Total Money
 							td(colspan="2" class='text-center hightlight') {{ vm.model.customer.checkoutCustomer.total}}
 			div(class="row column")
