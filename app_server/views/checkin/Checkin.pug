@@ -17,7 +17,7 @@ div(class="columns row")
 					li(class="float-right")
 						ul(class="menu")
 							li: label(class="paddingR15 show-for-large") Sort by
-							li: select(ng-model="vm.model.orderBy" ng-options="key as value for (key , value) in vm.model.orderOptions" ng-change='vm.ctrl.testOrder()')
+							li: select(ng-model="vm.model.orderBy" ng-options="key as value for (key , value) in vm.model.orderOptions")
 		// Check-in
 		div(class="column")
 			div(class="borderT newBox row column paddingLR15 callout primary" ng-show="vm.model.dom.checkInDiv")
@@ -153,8 +153,10 @@ div(class="columns row")
 							th No
 							th Name
 							th Phone
-							th Date
-							th Time
+							th Checkin Date
+							th Checkin Time
+							th Checkout Date
+							th Checkout Time
 							th Service
 							th Checkout
 							th Edit
@@ -165,11 +167,15 @@ div(class="columns row")
 							td {{ customer.customer.phone }}
 							td {{ customer.checkinTime | date:'dd/MM/yyyy' }}
 							td {{ customer.checkinTime | date: 'shortTime' }}
+							td {{ customer.checkoutTime | date:'dd/MM/yyyy' }}
+							td {{ customer.checkoutTime | date: 'shortTime' }}
 							td {{ customer.orderline[0].productName	}}
 							td
-								button(type="button" class="warning button" ng-click="vm.ctrl.getInvoiceForCheckout (customer)") Checkout
+								button(type="button" ng-if='customer.status == 1' class="warning button" ng-click="vm.ctrl.getInvoiceForCheckout (customer)") Checkout
+								button(type='button' ng-if='customer.status == 2' class="disabled button") Checkout
 							td
-								button(type="button" class="alert button" ng-click="vm.ctrl.editCheckInCustomer (customer)") Edit
+								button(type="button" ng-if='customer.status == 1' class="alert button" ng-click="vm.ctrl.editCheckInCustomer (customer)") Edit
+								button(type='button' ng-if='customer.status == 2' class="disabled button") Edit
 
 //Confirm checkin order list
 

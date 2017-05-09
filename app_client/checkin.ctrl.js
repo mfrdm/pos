@@ -22,10 +22,6 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		'checkinTime': 'Checkin Time Farthest',
 		'-checkinTime': 'Checkin Time Lastest'
 	}
-	vm.ctrl.testOrder = function(){
-		console.log(vm.model.orderBy)
-	}
-
 
 	vm.model.dom = {
 		messageSearchResult: false,
@@ -391,8 +387,10 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	}
 
 	vm.ctrl.reload = function (){
+		
+		vm.model.customer.checkingInData = null;
+		$scope.layout.currentCustomer = null;
 		$route.reload();
-		vm.model.customer.checkingInData = getDefaultCheckInData ();
 	}
 
 	//Update check in

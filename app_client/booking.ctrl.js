@@ -1,16 +1,17 @@
 (function () {
 	angular
 		.module ('posApp')
-		.controller ('BookingCtrl', ['$route','bookingService','otherService',BookingCtrl])
+		.controller ('BookingCtrl', ['$scope','$route','bookingService','otherService','$window',BookingCtrl])
 
 
-	function BookingCtrl ($route,bookingService, otherService) {
+	function BookingCtrl ($scope, $route,bookingService, otherService, $window) {
 		var vm = this;
 		vm.tab = 'tab-main';
 		vm.look = {};
 		vm.customer = {};
 		vm.booking = {};
 
+		vm.booking.all = {}
 		vm.customer.intime = {}
 		vm.customer.outtime = {}
 		vm.customer.intime.year = 2017;
@@ -67,26 +68,7 @@
 		//get all bookings
 		bookingService.readSome()
 			.then(function success(res){
-				vm.look.allBooking = res.data.data
-				console.log(vm.look.allBooking)
-				vm.toProfile = function(index){
-					vm.tab = 'tab-profile';
-					vm.booking = vm.look.allBooking[index]
-				}
-				vm.deleteBooking = function(index){
-					vm.booking = vm.look.allBooking[index]
-					var deleteData = {
-						$set:{status:4}
-					}
-					bookingService.updateOne(vm.booking._id, deleteData)
-						.then(function success(res){
-							console.log(res);
-							$route.reload()
-						}, function error(err){
-							console.log(err)
-						})
-
-				}
+				vm.booking.all.results = res.data.data
 			}, function error(err){
 				console.log(err)
 			})
@@ -200,6 +182,41 @@
 				}, function error(err){
 					console.log(err)
 				})
+		}
+
+		////////////////////////////////////////////////////////
+		//Accept Booking
+		vm.acceptBooking = function(item){
+			if($window.confirm('Are you sure to accept this booking')){
+				bookingService.readOneCustomer(item.customer.id)
+					.then(function success(res){
+						$scope.layout.currentCustomer = res.data.data;
+						bookingService.updateOne(item._id, {$set:{status:1}})
+							.then(function success(res){
+								$window.location.href = '/#!/checkin'
+							})
+					})
+			}
+		}
+		////////////////////////////////////////////////////////
+		//Refuse Booking
+		vm.refuseBooking = function(item){
+			if($window.confirm('Are you sure to refuse this booking')){
+				bookingService.updateOne(item._id, {$set:{status:2}})
+					.then(function success(res){
+						$route.reload();
+					})
+			}
+		}
+		////////////////////////////////////////////////////////
+		//Cancel Booking
+		vm.cancelBooking = function(item){
+			if($window.confirm('Are you sure to cancel this booking')){
+				bookingService.updateOne(item._id, {$set:{status:4}})
+					.then(function success(res){
+						$route.reload();
+					})
+			}
 		}
 	}
 
