@@ -252,7 +252,7 @@ ul.listOrder li i{
 }
 
 /* Invoice checkout*/
-.invoice span{
+.invoice .hightlight{
 	font-weight: bold;
 	color: red;
 }

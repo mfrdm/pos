@@ -131,7 +131,7 @@ div(class="columns row")
 										td {{product.productName}}
 										td {{product.quantity}}
 										td
-											input(class="button alert marginB0" type="submit" value="Delete" ng-click='vm.ctrl.deleteSelectEditService($index); $event.preventDefault()')
+											input(class="button alert marginB0" type='submit' value="Delete" ng-click='vm.ctrl.deleteSelectEditService(product); $event.preventDefault()')
 					div(class="row column")
 						div(class="column small-6 paddingL0")
 							label Add Items
@@ -182,53 +182,41 @@ div(class="columns row")
 
 //Invoice
 div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
-	div(class='row column paddingT45 borderT newBox')
+	div(class='row column paddingT45')
 		div(class="row column small-12 text-center large-6large-push-3")
 			h2 Invoice for {{vm.model.customer.checkoutCustomer.customer.lastname}} {{vm.model.customer.checkoutCustomer.customer.middlename}} {{vm.model.customer.checkoutCustomer.customer.firstname}}
 		form(class="row column small-12 large-6 large-push-3 invoice" ng-submit='vm.ctrl.confirmCheckout()' confirm-submit = "Are you sure to checkout")
 			div(class="borderT newBox row column")
-				table(class="striped borderAll")
+				table(class="borderAll")
 					tbody
 						tr
-							th(class='text-center') Lastname
-							td(class='text-center') {{ vm.model.customer.checkoutCustomer.customer.lastname}}
-						tr
-							th(class='text-center') Firstname
-							td(class='text-center') {{ vm.model.customer.checkoutCustomer.customer.firstname}}
+							th(class='text-center') Fullname
+							td(colspan="2" class='text-center') {{ vm.model.customer.checkoutCustomer.customer.lastname}} {{ vm.model.customer.checkoutCustomer.customer.middlename}} {{ vm.model.customer.checkoutCustomer.customer.firstname}}
 						tr
 							th(class='text-center') Phone
-							td(class='text-center') {{ vm.model.customer.checkoutCustomer.customer.phone}}
+							td(colspan="2" class='text-center') {{ vm.model.customer.checkoutCustomer.customer.phone}}
 						tr
 
-							th(class='text-center') Checkin Date
+							th(class='text-center') Checkin
+							td(class='text-center hightlight') {{ vm.model.customer.checkoutCustomer.checkinTime | date:'shortTime'}}
 							td(class='text-center') {{ vm.model.customer.checkoutCustomer.checkinTime | date:'dd/MM/yyyy'}}
 						tr
 
-							th(class='text-center')
-								span Checkin Time
-							td(class='text-center')
-								span {{ vm.model.customer.checkoutCustomer.checkinTime | date:'shortTime'}}
-						tr
-
-							th(class='text-center') Checkout Date
+							th(class='text-center') Checkout
+							td(class='text-center hightlight') {{ vm.model.customer.checkoutCustomer.checkoutTime | date:'shortTime'}}
 							td(class='text-center') {{ vm.model.customer.checkoutCustomer.checkoutTime | date:'dd/MM/yyyy'}}
 						tr
-
-							th(class='text-center')
-								span Checkout Time
-							td(class='text-center')
-								span {{ vm.model.customer.checkoutCustomer.checkoutTime | date:'shortTime'}}
-						tr(ng-repeat='service in vm.model.customer.checkoutCustomer.orderline')
-							th(class='text-center') Service
-							td(class='text-center') Product/Service: 
-								span {{ service.productName}}
-								p Quantity: 
-									span {{ service.quantity }}
+							th(class='text-center') Main Service
+							td(class='text-center hightlight') {{ vm.model.customer.checkoutCustomer.orderline[0].productName}}
+							td(class='text-center hightlight' width="150") {{ vm.model.customer.checkoutCustomer.orderline[0].quantity}}
+						tr(ng-repeat='service in vm.model.customer.checkoutCustomer.orderline.slice(1)')
+							th(class='text-center') Other products
+							td(class='text-center hightlight') {{ service.productName}}
+							td(class='text-center hightlight' width="150") {{ service.quantity}}
 						tr
 
 							th(class='text-center') Total Money
-							td(class='text-center')
-								span {{ vm.model.customer.checkoutCustomer.total}}
+							td(colspan="2" class='text-center hightlight') {{ vm.model.customer.checkoutCustomer.total}}
 			div(class="row column")
 				div(class='column small-12 large-paddingLR0')
 					input(class="paddingL15 button success" type="submit" value="Confirm")
