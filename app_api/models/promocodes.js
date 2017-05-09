@@ -13,15 +13,17 @@ var redeem = function (code, val){
 // not actually code. But discount when meet condition, checked programmatically
 var discount = function (code, product){
 	if (code.toLowerCase () === 'student'){
-		var name = product.productName.toLowerCase();
+		var name = product.productName;
 		
-		if (name === 'group common' || name === 'individual common'){
+		// if (name === 'group common' || name === 'individual common'){
+		if (name == "Phòng Chung Dành Cho Cá Nhân" || name == "Phòng Chung Dành Cho Nhóm"){
 			return 10000
 		}
 		else{
 			return product.price
 		}
 	}
+	return product.price
 }
 
 var promocodesSchema = mongoose.Schema ({

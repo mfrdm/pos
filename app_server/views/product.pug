@@ -7,19 +7,18 @@ div(ng-switch='vm.tab')
 				// Create Account
 				div(class="column")
 					div(class="borderT newBox row column")
-						form(class='row column')
+						form(class='row column' ng-submit='vm.ctrl.createNewProduct()' confirm-submit='Are you sure to create new Product')
 							div(class='column small-12 paddingL0')
 								label Product Name
-									input(type='text' ng-model='vm.name' required)
+									input(type='text' ng-model='vm.model.product.selectedForCreateProduct.name' required)
 							div(class='column small-12 paddingL0')
 								label Price
-									input(required type='text' ng-model='vm.price')
+									input(required type='text' ng-model='vm.model.product.selectedForCreateProduct.price')
 							div(class='column small-12 paddingL0')
 								label Category
-									input(required type='text' ng-model='vm.category')
-						div(class="row column")
+									select(ng-model='vm.model.product.selectedForCreateProduct.category' required ng-options="key as value for (key , value) in {1: 'Main',2: 'Soft drink',3: 'Fast food', 4:'Snack'}")
 							div(class='column small-12 paddingL0')
-								input(class="button" type="submit" value="Create" ng-confirm-click='Are you sure to create new one' confirmed-click='vm.createNewProduct()')
+								input(class="button" type="submit" value="Create")
 								button(class="button float-right") Cancel
 			div(class="row colums")
 				div(class="column")

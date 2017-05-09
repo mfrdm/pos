@@ -7,22 +7,21 @@ div(ng-switch='vm.tab')
 				// Create New Store *********************************//
 				div(class="column")
 					div(class="borderT newBox row column")
-						form(class='row column')
+						form(class='row column' ng-submit='vm.createNewStore()')
 							div(class='column small-12 paddingLR0')
 								label Store name
 									input(type='text' ng-model='vm.name' required)
 							div(class='column small-12 paddingLR0')
 								label Manager Fullname
-									input(required type='text' ng-model='vm.managerFullname')
+									input(required type='text' ng-model='vm.manager')
 							div(class='column small-12 paddingLR0')
 								label Contact Email
 									input(required type='email' ng-model='vm.contactEmail')
 							div(class='column small-12 paddingLR0')
 								label Contact Phone
 									input(required type='number' ng-model='vm.contactPhone')
-						div(class="row column")
 							div(class='column small-12 paddingLR0')
-								input(class="button" type="submit" value="Create" ng-confirm-click='Are you sure to create new one' confirmed-click='vm.createNewStore()')
+								input(class="button" type="submit" value="Create")
 								button(class="button float-right") Cancel
 			div(class="row colums")
 				div(class="column")
@@ -62,31 +61,9 @@ div(ng-switch='vm.tab')
 												tr(ng-repeat='result in vm.searchResult.stores', ng-click='vm.selectStoreToViewProfile($index)' class="pointerCursor")
 													td {{ $index + 1 }}
 													td {{ result.name }}
-													td {{ result.managerFullname }}
+													td {{ result.manager }}
 													td {{ result.contact.email }}
 													td {{ result.contact.phone }}
-		// List All Stores *********************************//
-		div(class='row column')
-			div(class="column small-12 paddingLR0")
-				div(class="table-scroll newBox")
-					table(class="borderAll")
-						thead
-							tr
-								th No
-								th Name
-								th Manager
-								th Contact Email
-								th Contact Phone
-								th Edit
-						tbody
-							tr(ng-repeat='item in vm.look.allStores')
-								td {{ $index + 1 }}
-								td {{ item.name }}
-								td {{ item.managerFullname }}
-								td {{ item.contact.email }}
-								td {{ item.contact.phone }}
-								td
-									button(type="button" class="alert button" ng-click='vm.selectStoreInListToViewProfile($index)') Edit
 	div(ng-switch-when='tab-profile')
 		div(class="columns row")
 			div(class="row colums")
@@ -106,7 +83,7 @@ div(ng-switch='vm.tab')
 									th(class='text-center') {{vm.store.name}}
 								tr
 									th(class='text-center') Manager
-									th(class='text-center') {{vm.store.managerFullname}}
+									th(class='text-center') {{vm.store.manager}}
 								tr
 									th(class='text-center') Contact Email
 									th(class='text-center') {{vm.store.contact.email}}
@@ -139,7 +116,7 @@ div(ng-switch='vm.tab')
 								tr
 									th(class='text-center') Manager
 									th(class='text-center')
-										input(type='text' ng-model='vm.store.managerFullname')
+										input(type='text' ng-model='vm.store.manager')
 								tr
 									th(class='text-center') Contact Email
 									th(class='text-center')

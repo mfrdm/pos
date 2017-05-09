@@ -18,12 +18,15 @@ function Checkin() {
 			var codeNames = order.promocodes.map (function (x, i, arr){
 				return x.name;
 			});
+			console.log(codeNames, 'te')
 
 			Promocodes.find ({name: {$in : codeNames}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1}, function (err, foundCodes){
 				if (err){
+					console.log(err)
 					next (err);
 				}
 				if (Object.keys (foundCodes).length){
+					
 					order.save (function (err, newOrder){
 						if (err) {
 							next (err)

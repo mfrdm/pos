@@ -23,25 +23,25 @@
 }
 
 .marginL15 {
-	margin-left: .9375rem;
+	margin-left: .9375rem!important;
 }
 
 
 .marginAll15 {
-	margin: .9375rem;
+	margin: .9375rem!important;
 }
 
 .marginTB15 {
-	margin-top: .9375rem;
-	margin-bottom: .9375rem;
+	margin-top: .9375rem!important;
+	margin-bottom: .9375rem!important;
 }
 
 .marginB30 {
-	margin-top: 1.875rem;
+	margin-top: 1.875rem!important;
 }
 
 .marginT100 {
-	margin-top: 6.25rem;
+	margin-top: 6.25rem!important;
 }
 
 
@@ -68,15 +68,15 @@
 }
 
 .paddingT15 {
-	padding-top: .9375rem;
+	padding-top: .9375rem!important;
 }
 
 .paddingR15 {
-	padding-right: .9375rem;
+	padding-right: .9375rem!important;
 }
 
 .paddingL15 {
-	padding-left: .9375rem;
+	padding-left: .9375rem!important;
 }
 
 .paddingAll15 {
@@ -84,8 +84,8 @@
 }
 
 .paddingTB15 {
-	padding-top: .9375rem;
-	padding-bottom: .9375rem;
+	padding-top: .9375rem!important;
+	padding-bottom: .9375rem!important;
 }
 
 .paddingLR45 {
@@ -94,41 +94,121 @@
 }
 
 .paddingT45 {
-	padding-top: 2.8125rem;
+	padding-top: 2.8125rem!important;
 }
 
 .paddingB45 {
-	padding-bottom: 2.8125rem;
+	padding-bottom: 2.8125rem!important;
 }
 
 .paddingL45 {
-	padding-left: 2.8125rem;
+	padding-left: 2.8125rem!important;
 }
 
 .paddingR45 {
-	padding-right: 2.8125rem;
+	padding-right: 2.8125rem!important;
 }
 
 .paddingAll45 {
-	padding: 2.8125rem;
+	padding: 2.8125rem!important;
 }
 
 .paddingTB45 {
-	padding-top: 2.8125rem;
-	padding-bottom: 2.8125rem;
+	padding-top: 2.8125rem!important;
+	padding-bottom: 2.8125rem!important;
 }
 
 .paddingAll30 {
-	padding-left: 1.875rem;
-	padding-right: 1.875rem;
-	padding-top: 1.875rem;
-	padding-bottom: 1.875rem;
+	padding-left: 1.875rem!important;
+	padding-right: 1.875rem!important;
+	padding-top: 1.875rem!important;
+	padding-bottom: 1.875rem!important;
 } 
 
 .paddingT30{
-	padding-top: 1.875rem;
+	padding-top: 1.875rem!important;
 }
 
+@media print, screen and (min-width: 64em){
+	.large-paddingT100: {
+
+	}
+
+	.large-paddingLR45 {
+		padding-right: 2.8125rem!important;	
+		padding-left: 2.8125rem!important;		
+	}
+
+	.large-paddingAll45 {
+		padding: 2.8125rem!important;		
+	}
+
+	.large-paddingT100 {
+		padding-top: 6.25rem!important;
+	}
+
+	.large-paddingB45{
+		padding-bottom: 2.8125rem!important;
+	}
+
+	.large-paddingL45{
+		padding-left: 2.8125rem!important;
+	}
+
+	.large-paddingR45{
+		padding-right: 2.8125rem!important;	
+	}
+
+	.large-paddingL15{
+		padding-left: 0.9375rem!important;	
+	}
+
+	.large-paddingR15{
+		padding-right: 0.9375rem!important;	
+	}
+
+	.large-paddingLR15 {
+		padding-right: 0.9375rem!important;	
+		padding-left: 0.9375rem!important;		
+	}
+
+	.large-paddingLR0 {
+		padding-right: 0rem!important;	
+		padding-left: 0rem!important;		
+	}
+
+
+	.large-marginB15{
+		margin: 0 0 0.9375rem!important;
+	}
+
+	.large-paddingR5{
+		padding-right: 0.3125rem!important;
+	}
+
+	.large-paddingL5{
+		padding-left: 0.3125rem!important;
+	}
+
+	.large-lineheight35{
+		line-height: 2.1875rem!important;
+	}
+
+	.max-width468{
+		max-width: 468px;
+	}
+
+	.max-width1000{
+		max-width: 1000px;
+	}
+
+}
+
+@media print, screen and (min-width: 40em) and (max-width: 64em){
+	.medium-paddingT45{
+		padding-top: 2.8125rem!important;
+	}
+}
 
 /*Checkin*/
 ul.listOrder li i{
@@ -144,6 +224,35 @@ ul.listOrder li i{
 	left:0;
 	width: 100%;
 	height: 100%;
-	min-height: 100vh;
-	z-index: 1;
+/*	min-height: 100vh;
+*/	z-index: 1;
+	overflow-y: scroll;
+}
+
+/*Selected Item Div*/
+.selectedItemDiv{
+	padding: 15px;
+	margin-bottom: 15px;
+	border: 2px solid #69a9d3;
+}
+
+.selectedItemDiv label{
+	font-weight: bold;
+}
+
+.selectedItemDiv tr td{
+	color: #000;
+	font-weight: bold;
+}
+
+/*main checkin section*/
+.mainSectionCheckin{
+	padding: 15px;
+	border: 2px solid #69a9d3;
+}
+
+/* Invoice checkout*/
+.invoice span{
+	font-weight: bold;
+	color: red;
 }

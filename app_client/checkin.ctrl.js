@@ -10,90 +10,122 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	vm.model.search = {}//Any things related to search
 	vm.model.search.messageNoResult = 'No search result? Or '
 
+	//Filter
+	vm.model.filter = {};
+	vm.model.orderBy = {};
+	vm.model.statusOptions = {
+		1:'Checkin', 2:'Checkout'
+	}
+	vm.model.orderOptions = {
+		'customer.firstname':'Firstname A-Z',
+		'-customer.firstname':'Firstname Z-A',
+		'checkinTime': 'Checkin Time Farthest',
+		'-checkinTime': 'Checkin Time Lastest'
+	}
+	vm.ctrl.testOrder = function(){
+		console.log(vm.model.orderBy)
+	}
+
+
 	vm.model.dom = {
 		messageSearchResult: false,
 		checkingInCustomerSearchResult: false,
 	}//anything related to DOM
 	vm.model.dom.checkInListDiv = true;
 	vm.model.dom.checkInDiv = false;
-	vm.model.dom.filterDiv = false;
+	vm.model.dom.filterDiv = true;
 	vm.model.dom.checkInEditDiv = false;
 	vm.model.dom.checkOutDiv = false;
 
 	vm.model.customer = {}//Any thing related to customer
+	vm.model.customer.services = {}//All products
+	vm.model.selectedToEditItem = {};
 
 	// TESTING
 	vm.model.customer.storeId = '58fdc7e1fc13ae0e8700008a';
 	vm.model.customer.userId = '58eb474538671b4224745192'; // staff
 	// END
+	vm.model.listMainProducts = []
+	vm.model.listOtherProducts = []
 	CheckinService.readSomeProducts()
 		.then(function success(res){
-			console.log(res)
+			vm.model.listMainProducts = res.data.data.map(function(ele){
+				if(ele.category == 1){
+					return ele.name
+				}
+			}).filter(function(ele){return ele != undefined})
+			vm.model.listOtherProducts = res.data.data.map(function(ele){
+				if(ele.category != 1){
+					return ele.name
+				}
+			}).filter(function(ele){return ele != undefined})
+			res.data.data.map(function(ele){
+				vm.model.customer.services[ele.name] = {
+					price: ele.price,
+					_id: ele._id,
+					category: ele.category
+				}
+			})
+
+			vm.model.customer.serviceNames = Object.keys (vm.model.customer.services);
+			//Set default value for the order
+			vm.model.customer.checkingInData = getDefaultCheckInData ();
+			//vm.model.customer.checkingInData is data sent to check in
+			
+			vm.model.customer.editedCheckedInCustomer = {};
+
+			//Get customer data from current created Customer
+			function getCheckinCurrentCreatedCus (){
+				return {
+					orderline: [
+						{
+							productName: "Phòng Chung Dành Cho Cá Nhân", // default service
+							quantity: 1,
+							_id: vm.model.customer.services["Phòng Chung Dành Cho Cá Nhân"]._id,
+						},
+						{
+							productName: '', //Add more
+							quantity: 0,
+						},			
+
+					],
+					customer: {
+						firstname: $scope.layout.currentCustomer.firstname,
+						middlename: $scope.layout.currentCustomer.middlename,
+						lastname: $scope.layout.currentCustomer.lastname,
+						phone: $scope.layout.currentCustomer.phone[0],
+						_id: $scope.layout.currentCustomer._id,
+					}
+				}
+			}
+			//Toogle Filter Div
+			vm.ctrl.toggleFilterDiv = function (){
+				if (!vm.model.dom.filterDiv) {
+					vm.model.dom.filterDiv = true;
+					vm.model.dom.checkInEditDiv = false;
+					vm.model.dom.checkInDiv = false;
+				}
+				else vm.model.dom.filterDiv = false;
+			};
+
+			if($scope.layout.currentCustomer){
+				vm.model.dom.checkInDiv = true;
+				vm.model.customer.checkingInData = getCheckinCurrentCreatedCus();
+				vm.model.search.username = $scope.layout.currentCustomer.lastname +' '+ ($scope.layout.currentCustomer.middlename ? $scope.layout.currentCustomer.middlename : '') + ' '+ $scope.layout.currentCustomer.firstname + ($scope.layout.currentCustomer.email[0] ? '/' + $scope.layout.currentCustomer.email[0]:'')
+			}
 		}, function error(err){
 			console.log(err)
 		})
-	vm.model.customer.services = { // FIX: no hardcode
-		//Services pull from Products model
-		'Private': {
-			price: 150000,
-			// id: '58eb474538671b4224745195',
-		},
-		'Common': {
-			price: 10000,
-			// id: '58eb474538671b4224745198',
-		},
-		'': {
-			price: 0,
-			// id: -1,
-		},
-		'Coca Cola': {
-			price: 7000,
-			// id: '58eb474538671b4224745123',
-		},
-		'Poca': {
-			price: 7000,
-			// id: '58eb474538671b4224745164',
-		},
-		'Pepsi': {
-			price: 7000,
-			// id: '58eb474538671b4224745167',
-		},		
-	};
-	///////////////////////////////////////////////////////////////
-	//Get customer data from current created Customer
-	function getCheckinCurrentCreatedCus (){
-		return {
-			orderline: [
-				{
-					productName: 'Common', // default service
-					quantity: 1,
-					id: vm.model.customer.services['Common'].id,
-				},
-				{
-					productName: '', //Add more
-					quantity: 0,
-				},			
 
-			],
-			customer: {
-				firstname: $scope.layout.currentCustomer.firstname,
-				lastname: $scope.layout.currentCustomer.lastname,
-				phone: $scope.layout.currentCustomer.phone[0],
-				id: $scope.layout.currentCustomer._id,
-			}
-		}
-	}
-
-	
 	////////////////////////////////////////////////////////////////
 	// Default checkin data
 	function getDefaultCheckInData (){
 		return {
 			orderline: [
 				{
-					productName: 'Common', // default service
+					productName: "Phòng Chung Dành Cho Cá Nhân", // default service
 					quantity: 1,
-					id: vm.model.customer.services['Common'].id,
+					_id: vm.model.customer.services["Phòng Chung Dành Cho Cá Nhân"]._id,
 				},
 				{
 					productName: '', //Add more
@@ -103,19 +135,14 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			],
 			customer: {
 				firstname: '',
+				middlename: '',
 				lastname: '',
 				phone: '',
-				id: '',
+				_id: '',
 			}
 		}
 	};
-	vm.model.customer.serviceNames = Object.keys (vm.model.customer.services);
-
-	//Set default value for the order
-	vm.model.customer.checkingInData = getDefaultCheckInData ();
-	//vm.model.customer.checkingInData is data sent to check in
 	
-	vm.model.customer.editedCheckedInCustomer = {};
 	// Used to fill check-in data
 	// FIX: should not include hardcode
 	
@@ -123,7 +150,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	function getDefaultProduct (){
 		return 	{
 			productName: '', //
-			id: '',
+			_id: '',
 			quantity: 0,
 		}
 	};
@@ -133,7 +160,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	vm.ctrl.searchCustomers = function(which) {
 		CheckinService.searchCustomers(vm.model.search.username)
 		.then(function success (res){
-			console.log(res)
+			console.log(res.data.data)
 			if(res.data.data.length == 0){
 				vm.model.dom.messageSearchResult = true;
 				vm.model.dom.checkingInCustomerSearchResult = false;
@@ -143,10 +170,6 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 					vm.model.dom.checkingInCustomerSearchResult = true;
 					vm.model.dom.messageSearchResult = false;
 				}
-				// else if (vm.look.checkInEditDiv && which === 'checkInEditDiv'){
-				// 	vm.searchResult.editedCheckedInCustomers = res.data.data;
-				// 	vm.look.dom.editedCustomerSearchResult = true;
-				// }
 			}
 		}, function error (err){
 			console.log(err)
@@ -156,40 +179,17 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	//Controller Search
 	vm.ctrl.selectCustomerToCheckin = function(index){
 		vm.model.customer.checkingInData.customer = {
-			id: vm.model.search.userResults [index]._id,
+			_id: vm.model.search.userResults [index]._id,
 			firstname: vm.model.search.userResults [index].firstname,
+			middlename: vm.model.search.userResults [index].middlename,
 			lastname: vm.model.search.userResults [index].lastname,
-			phone: vm.model.search.userResults [index].phone,			
+			phone: vm.model.search.userResults [index].phone[0],			
 		}
+		vm.model.customer.checkingInData.promocodes = vm.model.search.userResults [index].promoteCode
 
 		vm.model.dom.checkingInCustomerSearchResult = false;
 		console.log(vm.model.search.userResults[index])
-		vm.model.search.username = vm.model.search.userResults[index].lastname + ' ' + vm.model.search.userResults[index].firstname + ' / ' + vm.model.search.userResults[index].phone[0] + (vm.model.search.userResults[index].email[0] ? ' / ' + vm.model.search.userResults[index].email[0] : '');
-	}
-
-	//Get total money
-	// vm.ctrl.getTotal = function (orderline) {
-	// 	var total = 0;
-	// 	var orderNum = orderline.length;
-	// 	var items =  {};
-	// 	Object.assign (items, vm.model.customer.services, vm.model.customer.otherItems);
-	// 	for (var i = 0; i < orderNum; i++) {
-	// 		if (orderline [i].productName) {
-	// 			total += (items [orderline [i].productName].price * orderline [i].quantity);
-	// 		}
-	// 	}
-	// 	return total;
-	// };
-
-	//Toogle Filter Div
-	vm.ctrl.toggleFilterDiv = function (){
-		if (!vm.model.dom.filterDiv) vm.model.dom.filterDiv = true;
-		else vm.model.dom.filterDiv = false;
-	};
-	if($scope.layout.currentCustomer){
-		vm.model.dom.checkInDiv = true;
-		vm.model.customer.checkingInData = getCheckinCurrentCreatedCus();
-		vm.model.search.username = $scope.layout.currentCustomer.lastname +' '+ ($scope.layout.currentCustomer.middlename ? $scope.layout.currentCustomer.middlename : '') + ' '+ $scope.layout.currentCustomer.firstname + ($scope.layout.currentCustomer.email[0] ? '/' + $scope.layout.currentCustomer.email[0]:'')
+		vm.model.search.username = vm.model.search.userResults[index].lastname + ' ' +vm.model.search.userResults[index].middlename+ ' ' + vm.model.search.userResults[index].firstname + ' / ' + vm.model.search.userResults[index].phone[0] + (vm.model.search.userResults[index].email[0] ? ' / ' + vm.model.search.userResults[index].email[0] : '');
 	}
 
 	//When select one service, options will reduce
@@ -209,7 +209,22 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			count = 0;
 		}
 		count = 0;
-		
+	}
+
+	vm.ctrl.selectServiceToEdit = function(){
+		vm.model.customer.editedCheckedInCustomer.orderline.map(function(ele){
+				if(ele.productName == vm.model.selectedToEditItem.name){
+					count += 1;
+				}
+			})
+		if(count == 0 && vm.model.selectedToEditItem.quantity >0 && vm.model.selectedToEditItem.name){
+			vm.model.customer.editedCheckedInCustomer.orderline.push({
+				productName:vm.model.selectedToEditItem.name,
+				quantity: vm.model.selectedToEditItem.quantity
+			});
+			count = 0;
+		}
+		count = 0;
 	}
 
 	vm.ctrl.deleteSelectService = function(index){
@@ -220,40 +235,54 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		// vm.model.customer.checkingInData.orderline.splice(index)
 
 	}
-	vm.model.customer.checkingInData.promocodes = []
+	vm.ctrl.deleteSelectEditService = function(index){
+		// vm.model.selectedItem = vm.model.selectedItem.filter(function(ele){
+		// 	return ele.name != vm.model.customer.checkingInData.orderline[index]
+		// });
+		vm.model.customer.editedCheckedInCustomer.orderline.splice(index+1)
+		// vm.model.customer.checkingInData.orderline.splice(index)
+
+	}
 	vm.ctrl.checkin = function(){
 		// before checkin
-		if(vm.model.customer.checkingInData.promocodes.length > 0){
+		if(vm.model.customer.checkingInData.promocodes){
 			if(typeof vm.model.customer.checkingInData.promocodes == 'string'){
 				vm.model.customer.checkingInData.promocodes = vm.model.customer.checkingInData.promocodes.split(/[ .:;?!~,`"&|()<>{}\[\]\r\n/\\]+/)
+				
 			}
-			
 			vm.model.customer.checkingInData.promocodes = vm.model.customer.checkingInData.promocodes.map(function(ele){
 				return {name:ele}
 			})
+		}else{
+			vm.model.customer.checkingInData.promocodes = []
 		}
+
+		console.log(vm.model.customer.checkingInData)
+		
 		vm.model.customer.checkingInData.storeId = vm.model.customer.storeId;
 		vm.model.customer.checkingInData.staffId = vm.model.customer.userId;
 
 		// update id in orderline
-		var items =  {};
-		Object.assign (items, vm.model.customer.services, vm.model.customer.otherItems);
 
-		vm.model.customer.checkingInData.orderline.map (function (x, i, array){
-			x.id = items [x.productName];
-		});
+		
 		vm.model.customer.checkingInData.orderline = vm.model.customer.checkingInData.orderline.filter(function(ele){
 			return ele.productName != ''
 		})
+
+		vm.model.customer.checkingInData.orderline.map (function (x){
+			x._id = vm.model.customer.services [x.productName]._id;
+			x.price = vm.model.customer.services [x.productName].price;
+		});
 		
 
 		console.log(vm.model.customer.checkingInData)
-		CheckinService.createOne (vm.model.customer.checkingInData.customer.id, vm.model.customer.checkingInData).then(
+		CheckinService.createOne (vm.model.customer.checkingInData.customer._id, vm.model.customer.checkingInData).then(
 			function success(data){
 				console.log (data.data)
 				vm.model.customer.checkedInList.push (data.data.data.orderData);
-				// vm.toggleCheckInDiv ();
-				//vm.status.checkedin = true;
+				$scope.layout.currentCustomer = null;
+				$route.reload();
+				vm.model.dom.checkInDiv = false;
 			}, 
 			function error(err){
 				console.log(err);
@@ -267,6 +296,8 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	vm.ctrl.toggleCheckInDiv = function(){
 		if (!vm.model.dom.checkInDiv){
 			vm.model.dom.checkInDiv = true;
+			vm.model.dom.checkInEditDiv = false;
+			vm.model.dom.filterDiv = false;
 		}
 		else{
 			vm.model.dom.checkInDiv = false;
@@ -294,43 +325,74 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	);
 
 	//Toggle Edit check in
-	vm.ctrl.toggleCheckInEditDiv = function (index) {
-		if (vm.model.dom.checkInEditDiv){ // turn off
-			vm.model.dom.checkInEditDiv = false;
+	vm.ctrl.editCheckInCustomer = function (item) {
+			vm.model.dom.checkInEditDiv = true;
+			vm.model.dom.checkInDiv = false;
 			vm.model.dom.checkInListDiv = true;
+			vm.model.dom.filterDiv = false;
+			var index = vm.model.customer.checkedInList.indexOf(item);
+
 			vm.model.customer.editedCheckedInCustomer = {}; // reset
-		}
-		else{
 			vm.model.customer.editedCheckedInCustomer = vm.model.customer.checkedInList[index];
+			console.log(vm.model.customer.editedCheckedInCustomer)
 			vm.model.customer.editedCheckedInCustomer.orderline.map (function (x, i, arr){
 				x.quantity = parseInt (x.quantity);
 			});
-			console.log(vm.model.customer.editedCheckedInCustomer)
-			vm.model.customer.editedCheckedInCustomer.username = vm.model.customer.editedCheckedInCustomer.customer.lastname + ' ' + vm.model.customer.editedCheckedInCustomer.customer.firstname;
 
 			if (vm.model.customer.editedCheckedInCustomer.orderline.length == 1){
 				vm.model.customer.editedCheckedInCustomer.orderline.push (getDefaultProduct());
 			}
+			vm.model.customer.editedCheckedInCustomer.orderline = vm.model.customer.editedCheckedInCustomer.orderline.filter(function(ele){
+				return ele.productName != ''
+			})
+			vm.ctrl.edit = function(){
+				
+				vm.model.customer.editedCheckedInCustomer.orderline.map (function (x){
+					x._id = vm.model.customer.services [x.productName]._id;
+					x.price = vm.model.customer.services [x.productName].price;
+				});
 
-			vm.model.dom.checkInEditDiv = true;
-			vm.model.dom.checkInListDiv = false;
-		}
+				console.log(vm.model.customer.editedCheckedInCustomer.orderline)
+				
+				CheckinService.updateOne(vm.model.customer.editedCheckedInCustomer._id, vm.model.customer.editedCheckedInCustomer.orderline)
+					.then(function success(res){
+						console.log(res)
+						$window.alert('Successfully Edit')
+						$route.reload();
+					}, function error(err){
+						console.log(err)
+					})
+			}
 	};
+	// 199000, 140.000+59.000
 
-	vm.ctrl.toggleCheckOutDiv = function(index){
+	vm.ctrl.getInvoiceForCheckout = function(item){
 		vm.model.dom.checkOutDiv = true;
+		var index = vm.model.customer.checkedInList.indexOf(item);
 		console.log(vm.model.customer.checkedInList[index])
-		vm.model.customer.checkoutCustomer = vm.model.customer.checkedInList[index]
-		vm.ctrl.confirmCheckout = function(){
-			CheckinService.postCheckOut(vm.model.customer.checkoutCustomer._id)
-				.then(function success(res){
-					$route.reload();
-				})
-		}
+		CheckinService.readInvoice(vm.model.customer.checkedInList[index]._id)
+			.then(function success(res){
+				console.log(res.data.data)
+				vm.model.customer.checkoutCustomer = res.data.data;
+			}, function error(err){
+				console.log(err)
+			})
+	}
+
+	vm.ctrl.confirmCheckout = function(){
+		CheckinService.confirmCheckout(vm.model.customer.checkoutCustomer)
+			.then(function success(res){
+				console.log(res);
+				$window.alert('Successfully checkout')
+				$route.reload();
+			}, function error(err){
+				console.log(err)
+			})
 	}
 
 	vm.ctrl.reload = function (){
 		$route.reload();
+		vm.model.customer.checkingInData = getDefaultCheckInData ();
 	}
 
 	//Update check in
@@ -339,13 +401,6 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		.then(function success(res){
 			console.log(res)
 		})
-	}
-
-
-	//Filter
-	vm.model.filter = {};
-	vm.model.statusOptions = {
-		1:'Checkin', 2:'Checkout'
 	}
 
 };

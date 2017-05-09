@@ -17,7 +17,7 @@ function Checkout() {
 
 		function getDiscount (customer, foundOrder){
 			if (customer.edu.length){
-				var discountCode;
+				var discountCode = '';
 				if (isStudent (customer)){
 					discountCode = 'student';
 				}
@@ -66,7 +66,6 @@ function Checkout() {
 
 								if (foundCustomer){
 									getDiscount (foundCustomer, foundOrder);
-
 									foundOrder.usage = foundOrder.getUsageTime ();
 									foundOrder.total = foundOrder.getTotal ();
 									foundOrder.total = foundCodes.reduce (function (acc, val){
@@ -90,10 +89,10 @@ function Checkout() {
 						}
 
 						if (foundCustomer){
-							getDiscount (foundCustomer, foundOrder);
 
+							getDiscount (foundCustomer, foundOrder);
 							foundOrder.usage = foundOrder.getUsageTime ();
-							foundOrder.total = foundOrder.getTotal ();				
+							foundOrder.total = foundOrder.getTotal ();	
 							res.json ({data: foundOrder})
 						}
 						else{
@@ -108,10 +107,12 @@ function Checkout() {
 	};
 
 	this.confirmCheckout = function(req, res) {
+		console.log(req.body)
 		var total = req.body.data.total;
 		var usage = req.body.data.usage;
+		var checkoutTime = req.body.data.checkoutTime;
 		var status = 2;
-		Orders.findOneAndUpdate ({_id: req.body.data._id}, {$set: {status: status, total: total, usage: usage}}, {new: true, fields: {usage: 1, total: 1, status: 1}}, function (err, data){
+		Orders.findOneAndUpdate ({_id: req.body.data._id}, {$set: {status: status, total: total, usage: usage, checkoutTime: checkoutTime}}, {new: true, fields: {usage: 1, total: 1, status: 1}}, function (err, data){
 			if (err){
 				next (err)
 				return
