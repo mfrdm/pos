@@ -231,11 +231,11 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		// vm.model.customer.checkingInData.orderline.splice(index)
 
 	}
-	vm.ctrl.deleteSelectEditService = function(index){
+	vm.ctrl.deleteSelectEditService = function(product){
 		// vm.model.selectedItem = vm.model.selectedItem.filter(function(ele){
 		// 	return ele.name != vm.model.customer.checkingInData.orderline[index]
 		// });
-		vm.model.customer.editedCheckedInCustomer.orderline.splice(index+1)
+		vm.model.customer.editedCheckedInCustomer.orderline = vm.model.customer.editedCheckedInCustomer.orderline.filter(function(ele){return ele != product})
 		// vm.model.customer.checkingInData.orderline.splice(index)
 
 	}
