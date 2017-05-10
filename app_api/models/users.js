@@ -76,6 +76,7 @@ var usersSchema = mongoose.Schema({
 	salt: String,
 	////////////////////////////////// Business management info
 	attendance: [{attendingDate: Date, status: Number, explain: String}],
+	accountId: mongoose.Schema.Types.ObjectId,
 });
 
 
