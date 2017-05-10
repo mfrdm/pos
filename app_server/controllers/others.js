@@ -27,8 +27,10 @@ function Others() {
 		var ctrFileNames = ['checkin', 'checkout','products', 'customers', 'assets', 'costs', 'home', 'depts', 'employees', 'login', 'register', 'booking', 'attendance', 'combo'];
 		var serviceFileNames = ['checkin', 'checkout', 'products','customers', 'assets', 'costs', 'home', 'depts','employees','common', 'authentication', 'socket', 'attendance', 'booking', 'other', 'combo'];
 		var directiveFileNames = ['components'];
+		var filterFileNames = ['myFilter'];
 
 		var ctrlNum = ctrFileNames.length;
+		var filterNum = filterFileNames.length;
 		var serNum = serviceFileNames.length;
 		var directiveNum = directiveFileNames.length;
 
@@ -53,6 +55,10 @@ function Others() {
 
 		for (var i=0; i < directiveNum; i++){
 			data.look.js.push ('common/directives/' + directiveFileNames[i] + '.directive.js');
+		}
+
+		for (var i=0; i < filterNum; i++){
+			data.look.js.push ('common/directives/' + filterFileNames[i] + '.filter.js');
 		}		
 
 		res.render ('layout', {data: data});

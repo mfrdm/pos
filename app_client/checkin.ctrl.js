@@ -12,15 +12,16 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 
 	//Filter
 	vm.model.filter = {};
+	vm.model.myfilter = {}
 	vm.model.orderBy = {};
 	vm.model.statusOptions = {
-		1:'Checkin', 2:'Checkout'
+		0:'All', 1:'Checkin', 2:'Checkout'
 	}
 	vm.model.orderOptions = {
 		'customer.firstname':'Firstname A-Z',
 		'-customer.firstname':'Firstname Z-A',
-		'checkinTime': 'Checkin Time Farthest',
-		'-checkinTime': 'Checkin Time Lastest'
+		'checkinTime': 'Booking Time Farthest',
+		'-checkinTime': 'Booking Time Lastest'
 	}
 
 	vm.model.dom = {
@@ -223,20 +224,12 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		count = 0;
 	}
 
-	vm.ctrl.deleteSelectService = function(index){
-		// vm.model.selectedItem = vm.model.selectedItem.filter(function(ele){
-		// 	return ele.name != vm.model.customer.checkingInData.orderline[index]
-		// });
-		vm.model.customer.checkingInData.orderline.splice(index+2)
-		// vm.model.customer.checkingInData.orderline.splice(index)
+	vm.ctrl.deleteSelectService = function(product){
+		vm.model.customer.checkingInData.orderline = vm.model.customer.checkingInData.orderline.filter(function(ele){return ele != product})
 
 	}
 	vm.ctrl.deleteSelectEditService = function(product){
-		// vm.model.selectedItem = vm.model.selectedItem.filter(function(ele){
-		// 	return ele.name != vm.model.customer.checkingInData.orderline[index]
-		// });
 		vm.model.customer.editedCheckedInCustomer.orderline = vm.model.customer.editedCheckedInCustomer.orderline.filter(function(ele){return ele != product})
-		// vm.model.customer.checkingInData.orderline.splice(index)
 
 	}
 	vm.ctrl.checkin = function(){

@@ -26,6 +26,22 @@
 		vm.look.bookingDiv = false;
 		vm.look.bookingSearchResultDiv = false;
 
+		vm.model = {};
+
+		//Filter
+		vm.model.filter = {};
+		vm.model.orderBy = {};
+		vm.model.statusOptions = {
+			1:'Accepted', 2:'Refused', 3:'Waiting', 4:'Canceled', 0:'All'
+		}
+		vm.model.orderOptions = {
+			'customer.firstname':'Firstname A-Z',
+			'-customer.firstname':'Firstname Z-A',
+			'checkinTime': 'Checkin Time Farthest',
+			'-checkinTime': 'Checkin Time Lastest'
+		}
+
+
 		vm.reload = function(){
 			$route.reload();
 		}
@@ -53,14 +69,12 @@
 		otherService.readSome('products')
 			.then(function success(res){
 				vm.data.serviceNames = res.data.data.filter(function(ele){return ele.category == 1})
-				console.log(vm.data.serviceNames)
 			}, function error(err){
 				console.log(err)
 			})
 		otherService.readSome('companies/depts')
 			.then(function success(res){
 				vm.data.locationNames = res.data.data
-				console.log(vm.data.locationNames)
 			}, function error(err){
 				console.log(err)
 			})
