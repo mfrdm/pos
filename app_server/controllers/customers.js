@@ -4,6 +4,7 @@ var requestHelper = require('../../libs/node/requestHelper')
 var request = require('request')
 var apiOptions = helper.getAPIOption()
 
+var validator = require ('validator')
 var mongoose = require ('mongoose');
 var Customers = mongoose.model ('customers');
 
@@ -70,12 +71,38 @@ function CustomersCtrl() {
 
 	this.createOneCustomer = function(req, res, next) {
 		var newCustomer = new Customers (req.body.data);
+
+		// sanitize
+		req.body.data.firstname = validator.trim (req.body.data.firstname);
+		req.body.data.middlename = validator.trim (req.body.data.middlename);
+		req.body.data.lastname = validator.trim (req.body.data.lastname);
+		req.body.data.phone = validator.trim (req.body.data.phone);
+		req.body.data.email = validator.trim (req.body.data.email);
+		req.body.data.school = req.body.data.edu.school ? validator.trim (req.body.data.edu.school) : req.body.data.edu.school;
+
+		if (!validator.isEmail (req.body.data.email)){
+			next (new Error ('Invalid email'));
+		};
+
+		if (!validator.isMobilePhone (req.body.data.phone, 'vi-VN')){
+			next (new Error ('Invalid phone'));
+		};
+
 		newCustomer.save (function (err, cus){
 			if (err){
 				next (err);
 				return 
 			}
 			else{
+				var data = {
+					firstname: cus.firstname,
+					middlename: cus.middlename,
+					lastname: cus.lastname,
+					_id: cus._id,
+					email: cus.email [0],
+					phone: cus.phone [0]
+				}
+
 				res.json ({data: cus});
 			}
 		});

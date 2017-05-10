@@ -3,17 +3,22 @@ var dbHelper = require('../../libs/node/dbHelper')
 var requestHelper = require('../../libs/node/requestHelper')
 var request = require('request')
 var apiOptions = helper.getAPIOption();
+
+
+var validator = require ('validator');
 var mongoose = require ('mongoose');
 var Orders = mongoose.model ('orders');
 var Customers = mongoose.model ('customers');
 var Promocodes = mongoose.model ('promocodes');
+
+
 
 module.exports = new Checkin();
 
 function Checkin() {
 	this.checkin = function(req, res, next) {
 		var order = new Orders (req.body.data);
-		console.log(order)
+
 		if (order.promocodes.length){
 			var codeNames = order.promocodes.map (function (x, i, arr){
 				return x.name;
@@ -95,6 +100,37 @@ function Checkin() {
 			});
 		}
 	};
+
+	this.searchCheckingCustomers = function (req, res, next){
+		var input = req.query.input; // email, phone, fullname
+		input = validator.trim (input);
+		var splited = input.split (' ');
+		var projections = {firstname: 1, lastname: 1, middlename: 1, phone: 1, email: 1};
+
+		var nameValidator = {firstname: splited[splited.length - 1], lastname: splited[0]};
+		var query;
+
+		if (splited.length > 1){
+			query = Customers.find (nameValidator, projections);
+		}
+
+		else if (validator.isEmail (input)){
+			query = Customers.find ({email: input}, projections);
+		}
+
+		else if (validator.isMobilePhone (input, 'vi-VN')){
+			query = Customers.find ({phone: input}, projections);
+		}
+
+		query.exec (function (err, cus){
+			if (err){
+				next (err);
+			}
+
+			res.json ({data: cus});
+		});
+	};
+
 
 	this.readCheckinList = function (req, res) {
 		Orders.find (

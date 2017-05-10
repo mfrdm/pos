@@ -43,6 +43,7 @@ router.get('/angular/checkin-list', checkinCtrl.readCheckinList);
 router.post ('/checkin/cancel', checkinCtrl.cancelCheckin);
 
 router.post('/checkin/customer/:cusId', checkinCtrl.checkin);
+router.get ('/checkin/search-customers', checkinCtrl.searchCheckingCustomers);
 router.post('/checkin/customer/:cusId/edit', checkinCtrl.updateCheckin); //cusid is order id
 
 router.get('/checkout/invoice/:orderId', checkoutCtrl.createInvoice);

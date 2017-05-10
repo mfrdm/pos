@@ -10,8 +10,86 @@ var should = chai.should ();
 
 chai.use (chaiHttp);
 
-describe ('Search checking-in customers', function (){
-	it ('should success return customers')
+xdescribe ('Search checking-in customers', function (){
+	var newCustomer, customer;
+	beforeEach (function (done){
+		customer = {
+			firstname: 'Hiệp',
+			middlename: 'Mạnh',
+			lastname: 'Phạm',
+			gender: 1,
+			birthday: new Date ('1989-09-25'),
+			phone: '0972853121',
+			edu: {},
+			email: 'phammanhhiep89@gmail.com', // manuallt required in some cases
+			isStudent: false,
+		};
+
+		chai.request (server)
+			.post ('/customers/create')
+			.send ({data: customer})
+			.end (function (err, res){
+				if (err) {
+					console.log (err);
+					return
+				}
+
+				newCustomer = res.body.data;
+				done ();
+			});
+	});
+
+	afterEach (function (done){
+		Customers.remove ({_id: newCustomer._id}, function (err, data){
+			if (err){
+				console.log (err);
+				return
+			}
+
+			done ();
+		});
+	});
+
+	xit ('should successfully return customers given customer fullname', function (done){
+		chai.request (server)
+			.get ('/checkin/search-customers')
+			.query ({input: 'Phạm Mạnh Hiệp'})
+			.end (function (err, res){
+				if (err) console.log (err);
+				res.should.have.status (200);
+				res.body.data.should.to.have.length.of.at.least (1);
+				res.body.data[0].firstname.should.to.equal ('Hiệp');
+				done ();
+			});
+	});
+
+	xit ('should successfully return customers given customer email', function (done){
+		chai.request (server)
+			.get ('/checkin/search-customers')
+			.query ({input: 'phammanhhiep89@gmail.com'})
+			.end (function (err, res){
+				if (err) console.log (err);
+				res.should.have.status (200);
+				res.body.data.should.to.have.length.of.at.least (1);
+				res.body.data[0].firstname.should.to.equal ('Hiệp');
+				done ();
+			});
+	});
+
+
+	xit ('should successfully return customers given customer phone', function (done){
+		chai.request (server)
+			.get ('/checkin/search-customers')
+			.query ({input: '0972853121'})
+			.end (function (err, res){
+				if (err) console.log (err);
+				res.should.have.status (200);
+				res.body.data.should.to.have.length.of.at.least (1);
+				res.body.data[0].firstname.should.to.equal ('Hiệp');
+				done ();
+			});
+	});	
+
 	it ('should return customers who are not checked in yet');
 	it ('should return active customers')
 	it ('should be invalid when required input not found')
@@ -26,12 +104,26 @@ xdescribe ('Cancel checkin', function (){
 });
 
 // NOTICE: YEUGREENSPACE code may expire at the time of testing. Better solution is to create a new code each time testing
-xdescribe ('Check-in', function (){
+describe ('Check-in', function (){
 	this.timeout (3000);
 
-	xdescribe ('Check in', function (){
-		var order;
-		beforeEach (function (){
+	describe ('Checking in', function (){
+		var order, customer, newCustomer, newOrder;
+		beforeEach (function (done){
+			customer = {
+				firstname: 'Hiệp',
+				middlename: 'Mạnh',
+				lastname: 'Phạm',
+				gender: 1,
+				birthday: new Date ('1989-09-25'),
+				phone: '0965284281',
+				email: 'phammanhhiep89@gmail.com', // manuallt required in some cases
+				edu: {
+					school: 'Ngoại thương',
+				},
+				isStudent: true,
+			};
+
 			order = {
 				promocodes:[{
 					name: 'YEUGREENSPACE',
@@ -41,43 +133,50 @@ xdescribe ('Check-in', function (){
 					{ "productName" : "Coca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 2, price: 10000 }, 
 					{ "productName" : "Poca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000 } 
 				],
-				customer:{
-					_id: "58ff58e6e53ef40f4dd664cd",
-					firstname: 'Hiep',
-					lastname: 'Pham',
-					phone: '0965284281',
-					email: 'hiep@yahoo.com',
-				},
+				customer: {},
 				storeId: "58eb474538671b4224745192",
 				staffId: "58eb474538671b4224745192",			
-			};				
+			};
+
+			chai.request (server)
+				.post ('/customers/create')
+				.send ({data: customer})
+				.end (function (err, res){
+					if (err){
+						console.log (err)
+						return
+					}
+
+					newCustomer = res.body.data;
+					order.customer.firstname = newCustomer.firstname;
+					order.customer.lastname = newCustomer.lastname;
+					order.customer.email = newCustomer.email;
+					order.customer.phone = newCustomer.phone;
+					order.customer._id = newCustomer._id;
+
+					done ();
+				});
 
 		});
 
 		afterEach (function (done){
-			Orders.findOneAndRemove ({'customer.firstname': 'Hiep'}, function (err, removedOrder){
+			Orders.remove ({_id: newOrder._id}, function (err, result){
 				if (err) {
 					console.log (err)
 					return
 				}
-				if (!removedOrder){
-					//
-				}
 				else {
-					Customers.update ({_id: removedOrder.customer._id}, {'$pop': {'orders': 1}},
-						{upsert: true}, 
-						function (err, data){
-							if (err) {
-								console.log (err)
-								return
-							}
-
+					Customers.remove ({_id: newCustomer._id}, function (err, data){
+						if (err) {
+							console.log (err)
+							return
 						}
-					);
+
+						done ();
+
+					});
 				}
 
-				done ();
-				
 			})
 		});
 
@@ -88,8 +187,11 @@ xdescribe ('Check-in', function (){
 				.send ({data: order})
 				.end (function (err, res){
 					if (err) {
-						console.log (err)
+						console.log (err);
 					}
+
+					newOrder = res.body.data;
+
 					res.should.have.status (200);
 					res.body.data.should.to.exist;
 					res.body.data.orderline.should.to.exist;
@@ -98,7 +200,7 @@ xdescribe ('Check-in', function (){
 				});
 		});
 
-		xit ('should add valid promo code when provided', function (done){
+		it ('should add valid promo code when provided', function (done){
 			chai.request (server)
 				.post ('/checkin/customer/' + order.customer._id)
 				.send ({data: order})

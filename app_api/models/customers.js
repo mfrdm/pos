@@ -28,6 +28,7 @@ var customersSchema = mongoose.Schema({
 	phone: [{type: String}],
 	email: [{type: String}], // manuallt required in some cases
 	edu: [eduSchema],
+	isStudent: {type: Boolean, required: true},
 	createdAt: {type: Date, default: Date.now},
 	updatedAt: [{
 		time: {type: Date}, 
@@ -37,6 +38,7 @@ var customersSchema = mongoose.Schema({
 	orders: [{orderId:{type: mongoose.Schema.Types.ObjectId, ref:'orders'}}],
 	bookings: [{type:mongoose.Schema.Types.ObjectId, ref:'bookings'}],
 	promoteCode: [{code: String, expire: Date,}],
+
 	balance: {
 		oneDay: [combosSchema],
 		threeDays: [combosSchema],

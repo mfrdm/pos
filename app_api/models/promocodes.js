@@ -26,6 +26,7 @@ var discount = function (code, product){
 	return product.price
 }
 
+// represent all codes that give customer some values like free seat or discount
 var promocodesSchema = mongoose.Schema ({
 	name: {type: String, required: true},
 	start: {type: Date, required: true},
