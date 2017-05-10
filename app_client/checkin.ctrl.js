@@ -10,20 +10,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	vm.model.search = {}//Any things related to search
 	vm.model.search.messageNoResult = 'No search result? Or '
 
-	//Filter
-	vm.model.filter = {};
-	vm.model.myfilter = {}
-	vm.model.orderBy = {};
-	vm.model.statusOptions = {
-		0:'All', 1:'Checkin', 2:'Checkout'
-	}
-	vm.model.orderOptions = {
-		'customer.firstname':'Firstname A-Z',
-		'-customer.firstname':'Firstname Z-A',
-		'checkinTime': 'Booking Time Farthest',
-		'-checkinTime': 'Booking Time Lastest'
-	}
-
+	
 	vm.model.dom = {
 		messageSearchResult: false,
 		checkingInCustomerSearchResult: false,
@@ -37,6 +24,122 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	vm.model.customer = {}//Any thing related to customer
 	vm.model.customer.services = {}//All products
 	vm.model.selectedToEditItem = {};
+
+	//English - Vietnamese
+	vm.model.dom.dataDom = {}
+	vm.model.dom.dataDom.using = {}
+	vm.model.dom.dataDom.eng = {
+		title: 'Check-in List',
+		buttonCheckin: 'Checkin',
+		buttonFilter:'Filter',
+
+		selectFirstnameAZ:'Firstname A-Z',
+		selectFirstnameZA:'Firstname Z-A',
+		selectBookingFarthest: 'Checkin Time Farthest',
+		selectCheckinLastest: 'Checkin Time Lastest',
+
+		selectStatusOptionAll: 'All',
+		selectStatusOptionCheckin: 'Checkin',
+		selectStatusOptionCheckout: 'Checkout',
+
+		fieldSortBy:'Sort By',
+		fieldStatus:'Status',
+		fieldSearchByFirstname:'Search by Firstname',
+		fieldSearchByPhone:'Search by Phone',
+		fieldPhoneEmail: 'Phone/Email',
+		fieldPromotionCode: 'Promotion Code',
+		fieldService:'Service',
+		fieldItem: 'Items',
+		fieldQuantity: 'Quantity',
+		fieldOtherProducts: 'Selected Items',
+		fieldProduct:'Product',
+		fieldAddItems:'Add Items',
+
+		invoiceFullname: 'Fullname',
+		invoicePhone: 'Phone',
+		invoiceOtherProducts: 'Other Products',
+		invoiceMainService:'Main Service',
+		invoicePromoteCode: 'Promote Code',
+		invoiceTotal: 'Total Money',
+
+
+		headerNo:'No',
+		headerName:'Name',
+		headerPhone:'Phone',
+		headerCheckinDate:'Checkin Date',
+		headerCheckinTime:'Checkin Time',
+		headerCheckoutDate:'Checkout Date',
+		headerCheckoutTime:'Checkout Time',
+		headerService:'Service',
+		headerCheckout:'Checkout',
+		headerEdit:'Edit'
+	}
+
+	vm.model.dom.dataDom.vi = {
+		title: 'Checkin',
+		buttonCheckin: 'Checkin',
+		buttonFilter:'Filter',
+
+		selectFirstnameAZ:'Tên theo thứ tự A-Z',
+		selectFirstnameZA:'Tên theo thứ tự Z-A',
+		selectBookingFarthest: 'Thời gian checkin xa nhất',
+		selectBookingLastest: 'Thời gian checkin gần nhất',
+
+		selectStatusOptionAll: 'Hiển thị tất cả khách',
+		selectStatusOptionCheckin: 'Hiển thị khách đang checkin',
+		selectStatusOptionCheckout: 'Hiển thị khách đã checkout',
+
+		fieldSortBy:'Sắp xếp',
+		fieldStatus:'Trạng thái',
+		fieldSearchByFirstname:'TÌm kiếm theo tên',
+		fieldSearchByPhone:'Tìm kiếm theo Số điện thoại',
+		fieldPhoneEmail: 'Phone/Email',
+		fieldPromotionCode: 'Mã giảm giá',
+		fieldService:'Dịch vụ chính',
+		fieldItem: 'Sản phẩm phụ',
+		fieldQuantity: 'Số lượng',
+		fieldOtherProducts: 'Sản phẩm đã chọn',
+		fieldProduct:'Tên sản phẩm',
+		fieldAddItems:'Thêm sản phẩm',
+
+		invoiceFullname: 'Họ và tên',
+		invoicePhone: 'Số điện thoại',
+		invoiceOtherProducts: 'Các sản phẩm mua trước',
+		invoiceMainService:'Sản phẩm chính',
+		invoicePromoteCode: 'Mã giảm giá',
+		invoiceTotal: 'Tổng tiền',
+
+
+		headerNo:'No',
+		headerName:'Họ và tên',
+		headerPhone:'Số điện thoại',
+		headerCheckinDate:'Ngày Checkin',
+		headerCheckinTime:'Giờ Checkin',
+		headerCheckoutDate:'Ngày Checkout',
+		headerCheckoutTime:'Giờ Checkin',
+		headerService:'Sản phẩm chính',
+		headerCheckout:'Checkout',
+		headerEdit:'Chỉnh sửa'
+	}
+
+
+	vm.model.dom.dataDom.using = vm.model.dom.dataDom.vi;
+
+	//Options
+	//Filter
+	vm.model.filter = {};
+	vm.model.myfilter = {}
+	vm.model.orderBy = {};
+	vm.model.statusOptions = {
+		0:vm.model.dom.dataDom.using.selectStatusOptionAll, 1:vm.model.dom.dataDom.using.selectStatusOptionCheckin, 2:vm.model.dom.dataDom.using.selectStatusOptionCheckout
+	}
+	vm.model.orderOptions = {
+		'customer.firstname': vm.model.dom.dataDom.using.selectFirstnameAZ,
+		'-customer.firstname':vm.model.dom.dataDom.using.selectFirstnameAZ,
+		'checkinTime': vm.model.dom.dataDom.using.selectBookingFarthest,
+		'-checkinTime': vm.model.dom.dataDom.using.selectBookingLastest
+	}
+
 
 	// TESTING
 	vm.model.customer.storeId = '58fdc7e1fc13ae0e8700008a';
