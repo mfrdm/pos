@@ -1,3 +1,8 @@
+html, body
+{
+    height: 100%;
+}
+
 /*///////////////// Dimension /////////////////*/
 
 .width100percent {
@@ -201,6 +206,9 @@
 	.max-width1000{
 		max-width: 1000px;
 	}
+	#alternativeMenu{
+		display: inherit!important;
+	}
 
 }
 
@@ -225,7 +233,7 @@ ul.listOrder li i{
 	width: 100%;
 	height: 100%;
 /*	min-height: 100vh;
-*/	z-index: 1;
+*/	z-index: 5;
 	overflow-y: scroll;
 }
 
@@ -277,4 +285,99 @@ ul.listOrder li i{
 
 #checkoutDiv .header-invoice h4{
 	font-size: 20px;
+}
+
+#checkoutDiv .small-6, #checkoutDiv .small-3{
+	margin: 5px auto;
+}
+
+#checkoutDiv .text-right{
+	border-right: 2px solid #3adb76;
+	font-weight: bold;
+}
+
+#checkoutDiv .text-right p{
+	margin: 0;
+}
+
+#checkoutDiv p{
+	margin:0;
+}
+
+/**/
+.iconAdd{
+	position: relative;
+	height: 100%;
+	min-height: 83.2px;
+}
+
+.iconAdd i{
+	position: absolute;
+	transform: translate(-50%, -50%);
+	left: 50%;
+	top:60%;
+	font-size: 31px;
+	color: #2f6ab4;
+	cursor: pointer;
+}
+
+.deleteIcon i{
+	font-size: 31px;
+	color: #ee5f5b;
+	cursor: pointer;
+}
+
+/**/
+.title{
+	font-weight: bold;
+	font-size: 25px;
+}
+
+#alternativeMenu{
+	display: none;
+}
+
+#alternativeMenu{
+	height: 100%;
+	position: absolute;
+	width: 16.66667%;
+	max-width: 190px;
+	float: left;
+	min-height: 100vh;
+	padding: 0;
+	z-index: 2;
+	background-color: rgba(103, 111, 117, 0.71);
+}
+
+#alternativeMenu li a{
+	color: #fff;
+}
+
+#alternativeMenu li{
+	padding: 15px 0;
+	text-align: center;
+	width: 100%;
+	-webkit-transition: background-color 0.5s; /* Safari */
+    transition: background-color 0.5s;
+}
+
+#alternativeMenu li:hover{
+	background-color: rgba(103, 111, 117, 0.81);
+}
+
+#topNavBar li{
+	display: inline-block;
+}
+
+#topNavBar .medium-2{
+	max-width: 190px;
+}
+
+#topNavBar .medium-10 li{
+	padding-top: 10px;
+}
+
+.relative{
+	position: relative;
+	max-width: 100vw;
 }

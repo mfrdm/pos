@@ -18,10 +18,7 @@ div(ng-switch='vm.tab')
 							li(class="float-right")
 								ul(class="menu")
 									li: label(class="paddingR15 show-for-large") Sort by
-									li: select(class="")
-											option(value="name") Name
-											option(value="checkinTime") Check-in time
-											option(value="status") Status
+									li: select(ng-model="vm.model.orderBy" ng-options="key as value for (key , value) in vm.model.orderOptions")
 				//Booking Toggle Content********************************************************//
 				div(class="column")
 					div(class="borderT newBox row column paddingLR0" ng-show='vm.look.bookingDiv')
@@ -104,8 +101,21 @@ div(ng-switch='vm.tab')
 								div(class='column small-12 paddingLR0')
 									input(class="button success" type="submit" value="Add Booking")
 									button(class="button float-right" ng-click='vm.reload(); event.preventDefault()') Cancel
-				//Search Booking********************************************************//
+				// Filter
 				div(class="column")
+					div(class="borderT newBox row column callout secondary")
+						div(class="marginB15 column small-12 large-4")
+							legend Status
+							select(ng-model='vm.model.filter.status' ng-options='key as value for (key , value) in vm.model.statusOptions' ng-init='vm.model.filter.status=1')
+								option
+						div(class='marginB15 column small-12 large-4')
+							legend Search By Firstname
+							input(type='text' ng-model='vm.model.filter.customer.firstname')
+						div(class='marginB15 column small-12 large-4')
+							legend Search By Email
+							input(type='text' ng-model='vm.model.filter.customer.email')
+				//Search Booking********************************************************//
+				//- div(class="column")
 					div(class="borderT newBox row column")
 						form(ng-submit="vm.searchBooking()")
 							div(class="row column")
@@ -132,7 +142,10 @@ div(ng-switch='vm.tab')
 											td {{ result.customer.email }}
 											td {{ result.checkinTime | date:'shortTime'}}
 											td {{ result.checkinTime | date:'dd/MM/yyyy'}}
-											td {{ result.status }}
+											td(ng-if='result.status == 3') Waiting
+											td(ng-if='result.status == 1') Accepted
+											td(ng-if='result.status == 2') Refused
+											td(ng-if='result.status == 4') Canceled
 											td
 												button(type="button" class="warning button" ng-click='vm.refuseBooking(result)') Refuse
 											td
@@ -149,20 +162,23 @@ div(ng-switch='vm.tab')
 											th No
 											th Name
 											th Email
-											th Checkin Time
-											th Checkin Date
+											th Booking Time
+											th Booking Date
 											th Status
 											th Refuse
 											th Customer Cancel
 											th Accept
 									tbody
-										tr(ng-repeat='result in vm.booking.all.results')
+										tr(ng-repeat='result in vm.booking.all.results | myfilter:vm.model.filter.status | orderBy: [vm.model.orderBy]')
 											td {{ $index + 1 }}
 											td {{ result.customer.lastname }} {{ result.customer.middlename }} {{ result.customer.firstname }}
 											td {{ result.customer.email }}
 											td {{ result.checkinTime | date:'shortTime'}}
 											td {{ result.checkinTime | date:'dd/MM/yyyy'}}
-											td {{ result.status }}
+											td(ng-if='result.status == 3') Waiting
+											td(ng-if='result.status == 1') Accepted
+											td(ng-if='result.status == 2') Refused
+											td(ng-if='result.status == 4') Canceled
 											td
 												button(type="button" class="warning button" ng-click='vm.refuseBooking(result)') Refuse
 											td
