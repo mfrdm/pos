@@ -14,7 +14,7 @@ chai.use (chaiHttp);
 describe ('Checkout', function (){
 	this.timeout(3000);
 
-	describe ('Create invoice', function (){
+	xdescribe ('Create invoice', function (){
 		var order;
 		var newOrder, newCustomer;
 		var expectedUsage;
@@ -196,8 +196,75 @@ describe ('Checkout', function (){
 
 	});
 
-	xdescribe ('Checkout exception', function (){
-		var newOrder, newCustomer;
+	describe ('Checkout exception', function (){
+		var newOrder, newCustomer, expectedUsage;
+
+		beforeEach (function (done){
+			var customer = {
+				_id: new mongoose.Types.ObjectId (),
+				firstname: 'XXX',
+				email: 'hiep@mail.com',
+				password: '123456',
+				lastname: 'YYY',
+				phone: '099284323121',
+				birthday: new Date ('1989-10-01'),
+				gender: 1,
+				edu: [{
+					title: 1,
+					start: new Date ('2017-01-01'),
+				}]
+			};
+
+			expectedUsage = 2;
+			order = {
+				promocodes:[{
+					name: 'YEUGREENSPACE',
+				}],
+				orderline: [ 
+					{ "productName" : "Group Common", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 15000 }, 
+					{ "productName" : "Coca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 2, price: 10000 }, 
+					{ "productName" : "Poca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000 } 
+				],
+				customer:{
+					_id: customer._id,
+					firstname: customer.firstname,
+					lastname: customer.lastname,
+					phone: customer.phone,
+					email: customer.email,
+				},
+				storeId: "58eb474538671b4224745192",
+				staffId: "58eb474538671b4224745192",
+				checkoutTime: moment ().add (expectedUsage, 'hours'),			
+			};
+
+			chai.request (server)
+				.post ('/customers/create')
+				.send ({data: customer})
+				.end (function (err, res){
+					if (err){
+						console.log (err)
+						return
+					}
+					res.should.have.status (200)
+					newCustomer = res.body.data;
+
+					chai.request (server)
+						.post ('/checkin/customer/' + order.customer._id)
+						.send ({data: order})
+						.end (function (err, res){
+							if (err) {
+								console.log (err);
+								return
+							}
+							else{
+								res.should.have.status(200)
+								newOrder = res.body.data;
+								done();
+							}
+						});
+			});
+		});
+
 
 		afterEach (function (done){
 			Customers.remove ({_id: newCustomer._id}, function (err, data){
@@ -223,86 +290,20 @@ describe ('Checkout', function (){
 		it ('should detect user is not student when he is not')
 
 		xit ('should return correct total and usage when a customer is a student. Student get discounts', function (done){
-			var customer = {
-				firstname: 'XXX',
-				email: 'hiep@mail.com',
-				password: '123456',
-				lastname: 'YYY',
-				phone: '099284323121',
-				birthday: new Date ('1989-10-01'),
-				gender: 1,
-				edu: [{
-					title: 1,
-					start: new Date ('2017-01-01'),
-				}]
-			};
-
+			var expectedTotal = (10000 * newOrder.orderline[0].quantity * expectedUsage + newOrder.orderline[1].price * newOrder.orderline[1].quantity + newOrder.orderline[2].price * newOrder.orderline[2].quantity) / 2;			
 			chai.request (server)
-				.post ('/customers/create')
-				.send ({data: customer})
+				.get ('/checkout/invoice/' + newOrder._id)
 				.end (function (err, res){
 					if (err){
 						console.log (err)
-						return
 					}
-					res.should.have.status (200)
-					newCustomer = res.body.data;
 
-					var expectedUsage = 2;
-					var order = {
-						promocodes:[{
-							name: 'YEUGREENSPACE',
-						}],
-						orderline: [ 
-							{ "productName" : "Group Common", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 15000 }, 
-							{ "productName" : "Coca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 2, price: 10000 }, 
-							{ "productName" : "Poca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000 } 
-						],
-						customer:{
-							_id: newCustomer._id,
-							firstname: newCustomer.firstname,
-							lastname: newCustomer.lastname,
-							phone: newCustomer.phone,
-							email: newCustomer.email,
-						},
-						storeId: "58eb474538671b4224745192",
-						staffId: "58eb474538671b4224745192",
-						checkoutTime: moment ().add (expectedUsage, 'hours'),			
-					};
-
-					var expectedTotal = (10000 * order.orderline[0].quantity * expectedUsage + order.orderline[1].price * order.orderline[1].quantity + order.orderline[2].price * order.orderline[2].quantity) / 2;
-
-					chai.request (server)
-						.post ('/checkin/customer/' + order.customer._id)
-						.send ({data: order})
-						.end (function (err, res){
-							if (err) {
-								console.log (err);
-								return
-							}
-							else{
-								res.should.have.status(200)
-								newOrder = res.body.data;
-								chai.request (server)
-									.get ('/checkout/invoice/' + newOrder._id)
-									.end (function (err, res){
-										if (err){
-											console.log (err)
-										}
-
-										res.should.have.status (200);
-										res.body.data.should.to.exist;
-										res.body.data.usage.should.to.equal (expectedUsage);
-										res.body.data.total.should.to.equal (expectedTotal);
-										done ();
-									});	
-
-							}
-						});
-
-
-
-				})
+					res.should.have.status (200);
+					res.body.data.should.to.exist;
+					res.body.data.usage.should.to.equal (expectedUsage);
+					res.body.data.total.should.to.equal (expectedTotal);
+					done ();
+				});
 		})
 
 		xit ('should return correct total and usage when a customer uses a combo', function (done){
@@ -311,83 +312,12 @@ describe ('Checkout', function (){
 
 		it ('should return correct total and usage when a customer uses a combo and uses more than expected time')
 
-		xit ('should return correct total and usage when a customer is a student', function (done){
-			var expectedUsage = 2;
-			var order = {
-				promocodes:[{
-					name: 'YEUGREENSPACE',
-					name: 'SINHVIENGREENSPACE',
-				}],
-				orderline: [ 
-					{ "productName" : "Common", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 15000 }, 
-					{ "productName" : "Coca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 2, price: 10000 }, 
-					{ "productName" : "Poca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000 } 
-				],
-				customer:{
-					_id: "58ff58e6e53ef40f4dd664cd",
-					firstname: 'Hiep',
-					lastname: 'Pham',
-					phone: '0965284281',
-					email: 'hiep@yahoo.com',
-				},
-				storeId: "58eb474538671b4224745192",
-				staffId: "58eb474538671b4224745192",
-				checkoutTime: moment ().add (expectedUsage, 'hours'),			
-			};
+		it ('should return base price of service if service usage is less than one hour')
 
-			var expectedTotal = (10000 * order.orderline[0].quantity * expectedUsage + order.orderline[1].price * order.orderline[1].quantity + order.orderline[2].price * order.orderline[2].quantity) / 2;
+		xit ('should return service total as 0 when service usage is lower than a threshold', function (done){
 
-			chai.request (server)
-				.post ('/checkin/customer/' + order.customer._id)
-				.send ({data: order})
-				.end (function (err, res){
-					if (err) {
-						console.log (err);
-						return
-					}
-					else{
-						newOrder = res.body.data;
-						chai.request (server)
-							.get ('/checkout/invoice/' + newOrder._id)
-							.end (function (err, res){
-								if (err){
-									// console.log (err)
-								}
-								res.should.have.status (200);
-								res.body.data.should.to.exist;
-								res.body.data.usage.should.to.equal (expectedUsage);
-								res.body.data.total.should.to.equal (expectedTotal);
-								done ();
-							});	
-
-					}
-				});
-
-		});
-
-		xit ('should return correct total when usage is lower than a threshold', function (done){
-
-			var expectedUsage = 0;
-			var order = {
-				promocodes:[{
-					name: 'YEUGREENSPACE',
-				}],
-				orderline: [ 
-					{ "productName" : "Common", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000 }, 
-					{ "productName" : "Coca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 2, price: 10000 }, 
-					{ "productName" : "Poca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000 } 
-				],
-				customer:{
-					_id: "58ff58e6e53ef40f4dd664cd",
-					firstname: 'Hiep',
-					lastname: 'Pham',
-					phone: '0965284281',
-					email: 'hiep@yahoo.com',
-				},
-				storeId: "58eb474538671b4224745192",
-				staffId: "58eb474538671b4224745192",
-				checkoutTime: moment ().add (expectedUsage, 'hours'),			
-			};
+			expectedUsage = 0;
+			order.checkoutTime = moment ().add (expectedUsage, 'hours');
 
 			var expectedTotal = (order.orderline[1].price * order.orderline[1].quantity + order.orderline[2].price * order.orderline[2].quantity) / 2;
 

@@ -6,12 +6,97 @@ var server = require ('../../app');
 var mongoose = require ('mongoose');
 var Orders = mongoose.model ('orders');
 var Customers = mongoose.model ('customers');
+var Promocodes = mongoose.model ('promocodes')
 var should = chai.should ();
+var moment = require ('moment');
 
 chai.use (chaiHttp);
 
-describe ('Search checking-in customers', function (){
-	it ('should success return customers')
+xdescribe ('Search checking-in customers', function (){
+	var newCustomer, customer;
+	beforeEach (function (done){
+		customer = {
+			firstname: 'Customer_Firstname',
+			middlename: 'Customer_Middlename',
+			lastname: 'Customer_Lastname',
+			gender: 1,
+			birthday: new Date ('1989-09-25'),
+			phone: '0999999999',
+			edu: {},
+			email: 'lastmiddlefirst@gmail.com', // manuallt required in some cases
+			isStudent: false,
+			checkinStatus: false,
+		};
+
+		chai.request (server)
+			.post ('/customers/create')
+			.send ({data: customer})
+			.end (function (err, res){
+				if (err) {
+					console.log (err);
+					return
+				}
+
+				newCustomer = res.body.data;
+				done ();
+			});
+	});
+
+	afterEach (function (done){
+		Customers.remove ({_id: newCustomer._id}, function (err, data){
+			if (err){
+				console.log (err);
+				return
+			}
+
+			done ();
+		});
+	});
+
+	it ('should successfully return customers given customer fullname', function (done){
+		chai.request (server)
+			.get ('/checkin/search-customers')
+			.query ({input: 'Customer_Lastname Customer_Middlename Customer_Firstname'})
+			.end (function (err, res){
+				if (err) console.log (err);
+				console.log (res.body.data)
+				res.should.have.status (200);
+				res.body.data.should.to.have.length.of.at.least (1);
+				res.body.data[0].firstname.should.to.equal (customer.firstname);
+				res.body.data[0].checkinStatus.should.to.be.false;
+				done ();
+			});
+	});
+
+	it ('should successfully return customers given customer email', function (done){
+		chai.request (server)
+			.get ('/checkin/search-customers')
+			.query ({input: customer.phone})
+			.end (function (err, res){
+				if (err) console.log (err);
+				res.should.have.status (200);
+				res.body.data.should.to.have.length.of.at.least (1);
+				res.body.data[0].firstname.should.to.equal (customer.firstname);
+				res.body.data[0].checkinStatus.should.to.be.false;
+				done ();
+			});
+	});
+
+
+	it ('should successfully return customers given customer phone', function (done){
+		chai.request (server)
+			.get ('/checkin/search-customers')
+			.query ({input: customer.phone})
+			.end (function (err, res){
+				if (err) console.log (err);
+				res.should.have.status (200);
+				res.body.data.should.to.have.length.of.at.least (1);
+				res.body.data[0].firstname.should.to.equal (customer.firstname);
+				res.body.data[0].checkinStatus.should.to.be.false;
+				done ();
+			});
+	});	
+
 	it ('should return customers who are not checked in yet');
 	it ('should return active customers')
 	it ('should be invalid when required input not found')
@@ -25,59 +110,158 @@ xdescribe ('Cancel checkin', function (){
 
 });
 
-// NOTICE: YEUGREENSPACE code may expire at the time of testing. Better solution is to create a new code each time testing
 xdescribe ('Check-in', function (){
 	this.timeout (3000);
 
-	xdescribe ('Check in', function (){
-		var order;
-		beforeEach (function (){
-			order = {
-				promocodes:[{
-					name: 'YEUGREENSPACE',
-				}],
-				orderline: [ 
-					{ "productName" : "Common", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000 }, 
-					{ "productName" : "Coca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 2, price: 10000 }, 
-					{ "productName" : "Poca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000 } 
-				],
-				customer:{
-					_id: "58ff58e6e53ef40f4dd664cd",
-					firstname: 'Hiep',
-					lastname: 'Pham',
-					phone: '0965284281',
-					email: 'hiep@yahoo.com',
+	xdescribe ('Validate promotion code', function (){
+		var newCodes, codeNames;
+		beforeEach (function (done){
+			var codes = [
+				{
+					name: 'PROMOCODE1',
+					start: moment (),
+					end: moment ().add ('day', 5),
 				},
+				{
+					name: 'PROMOCODE2',
+					start: moment (),
+					end: moment ().add ('day', 5),
+				},
+			];
+
+			Promocodes.insertMany (codes, function (err, docs){
+				if (err){
+					console.log (err);
+					return
+				}
+				newCodes = docs;
+				codeNames = [];
+				newCodes.map (function (x, i, arr){
+					codeNames.push (x.name);
+				});
+
+				codeNames = codeNames.join();
+				done ();
+			});
+		});
+
+		afterEach (function (done){
+			var codenames = [];
+			newCodes.map (function (x,i,arr){
+				codenames.push (x.name);
+			});
+
+			Promocodes.remove ({name: {$in: codenames}}, function (err, docs){
+				if (err){
+					console.log (err);
+					return
+				}
+
+				done ();
+			})
+		})
+
+		it ('should return codes with invalid status when they are invalid', function (done){
+			codeNames = 'INVALIDCODE1,INVALIDECODE2';
+			chai.request (server)
+				.get ('/checkin/validate-promotion-code')
+				.query ({codes: codeNames})
+				.end (function (err, res){
+					if (err){
+						console.log (err);
+					}
+
+					res.should.have.status (200);
+					res.body.data.should.to.have.lengthOf (0);
+					done ();
+				});
+		});
+
+		it ('should return codes with valid status when they are valid', function (done){
+			chai.request (server)
+				.get ('/checkin/validate-promotion-code')
+				.query ({codes: codeNames})
+				.end (function (err, res){
+					if (err){
+						console.log (err);
+					}
+
+					res.should.have.status (200);
+					res.body.data.should.to.have.lengthOf (2);
+					res.body.data[0].should.have.property ('name');
+					done ();
+				});			
+		});
+
+		it ('should be invalid when promotion codes are conflict')
+	});
+
+	xdescribe ('Checking in', function (){
+		var order, customer, newCustomer, newOrder;
+		beforeEach (function (done){
+			customer = {
+				firstname: 'Customer_Firstname',
+				middlename: 'Customer_Middlename',
+				lastname: 'Customer_Lastname',
+				gender: 1,
+				birthday: new Date ('1989-09-25'),
+				phone: '0999999999',
+				edu: {},
+				email: 'lastmiddlefirst@gmail.com', // manuallt required in some cases
+				isStudent: false,
+				checkinStatus: false,
+			};
+
+			order = {
+				orderline: [ 
+					{ "productName" : "Common", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000, promocodes: [{id: '58ff58e6e53ef40f4dd664cd', name: 'YEUGREENSPACE'}] }, 
+					{ "productName" : "Coca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 2, price: 10000 }, 
+					{ "productName" : "Poca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000 }
+				],
+				customer: {},
 				storeId: "58eb474538671b4224745192",
 				staffId: "58eb474538671b4224745192",			
-			};				
+			};
+
+			chai.request (server)
+				.post ('/customers/create')
+				.send ({data: customer})
+				.end (function (err, res){
+					if (err){
+						console.log (err)
+						return
+					}
+
+					newCustomer = res.body.data;
+					order.customer.firstname = newCustomer.firstname;
+					order.customer.lastname = newCustomer.lastname;
+					order.customer.email = newCustomer.email;
+					order.customer.phone = newCustomer.phone;
+					order.customer._id = newCustomer._id;
+
+					done ();
+				});
 
 		});
 
 		afterEach (function (done){
-			Orders.findOneAndRemove ({'customer.firstname': 'Hiep'}, function (err, removedOrder){
+			Orders.remove ({_id: newOrder._id}, function (err, result){
 				if (err) {
 					console.log (err)
 					return
 				}
-				if (!removedOrder){
-					//
-				}
 				else {
-					Customers.update ({_id: removedOrder.customer._id}, {'$pop': {'orders': 1}},
-						{upsert: true}, 
-						function (err, data){
-							if (err) {
-								console.log (err)
-								return
-							}
-
+					Customers.remove ({_id: newCustomer._id}, function (err, data){
+						if (err) {
+							console.log (err)
+							return
 						}
-					);
+
+						done ();
+
+					});
 				}
 
-				done ();
-				
 			})
 		});
 
@@ -88,30 +272,17 @@ xdescribe ('Check-in', function (){
 				.send ({data: order})
 				.end (function (err, res){
 					if (err) {
-						console.log (err)
+						console.log (err);
 					}
-					res.should.have.status (200);
-					res.body.data.should.to.exist;
-					res.body.data.orderline.should.to.exist;
-					res.body.data.orderline.length.should.to.equal (3);
-					done ();
-				});
-		});
 
-		xit ('should add valid promo code when provided', function (done){
-			chai.request (server)
-				.post ('/checkin/customer/' + order.customer._id)
-				.send ({data: order})
-				.end (function (err, res){
-					if (err) {
-						console.log (err)
-					}
-					res.should.have.status (200);
+					newOrder = res.body.data;
+					res.should.have.status (200); // this indicate updated customer
 					res.body.data.should.to.exist;
 					res.body.data.orderline.should.to.exist;
 					res.body.data.orderline.length.should.to.equal (3);
-					done ();
-				});			
+					res.body.data.checkinTime.should.to.exist;
+					done ();	
+				});
 		});
 
 		xit ('should be invalid when promotion codes are not found', function (done){
@@ -142,9 +313,10 @@ xdescribe ('Check-in', function (){
 				});	
 		});
 
-		it ('should be invalid when promotion codes are conflict')
+		
 
 		it ('should be invalid when the same item displays more than one time in orderline')
+		
 		it ('should be invalid no items in orderline')
 
 		it ('should have createdAt time correct with time of local zone')
@@ -176,31 +348,59 @@ xdescribe ('Check-in', function (){
 		it ('Update correct remain of combo when used in checkout')
 	});
 
-	xdescribe ('Edit checked-in', function (){
-		var body, oldData;
-		beforeEach (function (){
-			body = {
-				data: {
-					orderline: [ 
-						{ "productName" : "Common", "id" : new mongoose.Types.ObjectId("58ff58e6e53ef40f4dd664cd"), "quantity" : 1 }, 
-						{ "productName" : "Coca", "id" : new mongoose.Types.ObjectId("58ff58e6e53ef40f4dd664cd"), "quantity" : 2 }, 
-						{ "productName" : "Poca", "id" : new mongoose.Types.ObjectId("58ff58e6e53ef40f4dd664cd"), "quantity" : 1 } 
-					],
-					customer:{
-						id: new mongoose.Types.ObjectId("58ff58e6e53ef40f4dd664cd"),
-						firstname: 'Hiep',
-						lastname: 'Pham',
-						phone: '0965284281',
-						email: 'hiep@yahoo.com',
-					},
-					storeId: new mongoose.Types.ObjectId("58eb474538671b4224745192"),
-					staffId: new mongoose.Types.ObjectId("58eb474538671b4224745192"),
-				}				
+	describe ('Edit checked-in', function (){
+		var newCustomer, editedOrder;
+		beforeEach (function (done){
+			customer = {
+				firstname: 'Customer_Firstname',
+				middlename: 'Customer_Middlename',
+				lastname: 'Customer_Lastname',
+				gender: 1,
+				birthday: new Date ('1989-09-25'),
+				phone: '0999999999',
+				edu: {},
+				email: 'lastmiddlefirst@gmail.com', // manuallt required in some cases
+				isStudent: false,
+				checkinStatus: false,
 			};
+
+			order = {
+				orderline: [ 
+					{ "productName" : "Common", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000, promocodes: [{id: '58ff58e6e53ef40f4dd664cd', name: 'YEUGREENSPACE'}] }, 
+					{ "productName" : "Coca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 2, price: 10000 }, 
+					{ "productName" : "Poca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000 }
+				],
+				customer: {},
+				storeId: "58eb474538671b4224745192",
+				staffId: "58eb474538671b4224745192",			
+			};
+
+			Chai.request (server)
+				.post ('/customer/create')
+				.send (customer)
+				.end (function (err, res){
+					if (err){
+						console.log (err);
+						return
+					}
+
+					newCustomer = res.body.data;
+					order.customer.firstname = newCustomer.firstname;
+					order.customer.lastname = newCustomer.lastname;
+					order.customer.email = newCustomer.email;
+					order.customer.phone = newCustomer.phone;
+					order.customer._id = newCustomer._id;
+					
+					Chai.request (server)
+						.post ('/checkin/customer/' + order.customer._id)
+						.send ()
+
+				});
+
 		});
 
 		afterEach (function (done){
-			// rollback. no need since update the same things. 
+			 
 			done ()
 		});
 

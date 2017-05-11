@@ -28,15 +28,17 @@ var customersSchema = mongoose.Schema({
 	phone: [{type: String}],
 	email: [{type: String}], // manuallt required in some cases
 	edu: [eduSchema],
+	isStudent: {type: Boolean, required: true},
 	createdAt: {type: Date, default: Date.now},
 	updatedAt: [{
 		time: {type: Date}, 
 		explain: String,
 		by: mongoose.Schema.Types.ObjectId
 	}],
-	orders: [{orderId:{type: mongoose.Schema.Types.ObjectId, ref:'orders'}}],
+	orders: [{type: mongoose.Schema.Types.ObjectId, ref:'orders'}],
 	bookings: [{type:mongoose.Schema.Types.ObjectId, ref:'bookings'}],
 	promoteCode: [{code: String, expire: Date,}],
+	checkinStatus: {type: Boolean, default: false},
 	balance: {
 		oneDay: [combosSchema],
 		threeDays: [combosSchema],

@@ -96,7 +96,7 @@ function Checkout() {
 							res.json ({data: foundOrder})
 						}
 						else{
-							next ()
+							next ();
 						}
 					});
 				}

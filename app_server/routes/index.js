@@ -43,7 +43,9 @@ router.get('/angular/checkin-list', checkinCtrl.readCheckinList);
 router.post ('/checkin/cancel', checkinCtrl.cancelCheckin);
 
 router.post('/checkin/customer/:cusId', checkinCtrl.checkin);
+router.get ('/checkin/search-customers', checkinCtrl.searchCheckingCustomers);
 router.post('/checkin/customer/:cusId/edit', checkinCtrl.updateCheckin); //cusid is order id
+router.get ('/checkin/validate-promotion-code', checkinCtrl.validatePromocodes);
 
 router.get('/checkout/invoice/:orderId', checkoutCtrl.createInvoice);
 router.post('/checkout', checkoutCtrl.confirmCheckout);
@@ -59,6 +61,7 @@ router.post('/hr/employees/employee/:uId/edit', hrCtrl.editOneUser);
 router.get('/angular/employees', hrCtrl.readAngularEmployees);
 
 router.get('/angular/combo', combosCtrl.readAngularCombo);
+router.post ('/combos/buy', combosCtrl.buy)
 
 // router.get('/bi', biCtrl.readReport);
 
@@ -101,7 +104,7 @@ router.get ('/promo-codes/code/:codeId', promoCodesCtrl.readOneCodeById);
 router.post ('/promo-codes/create', promoCodesCtrl.createOneCode);
 router.post ('/promo-codes/code/:codeId', promoCodesCtrl.updateOneCode);
 
-router.post ('/combos/customer/:customerId', combosCtrl.purchaseCombos);
+// router.post ('/combos/customer/:customerId', combosCtrl.purchaseCombos);
 
 // Others
 router.get ('/components/template/message', othersCtrl.getMessageTemplate);
