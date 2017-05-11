@@ -1,14 +1,41 @@
 var mongoose = require('mongoose');
 
 // method to convert a value according to a promotion code
-var redeem = function (code, val){
-	if (code.toLowerCase () == 'yeugreenspace'){
-		return Number((val * 0.5).toFixed(1))
-	}
-	else{ // not found any code
-		return val
-	}
+// assume code is an array
+// assume code values are validated before redeemed
+var redeemPrice = function (code, total){
+	return code.reduce (function (acc, x, i, arr){
+		var c = x.name.toLowerCase ();
+		if (c === 'yeugreenspace'){
+			return acc * 0.5;
+		}
+		else if (c === 'student'){
+			return acc * 0.5;
+		}
+		else {
+			// throw new Error ('Invalid code');
+			return acc
+		}
+	}, total);
 }
+
+var redeemUsage = function (code, usage){
+	return code.reduce (function (acc, x, i, arr){
+		var c = x.name.toLowerCase ();
+		if (c === 'free1hourcommon'){
+			if (usage < 1) return 0
+			else return usage - 1;
+		}
+		else if (c === 'free2hourscommon'){
+			if (usage < 2) return 0
+			else return usage - 2;
+		}
+		else {
+			// throw new Error ('Invalid code');
+			return acc
+		}
+	}, usage);
+};
 
 // not actually code. But discount when meet condition, checked programmatically
 var discount = function (code, product){
@@ -41,7 +68,8 @@ var promocodesSchema = mongoose.Schema ({
 	}],
 });
 
-promocodesSchema.statics.redeem = redeem;
+promocodesSchema.statics.redeemPrice = redeemPrice;
+promocodesSchema.statics.redeemUsage = redeemUsage;
 promocodesSchema.statics.discount = discount;
 
 module.exports = mongoose.model ('promocodes', promocodesSchema);

@@ -1,30 +1,70 @@
 var mongoose = require('mongoose');
+var Promocodes = mongoose.model ('promocodes');
+var moment = require ('moment');
 
 // method to calculate total usage time
+// below 6 mins, return as 0.
 function getUsageTime (){
-	var h = (new Date (this.checkoutTime) - new Date (this.checkinTime)) / (60 * 60 * 1000);
-	return Number(h.toFixed(1));
+	var checkoutTime = moment (this.checkoutTime);
+	var checkinTime = moment(this.checkinTime);
+	var diff = checkoutTime.diff (checkinTime, 'minutes');
+	return normalizeUsage (diff);
 }
 
-function getTotal (){
+// unit of usage: minutes
+function normalizeUsage (diff){
+	var minMin = 0.1; // minimum hour
+	var mod = diff % 60;
+	var quotient = (diff - mod) / 60;
+	var tenths = mod / 60;
+	var tenthsFixed = Number(tenths.toFixed(1));
+	var usage;
+
+	if (quotient > 0){
+		usage = (quotient + tenthsFixed);
+	}
+	else if (quotient == 0 && tenths < minMin) {
+		usage = 0;
+	}
+	else {
+		usage = 1;
+	}
+
+	return usage;
+}
+
+function getSubTotal () {
+	this.usage = this.usage ? this.usage : this.getUsageTime ();
 	var order = this;
-	console.log(order)
-	var result = order.orderline.reduce (function (acc, val){
-		var total;
-		// if (val.productName.toLowerCase() == 'group private' || val.productName.toLowerCase() == 'group common' || val.productName.toLowerCase() == 'individual common'){
-		// 	total = val.quantity * val.price * order.usage + acc;
-		// }
-		if (val.productName == "Phòng Chung Dành Cho Cá Nhân" || val.productName == "Phòng Chung Dành Cho Nhóm" || val.productName == "Phòng Nhóm Riêng 10 - 15 Người" || val.productName == "Phòng Nhóm Riêng 20 - 35 Người"){
-			total = val.quantity * val.price * order.usage + acc;
+	var serviceName = ['group common', 'individual common', 'group private'];
+	
+	this.orderline.map (function (x, i, arr){
+		var subTotal;
+		var productName = x.productName.toLowerCase ();
+		if (serviceName.indexOf (productName) != -1){
+			if (x.promocodes.length > 0){
+				order.usage = Promocodes.redeemUsage (x.promocodes, order.usage);
+			}
+			subTotal = order.usage * x.price * x.quantity;
 		}
 		else{
-			total = val.quantity * val.price + acc;
+			subTotal = x.price * x.quantity;
+		}
+		if (x.promocodes.length > 0){
+			subTotal = Promocodes.redeemPrice (x.promocodes, subTotal);
 		}
 
-		return total 
-	}, 0);
+		x.subTotal = subTotal;
+	});
+}
 
-	return result
+// Assume at calling time, this.total is null
+function getTotal (){
+	var order = this;
+	order.total = 0;
+	order.orderline.map (function (x, i, arr){
+		order.total += x.subTotal;
+	})
 }
 
 var combosSchema = new mongoose.Schema({
@@ -35,17 +75,19 @@ var combosSchema = new mongoose.Schema({
 
 var ordersSchema = new mongoose.Schema({
 	total: {type: Number, min: 0},
-	usage: {type: Number, min: 0}, // in minutes
-	combos: [combosSchema],
-	promocodes: [{
-		_id: mongoose.Schema.Types.ObjectId,
-		name: String,
-	}], // expect only one code applied at a time
+	usage: {type: Number, min: 0}, // in hour
+	paymentMethod: Number, // required. card, cash, account
+	// combos: [combosSchema], 
 	orderline: [{
 		_id: {type: mongoose.Schema.Types.ObjectId, required: true},
 		productName: {type: String, required: true},
 		quantity: {type: String, default: 1, required: true},
 		price: {type: Number, required: true},
+		promocodes: [{
+			_id: mongoose.Schema.Types.ObjectId,
+			name: String,
+		}], // expect only one code applied at a time
+		subTotal: {type: Number, min: 0},	
 	}],
 	checkinTime: {type: Date, default: Date.now},
 	checkoutTime: {type: Date},
@@ -69,5 +111,6 @@ var ordersSchema = new mongoose.Schema({
 
 ordersSchema.methods.getUsageTime = getUsageTime;
 ordersSchema.methods.getTotal = getTotal;
+ordersSchema.methods.getSubTotal = getSubTotal;
 
 module.exports = mongoose.model ('orders', ordersSchema);
