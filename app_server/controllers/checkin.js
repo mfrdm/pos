@@ -120,26 +120,16 @@ function Checkin() {
 		)
 	};
 
-	this.updateCheckin = function(req, res) {
-		try{
-			Orders.findByIdAndUpdate (
-				req.body._id,
-				req.body.data,
-				function (err, orderData){
-					if (err) {
-						// console.log (err)
-						res.json (err);
-					}
-					else {
-						res.json ({data: {orderData: orderData}}) 
-					}
-				}
-			);
-		}
-		catch (err) {
-			// console.log (err)
-			next (err)
-		}
+	this.updateCheckin = function(req, res, next) {
+		Orders.findByIdAndUpdate (req.params.orderId, {new: true}, function (err, updatedOrder){
+			if (err){
+				console.log (err);
+				next (err);
+				return;
+			}
+
+			res.json ({data: updatedOrder});
+		});	
 	};
 
 	//Render ng-view main checkin
