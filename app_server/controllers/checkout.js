@@ -3,6 +3,12 @@ var mongoose = require ('mongoose');
 var Promocodes = mongoose.model ('promocodes');
 var Orders = mongoose.model ('orders');
 var Customers = mongoose.model ('customers');
+var helper = require('../../libs/node/helper')
+var dbHelper = require('../../libs/node/dbHelper')
+var requestHelper = require('../../libs/node/requestHelper')
+var request = require('request')
+var apiOptions = helper.getAPIOption()
+
 module.exports = new Checkout();
 
 function Checkout() {
