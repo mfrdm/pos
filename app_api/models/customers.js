@@ -35,10 +35,10 @@ var customersSchema = mongoose.Schema({
 		explain: String,
 		by: mongoose.Schema.Types.ObjectId
 	}],
-	orders: [{orderId:{type: mongoose.Schema.Types.ObjectId, ref:'orders'}}],
+	orders: [{type: mongoose.Schema.Types.ObjectId, ref:'orders'}],
 	bookings: [{type:mongoose.Schema.Types.ObjectId, ref:'bookings'}],
 	promoteCode: [{code: String, expire: Date,}],
-
+	checkinStatus: {type: Boolean, default: false},
 	balance: {
 		oneDay: [combosSchema],
 		threeDays: [combosSchema],

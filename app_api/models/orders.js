@@ -77,7 +77,7 @@ var ordersSchema = new mongoose.Schema({
 	total: {type: Number, min: 0},
 	usage: {type: Number, min: 0}, // in hour
 	paymentMethod: Number, // required. card, cash, account
-	// combos: [combosSchema], 
+	parent: mongoose.Schema.Types.ObjectId, // id of parent order. used for group private
 	orderline: [{
 		_id: {type: mongoose.Schema.Types.ObjectId, required: true},
 		productName: {type: String, required: true},

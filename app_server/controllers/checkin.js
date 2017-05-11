@@ -1,111 +1,72 @@
-var helper = require('../../libs/node/helper')
-var dbHelper = require('../../libs/node/dbHelper')
-var requestHelper = require('../../libs/node/requestHelper')
-var request = require('request')
-var apiOptions = helper.getAPIOption();
-
-
 var validator = require ('validator');
 var mongoose = require ('mongoose');
 var Orders = mongoose.model ('orders');
 var Customers = mongoose.model ('customers');
 var Promocodes = mongoose.model ('promocodes');
 
-
-
 module.exports = new Checkin();
 
 function Checkin() {
+	this.validatePromocodes = function (req, res, next){
+		// validate if exist and if not expire
+		var codes = req.query.codes.split (',');
+		Promocodes.find ({name: {$in: codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1}, function (err, pc){
+			if (err){
+				console.log (err);
+				next (err);
+				return
+			}
+
+			res.json ({data: pc});
+		});
+	};
+
+	// assume promocode are validated
 	this.checkin = function(req, res, next) {
 		var order = new Orders (req.body.data);
+		order.save (function (err, newOrder){
+			if (err){
+				console.log (err);
+				next (err);
+				return
+			}
 
-		if (order.promocodes.length){
-			var codeNames = order.promocodes.map (function (x, i, arr){
-				return x.name;
-			});
-			console.log(codeNames, 'te')
-
-			Promocodes.find ({name: {$in : codeNames}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1}, function (err, foundCodes){
-				if (err){
-					console.log(err)
-					next (err);
-				}
-				if (Object.keys (foundCodes).length){
+			Customers.findByIdAndUpdate (req.params.cusId,
+				{$push: {orders: newOrder._id}, checkinStatus: true},
+				{upsert: true, new: true},
+				function (err, customer){
+					if (err) {
+						next (err);
+						return
+					}
 					
-					order.save (function (err, newOrder){
-						if (err) {
-							next (err)
+					if (!customer){
+						next ();
+						return
+					}
+					else {
+						if (customer.checkinStatus == true && newOrder._id.equals (customer.orders.pop())){
+							res.json ({data: newOrder});
 							return
 						}
-						else {
-							Customers.findByIdAndUpdate (req.params.cusId,
-								{$push: {orders: newOrder._id}},
-								{upsert: true},
-								function (err, customer){
-									if (err) {
-										next (err);
-										return
-									}
-									
-									if (!customer){
-										next ();
-									}
-									else {
-										if (order)
-
-										res.json ({data: newOrder});
-									}
-								}
-							)
-
+						else{
+							next ();
+							return					
 						}
 
-					});					
+						
+					}
 				}
-				else{
-					// console.log({message: 'Promo codes not found / promo codes are expired'})
-					next()
-				}
-			})
-		}
-		else{
-			order.save (function (err, newOrder){
-				if (err) {
-					next (err)
-					return
-				}
-				else {
-					Customers.findByIdAndUpdate (req.params.cusId,
-						{$push: {orders: newOrder._id}},
-						{upsert: true},
-						function (err, customer){
-							if (err) {
-								next (err);
-								return
-							}
-							
-							if (!customer){
-								next ();
-							}
-							else {
-								if (order)
+			)
 
-								res.json ({data: newOrder});
-							}
-						}
-					)
-
-				}
-
-			});
-		}
+		});
 	};
 
 	this.searchCheckingCustomers = function (req, res, next){
 		var input = req.query.input; // email, phone, fullname
 		input = validator.trim (input);
 		var splited = input.split (' ');
-		var projections = {firstname: 1, lastname: 1, middlename: 1, phone: 1, email: 1};
+		var projections = {firstname: 1, lastname: 1, middlename: 1, phone: 1, email: 1, checkinStatus: 1};
 
 		var nameValidator = {firstname: splited[splited.length - 1], lastname: splited[0]};
 		var query;
@@ -125,6 +86,7 @@ function Checkin() {
 		query.exec (function (err, cus){
 			if (err){
 				next (err);
+				return
 			}
 
 			res.json ({data: cus});
