@@ -36,7 +36,7 @@ function normalizeUsage (diff){
 function getSubTotal () {
 	this.usage = this.usage ? this.usage : this.getUsageTime ();
 	var order = this;
-	var serviceName = ['group common', 'individual common', 'group private'];
+	var serviceName = ['group common', 'individual common', 'medium group private', 'small group private'];
 	
 	this.orderline.map (function (x, i, arr){
 		var subTotal;
