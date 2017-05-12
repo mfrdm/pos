@@ -1,42 +1,80 @@
 var mongoose = require('mongoose');
 
+// redeem price, usage, or total for student
+var redeemStudentAccount = function (codes, productName, price){
+	var result = {
+		price: price
+	};
+
+	var studentPrice = {
+		'group common': 10000,
+		'individual common': 10000,
+	};
+
+	var productNames = ['group common', 'individual common', 'medium group private', 'small group private'];
+
+	codes.map (function (code, i, arr){
+		code = code.toLowerCase ();
+		if (code && code == 'student' && (productName == productNames[0] || productName ==productNames[1])){
+			result.price = studentPrice[productName];
+		}
+	});
+
+	return result;
+}
+
+var redeemHourUsage = function (price, productName, usage){
+	var newPrice = price;
+	var productNames = ['group common', 'individual common', 'medium group private', 'small group private'];
+	var discountPrice = {
+		'medium group private': 200000,
+		'small group private': 120000,
+	};
+
+	var rewardHour = 1; // get discount for using above one hour
+
+	usage = usage ? usage : 0;
+	productName = productName.toLowerCase ();
+
+	if (usage > rewardHour && (productName == productNames[2] || productName == productNames[3])){
+		newPrice = discountPrice[productName];
+	}
+
+	return newPrice;
+}
+
 // method to convert a value according to a promotion code
 // assume code is an array
 // assume code values are validated before redeemed
-var redeemPrice = function (code, total, productname){
-	var productNames = ['group common', 'individual common', 'medium group private', 'small group private'];	
-	productname = productname ? productname.toLowerCase () : null;
-	return code.reduce (function (acc, x, i, arr){
-		var c = x.name.toLowerCase ();
-		if (c === 'yeugreenspace'){
-			return acc * 0.5;
-		}
-		else if (c === 'student' && (productname == productNames[0] || productname == productNames[1])){
-			return acc * (2/3);
-		}
-		else {
-			// throw new Error ('Invalid code');
-			return acc
-		}
-	}, total);
+var redeemTotal = function (code, total){
+	var newTotal = total;
+	code = code ? code.toLowerCase () : code;
+
+	if (code === 'yeugreenspace'){
+		newTotal = total * 0.5;
+	}
+
+	return newTotal;
+};
+
+var redeemPrice = function (code, price){
+	return price
 }
 
 var redeemUsage = function (code, usage){
-	return code.reduce (function (acc, x, i, arr){
-		var c = x.name.toLowerCase ();
-		if (c === 'free1hourcommon'){
-			if (usage < 1) return 0
-			else return usage - 1;
-		}
-		else if (c === 'free2hourscommon'){
-			if (usage < 2) return 0
-			else return usage - 2;
-		}
-		else {
-			// throw new Error ('Invalid code');
-			return acc
-		}
-	}, usage);
+
+	code = code ? code.toLowerCase () : code;
+
+	if (code === 'free1hourcommon'){
+		if (usage <= 1) usage = 0;
+		else usage = usage - 1;
+	}
+	else if (code === 'free2hourscommon'){
+		if (usage <= 2) usage = 0;
+		else usage = usage - 2;		
+	}
+
+	return usage
 };
 
 // FIX: Build actual test. This is just an placeholder, and assume no conflict.
@@ -69,6 +107,9 @@ var promocodesSchema = mongoose.Schema ({
 
 promocodesSchema.statics.redeemPrice = redeemPrice;
 promocodesSchema.statics.redeemUsage = redeemUsage;
+promocodesSchema.statics.redeemTotal = redeemTotal;
 promocodesSchema.statics.checkCodeConflict = checkCodeConflict;
+promocodesSchema.statics.redeemStudentAccount = redeemStudentAccount;
+promocodesSchema.statics.redeemHourUsage = redeemHourUsage;
 
 module.exports = mongoose.model ('promocodes', promocodesSchema);

@@ -101,7 +101,7 @@ describe ('Orders', function (){
 		order.orderline[2].subTotal.should.to.equal (10000 * 1);
 	});
 
-	it ('should return correct total', function (){
+	xit ('should return correct total when having no promocode', function (){
 		var order = new Orders (val);
 		var usage = order.getUsageTime ();
 		order.getSubTotal ();
@@ -109,7 +109,62 @@ describe ('Orders', function (){
 		order.total.should.to.equal (15000 * 1 * usage + 10000 * 2 + 10000 *1);
 	});
 
-	it ('should return total of service as 0 for member of group private room', function (){
+	xit ('should return correct total when having code FREE1HOURCOMMON and code STUDENT', function (){
+		val.orderline[0].promocodes = [{_id: '58eb474538671b4224745192', name: 'FREE1HOURCOMMON'}, {_id: '58eb474538671b4224745192', name: 'STUDENT'}];
+
+		var order = new Orders (val);
+		var usage = order.getUsageTime ();
+		var expectedSubTotal = [0, 20000, 10000];
+		var expectedTotal = 30000;
+
+		order.getSubTotal ();
+		order.getTotal ();
+		order.total.should.to.equal (expectedTotal);
+		order.orderline.map (function (x, i, arr){
+			x.subTotal.should.to.equal (expectedSubTotal[i]);
+		});	
+	});
+
+	it ('should return correct total when having code FREE2HOURSCOMMON and code STUDENT', function (){
+		val.orderline[0].promocodes = [{_id: '58eb474538671b4224745192', name: 'FREE2HOURSCOMMON'}, {_id: '58eb474538671b4224745192', name: 'STUDENT'}];
+
+		val.checkoutTime = '2017-05-10 10:00:00';
+
+		var order = new Orders (val);
+		var usage = order.getUsageTime ();
+		var expectedSubTotal = [20000, 20000, 10000];
+		var expectedTotal = 50000;
+
+		order.getSubTotal ();
+		order.getTotal ();
+		order.total.should.to.equal (expectedTotal);
+		order.orderline.map (function (x, i, arr){
+			x.subTotal.should.to.equal (expectedSubTotal[i]);
+		});			
+	})
+
+	xit ('should return correct total when usage is more than 1 hour, and service is medium group private', function (){
+		val.orderline[0] = { productName : "Medium Group Private", _id : "58ff58e6e53ef40f4dd664cd", quantity : 1, price: 220000 };
+		val.usage = 4;
+		var order = new Orders (val);
+		var usage = order.getUsageTime ();
+		var expectedSubTotal = [820000, 20000, 10000];
+		var expectedTotal = 850000;
+
+		order.getSubTotal ();
+		order.getTotal ();
+		order.total.should.to.equal (expectedTotal);
+		order.orderline.map (function (x, i, arr){
+			x.subTotal.should.to.equal (expectedSubTotal[i]);
+		});			
+
+	});
+
+	it ('should return correct total when having code STUDENT, usage is more than 1 hour, and service is small group private');
+
+	it ('should round total values like 500, 1500, and 1300 to 1000, 2000, and 1000')
+
+	xit ('should return total of service as 0 for member of group private room', function (){
 		val.parent = '58eb474538671b4224745192';
 		var order = new Orders (val);
 		var usage = order.getUsageTime ();
