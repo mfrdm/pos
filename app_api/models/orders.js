@@ -40,20 +40,25 @@ function getSubTotal () {
 	
 	this.orderline.map (function (x, i, arr){
 		var subTotal;
-		var productName = x.productName.toLowerCase ();
-		if (serviceName.indexOf (productName) != -1){
-			if (x.promocodes.length > 0){
-				order.usage = Promocodes.redeemUsage (x.promocodes, order.usage);
-			}
-			subTotal = order.usage * x.price * x.quantity;
+		if (order.parent){
+			subTotal = 0;
 		}
 		else{
-			subTotal = x.price * x.quantity;
-		}
-		if (x.promocodes.length > 0){
-			subTotal = Promocodes.redeemPrice (x.promocodes, subTotal);
-		}
+			var productName = x.productName.toLowerCase ();
+			if (serviceName.indexOf (productName) != -1){
+				if (x.promocodes.length > 0){
+					order.usage = Promocodes.redeemUsage (x.promocodes, order.usage);
+				}
 
+				subTotal = order.usage * x.price * x.quantity;
+			}
+			else{
+				subTotal = x.price * x.quantity;
+			}
+			if (x.promocodes.length > 0){
+				subTotal = Promocodes.redeemPrice (x.promocodes, subTotal);
+			}
+		}
 		x.subTotal = subTotal;
 	});
 }
@@ -62,9 +67,11 @@ function getSubTotal () {
 function getTotal (){
 	var order = this;
 	order.total = 0;
+
 	order.orderline.map (function (x, i, arr){
 		order.total += x.subTotal;
-	})
+	});	
+
 }
 
 var combosSchema = new mongoose.Schema({
