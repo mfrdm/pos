@@ -279,7 +279,7 @@ describe ('Checkout', function (){
 		});	
 	})
 
-	describe ('Confirm checkout', function (){
+	xdescribe ('Confirm checkout', function (){
 		var order, customer;
 		var newOrder, newCustomer;
 		var expectedUsage;

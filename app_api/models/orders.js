@@ -36,7 +36,7 @@ function normalizeUsage (diff){
 function getSubTotal () {
 	this.usage = this.usage ? this.usage : this.getUsageTime ();
 	var order = this;
-	var serviceName = ['group common', 'individual common', 'medium group private', 'small group private']; // FIX: avoid hardcode
+	var productNames = ['group common', 'individual common', 'medium group private', 'small group private']; // FIX: avoid hardcode
 	
 	this.orderline.map (function (x, i, arr){
 		var subTotal;
@@ -44,22 +44,42 @@ function getSubTotal () {
 			subTotal = 0;
 		}
 		else{
-			var productName = x.productName.toLowerCase ();
-			if (serviceName.indexOf (productName) != -1){
-				if (x.promocodes.length > 0){
-					order.usage = Promocodes.redeemUsage (x.promocodes, order.usage);
+			var pn = x.productName.toLowerCase ();
+
+			if (productNames.indexOf (pn) != -1){
+				var rewardHourUsagePrice;
+				var codes = x.promocodes.map (function (x,i,arr){return x.name;});
+
+				x.price = Promocodes.redeemStudentAccount (codes, pn, x.price).price;
+			
+				codes.map (function (code, i, arr){
+					x.price = Promocodes.redeemPrice(code, x.price);
+				});
+
+				x.promocodes.map (function (code, i, arr){
+					order.usage = Promocodes.redeemUsage (code.name, order.usage);
+				});
+
+				rewardHourUsagePrice = Promocodes.redeemHourUsage (x.price, pn, order.usage);
+
+				if (rewardHourUsagePrice != x.price){
+					subTotal = x.price + rewardHourUsagePrice * (order.usage - 1);
+				}
+				else{
+					subTotal = x.price * order.usage;
 				}
 
-				subTotal = order.usage * x.price * x.quantity;
+				codes.map (function (code, i, arr){
+					subTotal = Promocodes.redeemTotal (code.name, subTotal);
+				});
+
+							
 			}
 			else{
 				subTotal = x.price * x.quantity;
 			}
-
-			if (x.promocodes.length > 0){
-				subTotal = Promocodes.redeemPrice (x.promocodes, subTotal, productName); // FIX: avoid hardcode in promocodes 
-			}
 		}
+
 		x.subTotal = subTotal;
 	});
 }
