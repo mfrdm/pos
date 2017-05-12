@@ -36,7 +36,7 @@ function normalizeUsage (diff){
 function getSubTotal () {
 	this.usage = this.usage ? this.usage : this.getUsageTime ();
 	var order = this;
-	var serviceName = ['group common', 'individual common', 'medium group private', 'small group private'];
+	var serviceName = ['group common', 'individual common', 'medium group private', 'small group private']; // FIX: avoid hardcode
 	
 	this.orderline.map (function (x, i, arr){
 		var subTotal;
@@ -55,8 +55,9 @@ function getSubTotal () {
 			else{
 				subTotal = x.price * x.quantity;
 			}
+
 			if (x.promocodes.length > 0){
-				subTotal = Promocodes.redeemPrice (x.promocodes, subTotal);
+				subTotal = Promocodes.redeemPrice (x.promocodes, subTotal, productName); // FIX: avoid hardcode in promocodes 
 			}
 		}
 		x.subTotal = subTotal;

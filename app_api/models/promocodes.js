@@ -3,14 +3,16 @@ var mongoose = require('mongoose');
 // method to convert a value according to a promotion code
 // assume code is an array
 // assume code values are validated before redeemed
-var redeemPrice = function (code, total){
+var redeemPrice = function (code, total, productname){
+	var productNames = ['group common', 'individual common', 'medium group private', 'small group private'];	
+	productname = productname ? productname.toLowerCase () : null;
 	return code.reduce (function (acc, x, i, arr){
 		var c = x.name.toLowerCase ();
 		if (c === 'yeugreenspace'){
 			return acc * 0.5;
 		}
-		else if (c === 'student'){
-			return acc * 0.5;
+		else if (c === 'student' && (productname == productNames[0] || productname == productNames[1])){
+			return acc * (2/3);
 		}
 		else {
 			// throw new Error ('Invalid code');
