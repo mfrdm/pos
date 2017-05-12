@@ -7,104 +7,109 @@ module.exports = new Checkout();
 
 function Checkout() {
 
-	this.createInvoice = function(req, res, next) {
+	// assume promotion codes, if provided, are valid, since checked when checking in
+	this.createInvoice = function (req, res, next){
+		
+	}
 
-		// FIX: should not assume the current title is the lastest one in the edu array
-		function isStudent (cus){
-			var title = cus.edu[cus.edu.length-1].title;
-			return title == 1
-		};
+	// this.createInvoice = function(req, res, next) {
 
-		function getDiscount (customer, foundOrder){
-			if (customer.edu.length){
-				var discountCode = '';
-				if (isStudent (customer)){
-					discountCode = 'student';
-				}
+	// 	// FIX: should not assume the current title is the lastest one in the edu array
+	// 	function isStudent (cus){
+	// 		var title = cus.edu[cus.edu.length-1].title;
+	// 		return title == 1
+	// 	};
 
-				foundOrder.orderline = foundOrder.orderline.map (function (x, i, arr){
-					x.price = Promocodes.discount (discountCode, x);
-					return x
-				});
-			}			
-		};
+	// 	function getDiscount (customer, foundOrder){
+	// 		if (customer.edu.length){
+	// 			var discountCode = '';
+	// 			if (isStudent (customer)){
+	// 				discountCode = 'student';
+	// 			}
 
-		Orders.findOne ({_id: req.params.orderId}, function (err, foundOrder){
-			if (err){
-				next (err)
-				return
-			}
+	// 			foundOrder.orderline = foundOrder.orderline.map (function (x, i, arr){
+	// 				x.price = Promocodes.discount (discountCode, x);
+	// 				return x
+	// 			});
+	// 		}			
+	// 	};
 
-			if (!foundOrder){
-				next ()
-				return
-			}
-			else{
-				foundOrder.checkoutTime = foundOrder.checkoutTime ? foundOrder.checkoutTime : moment ();
+	// 	Orders.findOne ({_id: req.params.orderId}, function (err, foundOrder){
+	// 		if (err){
+	// 			next (err)
+	// 			return
+	// 		}
 
-				if (foundOrder.promocodes.length){ 
-					var codeNames = foundOrder.promocodes.map (function (x, i, arr){
-						return x.name;
-					});
+	// 		if (!foundOrder){
+	// 			next ()
+	// 			return
+	// 		}
+	// 		else{
+	// 			foundOrder.checkoutTime = foundOrder.checkoutTime ? foundOrder.checkoutTime : moment ();
 
-					Promocodes.find ({name: {$in: codeNames}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1}, function (err, foundCodes){
-						if (err){
-							next (err)
-							return
-						}
+	// 			if (foundOrder.promocodes.length){ 
+	// 				var codeNames = foundOrder.promocodes.map (function (x, i, arr){
+	// 					return x.name;
+	// 				});
 
-						if (!foundCodes.length){
-							next ()
-						}
-						else{
-							foundOrder.promocodes = foundCodes;
-							Customers.findOne ({_id: foundOrder.customer._id}, {'edu': 1}, function (err, foundCustomer){
-								if (err) {
-									next (err)
-									return
-								}
+	// 				Promocodes.find ({name: {$in: codeNames}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1}, function (err, foundCodes){
+	// 					if (err){
+	// 						next (err)
+	// 						return
+	// 					}
 
-								if (foundCustomer){
-									getDiscount (foundCustomer, foundOrder);
-									foundOrder.usage = foundOrder.getUsageTime ();
-									foundOrder.total = foundOrder.getTotal ();
-									foundOrder.total = foundCodes.reduce (function (acc, val){
-										return Promocodes.redeem (val.name, acc);
-									}, foundOrder.total);
-									res.json ({data: foundOrder});
+	// 					if (!foundCodes.length){
+	// 						next ()
+	// 					}
+	// 					else{
+	// 						foundOrder.promocodes = foundCodes;
+	// 						Customers.findOne ({_id: foundOrder.customer._id}, {'edu': 1}, function (err, foundCustomer){
+	// 							if (err) {
+	// 								next (err)
+	// 								return
+	// 							}
 
-								}	
-								else{
-									next ()
-								}
-							})
-						}
-					});
-				}
-				else{
-					Customers.findOne ({_id: foundOrder.customer._id}, {'edu': 1}, function (err, foundCustomer){
-						if (err) {
-							next (err)
-							return
-						}
+	// 							if (foundCustomer){
+	// 								getDiscount (foundCustomer, foundOrder);
+	// 								foundOrder.usage = foundOrder.getUsageTime ();
+	// 								foundOrder.total = foundOrder.getTotal ();
+	// 								foundOrder.total = foundCodes.reduce (function (acc, val){
+	// 									return Promocodes.redeem (val.name, acc);
+	// 								}, foundOrder.total);
+	// 								res.json ({data: foundOrder});
 
-						if (foundCustomer){
+	// 							}	
+	// 							else{
+	// 								next ()
+	// 							}
+	// 						})
+	// 					}
+	// 				});
+	// 			}
+	// 			else{
+	// 				Customers.findOne ({_id: foundOrder.customer._id}, {'edu': 1}, function (err, foundCustomer){
+	// 					if (err) {
+	// 						next (err)
+	// 						return
+	// 					}
 
-							getDiscount (foundCustomer, foundOrder);
-							foundOrder.usage = foundOrder.getUsageTime ();
-							foundOrder.total = foundOrder.getTotal ();	
-							res.json ({data: foundOrder})
-						}
-						else{
-							next ();
-						}
-					});
-				}
+	// 					if (foundCustomer){
+
+	// 						getDiscount (foundCustomer, foundOrder);
+	// 						foundOrder.usage = foundOrder.getUsageTime ();
+	// 						foundOrder.total = foundOrder.getTotal ();	
+	// 						res.json ({data: foundOrder})
+	// 					}
+	// 					else{
+	// 						next ();
+	// 					}
+	// 				});
+	// 			}
 				
-			};
-		});
+	// 		};
+	// 	});
 
-	};
+	// };
 
 	this.confirmCheckout = function(req, res) {
 		console.log(req.body)
