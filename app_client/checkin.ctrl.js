@@ -430,7 +430,8 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		
 		CheckinService.createOne (vm.model.customer.checkingInData.customer._id, vm.model.customer.checkingInData).then(
 			function success(data){
-				vm.model.customer.checkedInList.push (data.data.data.orderData);
+				console.log(data.data.data)
+				vm.model.customer.checkedInList.push (data.data.data);
 				vm.ctrl.reset();
 			}, 
 			function error(err){

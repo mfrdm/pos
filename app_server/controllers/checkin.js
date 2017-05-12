@@ -8,6 +8,7 @@ var mongoose = require ('mongoose');
 var Orders = mongoose.model ('orders');
 var Customers = mongoose.model ('customers');
 var Promocodes = mongoose.model ('promocodes');
+var moment = require ('moment');
 
 module.exports = new Checkin();
 
@@ -30,6 +31,7 @@ function Checkin() {
 	// assume promocode are validated
 	this.checkin = function(req, res, next) {
 		console.log(req.body.data)
+		console.log(req.params.cusId)
 		var order = new Orders (req.body.data);
 		order.save (function (err, newOrder){
 			if (err){
@@ -39,9 +41,10 @@ function Checkin() {
 			}
 
 			Customers.findByIdAndUpdate (req.params.cusId,
-				{$push: {orders: newOrder._id}, checkinStatus: true},
+				{$push: {orders: newOrder._id}, $set:{checkinStatus: true}},
 				{upsert: true, new: true},
 				function (err, customer){
+					console.log(customer)
 					if (err) {
 						next (err);
 						return
@@ -102,28 +105,43 @@ function Checkin() {
 
 
 	this.readCheckinList = function (req, res) {
-		Orders.find (
+		var today = moment ();
+		var start = req.query.start ? moment(req.query.start) : moment (today.format ('YYYY-MM-DD'));
+		var end = req.query.end ? moment(req.query.end + ' 23:59:59') : moment (today.format ('YYYY-MM-DD') + ' 23:59:59');
+		var checkinStatus = req.query.status ? req.query.status : 1; // get checked-in by default
+		 var q = Orders.find (
 			{
 				checkinTime: {
-					$gte: req.query.start, 
-					$lt: req.query.end,
+					$gte: start, 
+					$lte: end,
 				},
-				status: req.query.status,
-				storeId: mongoose.Types.ObjectId(req.query.storeId)
-			},
-			function (err, docs){
+				storeId: req.query.storeId,
+			});
+
+		if (checkinStatus == 4){
+			// do nothing and get all checked-in and checked-out
+			q.$where ('this.status == ' + 1 + ' || this.status == ' + 2);
+		}
+		else {
+			q.$where ('this.status == ' + checkinStatus);
+		}
+
+		q.exec(function (err, ords){
 				if (err){
-					res.json (err);
+					console.log (err);
+					next (err);
+					return
 				}
 				else {
-					res.json ({data: docs});
+					res.json ({data: ords});
 				}
 			}
-		)
+		); 
+
 	};
 
 	this.updateCheckin = function(req, res, next) {
-		Orders.findByIdAndUpdate (req.params.orderId, {new: true}, function (err, updatedOrder){
+		Orders.findByIdAndUpdate (req.params.orderId, req.body.data, {new: true}, function (err, updatedOrder){
 			if (err){
 				console.log (err);
 				next (err);
