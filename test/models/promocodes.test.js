@@ -23,7 +23,9 @@ describe ('Promotion Code', function (){
 		it ('should be invalid when redeem expired promotion code');
 	});
 
-	describe ('Redeem codes', function (){
+	xdescribe ('Check code conflict')
+
+	xdescribe ('Redeem codes', function (){
 		var usage, total;
 
 		beforeEach (function (){

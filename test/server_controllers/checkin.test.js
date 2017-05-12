@@ -109,7 +109,6 @@ xdescribe ('Cancel checkin', function (){
 
 });
 
-
 xdescribe ('Validate promotion code', function (){
 	var newCodes, codeNames;
 	beforeEach (function (done){
@@ -158,7 +157,7 @@ xdescribe ('Validate promotion code', function (){
 		})
 	})
 
-	it ('should return codes with invalid status when they are invalid', function (done){
+	it ('should not return codes when they are invalid', function (done){
 		codeNames = 'INVALIDCODE1,INVALIDECODE2';
 		chai.request (server)
 			.get ('/checkin/validate-promotion-code')
@@ -174,7 +173,7 @@ xdescribe ('Validate promotion code', function (){
 			});
 	});
 
-	it ('should return codes with valid status when they are valid', function (done){
+	it ('should return codes when they are valid', function (done){
 		chai.request (server)
 			.get ('/checkin/validate-promotion-code')
 			.query ({codes: codeNames})
@@ -190,7 +189,8 @@ xdescribe ('Validate promotion code', function (){
 			});			
 	});
 
-	it ('should be invalid when promotion codes are conflict')
+	it ('should return no code conflict when there are not');
+	it ('should return code conflicts when there are');
 });
 
 xdescribe ('Check in', function (){
@@ -283,7 +283,7 @@ xdescribe ('Check in', function (){
 			});
 	});
 
-	xit ('should be invalid when promotion codes are not found', function (done){
+	xit ('should be invalid when promotion codes are invalid', function (done){
 		order.promocodes = [{name: 'INVALID_CODE'}];
 		chai.request (server)
 			.post ('/checkin/customer/' + order.customer._id)
@@ -339,11 +339,6 @@ xdescribe ('Check in', function (){
 				done ();
 			});		
 	});
-});
-
-xdescribe ('Check-in exception', function (){
-	it ('Return correct total and usage when using combo')
-	it ('Update correct remain of combo when used in checkout')
 });
 
 xdescribe ('Edit checked-in', function (){
@@ -629,7 +624,7 @@ describe ('Read check-in list', function (){
 			});	
 
 	});
-	
+
 	it ('should be invalid when required input is not provided /angular/checkin-list');
 
 });

@@ -371,7 +371,10 @@ div(id='addSameCode' class='reveal text-center small' data-reveal data-animation
 div(id='wrongPromoCodes' class='reveal text-center small' data-reveal data-animation-in="slide-in-down fast")
 	div(class='headerModal text-center paddingTB15 marginB15')
 		h5 Mã code không đúng
-	div(ng-repeat='wrongCode in vm.model.customer.promocode.errorCodes' class='text-center')
+	div(ng-repeat='wrongCode in vm.model.customer.promocode.errorCodes track by $index' class='text-center')
 		p {{wrongCode}}
+	div(ng-repeat='conflict in vm.model.customer.promocode.conflictedCode track by $index' class='text-center')
+		p {{conflict.name}} conflict with
+			span(ng-repeat='code in conflict.conflicted track by $index') : {{code.name}}
 	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
 			span(aria-hidden="true") &times;

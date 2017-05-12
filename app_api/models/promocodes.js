@@ -37,6 +37,17 @@ var redeemUsage = function (code, usage){
 	}, usage);
 };
 
+// FIX: Build actual test. This is just an placeholder, and assume no conflict.
+// Some codes cannot be used with another. The function checks and return list of conflicts if any
+var checkCodeConflict = function (codes){
+	codes.map (function (c, i , arr){
+		c.conflicted = [];
+	});
+
+	return codes
+};
+
+
 // represent all codes that give customer some values like free seat or discount
 var promocodesSchema = mongoose.Schema ({
 	name: {type: String, required: true},
@@ -50,9 +61,12 @@ var promocodesSchema = mongoose.Schema ({
 		explain: String,
 		by: mongoose.Schema.Types.ObjectId,
 	}],
+	conflictCodes: [{name: String, _id: mongoose.Schema.Types.ObjectId}],
+	conflicted: [{name: String, _id: mongoose.Schema.Types.ObjectId}], // used temporary when check conflict. Never insert into db.
 });
 
 promocodesSchema.statics.redeemPrice = redeemPrice;
 promocodesSchema.statics.redeemUsage = redeemUsage;
+promocodesSchema.statics.checkCodeConflict = checkCodeConflict;
 
 module.exports = mongoose.model ('promocodes', promocodesSchema);

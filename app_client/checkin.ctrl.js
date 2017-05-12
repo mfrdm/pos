@@ -315,9 +315,9 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			middlename: vm.model.search.userResults [index].middlename,
 			lastname: vm.model.search.userResults [index].lastname,
 			phone: vm.model.search.userResults [index].phone[0],
-			email: vm.model.search.userResults [index].email[0]
+			email: vm.model.search.userResults [index].email[0],
+			edu:vm.model.search.userResults [index].edu[0]
 		}
-
 		vm.model.dom.checkingInCustomerSearchResult = false;
 		vm.model.search.username = vm.model.search.userResults[index].lastname + ' ' +vm.model.search.userResults[index].middlename+ ' ' + vm.model.search.userResults[index].firstname + (vm.model.search.userResults[index].email[0] ? ' / ' + vm.model.search.userResults[index].email[0] : '') + ' / ' + vm.model.search.userResults[index].phone[0];
 	}
@@ -390,14 +390,25 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	vm.ctrl.validatePromoteCode = function(){
 		CheckinService.validatePromoteCode(vm.model.customer.promocode.codeList)
 			.then(function success(res){
-				Array.prototype.diff = function(a) {
-				    return this.filter(function(i) {return a.indexOf(i) < 0;});
-				};
-				vm.model.customer.promocode.errorCodes = vm.model.customer.promocode.codeList.diff(res.data.data)
-				if(vm.model.customer.promocode.codeList == []){
-					vm.ctrl.confirmCheckin(vm.model.customer.promocode.codeList)
-				}
-				if(vm.model.customer.promocode.errorCodes.length > 0){
+				console.log(res.data.data)
+				vm.model.customer.promocode.conflictedCode = []
+				vm.model.customer.promocode.errorCodes = []
+				vm.model.customer.promocode.codeList.map(function(ele){
+					var count = 0;
+					res.data.data.map(function(item){
+						if(item.name == ele){
+							count ++;
+						}
+					})
+					if(count == 0){
+						vm.model.customer.promocode.errorCodes.push(ele)
+					}
+				})
+				
+				vm.model.customer.promocode.conflictedCode = res.data.data.filter(function(ele){
+					return ele.conflicted.length > 0
+				});
+				if(vm.model.customer.promocode.errorCodes.length > 0 || vm.model.customer.promocode.conflictedCode.length > 0){
 					$('#wrongPromoCodes').foundation('open')
 				}
 				else{
@@ -410,10 +421,16 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	vm.ctrl.confirmCheckin = function(code){
 		vm.model.customer.checkingInData.storeId = vm.model.customer.storeId;
 		vm.model.customer.checkingInData.staffId = vm.model.customer.userId;
-		console.log(code)
+		
 		vm.model.customer.checkingInData.orderline[0].promocodes = code.map(function(ele){
-			return {name:ele, _id:'58ff58e6e53ef40f4dd664cd'}//need to get id from database
+			return {name:ele, _id:ele._id}//need to get id from database
 		});
+		if(vm.model.customer.checkingInData.customer.edu.title == 1){
+			CheckinService.getStudentCode()
+			.then(function success(res){
+				vm.model.customer.checkingInData.orderline[0].promocodes.push(res.data.data)
+			})
+		}
 		vm.model.customer.checkingInData.orderline.map (function (x){
 			x._id = vm.model.customer.services [x.productName]._id;
 			x.price = vm.model.customer.services [x.productName].price;

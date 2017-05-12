@@ -21,25 +21,24 @@ describe ('Checkout', function (){
 		
 		beforeEach (function (done){
 			var customer = {
-				_id: new mongoose.Types.ObjectId (),
-				firstname: 'XXX',
-				email: 'hiep@mail.com',
-				password: '123456',
-				lastname: 'YYY',
-				phone: '099284323121',
-				birthday: new Date ('1989-10-01'),
+				firstname: 'Customer_Firstname',
+				middlename: 'Customer_Middlename',
+				lastname: 'Customer_Lastname',
 				gender: 1,
+				birthday: new Date ('1989-09-25'),
+				phone: '0999999999',
+				edu: {},
+				email: 'lastmiddlefirst@gmail.com', // manuallt required in some cases
+				isStudent: false,
+				checkinStatus: false,
 			};
 
 			expectedUsage = 0.3;
 			order = {
-				promocodes:[{
-					name: 'YEUGREENSPACE',
-				}],
 				orderline: [ 
-					{ "productName" : "Group Common", "_id" : new mongoose.Types.ObjectId("58ff58e6e53ef40f4dd664cd"), "quantity" : 1, price: 15000 }, 
-					{ "productName" : "Coca", "_id" : new mongoose.Types.ObjectId("58ff58e6e53ef40f4dd664cd"), "quantity" : 2, price: 10000 }, 
-					{ "productName" : "Poca", "_id" : new mongoose.Types.ObjectId("58ff58e6e53ef40f4dd664cd"), "quantity" : 1, price: 10000 } 
+					{ "productName" : "Common", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000, promocodes: [{id: '58ff58e6e53ef40f4dd664cd', name: 'YEUGREENSPACE'}] }, 
+					{ "productName" : "Coca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 2, price: 10000 }, 
+					{ "productName" : "Poca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000 }
 				],
 				customer:{
 					_id: customer._id,
@@ -50,8 +49,26 @@ describe ('Checkout', function (){
 				},
 				storeId: "58eb474538671b4224745192",
 				staffId: "58eb474538671b4224745192",
-				checkoutTime: moment ().add (expectedUsage, 'hours'), // TESTING	
+				checkoutTime: moment ().add (expectedUsage, 'hours'), // TESTING
 			};
+
+			Customer.create (customer, function (err, cus){
+				if (err){
+					console.log (err)
+					return
+				}
+
+				// cus
+
+				Orders.create (order, function (err, ord){
+					if (err){
+						console.log (err)
+						return
+					}
+
+
+				});
+			});
 
 			chai.request (server)
 				.post ('/customers/create')

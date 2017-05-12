@@ -17,12 +17,14 @@ function Checkin() {
 		// validate if exist and if not expire
 		// var codes = req.query.codes.split (',');
 		var codes = req.query.codes;//Because I send an array
-		Promocodes.find ({name: {$in: codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1}, function (err, pc){
+		Promocodes.find ({name: {$in: codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1, conflicted: 1}, function (err, pc){
 			if (err){
 				console.log (err);
 				next (err);
 				return
 			}
+
+			pc = Promocodes.checkCodeConflict (pc);
 
 			res.json ({data: pc});
 		});
