@@ -61,8 +61,8 @@ router.get('/hr/employees/employee/:uId', hrCtrl.readOneUser);
 router.post('/hr/employees/employee/:uId/edit', hrCtrl.editOneUser);
 router.get('/angular/employees', hrCtrl.readAngularEmployees);
 
-router.get('/angular/combo', combosCtrl.readAngularCombo);
-router.post ('/combos/buy', combosCtrl.buy)
+// router.get('/angular/combo', combosCtrl.readAngularCombo);
+// router.post ('/combos/buy', combosCtrl.buy)
 
 // router.get('/bi', biCtrl.readReport);
 

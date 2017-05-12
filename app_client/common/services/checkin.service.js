@@ -12,11 +12,33 @@ function CheckinService ($http, $q){
 			params:{
 				queryInput:JSON.stringify({
 					conditions: {$or: array},
-					projection: {firstname: 1, middlename:1, lastname: 1, phone: 1, email: 1, promoteCode:1},
+					projection: {firstname: 1, middlename:1, lastname: 1, phone: 1, email: 1, edu:1},
 					opts: null
 				})
 			}
 		})
+	}
+
+	//Validate Promote Code
+	this.validatePromoteCode = function(data){
+		var dataTest = [{_id:'591023ab5c05325a32533a04', 'name':'1hourcommon', conflicted:[{name:'yeugreenspace'}]}, {_id:'591023ab5c05325a32533a08', 'name':'2hourcommon', conflicted:[{name:'yeugreenspace'}]}, {_id:'591023ab5c05325a32533a12', 'name':'stu', conflicted:[]}]
+		// return $http({
+		// 	method: 'GET',
+		// 	url: '/checkin/validate-promotion-code',
+		// 	params:{
+		// 		codes:data
+		// 	}
+		// })
+		var sameList = []
+		dataTest.map(function(item){
+			if ((data.filter(function(ele){
+				return ele == item.name
+			})).length !=0){
+				sameList.push(item)
+			}
+		})
+		
+		return $q.resolve({data: {data:sameList}})
 	}
 
 	//Get all checked in customer
@@ -54,6 +76,11 @@ function CheckinService ($http, $q){
 		// 		}]
 		// 	}
 		// })
+	}
+
+	this.getStudentCode = function(){
+		dataCode = {name:'student', _id:'591023ab5c05325a32533a08'}
+		return $q.resolve({data: {data:dataCode}})
 	}
 
 	// //Get data from 1 customer by ID

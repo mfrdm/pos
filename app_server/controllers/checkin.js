@@ -1,3 +1,8 @@
+var helper = require('../../libs/node/helper')
+var dbHelper = require('../../libs/node/dbHelper')
+var requestHelper = require('../../libs/node/requestHelper')
+var request = require('request')
+var apiOptions = helper.getAPIOption()
 var validator = require ('validator');
 var mongoose = require ('mongoose');
 var Orders = mongoose.model ('orders');
@@ -10,8 +15,9 @@ module.exports = new Checkin();
 function Checkin() {
 	this.validatePromocodes = function (req, res, next){
 		// validate if exist and if not expire
-		var codes = req.query.codes.split (',');
-		Promocodes.find ({name: {$in: codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1, conflictCodes: 1}, function (err, pc){
+		// var codes = req.query.codes.split (',');
+		var codes = req.query.codes;//Because I send an array
+		Promocodes.find ({name: {$in: codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1, conflicted: 1}, function (err, pc){
 			if (err){
 				console.log (err);
 				next (err);
@@ -26,6 +32,8 @@ function Checkin() {
 
 	// assume promocode are validated
 	this.checkin = function(req, res, next) {
+		console.log(req.body.data)
+		console.log(req.params.cusId)
 		var order = new Orders (req.body.data);
 		order.save (function (err, newOrder){
 			if (err){
@@ -35,9 +43,10 @@ function Checkin() {
 			}
 
 			Customers.findByIdAndUpdate (req.params.cusId,
-				{$push: {orders: newOrder._id}, checkinStatus: true},
+				{$push: {orders: newOrder._id}, $set:{checkinStatus: true}},
 				{upsert: true, new: true},
 				function (err, customer){
+					console.log(customer)
 					if (err) {
 						next (err);
 						return
