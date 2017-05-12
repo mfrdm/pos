@@ -14,7 +14,8 @@ module.exports = new Checkin();
 function Checkin() {
 	this.validatePromocodes = function (req, res, next){
 		// validate if exist and if not expire
-		var codes = req.query.codes.split (',');
+		// var codes = req.query.codes.split (',');
+		var codes = req.query.codes;//Because I send an array
 		Promocodes.find ({name: {$in: codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1}, function (err, pc){
 			if (err){
 				console.log (err);
@@ -28,6 +29,7 @@ function Checkin() {
 
 	// assume promocode are validated
 	this.checkin = function(req, res, next) {
+		console.log(req.body.data)
 		var order = new Orders (req.body.data);
 		order.save (function (err, newOrder){
 			if (err){

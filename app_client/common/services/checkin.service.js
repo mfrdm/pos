@@ -19,6 +19,21 @@ function CheckinService ($http, $q){
 		})
 	}
 
+	//Validate Promote Code
+	this.validatePromoteCode = function(data){
+		// return $http({
+		// 	method: 'GET',
+		// 	url: '/checkin/validate-promotion-code',
+		// 	params:{
+		// 		codes:data
+		// 	}
+		// })
+		var sameList = data.filter(function(ele){
+			return ele == '1hourcommon'
+		})
+		return $q.resolve({data: {data:sameList}})
+	}
+
 	//Get all checked in customer
 	this.getCheckinList = function(query){
 		query = query ? query : {};

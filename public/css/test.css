@@ -411,3 +411,13 @@ ul.listOrder li i{
 .greenBorderR{
 	border-right: 2px solid #3adb76;
 }
+
+.addPromotion{
+	padding: 15px;
+	margin-bottom: 15px;
+	border: 2px solid #ccc;
+}
+
+.headerModal{
+	border-bottom: 3px solid #ccc;
+}

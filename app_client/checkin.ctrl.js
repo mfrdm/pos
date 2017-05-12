@@ -9,7 +9,12 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	vm.model = {
 		search:{},//Search model
 		customer:{
-			services:{}
+			services:{},
+			promocode:{
+				codeList: [],
+				errorCodes: [],
+				codeInput:''
+			}//Promote Code
 		},//Customer model
 		filter:{},//Filter model
 		other:{}//Other models
@@ -142,6 +147,11 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 
 	//Search
 	vm.model.search.messageNoResult = 'No search result? Or '
+
+	//Test
+	vm.model.customer.storeId = '59112972685d0127e59de962';
+	vm.model.customer.userId = '590f4f301b7e4b1ebb3e2bd8'
+
 
 	////////////////////////////////////////////////////////////////
 	// Default checkin data
@@ -304,7 +314,8 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			firstname: vm.model.search.userResults [index].firstname,
 			middlename: vm.model.search.userResults [index].middlename,
 			lastname: vm.model.search.userResults [index].lastname,
-			phone: vm.model.search.userResults [index].phone[0],			
+			phone: vm.model.search.userResults [index].phone[0],
+			email: vm.model.search.userResults [index].email[0]
 		}
 
 		vm.model.dom.checkingInCustomerSearchResult = false;
@@ -360,25 +371,59 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		vm.model.customer.editedCheckedInCustomer.orderline = vm.model.customer.editedCheckedInCustomer.orderline.filter(function(ele){return ele != product})
 	}
 
-	vm.ctrl.confirmCheckin = function(){
-		// vm.model.customer.checkingInData.promocodes = vm.model.customer.checkingInData.promocodes.split(/[ .:;?!~,`"&|()<>{}\[\]\r\n/\\]+/)
-		if(vm.model.customer.checkingInData.promocodes){
-			vm.model.customer.checkingInData.promocodes = vm.model.customer.checkingInData.promocodes.split(',')
+	//Promotion Code
+	vm.ctrl.addPromoteCode = function(){
+		var testArr = vm.model.customer.promocode.codeList.filter(function(ele){return ele == vm.model.customer.promocode.codeInput})
+		if(testArr.length > 0){
+			$('#addSameCode').foundation('open')
 		}else{
-			vm.model.customer.checkingInData.promocodes = []
+			vm.model.customer.promocode.codeList.push(vm.model.customer.promocode.codeInput)
 		}
+		vm.model.customer.promocode.codeInput = ''
+	}
+
+	vm.ctrl.deletePromoteCode = function(code){
+		vm.model.customer.promocode.codeList = vm.model.customer.promocode.codeList.filter(function(ele){return ele != code});
+	}
+
+	//Validate promote code
+	vm.ctrl.validatePromoteCode = function(){
+		CheckinService.validatePromoteCode(vm.model.customer.promocode.codeList)
+			.then(function success(res){
+				Array.prototype.diff = function(a) {
+				    return this.filter(function(i) {return a.indexOf(i) < 0;});
+				};
+				vm.model.customer.promocode.errorCodes = vm.model.customer.promocode.codeList.diff(res.data.data)
+				if(vm.model.customer.promocode.codeList == []){
+					vm.ctrl.confirmCheckin(vm.model.customer.promocode.codeList)
+				}
+				if(vm.model.customer.promocode.errorCodes.length > 0){
+					$('#wrongPromoCodes').foundation('open')
+				}
+				else{
+					vm.ctrl.confirmCheckin(vm.model.customer.promocode.codeList);
+				}
+			})
+	}
+
+	//Confirm checkin
+	vm.ctrl.confirmCheckin = function(code){
 		vm.model.customer.checkingInData.storeId = vm.model.customer.storeId;
 		vm.model.customer.checkingInData.staffId = vm.model.customer.userId;
-
+		console.log(code)
+		vm.model.customer.checkingInData.orderline[0].promocodes = code.map(function(ele){
+			return {name:ele, _id:'58ff58e6e53ef40f4dd664cd'}//need to get id from database
+		});
 		vm.model.customer.checkingInData.orderline.map (function (x){
 			x._id = vm.model.customer.services [x.productName]._id;
 			x.price = vm.model.customer.services [x.productName].price;
 		});
 
 		vm.model.customer.checkingInData.checkinTime = new Date();
-
 		$('#checkinModal').foundation('open')
 	}
+
+	//Checkin
 	vm.ctrl.checkin = function(){
 		// before checkin
 		console.log(vm.model.customer.checkingInData)

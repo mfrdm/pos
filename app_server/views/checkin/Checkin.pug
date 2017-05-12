@@ -108,11 +108,11 @@ div(class="columns row")
 													p {{ vm.model.customer.checkingInData.orderline[0].productName}}
 												div(class='column small-6 marginT0')
 													p x {{vm.model.customer.checkingInData.orderline[0].quantity}}
-									//- div(class='row column paddingTB15' ng-if='vm.model.customer.checkingInData.promocodes.length > 0')
-									//- 	div(class='column small-4 text-right')
-									//- 		p {{vm.model.dom.dataDom.using.invoicePromoteCode}}
-									//- 	div(class='column small-8 greenBorder')
-									//- 		p(ng-repeat='promocode in vm.model.customer.checkingInData.promocodes') {{ promocode.name}}
+									div(class='row column paddingTB15' ng-if='vm.model.customer.checkingInData.orderline[0].promocodes.length > 0')
+										div(class='column small-4 text-right')
+											p {{vm.model.dom.dataDom.using.invoicePromoteCode}}
+										div(class='column small-8 greenBorder')
+											p(ng-repeat='promocode in vm.model.customer.checkingInData.orderline[0].promocodes') {{ promocode.name}}
 					div(class='column row')
 						div(class='column small-6')
 							input(class='button' type='submit' ng-click='vm.ctrl.checkin()' value='Yes' data-close='')
@@ -122,10 +122,23 @@ div(class="columns row")
 						span(aria-hidden="true") &times;
 				
 				//Checkin Form****************************************//
-				form(ng-submit="vm.ctrl.confirmCheckin ()")
-					div(class="row column")
-						label {{vm.model.dom.dataDom.using.fieldPromotionCode}}
-							input(type='text' ng-model='vm.model.customer.checkingInData.promocodes')
+
+				//Main Form
+				form(ng-submit="vm.ctrl.validatePromoteCode ()")
+					div(class="row column addPromotion")
+						div(class='column small-12')
+							label {{vm.model.dom.dataDom.using.fieldPromotionCode}}
+								table(ng-if='vm.model.customer.promocode.codeList.length > 0')
+									tbody
+										tr(ng-repeat='code in vm.model.customer.promocode.codeList')
+											td {{code}}
+											td(class='text-center deleteIcon')
+												i(class="material-icons customIcon" ng-click='vm.ctrl.deletePromoteCode(code); $event.preventDefault()') close
+						div(class='column small-11')
+							label Add
+								input(type='text' ng-model='vm.model.customer.promocode.codeInput')
+						div(class='column small-1 iconAdd')
+							i(class="material-icons customIcon" ng-click='vm.ctrl.addPromoteCode(); $event.preventDefault()') add
 					//Main service for checkin
 					div(class="row column")
 						label {{vm.model.dom.dataDom.using.fieldService}}
@@ -346,3 +359,19 @@ div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
 					input(class="paddingL15 button primary" type="submit" value="Confirm")
 					button(class=" paddingR15 button float-right secondary" ng-click='vm.ctrl.reload()') Cancel
 	
+//Validate Reveal Form ************************************************************************//
+//Validate add same promote code
+div(id='addSameCode' class='reveal text-center small' data-reveal data-animation-in="slide-in-down fast")
+	div(class=' text-center paddingTB15 marginB15')
+		h5 Thêm trùng mã code
+	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
+			span(aria-hidden="true") &times;
+
+//Announce promote codes are wrong
+div(id='wrongPromoCodes' class='reveal text-center small' data-reveal data-animation-in="slide-in-down fast")
+	div(class='headerModal text-center paddingTB15 marginB15')
+		h5 Mã code không đúng
+	div(ng-repeat='wrongCode in vm.model.customer.promocode.errorCodes' class='text-center')
+		p {{wrongCode}}
+	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
+			span(aria-hidden="true") &times;
