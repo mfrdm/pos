@@ -357,7 +357,7 @@ div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
 			div(class="row column")
 				div(class='column small-12 large-paddingLR0')
 					input(class="paddingL15 button primary" type="submit" value="Confirm")
-					button(class=" paddingR15 button float-right secondary" ng-click='vm.ctrl.reload()') Cancel
+					button(class=" paddingR15 button float-right secondary" ng-click='vm.ctrl.reset(); $event.preventDefault()') Cancel
 	
 //Validate Reveal Form ************************************************************************//
 //Validate add same promote code

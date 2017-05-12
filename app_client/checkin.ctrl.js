@@ -475,7 +475,8 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		vm.model.dom.checkOutDiv = true;
 		CheckinService.readInvoice(item._id)
 			.then(function success(res){
-				vm.model.customer.checkoutCustomer = res.data.data;
+				console.log(res)
+				// vm.model.customer.checkoutCustomer = res.data.data;
 			}, function error(err){
 				console.log(err)
 			})
