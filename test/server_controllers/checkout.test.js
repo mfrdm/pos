@@ -11,16 +11,16 @@ var Orders = mongoose.model ('orders');
 var should = chai.should ();
 
 chai.use (chaiHttp);
+
 describe ('Checkout', function (){
 	this.timeout(3000);
-
-	xdescribe ('Create invoice', function (){
-		var order;
+	describe ('Create invoice', function (){
+		var order, customer;
 		var newOrder, newCustomer;
 		var expectedUsage;
 		
 		beforeEach (function (done){
-			var customer = {
+			customer = {
 				firstname: 'Customer_Firstname',
 				middlename: 'Customer_Middlename',
 				lastname: 'Customer_Lastname',
@@ -41,7 +41,6 @@ describe ('Checkout', function (){
 					{ "productName" : "Poca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000 }
 				],
 				customer:{
-					_id: customer._id,
 					firstname: customer.firstname,
 					lastname: customer.lastname,
 					phone: customer.phone,
@@ -52,13 +51,14 @@ describe ('Checkout', function (){
 				checkoutTime: moment ().add (expectedUsage, 'hours'), // TESTING
 			};
 
-			Customer.create (customer, function (err, cus){
+			Customers.create (customer, function (err, cus){
 				if (err){
 					console.log (err)
 					return
 				}
 
-				// cus
+				newCustomer = cus;
+				order.customer._id = newCustomer._id;
 
 				Orders.create (order, function (err, ord){
 					if (err){
@@ -66,32 +66,11 @@ describe ('Checkout', function (){
 						return
 					}
 
-
+					newOrder = ord;
+					done ();
 				});
 			});
 
-			chai.request (server)
-				.post ('/customers/create')
-				.send ({data: customer})
-				.end (function (err, res){
-					if (err){
-						console.log (err)
-						return
-					}
-					newCustomer = res.body.data;
-					chai.request (server)
-						.post ('/checkin/customer/' + order.customer._id)
-						.send ({data: order})
-						.end (function (err, res){
-							if (err) {
-								console.log (err);
-								return
-							}
-							newOrder = res.body.data;
-
-							done ()
-						});
-				});
 		});
 
 		afterEach (function (done){
@@ -113,7 +92,7 @@ describe ('Checkout', function (){
 			})
 		});
 
-		xit ('should read and return invoice successfully', function (done){
+		it ('should return invoice successfully', function (done){
 			chai.request (server)
 				.get ('/checkout/invoice/' + newOrder._id)
 				.end (function (err, res){
@@ -125,95 +104,19 @@ describe ('Checkout', function (){
 					res.body.data.should.to.exist;
 					res.body.data.total.should.to.exist;
 					res.body.data.usage.should.to.exist;
+					res.body.data.orderline.map (function (x, i, arr){
+						x.subTotal.should.to.exist;
+					});
+
 					done ();
 				});
 		});
-
-		xit ('should get promotion code when exist', function (done){
-			chai.request (server)
-				.get ('/checkout/invoice/' + newOrder._id)
-				.end (function (err, res){
-					if (err){
-						console.log (err)
-					}
-
-					res.should.have.status (200);
-					res.body.data.promocodes[0].name.should.to.exist;
-					done ();
-				});		
-		});
-
-		xit ('should calculate correct usage time', function (done){
-			chai.request (server)
-				.get ('/checkout/invoice/' + newOrder._id)
-				.end (function (err, res){
-					if (err){
-						console.log (err)
-					}
-
-					res.should.have.status (200);
-					res.body.data.should.to.exist;
-					res.body.data.usage.should.to.equal (expectedUsage);
-					done ();
-				});		
-		});
-
-		xit ('should calculate correct total without promotion', function (done){
-			order.promocodes = [];
-			var expectedTotal = order.orderline[0].price * expectedUsage * order.orderline[0].quantity  + order.orderline[1].price * order.orderline[1].quantity + order.orderline[2].price * order.orderline[2].quantity;
-			chai.request (server)
-				.post ('/checkin/customer/' + order.customer._id)
-				.send ({data: order})
-				.end (function (err, res){
-					if (err) {
-						console.log (err);
-						return
-					}
-					else{
-						newOrder = res.body.data;
-						chai.request (server)
-							.get ('/checkout/invoice/' + newOrder._id)
-							.end (function (err, res){
-								if (err){
-									console.log (err)
-								}
-								res.should.have.status (200);
-								res.body.data.should.to.exist;
-								res.body.data.usage.should.to.equal (expectedUsage);
-								res.body.data.total.should.to.equal (expectedTotal);
-
-								done ();
-							});	
-					}
-				});				
-		});	
-
-
-		xit ('should calculate correct total with promocode', function (done){
-			expectedTotal = (order.orderline[0].price * expectedUsage * order.orderline[0].quantity  + order.orderline[1].price * order.orderline[1].quantity + order.orderline[2].price * order.orderline[2].quantity) / 2;
-			chai.request (server)
-				.get ('/checkout/invoice/' + newOrder._id)
-				.end (function (err, res){
-					if (err){
-						console.log (err)
-					}
-					res.should.have.status (200);
-					res.body.data.should.to.exist;
-					res.body.data.usage.should.to.equal (expectedUsage);
-					res.body.data.total.should.to.equal (expectedTotal);
-					done ();
-				});			
-		});
-
-
-		it ('should validate promotion code')
-		it ('should save invoice into db before return data to client')
 
 		it ('should be invalid when not found required input')
 
 	});
 
-	describe ('Checkout exception', function (){
+	xdescribe ('Checkout exception', function (){
 		var newOrder, newCustomer, expectedUsage;
 
 		beforeEach (function (done){
@@ -376,68 +279,85 @@ describe ('Checkout', function (){
 		});	
 	})
 
-	xdescribe ('Confirm checkout', function (){
-		var order, expectedUsage, newOrder;
+	describe ('Confirm checkout', function (){
+		var order, customer;
+		var newOrder, newCustomer;
+		var expectedUsage;
+		
 		beforeEach (function (done){
+			customer = {
+				firstname: 'Customer_Firstname',
+				middlename: 'Customer_Middlename',
+				lastname: 'Customer_Lastname',
+				gender: 1,
+				birthday: new Date ('1989-09-25'),
+				phone: '0999999999',
+				edu: {},
+				email: 'lastmiddlefirst@gmail.com', // manuallt required in some cases
+				isStudent: false,
+				checkinStatus: false,
+			};
+
 			expectedUsage = 0.3;
 			order = {
-				promocodes:[{
-					name: 'YEUGREENSPACE',
-				}],
 				orderline: [ 
-					{ "productName" : "Common", "_id" : new mongoose.Types.ObjectId("58ff58e6e53ef40f4dd664cd"), "quantity" : 1, price: 10000 }, 
-					{ "productName" : "Coca", "_id" : new mongoose.Types.ObjectId("58ff58e6e53ef40f4dd664cd"), "quantity" : 2, price: 10000 }, 
-					{ "productName" : "Poca", "_id" : new mongoose.Types.ObjectId("58ff58e6e53ef40f4dd664cd"), "quantity" : 1, price: 10000 } 
+					{ "productName" : "Common", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000, promocodes: [{id: '58ff58e6e53ef40f4dd664cd', name: 'YEUGREENSPACE'}] }, 
+					{ "productName" : "Coca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 2, price: 10000 }, 
+					{ "productName" : "Poca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000 }
 				],
 				customer:{
-					_id: "58ff58e6e53ef40f4dd664cd",
-					firstname: 'Hiep',
-					lastname: 'Pham',
-					phone: '0965284281',
-					email: 'hiep@yahoo.com',
+					firstname: customer.firstname,
+					lastname: customer.lastname,
+					phone: customer.phone,
+					email: customer.email,
 				},
 				storeId: "58eb474538671b4224745192",
 				staffId: "58eb474538671b4224745192",
-				checkoutTime: moment ().add (expectedUsage, 'hours'),			
+				checkoutTime: moment ().add (expectedUsage, 'hours'), // TESTING
 			};
 
-			chai.request (server)
-				.post ('/checkin/customer/' + order.customer._id)
-				.send ({data: order})
-				.end (function (err, res){
-					if (err) {
-						console.log (err);
-						return
-					}
-					else{
-						newOrder = res.body.data;
-						chai.request (server)
-							.get ('/checkout/invoice/' + newOrder._id)
-							.end (function (err, res){
-								if (err){
-									console.log (err)
-									return
-								}
-
-								newOrder = res.body.data;
-
-								done ();
-							});		
-
-					}
-				});						
-		})
-
-		afterEach (function (done){
-			Orders.remove ({'_id': newOrder._id}, function (err, data){
+			Customers.create (customer, function (err, cus){
 				if (err){
 					console.log (err)
 					return
 				}
 
-				done ();
+				newCustomer = cus;
+				order.customer._id = newCustomer._id;
+
+				Orders.create (order, function (err, ord){
+					if (err){
+						console.log (err)
+						return
+					}
+
+					ord.getSubTotal ();
+					ord.getTotal ();
+					newOrder = ord;
+					done ();
+				});
 			});
-		})
+
+		});
+
+		afterEach (function (done){
+			Customers.remove ({_id: newCustomer._id}, function (err, data){
+				if (err){
+					console.log (err)
+					return
+				}
+
+				Orders.remove ({'_id': newOrder._id}, function (err, data){
+					if (err){
+						console.log (err)
+						return
+					}
+
+					done ();
+				});
+
+			})
+		});
 
 		it ('should update chekcout data successfully', function (done){
 			chai.request (server)
@@ -447,11 +367,15 @@ describe ('Checkout', function (){
 					if (err) {
 						console.log (err)
 					}
+
 					res.should.have.status (200);
 					res.body.data.status.should.to.equal (2);
-					res.body.data.usage.should.to.be.ok;
-					res.body.data.total.should.to.be.ok;
-					done ()
+					res.body.data.total.should.to.exist;
+					res.body.data.usage.should.to.exist;
+					res.body.data.orderline.map (function (x, i, arr){
+						x.subTotal.should.to.exist;
+					});					
+					done ();
 				});
 		});
 
