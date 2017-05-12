@@ -72,6 +72,13 @@ productCat = [
 	{value: 4, name: 'Snack'},
 ]
 
+checkinStatus = [
+	{value: 1, name: 'checked-in'}, 
+	{value: 2, name: 'checked-out'},
+	{value: 3, name: 'cancel'},	
+	{value: 4, name: 'all'}
+]
+
 */
 
 var adminSchema = new mongoose.Schema({

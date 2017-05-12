@@ -39,12 +39,13 @@ router.get('/', othersCtrl.angularApp);
 
 // Checkin
 router.get('/angular/checkin', checkinCtrl.readAngularCheckin);
-router.get('/angular/checkin-list', checkinCtrl.readCheckinList);
+// router.get('/angular/checkin-list', checkinCtrl.readCheckinList);
+router.get('/checkin', checkinCtrl.readCheckinList);
 router.post ('/checkin/cancel', checkinCtrl.cancelCheckin);
 
 router.post('/checkin/customer/:cusId', checkinCtrl.checkin);
 router.get ('/checkin/search-customers', checkinCtrl.searchCheckingCustomers);
-router.post('/checkin/customer/:cusId/edit/orderId', checkinCtrl.updateCheckin); //cusid is order id
+router.post('/checkin/customer/:cusId/edit/:orderId', checkinCtrl.updateCheckin); //cusid is order id
 router.get ('/checkin/validate-promotion-code', checkinCtrl.validatePromocodes);
 
 router.get('/checkout/invoice/:orderId', checkoutCtrl.createInvoice);

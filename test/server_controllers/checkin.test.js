@@ -346,7 +346,7 @@ xdescribe ('Check-in exception', function (){
 	it ('Update correct remain of combo when used in checkout')
 });
 
-describe ('Edit checked-in', function (){
+xdescribe ('Edit checked-in', function (){
 	var newCustomer, editedOrder, newOrder;
 
 	beforeEach (function (done){
@@ -375,34 +375,32 @@ describe ('Edit checked-in', function (){
 		};
 
 		chai.request (server)
-			.post ('/customer/create')
-			.send (customer)
+			.post ('/customers/create')
+			.send ({data: customer})
 			.end (function (err, res){
 				if (err){
 					console.log (err);
 					return
 				}
 
-				console.log ()
-				done ()
-				// newCustomer = res.body.data;
-				// order.customer.firstname = newCustomer.firstname;
-				// order.customer.lastname = newCustomer.lastname;
-				// order.customer.email = newCustomer.email;
-				// order.customer.phone = newCustomer.phone;
-				// order.customer._id = newCustomer._id;
+				newCustomer = res.body.data;
+				order.customer.firstname = newCustomer.firstname;
+				order.customer.lastname = newCustomer.lastname;
+				order.customer.email = newCustomer.email;
+				order.customer.phone = newCustomer.phone;
+				order.customer._id = newCustomer._id;
 
-				// chai.request (server)
-				// 	.post ('/checkin/customer/' + order.customer._id)
-				// 	.send (order)
-				// 	.end (function (err, res){
-				// 		if (err){
-				// 			console.log (err)
-				// 			return
-				// 		}
-				// 		newOrder = res.body.data;
-				// 		done ();
-				// 	});
+				chai.request (server)
+					.post ('/checkin/customer/' + order.customer._id)
+					.send ({data: order})
+					.end (function (err, res){
+						if (err){
+							console.log (err)
+							return
+						}
+						newOrder = res.body.data;
+						done ();
+					});
 
 			});
 
@@ -415,7 +413,7 @@ describe ('Edit checked-in', function (){
 				return
 			}
 			else {
-				Customers.remove ({firstname: newCustomer.}, function (err, data){
+				Customers.remove ({firstname: newCustomer.firstname}, function (err, data){
 					if (err) {
 						console.log (err)
 						return
@@ -426,40 +424,116 @@ describe ('Edit checked-in', function (){
 				});
 			}
 
-		})			 
-		done ()
+		});
 	});
 
 
-	it ('should successfully edit data of a checked-in record', function (done){
-		done ()
-		// chai.request (server)
-		// 	.post ('/checkin/customer/' + newCustomer._id + '/edit/' + newOrder._id)
-		// 	.send (newOrder)
-		// 	.end (function (err, res){
-		// 		res.should.have.status (200);
+	xit ('should successfully edit data of a checked-in record', function (done){
+		newOrder.orderline = [ 
+			{"productName" : "Common", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000}, 
+			{"productName" : "Coca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 2, price: 10000}, 
+			{"productName" : "Poca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000}
+		];		
 
-		// 		done ();
-		// 	});
+		chai.request (server)
+			.post ('/checkin/customer/' + newCustomer._id + '/edit/' + newOrder._id)
+			.send ({data: newOrder})
+			.end (function (err, res){
+				if (err){
+					console.log (err);
+				}
+				console.log (res.body.data)
+
+				res.should.have.status (200);
+				res.body.data.orderline[0].promocodes.should.to.have.lengthOf (0);
+				done ();
+			});
 	});
 
 	xit ('should successfully edit part of data of a checked-in record');
 
 });
 
-xdescribe ('Read check-in list', function (){
-	var query;
-	beforeEach (function (){
+describe ('Read check-in list', function (){
+	var query, orders, customer, newCustomer, newOrder;
+	beforeEach (function (done){
 		query = {
-			start: '2017-03-01',
-			end: '2017-03-02',
-			storeId: '58fdc7e1fc13ae0e8700008a',
-			status: 1, // just checked-in
+			storeId: '58eb474538671b4224745192',
 		};
+
+		customer = {
+			firstname: 'Customer_Firstname',
+			middlename: 'Customer_Middlename',
+			lastname: 'Customer_Lastname',
+			gender: 1,
+			birthday: new Date ('1989-09-25'),
+			phone: '0999999999',
+			edu: {},
+			email: 'lastmiddlefirst@gmail.com', // manuallt required in some cases
+			isStudent: false,
+			checkinStatus: false,
+		};
+
+		orders = [
+			{
+				orderline: [ 
+					{ "productName" : "Group Common", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 15000, promocodes: [{id: '58ff58e6e53ef40f4dd664cd', name: 'YEUGREENSPACE'}] }, 
+					{ "productName" : "Coca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 2, price: 10000 }, 
+					{ "productName" : "Poca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000 }
+				],
+				customer: {},
+				storeId: "58eb474538671b4224745192",
+				staffId: "58eb474538671b4224745192",			
+			},
+			{
+				orderline: [ 
+					{ "productName" : "Individual Common", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 15000 }, 
+					{ "productName" : "Coca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 10, price: 10000 }, 
+					{ "productName" : "Poca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 2, price: 10000 }
+				],
+				customer: {},
+				storeId: "58eb474538671b4224745192",
+				staffId: "58eb474538671b4224745192",
+				checkinTime: moment ('2017-01-09'),
+				status: 2,		
+			},			
+		];	
+
+		chai.request (server)
+			.post ('/customers/create')
+			.send ({data: customer})
+			.end (function (err, res){
+				if (err){
+					console.log (err);
+					return
+				}
+
+				newCustomer = res.body.data;
+				orders.map (function (x, i, arr){
+					x.customer.firstname = newCustomer.firstname;
+					x.customer.lastname = newCustomer.lastname;
+					x.customer.email = newCustomer.email;
+					x.customer.phone = newCustomer.phone;
+					x.customer._id = newCustomer._id;
+				});
+				
+				Orders.insertMany (orders, function (err, ords){
+					if (err){
+						console.log (err)
+						return
+					}
+					// console.log (ords)
+					newOrders = ords;
+					done ();
+				});
+
+			});
+
 	});
 
-	afterEach (function (){
-		Orders.remove ({_id: newOrder._id}, function (err, result){
+	afterEach (function (done){
+		var ordIds = newOrders.map (function (x,i,arr){return x._id});
+		Orders.remove ({_id: {$in: ordIds}}, function (err, result){
 			if (err) {
 				console.log (err)
 				return
@@ -477,18 +551,86 @@ xdescribe ('Read check-in list', function (){
 			}
 
 		})
-	});
+	});	
 
-	it ('should return today checked-in list given no date range');
-	it ('should return checked-in list within a date range, given date range');
-	it ('should be invalid when required input is not provided /angular/checkin-list', function (done){
+
+	xit ('should return checked-in on today given no date range and status provided', function (done){
 		chai.request (server)
-			.get ('/angular/checkin-list')
-			.query ({})
+			.get ('/checkin')
+			.query (query)
 			.end (function (err, res){
+				if (err){
+					console.log (err);
+				}
+				var todayStart = moment (moment().format ('YYYY-MM-DD'));
+				var todayEnd = moment (moment().format ('YYYY-MM-DD') + ' 23:59:59');
+				
+				res.should.to.have.status (200);
+				res.body.data.should.to.have.lengthOf(1);
+				res.body.data.map (function (x, i, arr){
+					x.status.should.to.equal (1);
+					x.checkinTime.should.to.exist
+					moment (x.checkinTime).should.to.be.at.least (todayStart);
+					moment (x.checkinTime).should.to.be.at.most (todayEnd);
+				});
+
 				done ();
 			});
 	});
+
+	xit ('should return checked-in in a given date range provided', function (done){
+		query.start = '2017-01-01';
+		query.end = '2017-01-10';
+
+		chai.request (server)
+			.get ('/checkin')
+			.query (query)
+			.end (function (err, res){
+				if (err){
+					console.log (err);
+				}
+				var startDate = moment (query.start);
+				var enddDate = moment (query.end + ' 23:59:59');
+				res.should.to.have.status (200);
+				res.body.data.should.to.have.length.of.at.least(1);
+				res.body.data.map (function (x, i, arr){
+					x.status.should.to.equal (1);
+					x.checkinTime.should.to.exist;
+					moment (x.checkinTime).should.to.be.at.least (startDate);
+					moment (x.checkinTime).should.to.be.at.most (enddDate);
+				});
+
+				done ();
+			});		
+	});
+
+	xit ('should return both checked-in and checked-out customer when required', 	function (done){
+		query.start = '2017-01-01';
+		query.status = 4;
+		chai.request (server)
+			.get ('/checkin')
+			.query (query)
+			.end (function (err, res){
+				if (err){
+					console.log (err);
+				}
+				var startDate = moment (query.start);
+				var enddDate = moment (moment().format ('YYYY-MM-DD') + ' 23:59:59');
+				res.should.to.have.status (200);
+				res.body.data.should.to.have.length.of.at.least(2);
+				res.body.data.map (function (x, i, arr){
+					x.status.should.to.be.within (1,2);
+					x.checkinTime.should.to.exist;
+					moment (x.checkinTime).should.to.be.at.least (startDate);
+					moment (x.checkinTime).should.to.be.at.most (enddDate);
+				});
+
+				done ();
+			});	
+
+	});
+	
+	it ('should be invalid when required input is not provided /angular/checkin-list');
 
 });
 
