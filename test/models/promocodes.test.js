@@ -16,16 +16,20 @@ describe ('Promotion Code', function (){
 		});		
 	})
 
-	xdescribe ('Read promotion codes');
+	xdescribe ('Read promotion codes', function (){
+
+	});
 
 	xdescribe ('Validate promotion code', function (){
 		it ('should be invalid when redeem non-exist promotion code');
 		it ('should be invalid when redeem expired promotion code');
 	});
 
-	xdescribe ('Check code conflict')
+	xdescribe ('Check code conflict', function (){
 
-	xdescribe ('Redeem codes', function (){
+	});
+
+	describe ('Redeem codes', function (){
 		var usage, total;
 
 		beforeEach (function (){
@@ -51,11 +55,19 @@ describe ('Promotion Code', function (){
 			redeemedTotal.should.to.equal (total * 0.5);
 		});
 
-		it ('should return correct total when redeem STUDENT', function (){
+		it ('should return correct total when redeem STUDENT for group common and individual common', function (){
 			var code = [{name: 'STUDENT'}];
-			var redeemedTotal = Promocodes.redeemPrice (code, total);
-			redeemedTotal.should.to.equal (total * 0.5);		
+			var productName = 'Individual Common';
+			var redeemedTotal = Promocodes.redeemPrice (code, total, productName);
+			redeemedTotal.should.to.equal (total * 2 / 3);		
 		});	
+
+		it ('should not redeem STUDENT for group private', function (){
+			var code = [{name: 'STUDENT'}];
+			var productName = 'medium group private';
+			var redeemedTotal = Promocodes.redeemPrice (code, total, productName);
+			redeemedTotal.should.to.equal (total);		
+		});			
 
 		it ('should return correct usage when redeem FREE1HOURCOMMON', function (){
 			var code = [{name: 'FREE1HOURCOMMON'}];
