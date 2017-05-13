@@ -31,10 +31,10 @@ function Checkout() {
 	this.confirmCheckout = function(req, res, next) {
 		var total = req.body.data.total;
 		var usage = req.body.data.usage;
-		var checkoutTime = req.body.data.checkoutTime;
+		var checkoutTime = new Date ();
 		var orderline = req.body.data.orderline;
 		var status = 2;
-		Orders.findOneAndUpdate ({_id: req.body.data._id}, {$set: {status: status, total: total, usage: usage, checkoutTime: checkoutTime, orderline: orderline}}, {new: true, fields: {usage: 1, total: 1, status: 1, orderline: 1}}, function (err, ord){
+		Orders.findOneAndUpdate ({_id: req.body.data._id}, {$set: {status: status, total: total, usage: usage, checkoutTime: checkoutTime, orderline: orderline}}, {new: true, fields: {usage: 1, total: 1, status: 1, orderline: 1, checkoutTime: 1, checkinTime: 1}}, function (err, ord){
 			if (err){
 				next (err)
 				return

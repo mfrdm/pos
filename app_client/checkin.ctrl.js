@@ -84,19 +84,19 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		buttonCheckin: 'Checkin',
 		buttonFilter:'Filter',
 
-		selectFirstnameAZ:'Tên theo thứ tự A-Z',
-		selectFirstnameZA:'Tên theo thứ tự Z-A',
-		selectBookingFarthest: 'Thời gian checkin xa nhất',
-		selectBookingLastest: 'Thời gian checkin gần nhất',
+		selectFirstnameAZ:'Tên A-Z',
+		selectFirstnameZA:'Tên Z-A',
+		selectBookingFarthest: 'Checkin Z-A',
+		selectBookingLastest: 'Checkin A-Z',
 
-		selectStatusOptionAll: 'Hiển thị tất cả khách',
-		selectStatusOptionCheckin: 'Hiển thị khách đang checkin',
-		selectStatusOptionCheckout: 'Hiển thị khách đã checkout',
+		selectStatusOptionAll: 'Tất cả',
+		selectStatusOptionCheckin: 'Checkin',
+		selectStatusOptionCheckout: 'Checkout',
 
 		fieldSortBy:'Sắp xếp',
 		fieldStatus:'Trạng thái',
-		fieldSearchByFirstname:'TÌm kiếm theo tên',
-		fieldSearchByPhone:'Tìm kiếm theo Số điện thoại',
+		fieldSearchByFirstname:'Tên',
+		fieldSearchByPhone:'Số điện thoại',
 		fieldPhoneEmail: 'Phone/Email',
 		fieldPromotionCode: 'Mã giảm giá',
 		fieldService:'Dịch vụ',
@@ -121,7 +121,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		headerCheckinTime:'Giờ Checkin',
 		headerCheckoutDate:'Ngày Checkout',
 		headerCheckoutTime:'Giờ Checkout',
-		headerService:'Sản phẩm chính',
+		headerService:'Dịch vụ',
 		headerCheckout:'Checkout',
 		headerEdit:'Chỉnh sửa'
 	}

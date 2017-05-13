@@ -40,44 +40,46 @@ function getSubTotal () {
 	
 	this.orderline.map (function (x, i, arr){
 		var subTotal;
-		if (order.parent){
-			subTotal = 0;
-		}
-		else{
-			var pn = x.productName.toLowerCase ();
 
-			if (productNames.indexOf (pn) != -1){
-				var rewardHourUsagePrice;
-				var codes = x.promocodes.map (function (x,i,arr){return x.name;});
 
-				x.price = Promocodes.redeemStudentAccount (codes, pn, x.price).price;
-			
-				codes.map (function (code, i, arr){
-					x.price = Promocodes.redeemPrice(code, x.price);
-				});
+		var pn = x.productName.toLowerCase ();
 
-				x.promocodes.map (function (code, i, arr){
-					order.usage = Promocodes.redeemUsage (code.name, order.usage);
-				});
-
-				rewardHourUsagePrice = Promocodes.redeemHourUsage (x.price, pn, order.usage);
-
-				if (rewardHourUsagePrice != x.price){
-					subTotal = x.price + rewardHourUsagePrice * (order.usage - 1);
-				}
-				else{
-					subTotal = x.price * order.usage;
-				}
-
-				codes.map (function (code, i, arr){
-					subTotal = Promocodes.redeemTotal (code.name, subTotal);
-				});
-
-							
+		if (productNames.indexOf (pn) != -1){
+			if (order.parent){
+				subTotal = 0;
 			}
 			else{
-				subTotal = x.price * x.quantity;
+				if (x.promocodes.length){
+					x.promocodes.map (function (code, k, t){
+
+						if (code.codeType == 1){
+							order.usage = Promocodes.redeemUsage (code.name, order.usage);
+						}
+
+						if (code.codeType == 2){
+							x.price = Promocodes.redeemPrice (code.name, x.price, pn);
+						}
+
+						// Important to get subtotal before redeem total
+						subTotal = x.price * order.usage;
+
+						if(code.codeType == 3){
+							subTotal = Promocodes.redeemTotal (code.name, subTotal);
+						}
+						else if (code.codeType == 4){
+							subTotal = Promocodes.redeemMixed (code.name, order.usage, x.price, pn)
+						}
+
+					});
+				}
+				else {
+					subTotal = x.price * order.usage;
+				}					
 			}
+
+		}
+		else{
+			subTotal = x.price * x.quantity;
 		}
 
 		x.subTotal = subTotal;
@@ -106,6 +108,8 @@ var ordersSchema = new mongoose.Schema({
 	usage: {type: Number, min: 0}, // in hour
 	paymentMethod: Number, // required. card, cash, account
 	parent: mongoose.Schema.Types.ObjectId, // id of parent order. used for group private
+	checkinTime: {type: Date, default: Date.now},
+	checkoutTime: {type: Date},	
 	orderline: [{
 		_id: {type: mongoose.Schema.Types.ObjectId, required: true},
 		productName: {type: String, required: true},
@@ -114,11 +118,10 @@ var ordersSchema = new mongoose.Schema({
 		promocodes: [{
 			_id: mongoose.Schema.Types.ObjectId,
 			name: String,
+			codeType: Number,
 		}], // expect only one code applied at a time
 		subTotal: {type: Number, min: 0},	
 	}],
-	checkinTime: {type: Date, default: Date.now},
-	checkoutTime: {type: Date},
 	customer: {
 		_id: {type: mongoose.Schema.Types.ObjectId, required: true},
 		firstname: {type:String, required: true},
