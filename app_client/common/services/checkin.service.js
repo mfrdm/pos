@@ -12,7 +12,7 @@ function CheckinService ($http, $q){
 			params:{
 				queryInput:JSON.stringify({
 					conditions: {$or: array},
-					projection: {firstname: 1, middlename:1, lastname: 1, phone: 1, email: 1, edu:1, parent:1},
+					projection: {firstname: 1, middlename:1, lastname: 1, phone: 1, email: 1, edu:1,checkinStatus:1, parent:1},
 					opts: null
 				})
 			}

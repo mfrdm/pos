@@ -61,7 +61,7 @@ div(ng-switch='vm.tab')
 										input(type="text" ng-model='vm.model.customer.newCustomerData.edu.school')
 								div(class="column small-12 paddingTB15")
 									label Title at school/university
-										select(ng-model='vm.model.customer.newCustomerData.edu.title' required ng-options="key as value for (key , value) in {1: 'Undergraduate',2: 'Graduate',3: 'Doctorate'}")
+										select(ng-model='vm.model.customer.newCustomerData.edu.title' required ng-options="key as value for (key , value) in vm.model.customer.selectCustomerTitleConvert")
 								//- div(class="column small-12 ")
 								//- 	label Start at University
 								//- 		input(type="number" min='1900' max='2020' ng-model='vm.model.input.start')

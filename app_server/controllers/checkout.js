@@ -34,18 +34,27 @@ function Checkout() {
 		var checkoutTime = req.body.data.checkoutTime;
 		var orderline = req.body.data.orderline;
 		var status = 2;
-		Orders.findOneAndUpdate ({_id: req.body.data._id}, {$set: {status: status, total: total, usage: usage, checkoutTime: checkoutTime, orderline: orderline}}, {new: true, fields: {usage: 1, total: 1, status: 1, orderline: 1}}, function (err, ord){
+		console.log(req.body.data.customer)
+		Customers.findOneAndUpdate({_id:req.body.data.customer._id}, {$set:{checkinStatus:false}}, function(err, cus){
 			if (err){
 				next (err)
 				return
-			}
-			if (ord && Object.keys (ord).length){
-				res.json ({data: ord});
-			}
-			else{
-				next ();
-			}
+			}else{
+				Orders.findOneAndUpdate ({_id: req.body.data._id}, {$set: {status: status, total: total, usage: usage, checkoutTime: checkoutTime, orderline: orderline}}, {new: true, fields: {usage: 1, total: 1, status: 1, orderline: 1}}, function (err, ord){
+					if (err){
+						next (err)
+						return
+					}
+					if (ord && Object.keys (ord).length){
+						res.json ({data: ord});
+					}
+					else{
+						next ();
+					}
 
+				})
+			}
 		})
+		
 	};
 };

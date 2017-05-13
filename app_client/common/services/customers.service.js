@@ -2,8 +2,8 @@ var customerService = function($http){
 	this.createOne = function(data){
 		return $http({
 			method:'POST',
-			url:'/api/customers/create',
-			data:JSON.stringify(data)
+			url:'/customers/create',
+			data:JSON.stringify({data:data})
 		})
 	}
 	this.updateOne = function(id, data){

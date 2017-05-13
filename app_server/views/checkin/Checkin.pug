@@ -45,6 +45,9 @@ div(class="columns row")
 							div(class='callout alert')
 								p {{vm.model.search.messageNoResult}}
 									span: a(href='/#!/customers') Create new customer
+						div(ng-show='vm.model.dom.messageSearchAlreadyCheckin' class='marginB15')
+							div(class='callout alert')
+								p {{vm.model.search.messageAlreadyCheckin}}
 						div(ng-show="vm.model.dom.checkingInCustomerSearchResult" class="marginB15")
 							div(class="table-scroll")
 								table(class="hover unstriped borderAll")
@@ -80,6 +83,8 @@ div(class="columns row")
 								div(class='column small-6 text-right')
 									p {{vm.model.dom.dataDom.using.invoicePhone}}: {{ vm.model.customer.checkingInData.customer.phone}}
 							div(class='priceSection')
+
+								//Checkin TIme
 								div(class="row column")
 									div(class='row column paddingB15')
 										div(class='column small-4 text-right')
@@ -88,6 +93,8 @@ div(class="columns row")
 											p {{ vm.model.customer.checkingInData.checkinTime | date:'shortTime'}}
 										div(class='column small-4')
 											p {{ vm.model.customer.checkingInData.checkinTime | date:'dd/MM/yyyy'}}
+
+								//Other Products
 								div(class="borderT newBox row column" ng-if='vm.model.customer.checkingInData.orderline.length > 1')
 									div(class='row column' )
 										div(class='column small-4 text-right')
@@ -98,6 +105,8 @@ div(class="columns row")
 													p {{ service.productName}}
 												div(class='column small-6 marginT0')
 													p x {{ service.quantity}}
+
+								//Main Product
 								div(class="borderT newBox row column")
 									div(class='row column paddingTB15')
 										div(class='column small-4 text-right')
@@ -105,7 +114,7 @@ div(class="columns row")
 										div(class='column small-8 greenBorder')
 											div(class='row column small-12')
 												div(class='column small-6 paddingLR0 marginT0')
-													p {{ vm.model.customer.checkingInData.orderline[0].productName}}
+													p {{ vm.model.products[vm.model.customer.checkingInData.orderline[0].productName]}}
 												div(class='column small-6 marginT0')
 													p x {{vm.model.customer.checkingInData.orderline[0].quantity}}
 									div(class='row column paddingTB15' ng-if='vm.model.customer.checkingInData.parent.length > 0')
@@ -196,6 +205,8 @@ div(class="columns row")
 						div(class='column small-6 text-right')
 							p {{vm.model.dom.dataDom.using.invoicePhone}}: {{ vm.model.customer.editedCheckedInCustomer.customer.phone}}
 					div(class='priceSection')
+
+						//Other Products
 						div(class="row column" ng-if='vm.model.customer.editedCheckedInCustomer.orderline.length > 1')
 							div(class='row column' )
 								div(class='column small-4 text-right')
@@ -206,6 +217,8 @@ div(class="columns row")
 											p {{ service.productName}}
 										div(class='column small-6 marginT0')
 											p x {{ service.quantity}}
+
+						//Main Product
 						div(class="borderT newBox row column")
 							div(class='row column paddingTB15')
 								div(class='column small-4 text-right')
@@ -213,9 +226,16 @@ div(class="columns row")
 								div(class='column small-8 greenBorder')
 									div(class='row column small-12')
 										div(class='column small-6 paddingLR0 marginT0')
-											p {{ vm.model.customer.editedCheckedInCustomer.orderline[0].productName}}
+											p {{ vm.model.products[vm.model.customer.editedCheckedInCustomer.orderline[0].productName]}}
 										div(class='column small-6 marginT0')
 											p x {{vm.model.customer.editedCheckedInCustomer.orderline[0].quantity}}
+
+						// Group
+						div(class="row column" ng-if='(vm.model.customer.editedCheckedInCustomer.orderline[0].productName == "medium group private" || vm.model.customer.editedCheckedInCustomer.orderline[0].productName == "small group private") && vm.model.customer.editedCheckedInCustomer.parent')
+							div(class='column small-4 text-right')
+								p {{vm.model.dom.dataDom.using.fieldCheckoutGroup}}
+							div(class='column small-8 greenBorder')
+								p {{vm.model.customer.groupName}}
 			div(class='column row')
 				div(class='column small-6')
 					input(class='button' type='submit' ng-click='vm.ctrl.edit()' value='Yes' data-close='')
@@ -224,9 +244,10 @@ div(class="columns row")
 			button(class="close-button"  data-close='' aria-label="Close modal" type="button")
 				span(aria-hidden="true") &times;
 		
+		//Main Form Edit
 		div(class="column" ng-show="vm.model.dom.checkInEditDiv")
 			div(class='borderT newBox row column paddingLR15')
-				form
+				form(ng-submit='vm.ctrl.confirmEdit()')
 					h3 {{ vm.model.customer.editedCheckedInCustomer.customer.lastname}} {{ vm.model.customer.editedCheckedInCustomer.customer.middlename}} {{ vm.model.customer.editedCheckedInCustomer.customer.firstname}}
 
 					//Main service for edit
@@ -256,14 +277,14 @@ div(class="columns row")
 					div(class="row column addButtonDiv")
 						div(class="column small-5 large-6 paddingL0")
 							label {{ vm.model.dom.dataDom.using.fieldAddItems}}
-								select( ng-model="vm.model.other.selectedToEditItem.name" ng-options="val for val in vm.model.listOtherProducts")
+								select( ng-model="vm.model.other.selectedToEditItem.name" ng-options="val for val in vm.model.other.listOtherProducts")
 						div(class="column small-5 large-5 paddingL0")
 							label {{ vm.model.dom.dataDom.using.fieldQuantity}}
 								input( ng-model="vm.model.other.selectedToEditItem.quantity" string-to-number type="number" min='0')
 						div(class="column small-2 large-1 iconAdd")
 							i(class="material-icons customIcon" ng-click='vm.ctrl.selectServiceToEdit(); $event.preventDefault()') add
 					div(class="row column")
-						input(class="button" type="submit" value="Submit" data-open='editModal')
+						input(class="button" type="submit" value="Submit")
 						button(class="button float-right primary" ng-click='vm.ctrl.reset(); $event.preventDefault()') Cancel
 
 		// Check-in list *********************************************//
@@ -291,7 +312,7 @@ div(class="columns row")
 							td {{ customer.checkinTime | date: 'shortTime' }}
 							td {{ customer.checkoutTime | date:'dd/MM/yyyy' }}
 							td {{ customer.checkoutTime | date: 'shortTime' }}
-							td {{ customer.orderline[0].productName	}}
+							td {{ vm.model.products[customer.orderline[0].productName]	}}
 							td
 								button(type="button" ng-if='customer.status == 1' class="primary button" ng-click="vm.ctrl.getInvoiceForCheckout (customer)") Checkout
 								button(type='button' ng-if='customer.status == 2' class="disabled button") Checkout
@@ -353,18 +374,18 @@ div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
 						div(class='column small-10 greenBorder')
 							div(class='row column small-12')
 								div(class='column small-6 paddingLR0 marginT0')
-									p {{ vm.model.customer.checkoutCustomer.orderline[0].productName}}
+									p {{ vm.model.products[vm.model.customer.checkoutCustomer.orderline[0].productName]}}
 								div(class='column small-4 marginT0')
 									p {{vm.model.customer.checkoutCustomer.usage}} x {{(vm.model.customer.checkoutCustomer.orderline[0].price | number)}}
 								div(class='column small-2 marginT0')
 									p {{ vm.model.customer.checkoutCustomer.orderline[0].subTotal | number}}
 					
-					//Choose Group
+					// Group
 					div(class="row column" ng-if='vm.model.customer.checkoutCustomer.orderline[0].productName == "medium group private" || vm.model.customer.checkoutCustomer.orderline[0].productName == "small group private"')
 						div(class='column small-2 text-right')
 							p {{vm.model.dom.dataDom.using.fieldCheckoutGroup}}
 						div(class='column small-10 greenBorder')
-							p {{vm.model.customer.checkoutCustomer.parent}}
+							p {{vm.model.customer.groupName}}
 
 					//Promo Code
 					div(class='row column paddingT15' ng-if='vm.model.customer.checkoutCustomer.orderline[0].promocodes.length > 0')
