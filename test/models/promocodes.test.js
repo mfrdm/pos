@@ -26,7 +26,7 @@ describe ('Promotion Code', function (){
 	});
 
 	xdescribe ('Check code', function (){
-
+		// FIX
 	});
 
 	xdescribe ('Redeem mixed', function (){

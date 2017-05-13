@@ -100,7 +100,8 @@ function getTotal (){
 		order.total += x.subTotal;
 	});	
 
-}
+	order.total = Math.round(order.total / 1000) * 1000;
+};
 
 var combosSchema = new mongoose.Schema({
 	name: String,
