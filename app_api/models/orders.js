@@ -51,7 +51,6 @@ function getSubTotal () {
 			else{
 				if (x.promocodes.length){
 					x.promocodes.map (function (code, k, t){
-
 						if (code.codeType == 1){
 							order.usage = Promocodes.redeemUsage (code.name, order.usage);
 						}
@@ -69,6 +68,8 @@ function getSubTotal () {
 						else if (code.codeType == 4){
 							subTotal = Promocodes.redeemMixed (code.name, order.usage, x.price, pn)
 						}
+
+						console.log (subTotal)
 
 					});
 				}
