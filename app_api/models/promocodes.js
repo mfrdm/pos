@@ -96,7 +96,7 @@ var redeemUsage = function (code, usage){
 
 // involve more than one type of redeem: total, usage, and price.
 // assume codes are checked and can be used concurrecy and in correct order
-redeemMixed = function (code, usage, price, productName){
+var redeemMixed = function (code, usage, price, productName){
 	var rewardUsagePrice = {
 		'medium group private': 200000,
 		'small group private': 120000,

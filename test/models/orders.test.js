@@ -118,11 +118,11 @@ describe ('Orders', function (){
 		});
 
 		it ('should return correct subtotal given codes YEUGREENSPACE', function (){
-			val.orderline[0].promocodes = {
+			val.orderline[0].promocodes = [{
 				codeType: 3, 
 				_id: '58eb474538671b4224745192',
 				name: 'YEUGREENSPACE'
-			};
+			}];
 
 			expectedSubTotal = [7500, 20000, 10000];
 
@@ -131,11 +131,42 @@ describe ('Orders', function (){
 			order.getTotal ();
 
 			order.orderline.map (function (x,i,arr){
-				
+
 				x.subTotal.should.to.equal (expectedSubTotal[i]);
 			});
 
 		});
+
+		it ('should return correct subtotal given code YEUGREENSPACE and STUDENTPRICE', function (){
+			val.orderline[0].promocodes = [
+				{
+					codeType: 3, 
+					_id: '58eb474538671b4224745192',
+					name: 'YEUGREENSPACE'
+				},
+				{
+					codeType: 2, 
+					_id: '58eb474538671b4224745192',
+					name: 'STUDENTPRICE'
+				},				
+			];
+
+			expectedSubTotal = [5000, 20000, 10000];
+
+			var order = new Orders (val);
+			order.getSubTotal ();
+			order.getTotal ();
+
+			order.orderline.map (function (x,i,arr){
+
+				x.subTotal.should.to.equal (expectedSubTotal[i]);
+			});
+		});
+
+		it ('should return correct subtotal given code FREE1HOURCOMMON and STUDENTPRICE')
+		it ('should return correct subtotal given code FREE2HOURSCOMMON and STUDENTPRICE')
+		it ('should return correct subtotal given code PRIVATEDISCOUNTPRICE and STUDENTPRICE')
+
 
 	});	
 
