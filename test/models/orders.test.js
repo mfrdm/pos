@@ -63,7 +63,7 @@ describe ('Orders', function (){
 
 	});
 
-	describe ('Get subtotal', function (){
+	xdescribe ('Get subtotal', function (){
 		var order, val;
 		beforeEach (function (){
 			val = {
@@ -157,7 +157,7 @@ describe ('Orders', function (){
 			});
 		});
 
-		it ('should return correct subtotal given code STUDENTPRICE', function (){
+		xit ('should return correct subtotal given code STUDENTPRICE and YEUGREENSPACE', function (){
 			val.orderline[0].promocodes = [
 				{
 					codeType: 3, 
@@ -182,11 +182,113 @@ describe ('Orders', function (){
 			});
 		});
 
-		it ('should return correct subtotal given code FREE1HOURCOMMON and STUDENTPRICE')
-		it ('should return correct subtotal given code FREE2HOURSCOMMON and STUDENTPRICE')
-		it ('should return correct subtotal given code PRIVATEDISCOUNTPRICE and STUDENTPRICE')
+		xit ('should return correct subtotal given code FREE1HOURCOMMON and STUDENTPRICE', function (){
+			val.orderline[0].promocodes = [
+				{
+					codeType: 1, 
+					_id: '58eb474538671b4224745192',
+					name: 'FREE1HOURCOMMON'
+				},					
+				{
+					codeType: 2, 
+					_id: '58eb474538671b4224745192',
+					name: 'STUDENTPRICE'
+				},						
+			];
+
+			val.checkoutTime = '2017-05-10 8:00:00',
+
+			expectedSubTotal = [10000, 20000, 10000];
+
+			var order = new Orders (val);
+			order.getSubTotal ();
+			order.getTotal ();
+
+			order.orderline.map (function (x,i,arr){
+				x.subTotal.should.to.equal (expectedSubTotal[i]);
+			});			
+		});
+
+		xit ('should return correct subtotal given code FREE2HOURSCOMMON and STUDENTPRICE', function (){
+			val.orderline[0].promocodes = [
+				{
+					codeType: 1, 
+					_id: '58eb474538671b4224745192',
+					name: 'FREE2HOURSCOMMON'
+				},					
+				{
+					codeType: 2, 
+					_id: '58eb474538671b4224745192',
+					name: 'STUDENTPRICE'
+				},						
+			];
+
+			val.checkoutTime = '2017-05-10 9:00:00',
+
+			expectedSubTotal = [10000, 20000, 10000];
+
+			var order = new Orders (val);
+			order.getSubTotal ();
+			order.getTotal ();
+
+			order.orderline.map (function (x,i,arr){
+				x.subTotal.should.to.equal (expectedSubTotal[i]);
+			});	
+		})
+
+		xit ('should return correct subtotal given code PRIVATEDISCOUNTPRICE and product is Medium Group Private', function (){
+			val.orderline[0].promocodes = [
+				{
+					codeType: 4, 
+					_id: '58eb474538671b4224745192',
+					name: 'PRIVATEDISCOUNTPRICE'
+				},					
+			];
+
+			val.orderline[0].productName = 'Medium Group Private';
+			val.orderline[0].price = 220000;
+			val.checkoutTime = '2017-05-10 9:00:00',
+
+			expectedSubTotal = [620000, 20000, 10000];
+
+			var order = new Orders (val);
+			order.getSubTotal ();
+			order.getTotal ();
+
+			order.orderline.map (function (x,i,arr){
+				x.subTotal.should.to.equal (expectedSubTotal[i]);
+			});	
+		});
 
 
+		xit ('should return correct subtotal given code PRIVATEDISCOUNTPRICE and product is Small Group Private regardless customer has code STUDENTPRICE or not', function (){
+			val.orderline[0].promocodes = [
+				{
+					codeType: 4, 
+					_id: '58eb474538671b4224745192',
+					name: 'PRIVATEDISCOUNTPRICE'
+				},
+				{
+					codeType: 2, 
+					_id: '58eb474538671b4224745192',
+					name: 'STUDENTPRICE'
+				},										
+			];
+
+			val.orderline[0].productName = 'Small Group Private';
+			val.orderline[0].price = 150000;
+			val.checkoutTime = '2017-05-10 9:00:00',
+
+			expectedSubTotal = [390000, 20000, 10000];
+
+			var order = new Orders (val);
+			order.getSubTotal ();
+			order.getTotal ();
+
+			order.orderline.map (function (x,i,arr){
+				x.subTotal.should.to.equal (expectedSubTotal[i]);
+			});	
+		});
 	});	
 
 	xdescribe ('Get total', function (){
