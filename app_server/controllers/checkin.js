@@ -15,25 +15,25 @@ module.exports = new Checkin();
 function Checkin() {
 	this.validatePromocodes = function (req, res, next){
 		// validate if exist and if not expire
-		// var codes = req.query.codes.split (',');
-		var codes = req.query.codes;//Because I send an array
-		Promocodes.find ({name: {$in: codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1, conflicted: 1}, function (err, pc){
+		var codes = req.query.codes;
+		Promocodes.find ({name: {$in: codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1, conflicted: 1, codeType: 1, override: 1}, function (err, pc){
 			if (err){
 				console.log (err);
 				next (err);
 				return
 			}
 
-			pc = Promocodes.checkCodeConflict (pc);
+			if (pc.length){
+				pc = Promocodes.validateCodes (pc);
+			}
 
+			// important to return pc regardless empty or not
 			res.json ({data: pc});
 		});
 	};
 
 	// assume promocode are validated
 	this.checkin = function(req, res, next) {
-		console.log(req.body.data)
-		console.log(req.params.cusId)
 		var order = new Orders (req.body.data);
 		order.save (function (err, newOrder){
 			if (err){
@@ -46,7 +46,6 @@ function Checkin() {
 				{$push: {orders: newOrder._id}, $set:{checkinStatus: true}},
 				{upsert: true, new: true},
 				function (err, customer){
-					console.log(customer)
 					if (err) {
 						next (err);
 						return
@@ -78,7 +77,7 @@ function Checkin() {
 		var input = req.query.input; // email, phone, fullname
 		input = validator.trim (input);
 		var splited = input.split (' ');
-		var projections = {firstname: 1, lastname: 1, middlename: 1, phone: 1, email: 1, checkinStatus: 1};
+		var projections = {firstname: 1, lastname: 1, middlename: 1, phone: {$slice: [0,1]}, email: {$slice: [0,1]}, checkinStatus: 1, isStudent: 1};
 
 		var nameValidator = {firstname: splited[splited.length - 1], lastname: splited[0]};
 		var query;

@@ -12,6 +12,8 @@ var moment = require ('moment');
 chai.use (chaiHttp);
 
 xdescribe ('Search checking-in customers', function (){
+	this.timeout (3000);
+
 	var newCustomer, customer;
 	beforeEach (function (done){
 		customer = {
@@ -20,9 +22,9 @@ xdescribe ('Search checking-in customers', function (){
 			lastname: 'Customer_Lastname',
 			gender: 1,
 			birthday: new Date ('1989-09-25'),
-			phone: '0999999999',
+			phone: ['0965999999', '0972999999'],
 			edu: {},
-			email: 'lastmiddlefirst@gmail.com', // manuallt required in some cases
+			email: ['lastmiddlefirst@gmail.com', 'otheremail@gmail.com'], // manuallt required in some cases
 			isStudent: false,
 			checkinStatus: false,
 		};
@@ -52,51 +54,64 @@ xdescribe ('Search checking-in customers', function (){
 		});
 	});
 
-	it ('should successfully return customers given customer fullname', function (done){
+	it ('should successfully return non-checked-in customers given customer fullname', function (done){
 		chai.request (server)
 			.get ('/checkin/search-customers')
 			.query ({input: 'Customer_Lastname Customer_Middlename Customer_Firstname'})
 			.end (function (err, res){
 				if (err) console.log (err);
-				console.log (res.body.data)
 				res.should.have.status (200);
 				res.body.data.should.to.have.length.of.at.least (1);
 				res.body.data[0].firstname.should.to.equal (customer.firstname);
+				res.body.data[0].middlename.should.to.equal (customer.middlename);
+				res.body.data[0].lastname.should.to.equal (customer.lastname);
+				res.body.data[0].phone[0].should.to.equal (customer.phone[0]);
+				res.body.data[0].email[0].should.to.equal (customer.email[0]);
 				res.body.data[0].checkinStatus.should.to.be.false;
+				res.body.data[0].isStudent.should.to.be.false;
 				done ();
 			});
 	});
 
-	it ('should successfully return customers given customer email', function (done){
+	it ('should successfully return non-checked-in customers given customer email', function (done){
 		chai.request (server)
 			.get ('/checkin/search-customers')
-			.query ({input: customer.phone})
+			.query ({input: customer.email[0]})
 			.end (function (err, res){
 				if (err) console.log (err);
 				res.should.have.status (200);
 				res.body.data.should.to.have.length.of.at.least (1);
 				res.body.data[0].firstname.should.to.equal (customer.firstname);
+				res.body.data[0].middlename.should.to.equal (customer.middlename);
+				res.body.data[0].lastname.should.to.equal (customer.lastname);
+				res.body.data[0].phone[0].should.to.equal (customer.phone[0]);
+				res.body.data[0].email[0].should.to.equal (customer.email[0]);
 				res.body.data[0].checkinStatus.should.to.be.false;
+				res.body.data[0].isStudent.should.to.be.false;
 				done ();
 			});
 	});
 
 
-	it ('should successfully return customers given customer phone', function (done){
+	it ('should successfully return non-checked-in customers given customer phone', function (done){
 		chai.request (server)
 			.get ('/checkin/search-customers')
-			.query ({input: customer.phone})
+			.query ({input: customer.phone[0]})
 			.end (function (err, res){
 				if (err) console.log (err);
 				res.should.have.status (200);
 				res.body.data.should.to.have.length.of.at.least (1);
 				res.body.data[0].firstname.should.to.equal (customer.firstname);
+				res.body.data[0].middlename.should.to.equal (customer.middlename);
+				res.body.data[0].lastname.should.to.equal (customer.lastname);
+				res.body.data[0].phone[0].should.to.equal (customer.phone[0]);
+				res.body.data[0].email[0].should.to.equal (customer.email[0]);
 				res.body.data[0].checkinStatus.should.to.be.false;
+				res.body.data[0].isStudent.should.to.be.false;
 				done ();
 			});
 	});	
 
-	it ('should return customers who are not checked in yet');
 	it ('should return active customers')
 	it ('should be invalid when required input not found')
 });
@@ -106,7 +121,7 @@ xdescribe ('Filter checked-in customers', function (){
 });
 
 xdescribe ('Cancel checkin', function (){
-
+	// not built yet. Have to checkout first and checkin again. 
 });
 
 xdescribe ('Validate promotion code', function (){
@@ -116,13 +131,27 @@ xdescribe ('Validate promotion code', function (){
 			{
 				name: 'PROMOCODE1',
 				start: moment (),
-				end: moment ().add ('day', 5),
+				end: moment ().add (5, 'day'),
+				codeType: 1,
 			},
 			{
 				name: 'PROMOCODE2',
 				start: moment (),
-				end: moment ().add ('day', 5),
+				end: moment ().add (5, 'day'),
+				codeType: 2,
 			},
+			{
+				name: 'EXPIRED_CODE1',
+				start: moment ().add (-2, 'day'),
+				end: moment ().add (-1, 'day'),
+				codeType: 1,
+			},
+			{
+				name: 'EXPIRED_CODE2',
+				start: moment ().add (-2, 'day'),
+				end: moment ().add (-1, 'day'),
+				codeType: 2,
+			},			
 		];
 
 		Promocodes.insertMany (codes, function (err, docs){
@@ -131,12 +160,8 @@ xdescribe ('Validate promotion code', function (){
 				return
 			}
 			newCodes = docs;
-			codeNames = [];
-			newCodes.map (function (x, i, arr){
-				codeNames.push (x.name);
-			});
+			codeNames = [newCodes[0].name, newCodes[1].name];
 
-			codeNames = codeNames.join();
 			done ();
 		});
 	});
@@ -157,8 +182,24 @@ xdescribe ('Validate promotion code', function (){
 		})
 	})
 
-	it ('should not return codes when they are invalid', function (done){
-		codeNames = 'INVALIDCODE1,INVALIDECODE2';
+	it ('should be invalid when codes are expired', function (done){
+		codeNames = [newCodes[2].name, newCodes[3].name];
+		chai.request (server)
+			.get ('/checkin/validate-promotion-code')
+			.query ({codes: codeNames})
+			.end (function (err, res){
+				if (err){
+					console.log (err);
+				}
+
+				res.should.have.status (200);
+				res.body.data.should.to.have.lengthOf (0);
+				done ();
+			});	
+	})
+
+	it ('should be invalid when codes do not existed', function (done){
+		codeNames = ['NOEXISTCODE1','NOEXISTCODE2'];
 		chai.request (server)
 			.get ('/checkin/validate-promotion-code')
 			.query ({codes: codeNames})
@@ -185,6 +226,9 @@ xdescribe ('Validate promotion code', function (){
 				res.should.have.status (200);
 				res.body.data.should.to.have.lengthOf (2);
 				res.body.data[0].should.have.property ('name');
+				res.body.data[0].should.have.property ('codeType');
+				res.body.data[0].should.have.property ('conflicted');
+				res.body.data[0].should.have.property ('override');
 				done ();
 			});			
 	});
@@ -193,7 +237,7 @@ xdescribe ('Validate promotion code', function (){
 	it ('should return code conflicts when there are');
 });
 
-xdescribe ('Check in', function (){
+describe ('Check in', function (){
 	this.timeout (3000);
 	var order, customer, newCustomer, newOrder;
 	beforeEach (function (done){
@@ -203,16 +247,16 @@ xdescribe ('Check in', function (){
 			lastname: 'Customer_Lastname',
 			gender: 1,
 			birthday: new Date ('1989-09-25'),
-			phone: '0999999999',
+			phone: ['0965999999', '0972999999'],
 			edu: {},
-			email: 'lastmiddlefirst@gmail.com', // manuallt required in some cases
+			email: ['lastmiddlefirst@gmail.com', 'otheremail@gmail.com'], // manuallt required in some cases
 			isStudent: false,
 			checkinStatus: false,
 		};
 
 		order = {
 			orderline: [ 
-				{ "productName" : "Common", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000, promocodes: [{id: '58ff58e6e53ef40f4dd664cd', name: 'YEUGREENSPACE'}] }, 
+				{ "productName" : "Group Common", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 15000, promocodes: [{id: '58ff58e6e53ef40f4dd664cd', name: 'YEUGREENSPACE'}] }, 
 				{ "productName" : "Coca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 2, price: 10000 }, 
 				{ "productName" : "Poca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000 }
 			],
@@ -276,9 +320,23 @@ xdescribe ('Check in', function (){
 				newOrder = res.body.data;
 				res.should.have.status (200); // this indicate updated customer
 				res.body.data.should.to.exist;
+				res.body.data.customer.should.to.exist;
+				res.body.data.staffId.should.to.exist;
+				res.body.data.storeId.should.to.exist;
 				res.body.data.orderline.should.to.exist;
 				res.body.data.orderline.length.should.to.equal (3);
 				res.body.data.checkinTime.should.to.exist;
+				Customers.findOne ({_id: newCustomer._id}, {checkinStatus: 1, orders: 1}, function (err, data){
+					if (err){
+						console.log (err);
+					}
+
+					data.checkinStatus.should.to.be.true;
+					data.orders[data.orders.length-1].toString().should.to.equal (newOrder._id);
+
+				});
+
+
 				done ();	
 			});
 	});
@@ -341,7 +399,7 @@ xdescribe ('Check in', function (){
 	});
 });
 
-xdescribe ('Edit checked-in', function (){
+xdescribe ('Update checked-in', function (){
 	var newCustomer, editedOrder, newOrder;
 
 	beforeEach (function (done){
@@ -423,7 +481,7 @@ xdescribe ('Edit checked-in', function (){
 	});
 
 
-	xit ('should successfully edit data of a checked-in record', function (done){
+	it ('should successfully edit data of a checked-in record', function (done){
 		newOrder.orderline = [ 
 			{"productName" : "Common", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000}, 
 			{"productName" : "Coca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 2, price: 10000}, 
@@ -445,11 +503,11 @@ xdescribe ('Edit checked-in', function (){
 			});
 	});
 
-	xit ('should successfully edit part of data of a checked-in record');
+	it ('should successfully edit part of data of a checked-in record');
 
 });
 
-describe ('Read check-in list', function (){
+xdescribe ('Read check-in list', function (){
 	var query, orders, customer, newCustomer, newOrder;
 	beforeEach (function (done){
 		query = {
@@ -549,7 +607,7 @@ describe ('Read check-in list', function (){
 	});	
 
 
-	xit ('should return checked-in on today given no date range and status provided', function (done){
+	it ('should return checked-in on today given no date range and status provided', function (done){
 		chai.request (server)
 			.get ('/checkin')
 			.query (query)
@@ -573,7 +631,7 @@ describe ('Read check-in list', function (){
 			});
 	});
 
-	xit ('should return checked-in in a given date range provided', function (done){
+	it ('should return checked-in in a given date range provided', function (done){
 		query.start = '2017-01-01';
 		query.end = '2017-01-10';
 
@@ -599,7 +657,7 @@ describe ('Read check-in list', function (){
 			});		
 	});
 
-	xit ('should return both checked-in and checked-out customer when required', 	function (done){
+	it ('should return both checked-in and checked-out customer when required', 	function (done){
 		query.start = '2017-01-01';
 		query.status = 4;
 		chai.request (server)
