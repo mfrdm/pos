@@ -25,14 +25,31 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 	}
 	////////////////////////////////////////////////////////
 	vm.model.customer = {};//Anything about customer
-	vm.model.dom = {};//Anything about DOM
+	vm.model.dom = {
+		lang:{}
+	};//Anything about DOM
 	vm.model.search = {};//Anything about Search
 	vm.model.input = {};//input field model for start and end of school
 
+	//Translate
+	vm.model.dom.lang.en = {
+		jobStudent:'Undergraduate',
+		jobGraduate:'Graduate',
+		jobDoc:'Doctorate'
+	}
+
+	vm.model.dom.lang.vi = {
+		jobStudent:'Sinh viên',
+		jobGraduate:'Đã tốt nghiệp',
+		jobDoc:'Thạc sĩ'
+	}
+
+	vm.model.dom.lang.using = vm.model.dom.lang.vi
+
 	vm.model.customer.selectCustomerTitleConvert = {
-		1: 'Undergraduate',
-		2: 'Graduate',
-		3: 'Doctorate'
+		1: vm.model.dom.lang.using.jobStudent,
+		2: vm.model.dom.lang.using.jobGraduate,
+		3: vm.model.dom.lang.using.jobDoc
 	}
 
 	vm.model.customer.newCustomerData = {}//Model contain info to create new customer
@@ -76,13 +93,11 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 		// vm.model.customer.newCustomerData.edu.start = new Date(vm.model.input.start, 0,1)
 		// vm.model.customer.newCustomerData.edu.end = new Date(vm.model.input.end, 0,1)
 		vm.model.customer.newCustomerData.birthday = new Date(vm.model.input.year+'.'+vm.model.input.month+'.'+vm.model.input.day)
-		console.log(vm.model.customer.newCustomerData)
 		customerService.createOne(vm.model.customer.newCustomerData)
 			.then(function success(res){
-				if(res.status == 201){
+				if(res.status == 200){
 					$window.alert('Create new customer successfully')
 					$scope.layout.currentCustomer = res.data.data;
-					console.log($scope.layout.currentCustomer)
 					$window.location.href = '/#!/checkin'
 				}else{
 					$window.alert('Failed when creating new customer, please check')

@@ -405,7 +405,7 @@ ul.listOrder li i{
 }
 
 .greenBorder{
-	border-left: 2px solid #3adb76;
+	border-left: 2px solid #cacaca;
 }
 
 .greenBorderR{
@@ -419,5 +419,5 @@ ul.listOrder li i{
 }
 
 .headerModal{
-	border-bottom: 3px solid #ccc;
+	border-bottom: 1px solid #ccc;
 }

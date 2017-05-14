@@ -10,15 +10,30 @@ function Orders() {
 
 	this.readSomeOrders = function (req, res) {
 		try {
-			OrdersModel.find (
-				{
-					// checkinTime: {
-					// 	$gte: req.query.start, 
-					// 	$lt: req.query.end,
-					// },
-					//status: req.query.status,
-					// storeId: mongoose.Types.ObjectId(req.query.storeId)
-				},
+			if(req.query.status){
+				OrdersModel.find (
+					{
+						// checkinTime: {
+						// 	$gte: req.query.start, 
+						// 	$lt: req.query.end,
+						// },
+						status: req.query.status,
+						orderline:{$elemMatch:{productName:{$in:['medium group private', 'small group private']}}},
+						parent:{$exists: false}
+					},
+					function (err, docs){
+						if (err){
+							res.json (err);
+						}
+						else {
+							res.json ({data: docs});
+						}
+					}
+				)
+			}
+			else{
+				OrdersModel.find (
+				{},
 				function (err, docs){
 					if (err){
 						res.json (err);
@@ -28,7 +43,7 @@ function Orders() {
 					}
 				}
 			)
-
+			}
 		}
 		catch (err){
 			console.log (err)

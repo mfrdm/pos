@@ -12,7 +12,7 @@ function CheckinService ($http, $q){
 			params:{
 				queryInput:JSON.stringify({
 					conditions: {$or: array},
-					projection: {firstname: 1, middlename:1, lastname: 1, phone: 1, email: 1, edu:1},
+					projection: {firstname: 1, middlename:1, lastname: 1, phone: 1, email: 1, edu:1,checkinStatus:1, parent:1},
 					opts: null
 				})
 			}
@@ -106,6 +106,12 @@ function CheckinService ($http, $q){
 		// return $q.resolve({data: data})
 	};
 
+	this.readOneParent = function(id){
+		return $http({
+			method:'GET',
+			url:'/api/orders/order/'+id
+		})
+	}
 	//Update new Order
 	this.updateOne = function(id, data){
 		return $http({
@@ -116,6 +122,17 @@ function CheckinService ($http, $q){
 			})
 		})
 	};
+
+	//Get parents order
+	this.readSomeParent = function(){
+		return $http({
+			method:'GET',
+			url:'/api/orders',
+			params: {
+				status:1,
+			},
+		})
+	}
 
 	//Checkout for customer
 	this.confirmCheckout = function(order){

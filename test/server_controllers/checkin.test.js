@@ -307,7 +307,7 @@ describe ('Check in', function (){
 		})
 	});
 
-	it ('should create a check-in record and update customer order when no promocode provided', function (done){
+	xit ('should create a check-in record and update customer order', function (done){
 		order.promocodes = [];
 		chai.request (server)
 			.post ('/checkin/customer/' + order.customer._id)
@@ -341,7 +341,8 @@ describe ('Check in', function (){
 			});
 	});
 
-	xit ('should be invalid when promotion codes are invalid', function (done){
+
+	it ('should be invalid when promotion codes are invalid', function (done){
 		order.promocodes = [{name: 'INVALID_CODE'}];
 		chai.request (server)
 			.post ('/checkin/customer/' + order.customer._id)
