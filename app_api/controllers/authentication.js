@@ -8,7 +8,8 @@ var passport = require ('passport');
 module.exports = new Authentication ();
 
 function Authentication () {
-	this.register = function (req, res){
+	this.register = function (req, res, next){
+
 		// FIX: include other required data
 		function checkRequiredInput (data){
 			if (!data.phone || !data.firstname || !data.lastname || !data.password) return false
@@ -30,8 +31,8 @@ function Authentication () {
 		}
 
 		try {
-			var user = new UsersModel (req.body)
-			user.setPassword (data.password);
+			var user = new UsersModel (req.body);
+			user.setPassword (req.body.password);
 			user.save (function (err, data){
 				if (err) {
 					console.log (err);
