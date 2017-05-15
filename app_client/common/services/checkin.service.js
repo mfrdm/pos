@@ -8,10 +8,14 @@ function CheckinService ($http, $q){
 		var array = [{"firstname" : { $regex: input, $options: 'i' }}, {"lastname" : { $regex: input, $options: 'i' }}]
 		return $http({
 			method:'GET',
-			url:'/checkin/search-customers',
+			url:'/api/customers',
 			params:{
-				input:input
-			}
+					queryInput:JSON.stringify({
+					conditions: {$or: array},
+					projection: {firstname: 1, middlename:1, lastname: 1, phone: 1, email: 1, edu:1,checkinStatus:1, parent:1},
+					opts: null
+				})
+  			}
 		})
 	}
 
