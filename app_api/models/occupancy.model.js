@@ -108,7 +108,7 @@ var OccupancySchema = new mongoose.Schema({
 		lastname: {type:String, required: true},
 		phone: {type: String, required: true},
 		email: {type: String}, // optional. added if exists
-		isStudent: {type: String, default: false},
+		isStudent: {type: Boolean, default: false},
 	},
 	storeId: {type: mongoose.Schema.Types.ObjectId, required: true},
 	staffId: {type: mongoose.Schema.Types.ObjectId, required: true},	

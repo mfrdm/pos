@@ -186,8 +186,9 @@ describe ('Pay for an order', function (){
 });
 
 describe ('Read orders', function (){
-	var order, customer, newOrder, newCustomer;
+	var query, order, customer, newOrder, newCustomer;
 	beforeEach (function (done){
+		query = {storeId: '58eb474538671b4224745192'};
 		customer = {
 			firstname: 'Customer_Firstname',
 			middlename: 'Customer_Middlename',
@@ -201,17 +202,31 @@ describe ('Read orders', function (){
 			checkinStatus: false,
 		};
 
-		order = {
-			orderline: [
-				{_id: '58eb474538671b4224745192', productName: 'Coca', quantity: 1, price: 10000},
-				{_id: '58eb474538671b4224745192', productName: 'Poca', quantity: 2, price: 10000},
-			],
-			customer: {},
-			occupancyId: '58eb474538671b4224745192',
-			storeId: "58eb474538671b4224745192",
-			staffId: "58eb474538671b4224745192",
+		order = [
+			{
+				orderline: [
+					{_id: '58eb474538671b4224745192', productName: 'Coca', quantity: 1, price: 10000},
+					{_id: '58eb474538671b4224745192', productName: 'Poca', quantity: 2, price: 10000},
+				],
+				customer: {},
+				occupancyId: '58eb474538671b4224745192',
+				storeId: "58eb474538671b4224745192",
+				staffId: "58eb474538671b4224745192",
 
-		};
+			},
+			{
+				orderline: [
+					{_id: '58eb474538671b4224745192', productName: 'Coca', quantity: 1, price: 10000},
+					{_id: '58eb474538671b4224745192', productName: 'Poca', quantity: 1, price: 10000},
+				],
+				customer: {},
+				occupancyId: '58eb474538671b4224745192',
+				storeId: "58eb474538671b4224745192",
+				staffId: "58eb474538671b4224745192",
+				createdAt: moment ().add (-5, 'day'),
+			},			
+
+		]
 
 		Customers.create (customer, function (err, cus){
 			if (err){
@@ -220,29 +235,31 @@ describe ('Read orders', function (){
 			}
 
 			newCustomer = cus.getPublicFields();
-			order.customer = newCustomer;
-			newOrder = new Orders (order);
-			newOrder.getSubTotal ();
-			newOrder.getTotal ();
 
-			chai.request (server)
-				.post ('/orders/confirm')
-				.send ({data: newOrder})
-				.end (function (err, res){
-					if (err){
-						console.log (err)
-						return
-					}
+			order.map (function (x, i, arr){
+				x.customer = newCustomer;
+			});
 
-					done ();
-				});
+			Orders.insertMany (order, function (err, ord){
+				if (err){
+					console.log (err)
+					return
+				}
+
+				newOrder = ord;
+				done ();
+			});
 				
 		});		
 
 	});
 
 	afterEach (function (done){
-		Orders.remove ({_id: newOrder._id}, function (err, data){
+		var ordIds = newOrder.map (function (x, i, arr){
+			return x._id;
+		});
+
+		Orders.remove ({_id: {$in: ordIds}}, function (err, data){
 			if (err) {
 				// console.log (err)
 				return
@@ -259,11 +276,55 @@ describe ('Read orders', function (){
 
 	});
 
-	it ('should return orders on today if day range is not provided', function (){
-		// later
+	xit ('should return orders on today if day range is not provided', function (done){
+		chai.request (server)
+			.get ('/orders')
+			.query (query)
+			.end (function (err, res){
+				if (err) {
+					console.log (err)
+				}
+
+				var todayStart = moment (moment().format ('YYYY-MM-DD'));
+				var todayEnd = moment (moment().format ('YYYY-MM-DD') + ' 23:59:59');
+
+				res.should.to.have.status (200);
+				res.body.data.should.to.have.lengthOf (1);
+				res.body.data.map (function (x, i, arr){
+					moment (x.createdAt).should.to.be.at.least (todayStart);
+					moment (x.createdAt).should.to.be.at.most (todayEnd);
+				});
+
+				done ();
+
+			});
 	});
 
-	it ('should return orders within day range provided');
+	it ('should return orders within day range provided', function (done){
+		query.start = moment().add (-7, 'day').format ('YYYY-MM-DD');
+		query.end = moment().add (-3, 'day').format ('YYYY-MM-DD');
+
+		chai.request (server)
+			.get ('/orders')
+			.query (query)
+			.end (function (err, res){
+				if (err) {
+					console.log (err)
+				}
+				var startDate = moment (query.start);
+				var enddDate = moment (query.end + ' 23:59:59');
+
+				res.should.to.have.status (200);
+				res.body.data.should.to.have.lengthOf (1);
+				res.body.data.map (function (x, i, arr){
+					moment (x.createdAt).should.to.be.at.least (startDate);
+					moment (x.createdAt).should.to.be.at.most (enddDate);
+				});
+
+				done ();
+
+			});		
+	});
 });
 
 describe ('Update an order', function (){

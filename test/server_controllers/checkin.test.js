@@ -238,7 +238,7 @@ xdescribe ('Validate promotion code', function (){
 	it ('should return code conflicts when there are');
 });
 
-describe ('Check in', function (){
+xdescribe ('Check in', function (){
 	this.timeout (3000);
 	var order, customer, newCustomer, newOrder, newOcc, checkinData;
 	beforeEach (function (done){
@@ -297,42 +297,42 @@ describe ('Check in', function (){
 
 	});
 
-	// afterEach (function (done){
-	// 	if (newOcc){
-	// 		Occupancy.remove ({_id: newOcc._id}, function (err, data){
-	// 			if (err) {
-	// 				// console.log (err)
-	// 				return
-	// 			}
-	// 			Customers.remove ({_id: newCustomer._id}, function (err, data){
-	// 				if (err) {
-	// 					// console.log (err)
-	// 					return
-	// 				}				
-	// 				if (newOrder && newOrder._id){
-	// 					Orders.remove ({_id: newOrder._id}, function (err, data){
-	// 						if (err) {
-	// 							// console.log (err)
-	// 							return
-	// 						}
-	// 						else {
-	// 							done ();
-	// 						}
-	// 					});
-	// 				}
-	// 				else {
-	// 					done ();
-	// 				}
-	// 			});
+	afterEach (function (done){
+		if (newOcc){
+			Occupancy.remove ({_id: newOcc._id}, function (err, data){
+				if (err) {
+					// console.log (err)
+					return
+				}
+				Customers.remove ({_id: newCustomer._id}, function (err, data){
+					if (err) {
+						// console.log (err)
+						return
+					}				
+					if (newOrder && newOrder._id){
+						Orders.remove ({_id: newOrder._id}, function (err, data){
+							if (err) {
+								// console.log (err)
+								return
+							}
+							else {
+								done ();
+							}
+						});
+					}
+					else {
+						done ();
+					}
+				});
 
-	// 		});			
-	// 	}
-	// 	else{
-	// 		done ();
-	// 	}
+			});			
+		}
+		else{
+			done ();
+		}
 
 
-	// });
+	});
 
 	it ('should create an occupancy, an order, and update customer order', function (done){
 		checkinData.occupancy.promocodes = [];
