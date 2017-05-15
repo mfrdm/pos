@@ -26,6 +26,7 @@ router.get('/customers/', customersCtrl.readSomeCustomers);
 router.get('/customers/customer/:cusId', customersCtrl.readOneCustomerById);
 router.post('/customers/create', customersCtrl.createOneCustomer);
 router.post('/customers/customer/:cusId/edit', customersCtrl.updateOneCustomerById);
+router.post('/customers/createMany', customersCtrl.createManyCustomers);
 
 router.get('/companies/', companiesCtrl.readSomeComps);
 router.get('/companies/company/:compId', companiesCtrl.readOneCompById);

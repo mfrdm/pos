@@ -2,11 +2,11 @@ var helper = require('../../libs/node/helper')
 var dbHelper = require('../../libs/node/dbHelper')
 var requestHelper = require('../../libs/node/requestHelper')
 var mongoose = require('mongoose');
-var CustomersModel = mongoose.model('customers');
+var Customers = mongoose.model('customers');
 
-module.exports = new Customers();
+module.exports = new CustomerCtrl();
 
-function Customers() {
+function CustomerCtrl() {
 
 	this.readSomeCustomers = function(req, res) {
 		dbHelper.findSome(req, res, CustomersModel)
@@ -23,5 +23,11 @@ function Customers() {
 	this.updateOneCustomerById = function(req, res) {
 		dbHelper.updateOneById(req, res, CustomersModel, 'cusId')
 	};
+
+	this.createManyCustomers = function (req, res, next){
+		console.log (req.body.data);
+		console.log (req.body.data.length);
+		// Customers.insertMany (req.)
+	}
 
 };

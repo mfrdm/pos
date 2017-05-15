@@ -3,3 +3,5 @@ node_modules/
 .env
 
 *.log.*
+
+client_secret_service_account.json

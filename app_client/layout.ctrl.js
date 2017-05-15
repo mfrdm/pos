@@ -72,8 +72,14 @@
 
 		$scope.layout.ctrl.logout = function(){
 			var beforeAction = function(){};
-			var afterAction = function(){};
-			authentication.logout(beforeAction, afterAction)
+			var afterAction = function(){
+				$scope.layout.model.dom.loginBtn = true;
+				$scope.layout.model.dom.accountBtn = false;
+				// $scope.layout.model.dom.notiBtn = false;
+				$scope.layout.model.dom.sideBarMenu = false;				
+			};
+
+			authentication.logout(beforeAction, afterAction);
 		}
 
 		// $scope.layout.notiAlert = function(msg){
