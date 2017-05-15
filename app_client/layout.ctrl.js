@@ -106,12 +106,7 @@
 		angular.element(document).ready(function () {
 			$("body").foundation();
 			$scope.$apply();
-<<<<<<< HEAD
-		})
-=======
-		});
->>>>>>> 6bc5d831ff25c5ebb2ce12b6e90d82a93162d969
-		
+		});		
 	}
 
 })();

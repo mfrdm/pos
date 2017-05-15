@@ -81,9 +81,9 @@ div(class="columns row")
 						div(class="invoice")
 							div(class='row column')
 								div(class='column small-6')
-									p {{vm.model.dom.dataDom.using.invoiceFullname}}: {{ vm.model.customer.checkingInData.customer.lastname}} {{ vm.model.customer.checkingInData.customer.middlename}} {{ vm.model.customer.checkingInData.customer.firstname}}
+									p {{vm.model.dom.dataDom.using.invoiceFullname}}: {{ vm.model.customer.checkingInData.occupancy.customer.lastname}} {{ vm.model.customer.checkingInData.occupancy.customer.middlename}} {{ vm.model.customer.checkingInData.occupancy.customer.firstname}}
 								div(class='column small-6 text-right')
-									p {{vm.model.dom.dataDom.using.invoicePhone}}: {{ vm.model.customer.checkingInData.customer.phone}}
+									p {{vm.model.dom.dataDom.using.invoicePhone}}: {{ vm.model.customer.checkingInData.occupancy.customer.phone}}
 							div(class='priceSection')
 
 								//Checkin TIme
@@ -92,17 +92,17 @@ div(class="columns row")
 										div(class='column small-4 text-right')
 											p Checkin
 										div(class='column small-4 greenBorder')
-											p {{ vm.model.customer.checkingInData.checkinTime | date:'shortTime'}}
+											p {{ vm.model.customer.checkingInData.occupancy.checkinTime | date:'shortTime'}}
 										div(class='column small-4')
-											p {{ vm.model.customer.checkingInData.checkinTime | date:'dd/MM/yyyy'}}
+											p {{ vm.model.customer.checkingInData.occupancy.checkinTime | date:'dd/MM/yyyy'}}
 
 								//Other Products
-								div(class="borderT newBox row column" ng-if='vm.model.customer.checkingInData.orderline.length > 1')
+								//- div(class="borderT newBox row column" ng-if='vm.model.customer.checkingInData.occupancy.orderline.length > 1')
 									div(class='row column' )
 										div(class='column small-4 text-right')
 											p {{vm.model.dom.dataDom.using.invoiceOtherProducts}}
 										div(class='column small-8 greenBorder')
-											div(class='row column small-12' ng-repeat='service in vm.model.customer.checkingInData.orderline.slice(1)')
+											div(class='row column small-12' ng-repeat='service in vm.model.customer.checkingInData.occupancy.orderline.slice(1)')
 												div(class='column small-6 paddingLR0 marginT0')
 													p {{ service.productName}}
 												div(class='column small-6 marginT0')
@@ -116,19 +116,17 @@ div(class="columns row")
 										div(class='column small-8 greenBorder')
 											div(class='row column small-12')
 												div(class='column small-6 paddingLR0 marginT0')
-													p {{ vm.model.products[vm.model.customer.checkingInData.orderline[0].productName]}}
-												div(class='column small-6 marginT0')
-													p x {{vm.model.customer.checkingInData.orderline[0].quantity}}
-									div(class='row column paddingTB15' ng-if='vm.model.customer.checkingInData.parent.length > 0')
+													p {{ vm.model.products[vm.model.customer.checkingInData.occupancy.service.name]}}
+									div(class='row column paddingTB15' ng-if='vm.model.customer.checkingInData.occupancy.parent.length > 0')
 										div(class='column small-4 text-right')
 											p {{vm.model.dom.dataDom.using.parentGroup}}
 										div(class='column small-8 greenBorder')
-											p {{vm.model.parents.options[vm.model.customer.checkingInData.parent]}}
-									div(class='row column paddingTB15' ng-if='vm.model.customer.checkingInData.orderline[0].promocodes.length > 0')
+											p {{vm.model.parents.options[vm.model.customer.checkingInData.occupancy.parent]}}
+									div(class='row column paddingTB15' ng-if='vm.model.customer.checkingInData.occupancy.promocodes.length > 0')
 										div(class='column small-4 text-right')
 											p {{vm.model.dom.dataDom.using.invoicePromoteCode}}
 										div(class='column small-8 greenBorder')
-											p(ng-repeat='promocode in vm.model.customer.checkingInData.orderline[0].promocodes') {{ promocode.name}}
+											p(ng-repeat='promocode in vm.model.customer.checkingInData.occupancy.promocodes') {{ promocode.name}}
 					div(class='column row')
 						div(class='column small-6')
 							input(class='button' type='submit' ng-click='vm.ctrl.checkin()' value='Yes' data-close='')
@@ -159,25 +157,25 @@ div(class="columns row")
 					//Main service for checkin
 					div(class="row column")
 						label {{vm.model.dom.dataDom.using.fieldService}}
-							select(name="selectedService" ng-change='vm.ctrl.changeMainService()' ng-model="vm.model.customer.checkingInData.orderline[0].productName" ng-options="key as value for (key , value) in vm.model.products")
+							select(ng-change='vm.ctrl.changeMainService()' ng-model="vm.model.customer.checkingInData.occupancy.service.name" ng-options="key as value for (key , value) in vm.model.products")
 
 					
 					//Choose Group
-					div(class="row column" ng-if='vm.model.customer.checkingInData.orderline[0].productName == "medium group private" || vm.model.customer.checkingInData.orderline[0].productName == "small group private"')
+					div(class="row column" ng-if='vm.model.customer.checkingInData.occupancy.service.name == "medium group private" || vm.model.customer.checkingInData.occupancy.service.name == "small group private"')
 						label {{vm.model.dom.dataDom.using.fieldChooseGroup}}
-							select(name="selectedService" ng-model="vm.model.customer.checkingInData.parent" ng-options="key as value for (key , value) in vm.model.parents.options")
+							select(name="selectedService" ng-model="vm.model.customer.checkingInData.occupancy.parent" ng-options="key as value for (key , value) in vm.model.parents.options")
 				
 					//Other services for checkin
 					div(class='addItemSection row column paddingTB15 marginB15')
 						div(class='column small-12')
-							label(ng-if='vm.model.customer.checkingInData.orderline.length > 1') {{vm.model.dom.dataDom.using.fieldOtherProducts}}
+							label(ng-if='vm.model.customer.checkingInData.occupancy.orderline.length > 1') {{vm.model.dom.dataDom.using.fieldOtherProducts}}
 								table
 									thead
 										tr
 											th {{vm.model.dom.dataDom.using.fieldProduct}}
 											th {{vm.model.dom.dataDom.using.fieldQuantity}}
 									tbody
-										tr(ng-repeat='product in vm.model.customer.checkingInData.orderline.slice(1)')
+										tr(ng-repeat='product in vm.model.customer.checkingInData.occupancy.orderline.slice(1)')
 											td {{product.productName}}
 											td {{product.quantity}}
 											td(class='text-center deleteIcon')
@@ -313,7 +311,7 @@ div(class="columns row")
 							td {{ customer.checkinTime | date: 'shortTime' }}
 							td(ng-if='vm.model.dom.seeMore == true')  {{ customer.checkoutTime | date:'dd/MM/yyyy' }}
 							td {{ customer.checkoutTime | date: 'shortTime' }}
-							td {{ vm.model.products[customer.orderline[0].productName]	}}
+							td {{ vm.model.products[customer.service.name]	}}
 							td
 								button(type="button" ng-if='customer.status == 1' class="primary button" ng-click="vm.ctrl.getInvoiceForCheckout (customer)") Checkout
 								button(type='button' ng-if='customer.status == 2' class="disabled button") Checkout
@@ -353,20 +351,6 @@ div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
 						div(class='column small-5')
 							p {{ vm.model.customer.checkoutCustomer.checkoutTime | date:'dd/MM/yyyy'}}
 				
-				//Other products
-				div(class="borderT newBox row column" ng-if='vm.model.customer.checkoutCustomer.orderline.slice(1).length > 0')
-					div(class='row column' )
-						div(class='column small-2 text-right')
-							p {{vm.model.dom.dataDom.using.invoiceOtherProducts}}
-						div(class='column small-10 greenBorder')
-							div(class='row column small-12' ng-repeat='service in vm.model.customer.checkoutCustomer.orderline.slice(1)')
-								div(class='column small-6 paddingLR0 marginT0')
-									p {{ service.productName}}
-								div(class='column small-4 marginT0')
-									p {{ service.quantity}} x {{ (service.price | number)}}
-								div(class='column small-2 marginT0')
-									p {{ service.subTotal | number}}
-				
 				//Main Product
 				div(class="borderT newBox row column")
 					div(class='row column paddingTB15')
@@ -375,9 +359,9 @@ div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
 						div(class='column small-10 greenBorder')
 							div(class='row column small-12')
 								div(class='column small-6 paddingLR0 marginT0')
-									p {{ vm.model.products[vm.model.customer.checkoutCustomer.orderline[0].productName]}}
+									p {{ vm.model.products[vm.model.customer.checkoutCustomer.service.name]}}
 								div(class='column small-4 marginT0')
-									p {{vm.model.customer.checkoutCustomer.usage}} x {{(vm.model.customer.checkoutCustomer.orderline[0].price | number)}}
+									p {{vm.model.customer.checkoutCustomer.usage}} x {{(vm.model.customer.checkoutCustomer.service.price | number)}}
 								div(class='column small-2 marginT0')
 									p {{ vm.model.customer.checkoutCustomer.orderline[0].subTotal | number}}
 					

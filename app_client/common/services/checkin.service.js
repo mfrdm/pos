@@ -46,36 +46,11 @@ function CheckinService ($http, $q){
 		query = query ? query : {};
 		return $http({
 			method:'GET',
-			url:'/api/orders',
+			url:'/checkin',
 			params: {
-				// start: query.start ? query.start : new Date(),
-				// end: query.end ? query.end : new Date().setDate(new Date().getDate() + 1),
-				// storeId: query.storeId,
-				// staffId: query.staffId,
-				//status: query.status ? query.status : 1, // checked-in only
+				storeId:'59112972685d0127e59de962'
 			},
 		})
-		// return $q.resolve({
-		// 	data:{
-		// 		data:[{
-		// 			customer:{
-		// 				firstname:'cuong',
-		// 				lastname:'pham',
-		// 				phone:['123'],
-		// 				id:'12312312',
-		// 				email:['cuong@df']
-		// 			},
-		// 			orderline:[
-		// 				{
-		// 					productName:'Common',
-		// 					price:10000,
-		// 					id:123,
-		// 					quantity:3
-		// 				}
-		// 			]
-		// 		}]
-		// 	}
-		// })
 	}
 
 	this.getStudentCode = function(){

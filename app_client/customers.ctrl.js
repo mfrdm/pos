@@ -86,6 +86,9 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 	}
 
 	vm.model.customer.newCustomerData = {}//Model contain info to create new customer
+	vm.model.customer.newCustomerData.edu = {}
+	vm.model.customer.newCustomerData.phone = [];
+	vm.model.customer.newCustomerData.email = [];
 	vm.model.form = {}//Anything about form data
 	vm.model.sorting = {}//Model for sorting a list search result
 
@@ -123,7 +126,9 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 	////////////////////////////////////////////////////////
 	//Create Page
 	vm.ctrl.confirmCreateNewCustomer = function(){
+
 		vm.model.customer.newCustomerData.birthday = new Date(vm.model.input.year+'.'+vm.model.input.month+'.'+vm.model.input.day)
+		vm.model.customer.newCustomerData.birthday = new Date()
 		if(vm.model.customer.otherSchool){
 			vm.model.customer.newCustomerData.edu.school = vm.model.customer.otherSchool
 		}
@@ -132,15 +137,14 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 	vm.ctrl.createNewCustomer = function(){
 		// vm.model.customer.newCustomerData.edu.start = new Date(vm.model.input.start, 0,1)
 		// vm.model.customer.newCustomerData.edu.end = new Date(vm.model.input.end, 0,1)
-		
 		customerService.createOne(vm.model.customer.newCustomerData)
 			.then(function success(res){
 				if(res.status == 200){
-					$window.alert('Create new customer successfully')
+					$('#announceCreateSuccessfull').foundation('open')
 					$scope.layout.currentCustomer = res.data.data;
 					$window.location.href = '/#!/checkin'
 				}else{
-					$window.alert('Failed when creating new customer, please check')
+					$('#announceCreateFail').foundation('open')
 				}
 				
 			}, function error(err){
@@ -173,6 +177,10 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 			}, function error(err){
 				console.log(err)
 			})
+	}
+
+	vm.ctrl.reset = function(){
+		$window.location.reload();
 	}
 }
 

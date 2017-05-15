@@ -36,6 +36,7 @@ function Checkin() {
 
 	// assume promocode are validated
 	this.checkin = function(req, res, next) {
+		console.log(req.body.data)
 		var occ = new Occupancy (req.body.data.occupancy);
 		if (req.body.data.order){
 			var order = new Orders (req.body.data.order);

@@ -30,41 +30,41 @@ div(ng-switch='vm.tab')
 							div(class="marginB15")
 								div(class="column small-4 paddingTB15 paddingL0")
 									label Lastname
-										input(type="text" ng-model='vm.model.customer.newCustomerData.lastname' required)
+										input(type="text" ng-model='vm.model.customer.newCustomerData.lastname')
 								div(class="column small-4 paddingTB15")
 									label Middle name
 										input(type="text" ng-model='vm.model.customer.newCustomerData.middlename')
 								div(class="column small-4 paddingTB15 paddingR0")
 									label Firstname
-										input(type="text" ng-model='vm.model.customer.newCustomerData.firstname' required)
+										input(type="text" ng-model='vm.model.customer.newCustomerData.firstname')
 								div(class="column small-3 paddingTB15 paddingLR0")
 									label Gender
-										select(ng-model='vm.model.customer.newCustomerData.gender' required ng-options="key as value for (key , value) in {1: 'Male',2: 'Female',3: 'Others'}")
+										select(ng-model='vm.model.customer.newCustomerData.gender' ng-options="key as value for (key , value) in {1: 'Male',2: 'Female',3: 'Others'}")
 								div(class="column small-3 paddingTB15")
 									label Day
-										input(type="number" ng-model='vm.model.input.day' required min='1' max='31')
+										input(type="number" ng-model='vm.model.input.day' min='1' max='31')
 								div(class="column small-3 paddingTB15")
 									label Month
-										input(type="number" ng-model='vm.model.input.month' required min='1' max='12')
+										input(type="number" ng-model='vm.model.input.month' min='1' max='12')
 								div(class="column small-3 paddingTB15 paddingR0")
 									label Year
-										input(type="number" ng-model='vm.model.input.year' required min='1900' max='2020')
+										input(type="number" ng-model='vm.model.input.year' min='1900' max='2020')
 								
 								div(class="column small-6 paddingTB15 paddingL0")
 									label Email
-										input(type="text" ng-model='vm.model.customer.newCustomerData.email')
+										input(type="text" ng-model='vm.model.customer.newCustomerData.email[0]')
 								div(class="column small-6 paddingTB15 paddingR0")
 									label Phone
-										input(type="text" ng-model='vm.model.customer.newCustomerData.phone' required)
+										input(type="text" ng-model='vm.model.customer.newCustomerData.phone[0]')
 								div(class="column small-4 paddingTB15 paddingL0")
 									label School/ University
-										select(ng-model='vm.model.customer.newCustomerData.edu.school' required ng-options="val for val in vm.model.customer.selectSchools")
+										select(ng-model='vm.model.customer.newCustomerData.edu.school' ng-options="val for val in vm.model.customer.selectSchools")
 								div(class="column small-4 paddingTB15")
 									label Other Schools/Universities
 										input(type="text" ng-model='vm.model.customer.otherSchool')
 								div(class="column small-4 paddingTB15 paddingR0")
 									label Title at school/university
-										select(ng-model='vm.model.customer.newCustomerData.edu.title' required ng-options="key as value for (key , value) in vm.model.customer.selectCustomerTitleConvert")
+										select(ng-model='vm.model.customer.newCustomerData.edu.title' ng-options="key as value for (key , value) in vm.model.customer.selectCustomerTitleConvert")
 								//- div(class="column small-12 ")
 								//- 	label Start at University
 								//- 		input(type="number" min='1900' max='2020' ng-model='vm.model.input.start')
@@ -231,12 +231,12 @@ div(ng-show='vm.model.dom.confirmCreateDiv' id='checkoutDiv')
 						div(class='column small-6 text-right')
 							p Email
 						div(class='column small-6 greenBorder')
-							p {{ vm.model.customer.newCustomerData.email}}
+							p {{ vm.model.customer.newCustomerData.email[0]}}
 					div(class='row column paddingB15')
 						div(class='column small-6 text-right')
 							p Phone
 						div(class='column small-6 greenBorder')
-							p {{ vm.model.customer.newCustomerData.phone}}
+							p {{ vm.model.customer.newCustomerData.phone[0]}}
 					div(class='row column paddingB15')
 						div(class='column small-6 text-right')
 							p School
@@ -252,3 +252,17 @@ div(ng-show='vm.model.dom.confirmCreateDiv' id='checkoutDiv')
 				div(class='column small-12 large-paddingLR0')
 					input(class="paddingL15 button primary" type="submit" value="Confirm")
 					button(class=" paddingR15 button float-right secondary" ng-click='vm.ctrl.reset(); $event.preventDefault()') Cancel
+
+//Announce create successfull
+div(id='announceCreateSuccessfull' class='reveal small column row' data-reveal data-animation-in="slide-in-down fast")
+	div(class=' text-center paddingTB15 marginB15')
+		h5 Bạn đã tạo tài khoản thành công!
+	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
+			span(aria-hidden="true") &times;
+
+//Announce create fail
+div(id='announceCreateFail' class='reveal small column row' data-reveal data-animation-in="slide-in-down fast")
+	div(class=' text-center paddingTB15 marginB15')
+		h5 Bạn đã tạo tài khoản không thành công. Hãy thử lại!
+	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
+			span(aria-hidden="true") &times;
