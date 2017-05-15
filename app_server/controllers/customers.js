@@ -103,6 +103,8 @@ function CustomersCtrl() {
 			};
 		});
 
+		newCustomer.setStudentStatus ();
+
 		newCustomer.save (function (err, cus){
 			if (err){
 				next (err);

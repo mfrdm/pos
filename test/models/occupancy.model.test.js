@@ -213,7 +213,7 @@ describe ('Occupancy Model', function (){
 			occ.total.should.to.equal (expectedTotal);
 		});
 
-
+		it ('should return correct total after redeem usage. Apply new usage as if it was the original')
 	});
 
 
