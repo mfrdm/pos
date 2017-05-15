@@ -2,10 +2,12 @@ var helper = require('../../libs/node/helper')
 var dbHelper = require('../../libs/node/dbHelper')
 var requestHelper = require('../../libs/node/requestHelper')
 var request = require('request')
-var apiOptions = helper.getAPIOption()
+var apiOptions = helper.getAPIOption();
+
 var validator = require ('validator');
 var mongoose = require ('mongoose');
 var Orders = mongoose.model ('orders');
+var Occupancy = mongoose.model ('occupancy')
 var Customers = mongoose.model ('customers');
 var Promocodes = mongoose.model ('promocodes');
 var moment = require ('moment');
@@ -15,39 +17,50 @@ module.exports = new Checkin();
 function Checkin() {
 	this.validatePromocodes = function (req, res, next){
 		// validate if exist and if not expire
-		// var codes = req.query.codes.split (',');
-		var codes = req.query.codes;//Because I send an array
-		Promocodes.find ({name: {$in: codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1, conflicted: 1}, function (err, pc){
+		var codes = req.query.codes;
+		Promocodes.find ({name: {$in: codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1, conflicted: 1, codeType: 1, override: 1}, function (err, pc){
 			if (err){
 				console.log (err);
 				next (err);
 				return
 			}
 
-			pc = Promocodes.checkCodeConflict (pc);
+			if (pc.length){
+				pc = Promocodes.validateCodes (pc);
+			}
 
+			// important to return pc regardless empty or not
 			res.json ({data: pc});
 		});
 	};
 
 	// assume promocode are validated
 	this.checkin = function(req, res, next) {
-		console.log(req.body.data)
-		console.log(req.params.cusId)
-		var order = new Orders (req.body.data);
-		order.save (function (err, newOrder){
+		var occ = new Occupancy (req.body.data.occupancy);
+		if (req.body.data.order){
+			var order = new Orders (req.body.data.order);
+			occ.orders = [order._id];
+		};
+
+		occ.save (function (err, newOcc){
 			if (err){
-				console.log (err);
+				// console.log (err);
 				next (err);
 				return
 			}
 
-			Customers.findByIdAndUpdate (req.params.cusId,
-				{$push: {orders: newOrder._id}, $set:{checkinStatus: true}},
-				{upsert: true, new: true},
-				function (err, customer){
-					console.log(customer)
+			var customerUpdate = {
+				$push: {occupancy: newOcc._id}, 
+				$set:{checkinStatus: true}
+			};
+
+			if (order){
+				customerUpdate.$push.orders = order._id;
+			};
+
+			Customers.findByIdAndUpdate (req.params.cusId, customerUpdate, {upsert: true, new: true}, function (err, customer){
 					if (err) {
+						// console.log (err);
 						next (err);
 						return
 					}
@@ -57,9 +70,35 @@ function Checkin() {
 						return
 					}
 					else {
-						if (customer.checkinStatus == true && newOrder._id.equals (customer.orders.pop())){
-							res.json ({data: newOrder});
-							return
+						if (customer.checkinStatus == true && newOcc._id.equals (customer.occupancy.pop())){
+
+							if (order){
+								
+								order.save (function (err, newOrder){
+									if (err) {
+										// console.log (err);
+										next (err);
+										return
+									}
+
+									Customers.findByIdAndUpdate (req.params.cusId, {$push: {orders: newOrder._id}}, {upsert: true, new: true}, function (err, customer){
+										if (err) {
+											// console.log (err);
+											next (err);
+											return
+										}
+
+										res.json ({data: {order: newOrder, occupancy: newOcc}});
+										return
+									});
+
+									
+								});
+							}
+							else {
+								res.json ({data: {occupancy: newOcc, order: null}});
+								return
+							}
 						}
 						else{
 							next ();
@@ -78,7 +117,7 @@ function Checkin() {
 		var input = req.query.input; // email, phone, fullname
 		input = validator.trim (input);
 		var splited = input.split (' ');
-		var projections = {firstname: 1, lastname: 1, middlename: 1, phone: 1, email: 1, checkinStatus: 1};
+		var projections = {firstname: 1, lastname: 1, middlename: 1, phone: {$slice: [0,1]}, email: {$slice: [0,1]}, checkinStatus: 1, isStudent: 1};
 
 		var nameValidator = {firstname: splited[splited.length - 1], lastname: splited[0]};
 		var query;
@@ -111,7 +150,10 @@ function Checkin() {
 		var start = req.query.start ? moment(req.query.start) : moment (today.format ('YYYY-MM-DD'));
 		var end = req.query.end ? moment(req.query.end + ' 23:59:59') : moment (today.format ('YYYY-MM-DD') + ' 23:59:59');
 		var checkinStatus = req.query.status ? req.query.status : 1; // get checked-in by default
-		 var q = Orders.find (
+
+
+
+		var q = Occupancy.find (
 			{
 				checkinTime: {
 					$gte: start, 
@@ -128,14 +170,14 @@ function Checkin() {
 			q.$where ('this.status == ' + checkinStatus);
 		}
 
-		q.exec(function (err, ords){
+		q.exec(function (err, occ){
 				if (err){
 					console.log (err);
 					next (err);
 					return
 				}
 				else {
-					res.json ({data: ords});
+					res.json ({data: occ});
 				}
 			}
 		); 
@@ -143,14 +185,14 @@ function Checkin() {
 	};
 
 	this.updateCheckin = function(req, res, next) {
-		Orders.findByIdAndUpdate (req.params.orderId, req.body.data, {new: true}, function (err, updatedOrder){
+		Occupancy.findByIdAndUpdate (req.params.occId, req.body.data, {new: true}, function (err, updatedOcc){
 			if (err){
 				console.log (err);
 				next (err);
 				return;
 			}
 
-			res.json ({data: updatedOrder});
+			res.json ({data: updatedOcc});
 		});	
 	};
 
@@ -165,7 +207,7 @@ function Checkin() {
 
 
 	this.cancelCheckin = function (req, res) {
-
+		// later
 	}
 
 };

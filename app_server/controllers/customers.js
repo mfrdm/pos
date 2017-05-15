@@ -70,7 +70,6 @@ function CustomersCtrl() {
 	};
 
 	this.createOneCustomer = function(req, res, next) {
-		console.log(req.body)
 		if(req.body.data.edu.title == 1){
 			req.body.data.isStudent = true;
 		}else{
@@ -82,17 +81,26 @@ function CustomersCtrl() {
 		req.body.data.firstname = validator.trim (req.body.data.firstname);
 		req.body.data.middlename = validator.trim (req.body.data.middlename);
 		req.body.data.lastname = validator.trim (req.body.data.lastname);
-		req.body.data.phone = validator.trim (req.body.data.phone);
-		req.body.data.email = validator.trim (req.body.data.email);
+		req.body.data.phone.map (function (x,i,arr){
+			x = validator.trim (x);
+		});
+		req.body.data.email.map (function (x,i,arr){
+			x = validator.trim (x);
+		});
+
 		req.body.data.school = req.body.data.edu.school ? validator.trim (req.body.data.edu.school) : req.body.data.edu.school;
 
-		if (!validator.isEmail (req.body.data.email)){
-			next (new Error ('Invalid email'));
-		};
+		req.body.data.email.map (function (x,i,arr){
+			if (!validator.isEmail (x)){
+				next (new Error ('Invalid email: ' + x));
+			};
+		});
 
-		if (!validator.isMobilePhone (req.body.data.phone, 'vi-VN')){
-			next (new Error ('Invalid phone'));
-		};
+		req.body.data.phone.map (function (x,i,arr){
+			if (!validator.isMobilePhone (x, 'vi-VN')){
+				next (new Error ('Invalid phone: ' + x));
+			};
+		});
 
 		newCustomer.save (function (err, cus){
 			if (err){
@@ -100,15 +108,7 @@ function CustomersCtrl() {
 				return 
 			}
 			else{
-				// var data = {
-					// firstname: cus.firstname,
-					// middlename: cus.middlename,
-					// lastname: cus.lastname,
-					// _id: cus._id,
-					// email: cus.email [0],
-					// phone: cus.phone [0]
-				// }
-				console.log(cus)
+				cus = cus.getPublicFields ();
 
 				res.json ({data: cus});
 			}

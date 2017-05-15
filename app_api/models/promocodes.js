@@ -1,50 +1,5 @@
 var mongoose = require('mongoose');
 
-// redeem price, usage, or total for student
-// REMOVE later
-// var redeemStudentAccount = function (codes, productName, price){
-// 	var result = {
-// 		price: price
-// 	};
-
-// 	var studentPrice = {
-// 		'group common': 10000,
-// 		'individual common': 10000,
-// 	};
-
-// 	var productNames = ['group common', 'individual common', 'medium group private', 'small group private'];
-
-// 	codes.map (function (code, i, arr){
-// 		code = code.toLowerCase ();
-// 		if (code && code == 'student' && (productName == productNames[0] || productName ==productNames[1])){
-// 			result.price = studentPrice[productName];
-// 		}
-// 	});
-
-// 	return result;
-// }
-
-// REMOVE later
-var redeemHourUsage = function (price, productName, usage){
-	var newPrice = price;
-	var productNames = ['group common', 'individual common', 'medium group private', 'small group private'];
-	var discountPrice = {
-		'medium group private': 200000,
-		'small group private': 120000,
-	};
-
-	var rewardHour = 1; // get discount for using above one hour
-
-	usage = usage ? usage : 0;
-	productName = productName.toLowerCase ();
-
-	if (usage > rewardHour && (productName == productNames[2] || productName == productNames[3])){
-		newPrice = discountPrice[productName];
-	}
-
-	return newPrice;
-}
-
 // method to convert a value according to a promotion code
 // assume code is an array
 // assume code values are validated before redeemed
@@ -96,7 +51,7 @@ var redeemUsage = function (code, usage){
 
 // involve more than one type of redeem: total, usage, and price.
 // assume codes are checked and can be used concurrecy and in correct order
-redeemMixed = function (code, usage, price, productName){
+var redeemMixed = function (code, usage, price, productName){
 	var rewardUsagePrice = {
 		'medium group private': 200000,
 		'small group private': 120000,
@@ -121,7 +76,7 @@ redeemMixed = function (code, usage, price, productName){
 // Some codes has higher priority and so uwill remove other codes' effect. Need to detect and override the codes with lower priority .
 // Detect and remove duplicate codes
 
-var checkCode = function (codes){
+var validateCodes = function (codes){
 	codes.map (function (c, i , arr){
 		c.conflicted = [];
 		c.override = [];
@@ -133,7 +88,7 @@ var checkCode = function (codes){
 
 
 // represent all codes that give customer some values like free seat or discount
-var promocodesSchema = mongoose.Schema ({
+var PromocodesSchema = mongoose.Schema ({
 	name: {type: String, required: true},
 	start: {type: Date, required: true},
 	end: {type: Date, required: true},
@@ -150,12 +105,10 @@ var promocodesSchema = mongoose.Schema ({
 	override: [{name: String, _id: mongoose.Schema.Types.ObjectId}] // code that are not used when the code is apply
 });
 
-promocodesSchema.statics.redeemPrice = redeemPrice;
-promocodesSchema.statics.redeemUsage = redeemUsage;
-promocodesSchema.statics.redeemTotal = redeemTotal;
-promocodesSchema.statics.redeemMixed = redeemMixed;
-promocodesSchema.statics.checkCode = checkCode;
-// promocodesSchema.statics.redeemStudentAccount = redeemStudentAccount;
-// promocodesSchema.statics.redeemHourUsage = redeemHourUsage;
+PromocodesSchema.statics.redeemPrice = redeemPrice;
+PromocodesSchema.statics.redeemUsage = redeemUsage;
+PromocodesSchema.statics.redeemTotal = redeemTotal;
+PromocodesSchema.statics.redeemMixed = redeemMixed;
+PromocodesSchema.statics.validateCodes = validateCodes;
 
-module.exports = mongoose.model ('promocodes', promocodesSchema);
+module.exports = mongoose.model ('promocodes', PromocodesSchema);

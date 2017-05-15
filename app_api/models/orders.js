@@ -2,87 +2,14 @@ var mongoose = require('mongoose');
 var Promocodes = mongoose.model ('promocodes');
 var moment = require ('moment');
 
-// method to calculate total usage time
-// below 6 mins, return as 0.
-function getUsageTime (){
-	var checkoutTime = moment (this.checkoutTime);
-	var checkinTime = moment(this.checkinTime);
-	var diff = checkoutTime.diff (checkinTime, 'minutes');
-	return normalizeUsage (diff);
+function normalizeTotal (total){
+	return Math.round(total / 1000) * 1000;
 }
 
-// unit of usage: minutes
-function normalizeUsage (diff){
-	var minMin = 0.1; // minimum hour
-	var mod = diff % 60;
-	var quotient = (diff - mod) / 60;
-	var tenths = mod / 60;
-	var tenthsFixed = Number(tenths.toFixed(1));
-	var usage;
-
-	if (quotient > 0){
-		usage = (quotient + tenthsFixed);
-	}
-	else if (quotient == 0 && tenths < minMin) {
-		usage = 0;
-	}
-	else {
-		usage = 1;
-	}
-
-	return usage;
-}
-
-function getSubTotal () {
-	this.usage = this.usage ? this.usage : this.getUsageTime ();
+function getSubTotal (){
 	var order = this;
-	var productNames = ['group common', 'individual common', 'medium group private', 'small group private']; // FIX: avoid hardcode
-	
-	this.orderline.map (function (x, i, arr){
-		var subTotal;
-
-
-		var pn = x.productName.toLowerCase ();
-
-		if (productNames.indexOf (pn) != -1){
-			if (order.parent){
-				subTotal = 0;
-			}
-			else{
-				if (x.promocodes.length){
-					x.promocodes.map (function (code, k, t){
-
-						if (code.codeType == 1){
-							order.usage = Promocodes.redeemUsage (code.name, order.usage);
-						}
-
-						if (code.codeType == 2){
-							x.price = Promocodes.redeemPrice (code.name, x.price, pn);
-						}
-
-						// Important to get subtotal before redeem total
-						subTotal = x.price * order.usage;
-
-						if(code.codeType == 3){
-							subTotal = Promocodes.redeemTotal (code.name, subTotal);
-						}
-						else if (code.codeType == 4){
-							subTotal = Promocodes.redeemMixed (code.name, order.usage, x.price, pn)
-						}
-
-					});
-				}
-				else {
-					subTotal = x.price * order.usage;
-				}					
-			}
-
-		}
-		else{
-			subTotal = x.price * x.quantity;
-		}
-
-		x.subTotal = subTotal;
+	order.orderline.map (function (x, i, arr){
+		x.subTotal = x.price * x.quantity;
 	});
 }
 
@@ -95,21 +22,13 @@ function getTotal (){
 		order.total += x.subTotal;
 	});	
 
-}
-
-var combosSchema = new mongoose.Schema({
-	name: String,
-	usage: Number, // percentage
-	createdAt: {type: Date, default: Date.now},
-}); 
+	order.total = normalizeTotal (order.total);
+};
 
 var ordersSchema = new mongoose.Schema({
-	total: {type: Number, min: 0},
-	usage: {type: Number, min: 0}, // in hour
-	paymentMethod: Number, // required. card, cash, account
-	parent: mongoose.Schema.Types.ObjectId, // id of parent order. used for group private
-	checkinTime: {type: Date, default: Date.now},
-	checkoutTime: {type: Date},	
+	total: {type: Number, min: 0, default: 0},
+	paymentMethod: Number, // required. card, cash, local account
+	occupancyId: mongoose.Schema.Types.ObjectId,	
 	orderline: [{
 		_id: {type: mongoose.Schema.Types.ObjectId, required: true},
 		productName: {type: String, required: true},
@@ -120,7 +39,7 @@ var ordersSchema = new mongoose.Schema({
 			name: String,
 			codeType: Number,
 		}], // expect only one code applied at a time
-		subTotal: {type: Number, min: 0},	
+		subTotal: {type: Number, min: 0, default: 0},	
 	}],
 	customer: {
 		_id: {type: mongoose.Schema.Types.ObjectId, required: true},
@@ -132,7 +51,7 @@ var ordersSchema = new mongoose.Schema({
 	},
 	storeId: {type: mongoose.Schema.Types.ObjectId, required: true},
 	staffId: {type: mongoose.Schema.Types.ObjectId, required: true},	
-	status: {type: Number, default: 1}, // 1: checked in, 2: paid and checked out, 3: cancel
+	status: {type: Number, default: 1}, // 1: paid, 2: not paid yet
 	updateAt: [{
 		time: {type: Date},
 		explain: {type: Number},
@@ -140,7 +59,6 @@ var ordersSchema = new mongoose.Schema({
 	}]
 });
 
-ordersSchema.methods.getUsageTime = getUsageTime;
 ordersSchema.methods.getTotal = getTotal;
 ordersSchema.methods.getSubTotal = getSubTotal;
 

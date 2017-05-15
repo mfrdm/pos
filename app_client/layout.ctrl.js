@@ -40,9 +40,9 @@
 		};
 
 		$scope.layout.model.summary = {
-			customerNumber : 100, // TESTING
-			bookingNumber : 20, // TESTING
-			staffNumber : 2 // TESTING
+			customerNumber: 100, // TESTING
+			bookingNumber: 20, // TESTING
+			staffNumber: 2, // TESTING
 		};		
 
 		$scope.layout.model.dom  = {
@@ -106,9 +106,12 @@
 		angular.element(document).ready(function () {
 			$("body").foundation();
 			$scope.$apply();
+<<<<<<< HEAD
 		})
+=======
+		});
+>>>>>>> 6bc5d831ff25c5ebb2ce12b6e90d82a93162d969
 		
-
 	}
 
 })();
