@@ -17,6 +17,7 @@ module.exports = new Checkin();
 function Checkin() {
 	this.validatePromocodes = function (req, res, next){
 		// validate if exist and if not expire
+		console.log(req.query)
 		var codes = req.query.codes;
 		if (req.query.isStudent){
 			var studentCode = 'STUDENTPRICE';

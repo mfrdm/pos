@@ -8,37 +8,22 @@ function CheckinService ($http, $q){
 		var array = [{"firstname" : { $regex: input, $options: 'i' }}, {"lastname" : { $regex: input, $options: 'i' }}]
 		return $http({
 			method:'GET',
-			url:'/api/customers',
+			url:'/checkin/search-customers',
 			params:{
-				queryInput:JSON.stringify({
-					conditions: {$or: array},
-					projection: {firstname: 1, middlename:1, lastname: 1, phone: 1, email: 1, edu:1,checkinStatus:1, parent:1},
-					opts: null
-				})
+				input:input
 			}
 		})
 	}
 
 	//Validate Promote Code
 	this.validatePromoteCode = function(data){
-		var dataTest = [{_id:'591023ab5c05325a32533a04', 'name':'1hourcommon', conflicted:[{name:'yeugreenspace'}]}, {_id:'591023ab5c05325a32533a08', 'name':'2hourcommon', conflicted:[{name:'yeugreenspace'}]}, {_id:'591023ab5c05325a32533a12', 'name':'stu', conflicted:[]}]
-		// return $http({
-		// 	method: 'GET',
-		// 	url: '/checkin/validate-promotion-code',
-		// 	params:{
-		// 		codes:data
-		// 	}
-		// })
-		var sameList = []
-		dataTest.map(function(item){
-			if ((data.filter(function(ele){
-				return ele == item.name
-			})).length !=0){
-				sameList.push(item)
+		return $http({
+			method: 'GET',
+			url: '/checkin/validate-promotion-code',
+			params:{
+				codes:data
 			}
 		})
-		
-		return $q.resolve({data: {data:sameList}})
 	}
 
 	//Get all checked in customer
@@ -52,19 +37,6 @@ function CheckinService ($http, $q){
 			},
 		})
 	}
-
-	this.getStudentCode = function(){
-		dataCode = {name:'student', _id:'591023ab5c05325a32533a08'}
-		return $q.resolve({data: {data:dataCode}})
-	}
-
-	// //Get data from 1 customer by ID
-	// this.getDataOneCustomer = function(id){
-	// 	return $http({
-	// 	method:'GET',
-	// 		url:'api/customers/customer/'+id
-	// 	})
-	// }
 	this.readSomeProducts = function(){
 		return $http({
 			method:'GET',

@@ -459,56 +459,56 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	//Validate promote code
 	vm.ctrl.validatePromoteCode = function(){
 		if(vm.model.customer.checkingInData.occupancy.customer.firstname){
-			CheckinService.validatePromoteCode(vm.model.customer.promocode.codeList)
-			.then(function success(res){
-				vm.model.customer.promocode.conflictedCode = []
-				vm.model.customer.promocode.errorCodes = []
-				vm.model.customer.promocode.codeList.map(function(ele){
-					var count = 0;
-					res.data.data.map(function(item){
-						if(item.name == ele){
-							count ++;
-						}
-					})
-					if(count == 0){
-						vm.model.customer.promocode.errorCodes.push(ele)
-					}
-				})
+			console.log(vm.model.customer.checkingInData.occupancy)
+			// var data = {
+			// 	codes: vm.model.customer.promocode.codeList,
+			// 	isStudent: vm.model.customer.checkingInData.occupancy.isStudent;
+			// }
+			// CheckinService.validatePromoteCode(data)
+			// .then(function success(res){
+			// 	console.log(res)
+			// 	vm.model.customer.promocode.conflictedCode = []
+			// 	vm.model.customer.promocode.errorCodes = []
+			// 	vm.model.customer.promocode.codeList.map(function(ele){
+			// 		var count = 0;
+			// 		res.data.data.map(function(item){
+			// 			if(item.name == ele){
+			// 				count ++;
+			// 			}
+			// 		})
+			// 		if(count == 0){
+			// 			vm.model.customer.promocode.errorCodes.push(ele)
+			// 		}
+			// 	})
 				
-				vm.model.customer.promocode.conflictedCode = res.data.data.filter(function(ele){
-					return ele.conflicted.length > 0
-				});
-				if(vm.model.customer.promocode.errorCodes.length > 0 || vm.model.customer.promocode.conflictedCode.length > 0){
-					$('#wrongPromoCodes').foundation('open')
-				}
-				else{
-					vm.ctrl.confirmCheckin(vm.model.customer.promocode.codeList);
-				}
-			})
+			// 	vm.model.customer.promocode.conflictedCode = res.data.data.filter(function(ele){
+			// 		return ele.conflicted.length > 0
+			// 	});
+			// 	if(vm.model.customer.promocode.errorCodes.length > 0 || vm.model.customer.promocode.conflictedCode.length > 0){
+			// 		$('#wrongPromoCodes').foundation('open')
+			// 	}
+			// 	else{
+			// 		vm.ctrl.confirmCheckin(vm.model.customer.promocode.codeList);
+			// 	}
+			// })
 		}
 	}
 
 	//Confirm checkin
 	vm.ctrl.confirmCheckin = function(code){
 		console.log(vm.model.customer.checkingInData.occupancy)
-		if(vm.model.customer.checkingInData.occupancy.customer.firstname){
-			vm.model.customer.checkingInData.occupancy.storeId = vm.model.customer.storeId;
-			vm.model.customer.checkingInData.occupancy.staffId = vm.model.customer.userId;
-			vm.model.customer.checkingInData.occupancy.promocodes = code.map(function(ele){
-				return {name:ele, _id:ele._id}//need to get id from database
-			});
-			if(vm.model.customer.checkingInData.occupancy.customer.edu.title == 1){
-				CheckinService.getStudentCode()
-				.then(function success(res){
-					vm.model.customer.checkingInData.occupancy.promocodes.push(res.data.data)
-				})
-			}
-			vm.model.customer.checkingInData.occupancy.service.price = vm.model.customer.services [vm.model.customer.checkingInData.occupancy.service.name].price
-			vm.model.customer.checkingInData.occupancy.service._id = vm.model.customer.services [vm.model.customer.checkingInData.occupancy.service.name]._id
+		// if(vm.model.customer.checkingInData.occupancy.customer.firstname){
+		// 	vm.model.customer.checkingInData.occupancy.storeId = vm.model.customer.storeId;
+		// 	vm.model.customer.checkingInData.occupancy.staffId = vm.model.customer.userId;
+		// 	vm.model.customer.checkingInData.occupancy.promocodes = code.map(function(ele){
+		// 		return {name:ele, _id:ele._id}//need to get id from database
+		// 	});
+		// 	vm.model.customer.checkingInData.occupancy.service.price = vm.model.customer.services [vm.model.customer.checkingInData.occupancy.service.name].price
+		// 	vm.model.customer.checkingInData.occupancy.service._id = vm.model.customer.services [vm.model.customer.checkingInData.occupancy.service.name]._id
 
-			vm.model.customer.checkingInData.occupancy.checkinTime = new Date();
-			$('#checkinModal').foundation('open')
-		}
+		// 	vm.model.customer.checkingInData.occupancy.checkinTime = new Date();
+		// 	$('#checkinModal').foundation('open')
+		// }
 	}
 	//Checkin
 	vm.ctrl.checkin = function(){
