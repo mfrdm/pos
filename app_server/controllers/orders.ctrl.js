@@ -45,7 +45,7 @@ function OrdersCtrl() {
 		})		
 	};
 
-	this.readOrders = function (){
+	this.readOrders = function (req, res, next){
 		var today = moment ();
 		var start = req.query.start ? moment(req.query.start) : moment (today.format ('YYYY-MM-DD'));
 		var end = req.query.end ? moment(req.query.end + ' 23:59:59') : moment (today.format ('YYYY-MM-DD') + ' 23:59:59');
