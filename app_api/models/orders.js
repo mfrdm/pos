@@ -52,6 +52,7 @@ var ordersSchema = new mongoose.Schema({
 	storeId: {type: mongoose.Schema.Types.ObjectId, required: true},
 	staffId: {type: mongoose.Schema.Types.ObjectId, required: true},	
 	status: {type: Number, default: 2}, // 1: paid, 2: not paid yet
+	createdAt: {type: Date, default: Date.now},
 	updateAt: [{
 		time: {type: Date},
 		explain: {type: Number},

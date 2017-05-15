@@ -18,6 +18,11 @@ function Checkin() {
 	this.validatePromocodes = function (req, res, next){
 		// validate if exist and if not expire
 		var codes = req.query.codes;
+		if (req.query.isStudent){
+			var studentCode = 'STUDENTPRICE';
+			codes.push (studentCode);
+		};
+
 		Promocodes.find ({name: {$in: codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1, conflicted: 1, codeType: 1, override: 1}, function (err, pc){
 			if (err){
 				console.log (err);
@@ -37,6 +42,9 @@ function Checkin() {
 	// assume promocode are validated
 	this.checkin = function(req, res, next) {
 		var occ = new Occupancy (req.body.data.occupancy);
+
+		if (occ.customer.isStudent)
+
 		if (req.body.data.order){
 			var order = new Orders (req.body.data.order);
 			occ.orders = [order._id];
@@ -81,18 +89,8 @@ function Checkin() {
 										return
 									}
 
-									Customers.findByIdAndUpdate (req.params.cusId, {$push: {orders: newOrder._id}}, {upsert: true, new: true}, function (err, customer){
-										if (err) {
-											// console.log (err);
-											next (err);
-											return
-										}
-
-										res.json ({data: {order: newOrder, occupancy: newOcc}});
-										return
-									});
-
-									
+									res.json ({data: {order: newOrder, occupancy: newOcc}});
+									return
 								});
 							}
 							else {
@@ -150,8 +148,6 @@ function Checkin() {
 		var start = req.query.start ? moment(req.query.start) : moment (today.format ('YYYY-MM-DD'));
 		var end = req.query.end ? moment(req.query.end + ' 23:59:59') : moment (today.format ('YYYY-MM-DD') + ' 23:59:59');
 		var checkinStatus = req.query.status ? req.query.status : 1; // get checked-in by default
-
-
 
 		var q = Occupancy.find (
 			{

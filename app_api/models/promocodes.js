@@ -86,7 +86,6 @@ var validateCodes = function (codes){
 };
 
 
-
 // represent all codes that give customer some values like free seat or discount
 var PromocodesSchema = mongoose.Schema ({
 	name: {type: String, required: true},
