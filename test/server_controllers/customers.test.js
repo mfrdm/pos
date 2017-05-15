@@ -13,18 +13,15 @@ describe ('Customer', function (){
 		var customer;
 		beforeEach (function (){
 			customer = {
-				firstname: 'Hiệp',
-				middlename: 'Mạnh',
-				lastname: 'Phạm',
+				firstname: 'Customer_Firstname',
+				middlename: 'Customer_Middlename',
+				lastname: 'Customer_Lastname',
 				gender: 1,
 				birthday: new Date ('1989-09-25'),
-				phone: '0965284281',
-				email: 'phammanhhiep89@gmail.com', // manuallt required in some cases
-				edu: {
-					school: 'Ngoại thương',
-				},
-				isStudent: true,
-			}
+				phone: ['0965999999', '0972999999'],
+				edu: {},
+				email: ['lastmiddlefirst@gmail.com', 'otheremail@gmail.com'], // manuallt required in some cases
+			};
 		})
 
 		afterEach (function (done){
@@ -65,7 +62,28 @@ describe ('Customer', function (){
 					res.body.data.email.should.to.exist;
 					res.body.data.phone.should.to.exist;
 					res.body.data._id.should.to.exist;
-					res.body.data.isStudent.should.to.exist;
+					res.body.data.isStudent.should.to.be.false;
+					done ();
+				});
+		});
+
+		it ('should validate and insert student status', function (done){
+			customer.edu = {
+				title: 1,
+				school: 'Kinh Te Quoc Dan'
+			}
+
+			chai.request (server)
+				.post ('/customers/create')
+				.send ({data: customer})
+				.end (function (err, res){
+					if (err){
+						console.log (err);
+					}
+
+					res.should.have.status (200);
+					res.body.data.should.to.be.an ('object');
+					res.body.data.isStudent.should.to.be.true;
 					done ();
 				});
 		});

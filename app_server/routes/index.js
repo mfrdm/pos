@@ -53,7 +53,8 @@ router.get('/checkout/invoice/:occId', checkoutCtrl.createInvoice);
 router.post('/checkout', checkoutCtrl.confirmCheckout);
 
 router.get ('/orders/', OrdersCtrl.readOrders);
-router.post ('/orders/create', OrdersCtrl.createAnOrder);
+router.post ('/orders/confirm', OrdersCtrl.confirmCheckout);
+router.post ('/orders/checkout', OrdersCtrl.checkout);
 router.get ('/orders/order/:orderId', OrdersCtrl.readAnOrder);
 router.post ('/orders/order/:orderId/edit', OrdersCtrl.updateAnOrder);
 

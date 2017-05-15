@@ -28,14 +28,13 @@ var customersSchema = mongoose.Schema({
 	phone: [{type: String}],
 	email: [{type: String}], // manuallt required in some cases
 	edu: [eduSchema],
-	isStudent: {type: Boolean, required: true},
+	isStudent: {type: Boolean, required: true, default: false},
 	createdAt: {type: Date, default: Date.now},
 	updatedAt: [{
 		time: {type: Date}, 
 		explain: String,
 		by: mongoose.Schema.Types.ObjectId
 	}],
-	orders: [{type: mongoose.Schema.Types.ObjectId}],
 	occupancy: [{type: mongoose.Schema.Types.ObjectId}],
 	bookings: [{type:mongoose.Schema.Types.ObjectId}],
 	promoteCode: [{code: String, expire: Date,}],
@@ -108,6 +107,13 @@ customersSchema.methods.getPublicFields = function (){
 		email: this.email[0],
 		phone: this.phone[0],
 		birthday: this.birthday,
+		isStudent: this.isStudent,
+	}
+}
+
+customersSchema.methods.setStudentStatus = function (){
+	if (this.edu.title){
+		this.isStudent = true;
 	}
 }
 
