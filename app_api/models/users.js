@@ -31,6 +31,7 @@ var workexpSchema = new mongoose.Schema({
 var usersSchema = mongoose.Schema({
 	////////////////////////////////// Profile info
 	firstname: {type: String, required: true},
+	middlename: {type: String},
 	lastname: {type: String, required: true},
 	birthday: {type: Date, required: true},
 	gender: {type: Number, required: true},

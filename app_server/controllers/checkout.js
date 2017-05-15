@@ -31,7 +31,7 @@ function Checkout() {
 	this.confirmCheckout = function(req, res, next) {
 		var total = req.body.data.total;
 		var usage = req.body.data.usage;
-		var checkoutTime = req.body.data.checkoutTime;
+		var checkoutTime = new Date ();
 		var orderline = req.body.data.orderline;
 		var status = 2;
 		console.log(req.body.data.customer)

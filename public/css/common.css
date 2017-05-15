@@ -151,7 +151,7 @@ label {
 }
 
 .stdBox > .stdBoxTitle {
-	margin-top: .9375rem;
+	margin-top: 1.875rem;
 	margin-bottom: .9375rem;
 	font-size: 	1.5rem; /* 24px */
 	font-weight: bold;
@@ -167,7 +167,7 @@ label {
 }
 
 .stdBox > .childVStdBox {
-	margin-top: .9375rem;
+	margin-top: 1.875rem;
 	margin-bottom: .9375rem;
 }
 
@@ -180,7 +180,7 @@ label {
 }
 
 .childVStdBox > .stdBoxBody {
-	padding: .9375rem;
+	padding: 1.875rem;
 	border: 1px solid #D7D4D4;
 }
 

@@ -30,7 +30,11 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		checkInEditDiv: false,
 		checkOutDiv: false,
 		messageSearchAlreadyCheckin: false,
+		seeMore: false,
 		dataDom: {}//data about translate
+	}
+	if(vm.model.dom.checkInDiv){
+		vm.model.dom.filterDiv = false;
 	}
 	//Translate English Vietnamese
 	vm.model.dom.dataDom.using = {}//Using language
@@ -73,7 +77,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 
 		headerNo:'No',
 		headerName:'Name',
-		headerPhone:'Phone',
+		headerBirthday:'Birthday',
 		headerCheckinDate:'Checkin Date',
 		headerCheckinTime:'Checkin Time',
 		headerCheckoutDate:'Checkout Date',
@@ -89,19 +93,19 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		buttonCheckin: 'Checkin',
 		buttonFilter:'Filter',
 
-		selectFirstnameAZ:'Tên theo thứ tự A-Z',
-		selectFirstnameZA:'Tên theo thứ tự Z-A',
-		selectBookingFarthest: 'Thời gian checkin xa nhất',
-		selectBookingLastest: 'Thời gian checkin gần nhất',
+		selectFirstnameAZ:'Tên A-Z',
+		selectFirstnameZA:'Tên Z-A',
+		selectBookingFarthest: 'Checkin Z-A',
+		selectBookingLastest: 'Checkin A-Z',
 
-		selectStatusOptionAll: 'Hiển thị tất cả khách',
-		selectStatusOptionCheckin: 'Hiển thị khách đang checkin',
-		selectStatusOptionCheckout: 'Hiển thị khách đã checkout',
+		selectStatusOptionAll: 'Tất cả',
+		selectStatusOptionCheckin: 'Checkin',
+		selectStatusOptionCheckout: 'Checkout',
 
 		fieldSortBy:'Sắp xếp',
 		fieldStatus:'Trạng thái',
-		fieldSearchByFirstname:'TÌm kiếm theo tên',
-		fieldSearchByPhone:'Tìm kiếm theo Số điện thoại',
+		fieldSearchByFirstname:'Tên',
+		fieldSearchByPhone:'Số điện thoại',
 		fieldPhoneEmail: 'Phone/Email',
 		fieldPromotionCode: 'Mã giảm giá',
 		fieldService:'Dịch vụ',
@@ -123,12 +127,12 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 
 		headerNo:'No',
 		headerName:'Họ và tên',
-		headerPhone:'Số điện thoại',
+		headerBirthday:'Ngày sinh',
 		headerCheckinDate:'Ngày Checkin',
 		headerCheckinTime:'Giờ Checkin',
 		headerCheckoutDate:'Ngày Checkout',
 		headerCheckoutTime:'Giờ Checkout',
-		headerService:'Sản phẩm chính',
+		headerService:'Dịch vụ',
 		headerCheckout:'Checkout',
 		headerEdit:'Chỉnh sửa',
 
@@ -151,6 +155,15 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		},
 		others:{
 			customer:{}
+		}
+	}
+
+	//See more
+	vm.ctrl.seeMore = function(){
+		if(vm.model.dom.seeMore == true){
+			vm.model.dom.seeMore = false
+		}else{
+			vm.model.dom.seeMore = true
 		}
 	}
 
@@ -242,6 +255,18 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			}
 	}
 
+	function getCheckin(){
+		CheckinService.getCheckinList().then(
+			function success(res){
+				vm.model.customer.checkedInList = res.data.data;
+				console.log(vm.model.customer.checkedInList)
+			}, 
+			function error(err){
+				console.log(err)
+			}
+		);
+	}
+
 	////////////////////////////////////////////////////////////////
 	//Controller
 	//
@@ -284,14 +309,8 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			console.log(err)
 		});
 
-	CheckinService.getCheckinList().then(
-		function success(res){
-			vm.model.customer.checkedInList = res.data.data;
-		}, 
-		function error(err){
-			console.log(err)
-		}
-	);
+	
+	getCheckin()
 
 	//Toogle
 	vm.ctrl.toggleFilterDiv = function (){
@@ -541,7 +560,6 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 					
 				})
 			}
-			
 			$('#editModal').foundation('open')
 		}
 	}
@@ -556,7 +574,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 
 			CheckinService.updateOne(vm.model.customer.editedCheckedInCustomer._id, vm.model.customer.editedCheckedInCustomer.orderline)
 			.then(function success(res){
-				$window.alert('Successfully Edit')
+				$('#announceEditSuccess').foundation('open')
 				vm.ctrl.reset()
 			}, function error(err){
 				console.log(err)
@@ -594,14 +612,17 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		}
 	}
 
+	vm.ctrl.askConfirmCheckout = function(){
+		$('#askCheckout').foundation('open');
+	}
 	vm.ctrl.confirmCheckout = function(){
-		console.log(vm.model.customer.checkoutCustomer)
+		
 		CheckinService.confirmCheckout(vm.model.customer.checkoutCustomer)
 			.then(function success(res){
-				console.log(res);
-				$window.alert('Successfully checkout')
+				$('#askCheckout').foundation('close');
+				$('#announceCheckoutSuccess').foundation('open');
 				vm.ctrl.reset();
-				$route.reload();
+				getCheckin();
 			}, function error(err){
 				console.log(err)
 			})

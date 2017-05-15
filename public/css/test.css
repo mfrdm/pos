@@ -262,8 +262,6 @@ ul.listOrder li i{
 
 /*main checkin section*/
 .addItemSection{
-	padding: 15px;
-	margin-bottom: 45px;
 	border: 2px solid #ccc;
 }
 
@@ -395,6 +393,9 @@ ul.listOrder li i{
 
 #mainContentDiv{
 	min-width: 89vw;
+	margin-top: 75px;
+	padding-left:30px;
+	padding-right: 30px;
 }
 
 .priceSection{
@@ -420,4 +421,8 @@ ul.listOrder li i{
 
 .headerModal{
 	border-bottom: 1px solid #ccc;
+}
+
+#askCheckout, #announceCheckoutSuccess{
+	z-index: 10;
 }

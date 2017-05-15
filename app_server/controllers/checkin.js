@@ -159,6 +159,10 @@ function Checkin() {
 		helper.angularRender( req, res,'checkin/Checkin')
 	};
 
+	this.readAngularOrder = function(req, res) {
+		helper.angularRender( req, res,'orders')
+	};
+
 
 	this.cancelCheckin = function (req, res) {
 

@@ -26,7 +26,8 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 	////////////////////////////////////////////////////////
 	vm.model.customer = {};//Anything about customer
 	vm.model.dom = {
-		lang:{}
+		lang:{},
+		confirmCreateDiv:false
 	};//Anything about DOM
 	vm.model.search = {};//Anything about Search
 	vm.model.input = {};//input field model for start and end of school
@@ -42,6 +43,38 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 		jobStudent:'Sinh viên',
 		jobGraduate:'Đã tốt nghiệp',
 		jobDoc:'Thạc sĩ'
+	}
+
+	//Schools
+	vm.model.customer.selectSchools = [
+		'Đại học Bách khoa',
+		'Đại học Hà Nội',
+		'Đại học sư phạm',
+		'Đại học văn hóa',
+		'Đại học Giao thông',
+		'Học viện báo chí và tuyên truyền',
+		'Học viện hành chính',
+		'Học viện ngân hàng',
+		'Học viện nông nghiệp',
+		'Học viện quân y',
+		'Học viện tài chính',
+		'Học viện thanh thiếu niên',
+		'Đại học Khoa học tự nhiên',
+		'Đại học Kinh tế quốc dân',
+		'Đại học Luật',
+		'Đại học Mỏ địa chất',
+		'Đại học Ngoại giao',
+		'Đại học Ngoại thương',
+		'Đại học Quốc gia',
+		'Đại học Thương mại',
+		'Đại học Xây dựng',
+		'Đại học FTU',
+	]
+
+	vm.model.customer.genders = {
+		1: 'Male',
+		2: 'Female',
+		3: 'Others'
 	}
 
 	vm.model.dom.lang.using = vm.model.dom.lang.vi
@@ -89,10 +122,17 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 	
 	////////////////////////////////////////////////////////
 	//Create Page
+	vm.ctrl.confirmCreateNewCustomer = function(){
+		vm.model.customer.newCustomerData.birthday = new Date(vm.model.input.year+'.'+vm.model.input.month+'.'+vm.model.input.day)
+		if(vm.model.customer.otherSchool){
+			vm.model.customer.newCustomerData.edu.school = vm.model.customer.otherSchool
+		}
+		vm.model.dom.confirmCreateDiv = true;
+	}
 	vm.ctrl.createNewCustomer = function(){
 		// vm.model.customer.newCustomerData.edu.start = new Date(vm.model.input.start, 0,1)
 		// vm.model.customer.newCustomerData.edu.end = new Date(vm.model.input.end, 0,1)
-		vm.model.customer.newCustomerData.birthday = new Date(vm.model.input.year+'.'+vm.model.input.month+'.'+vm.model.input.day)
+		
 		customerService.createOne(vm.model.customer.newCustomerData)
 			.then(function success(res){
 				if(res.status == 200){

@@ -25,11 +25,42 @@ describe ('Promotion Code', function (){
 		it ('should be invalid when redeem expired promotion code');
 	});
 
-	xdescribe ('Check code conflict', function (){
+	xdescribe ('Check code', function (){
 
 	});
 
-	describe ('Redeem price', function (){
+	xdescribe ('Redeem mixed', function (){
+		it ('should return discount price when usage is more than 1 hour for group private service', function (){
+			var prices = [220000, 150000];
+			var code = 'PRIVATEDISCOUNTPRICE';
+			var usage = 3.5;
+			var expectedTotal = [220000 + 200000 * 2.5, 150000 + 120000 * 2.5];
+			var productNames = ['Medium Group Private', 'Small Group Private'];
+			productNames.map (function (x, i, arr){
+				var price = prices[i];
+				var total = Promocodes.redeemMixed (code, usage, price, x);
+				total.should.to.equal (expectedTotal[i]);
+			});
+			
+		});
+
+		it ('should return discount price when usage is more than 1 hour for group private service', function (){
+			var prices = [220000, 150000];
+			var usage = 3.5;
+			var code = 'PRIVATEDISCOUNTPRICE';
+			var expectedTotal = [220000 + 200000 * 2.5, 150000 + 120000 * 2.5];
+			var productNames = ['Medium Group Private', 'Small Group Private'];
+			productNames.map (function (x, i, arr){
+				var price = prices[i];
+				var total = Promocodes.redeemMixed (code, usage, price, x);
+				total.should.to.equal (expectedTotal[i]);
+			});
+			
+		});
+
+	});
+
+	xdescribe ('Redeem price', function (){
 		var usage, total;
 
 		beforeEach (function (){
@@ -37,52 +68,42 @@ describe ('Promotion Code', function (){
 			total = 45000;
 		});
 
-		it ('should return discount price when usage is more than 1 hour for group private service', function (){
-			usage = 3;
-			productNames = ['medium group private', 'small group private'];
-			prices = [220000, 150000];
-			rewardPrices = [200000, 120000];
-
-			productNames.map (function (p, i, arr){
-				Promocodes.redeemPrice (null, prices[i], p, usage).should.to.equal (rewardPrices[i])
-			});
+		it ('should return discount price for student using common services', function (){
+			var price = 15000;
+			var expectedPrice = [10000, 10000];
+			var productNames = ['Group Common', 'Individual Common'];
+			var code = "STUDENTPRICE";
+			productNames.map (function (x,i,arr){
+				var p = Promocodes.redeemPrice (code, price, x, usage);
+				p.should.to.equal (expectedPrice[i]);
+			});		
 		});
 
-		it ('should return original price for other products regardless more or less than 1 hour', function (){
-			usage = 3;
-			productNames = ['group common', 'group common'];
-			prices = [220000, 150000];
-
-			productNames.map (function (p, i, arr){
-				Promocodes.redeemPrice (null, prices[i], p, usage).should.to.equal (prices[i])
-			});
+		it ('should return original price for student using private services', function (){
+			var prices = [220000, 150000];
+			var expectedPrice = prices;
+			var productNames = ['Medium Group Private', 'Small Group Private'];
+			var code = "NONSTUDENT";
+			productNames.map (function (x,i,arr){
+				var p = Promocodes.redeemPrice (code, prices[i], x, usage);
+				p.should.to.equal (expectedPrice[i]);
+			});		
 		});
 
-		// it ('should return discount price for student', function (){
-		// 	var price = 15000;
-		// 	var expectedPrice = [10000, 10000];
-		// 	var productNames = ['group common', 'individual common'];
-		// 	var code = "STUDENT";
-		// 	productNames.map (function (x,i,arr){
-		// 		var p = Promocodes.redeemPrice (code, price, x, usage);
-		// 		p.should.to.equal (expectedPrice[i]);
-		// 	});		
-		// });
-
-		// it ('should return original price for non-student', function (){
-		// 	var price = 15000;
-		// 	var expectedPrice = [10000, 10000];
-		// 	var productNames = ['group common', 'individual common'];
-		// 	var code = "NONSTUDENT";
-		// 	productNames.map (function (x,i,arr){
-		// 		var p = Promocodes.redeemPrice (code, price, x, usage);
-		// 		p.should.to.not.equal (expectedPrice[i]);
-		// 	});		
-		// });
+		it ('should return original price for non-student', function (){
+			var price = 15000;
+			var expectedPrice = [10000, 10000];
+			var productNames = ['Group Common', 'Individual Common'];
+			var code = "NONSTUDENT";
+			productNames.map (function (x,i,arr){
+				var p = Promocodes.redeemPrice (code, price, x, usage);
+				p.should.to.not.equal (expectedPrice[i]);
+			});		
+		});
 
 	});
 
-	describe ('Redeem total', function (){
+	xdescribe ('Redeem total', function (){
 		var usage, total;
 
 		beforeEach (function (){
@@ -104,7 +125,7 @@ describe ('Promotion Code', function (){
 
 	});
 
-	describe ('Redeem usage', function (){
+	xdescribe ('Redeem usage', function (){
 		var usage, total;
 
 		beforeEach (function (){
@@ -145,31 +166,6 @@ describe ('Promotion Code', function (){
 			redeemedUsage.should.to.equal (0);
 		});			
 
-	});
-
-	describe ('Redeem student account', function (){
-		it ('should return student price for group and individual common and when customer is student', function (){
-			var codes = ['STUDENT', 'YEUGREENSPACE'];
-			var expectedPrice = 10000;
-			var productNames = ['group common', 'individual common'];
-			var fixedPrice;
-			productNames.map (function (p, i, arr){
-				fixedPrice = Promocodes.redeemStudentAccount (codes, p);
-				fixedPrice.price.should.to.equal (expectedPrice);	
-			});
-		
-		});
-
-		it ('should return original price for other services rather than group and individual common for students', function (){
-			var codes = ['STUDENT', 'YEUGREENSPACE'];
-			var price = 220000;
-			var productNames = ['medium group private', 'small group private'];
-			var fixedPrice;
-			productNames.map (function (p, i, arr){
-				fixedPrice = Promocodes.redeemStudentAccount (codes, p, price);
-				fixedPrice.price.should.to.equal (price);	
-			});			
-		})
 	});
 
 });

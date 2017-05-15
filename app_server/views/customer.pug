@@ -9,57 +9,60 @@ div(ng-switch='vm.tab')
 					div(class="column small-3")
 						ul(class="menu")
 							li
-								a(class="button secondary" ng-click="vm.ctrl.toggleCreateCustomerDiv()") 
+								a(class="button" ng-click="vm.ctrl.toggleCreateCustomerDiv()") 
 									span(class="show-for-large") Add New Customer
 									i(class="material-icons customIcon hide-for-large") add
-					div(class="column small-9")
-						ul(class="menu clearfix")
-							li(class="float-right marginL15")
-								<a class="button secondary" ng-click="vm.ctrl.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
-							li(class="float-right")
-								ul(class="menu")
-									li: label(class="paddingR15 show-for-large") Sort by
-									li: select(class="" ng-model='vm.model.sorting.customerListOrder')
-											option(value="firstname") Firstname
-											option(value="lastname") Lastname
-											option(value="email") Email
-											option(value="phone") Phone
+					//- div(class="column small-9")
+					//- 	ul(class="menu clearfix")
+					//- 		li(class="float-right marginL15")
+					//- 			<a class="button secondary" ng-click="vm.ctrl.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
+					//- 		li(class="float-right")
+					//- 			ul(class="menu")
+					//- 				li: label(class="paddingR15 show-for-large") Sort by
+					//- 				li: select(class="" ng-model='vm.model.sorting.customerListOrder')
+					//- 						option(value="firstname") Firstname
+					//- 						option(value="lastname") Lastname
+					//- 						option(value="email") Email
+					//- 						option(value="phone") Phone
 				div(class="column" ng-show='vm.model.dom.CreateCustomerDiv')
-					form(class="borderT newBox row column callout secondary" ng-submit='vm.ctrl.createNewCustomer()' confirm-submit ='Are you sure to Create New Customer')
-						ul(class="menu vertical row column")
-							li(class="marginB15")
-								div(class="column small-4 paddingTB15")
+					form(class="borderT newBox row column" ng-submit='vm.ctrl.confirmCreateNewCustomer()')
+						div(class=" row column")
+							div(class="marginB15")
+								div(class="column small-4 paddingTB15 paddingL0")
 									label Lastname
 										input(type="text" ng-model='vm.model.customer.newCustomerData.lastname' required)
 								div(class="column small-4 paddingTB15")
 									label Middle name
 										input(type="text" ng-model='vm.model.customer.newCustomerData.middlename')
-								div(class="column small-4 paddingTB15")
+								div(class="column small-4 paddingTB15 paddingR0")
 									label Firstname
 										input(type="text" ng-model='vm.model.customer.newCustomerData.firstname' required)
-								div(class="column small-12 paddingTB15")
+								div(class="column small-3 paddingTB15 paddingLR0")
 									label Gender
 										select(ng-model='vm.model.customer.newCustomerData.gender' required ng-options="key as value for (key , value) in {1: 'Male',2: 'Female',3: 'Others'}")
-								div(class="column small-4 paddingTB15")
+								div(class="column small-3 paddingTB15")
 									label Day
 										input(type="number" ng-model='vm.model.input.day' required min='1' max='31')
-								div(class="column small-4 paddingTB15")
+								div(class="column small-3 paddingTB15")
 									label Month
 										input(type="number" ng-model='vm.model.input.month' required min='1' max='12')
-								div(class="column small-4 paddingTB15")
+								div(class="column small-3 paddingTB15 paddingR0")
 									label Year
 										input(type="number" ng-model='vm.model.input.year' required min='1900' max='2020')
-
-								div(class="column small-12 paddingTB15")
-									label Phone
-										input(type="text" ng-model='vm.model.customer.newCustomerData.phone' required)
-								div(class="column small-12 paddingTB15")
+								
+								div(class="column small-6 paddingTB15 paddingL0")
 									label Email
 										input(type="text" ng-model='vm.model.customer.newCustomerData.email')
-								div(class="column small-12 paddingTB15")
+								div(class="column small-6 paddingTB15 paddingR0")
+									label Phone
+										input(type="text" ng-model='vm.model.customer.newCustomerData.phone' required)
+								div(class="column small-4 paddingTB15 paddingL0")
 									label School/ University
-										input(type="text" ng-model='vm.model.customer.newCustomerData.edu.school')
-								div(class="column small-12 paddingTB15")
+										select(ng-model='vm.model.customer.newCustomerData.edu.school' required ng-options="val for val in vm.model.customer.selectSchools")
+								div(class="column small-4 paddingTB15")
+									label Other Schools/Universities
+										input(type="text" ng-model='vm.model.customer.otherSchool')
+								div(class="column small-4 paddingTB15 paddingR0")
 									label Title at school/university
 										select(ng-model='vm.model.customer.newCustomerData.edu.title' required ng-options="key as value for (key , value) in vm.model.customer.selectCustomerTitleConvert")
 								//- div(class="column small-12 ")
@@ -69,9 +72,9 @@ div(ng-switch='vm.tab')
 								//- 	label End at University
 								//- 		input(type="number" min='1900' max='2020' ng-model='vm.model.input.end')
 
-						div(class="row column paddingT15 paddingL15")
+						div(class="row column paddingT15")
 							input(class="button" type="submit" value="Submit")
-				div(class="column")
+				//div(class="column")
 					div(class="borderT newBox row column")
 						div(class="row column")
 							form(ng-submit="vm.ctrl.searchFunc()")
@@ -97,7 +100,7 @@ div(ng-switch='vm.tab')
 													td {{ result.email[0] }}
 													td {{ result.phone[0] }}
 													td {{ result.createdAt | date: "shortTime" }}  -  {{ result.createdAt | date: "dd MMM yyyy" }}	
-	div(ng-switch-when='tab-profile')
+	//div(ng-switch-when='tab-profile')
 		div(class="columns row")
 			div(class="column")
 				h2 Customer Profile
@@ -141,7 +144,7 @@ div(ng-switch='vm.tab')
 					div(class='column small-12 paddingLR0')
 						input(class="button warning" type="submit" value="Edit" ng-click='vm.ctrl.toEdit()')
 						button(class="button float-right" ng-click='vm.ctrl.toMain()') Cancel
-	div(ng-switch-when='tab-edit')
+	//div(ng-switch-when='tab-edit')
 		div(class="columns row")
 			div(class="row colums")
 				div(class="column")
@@ -195,3 +198,57 @@ div(ng-switch='vm.tab')
 						div(class='column small-12 paddingLR0')
 							input(class="button warning" type="submit" value="Save")
 							button(class="button float-right" ng-click='vm.ctrl.toMain()') Cancel
+
+
+//Confirm Create new customer
+div(ng-show='vm.model.dom.confirmCreateDiv' id='checkoutDiv')
+	div(class='row column paddingT15')
+		div(class='row coumn header-invoice-img text-center')
+			img(src='/img/logo.png')
+		div(class='row coumn header-invoice text-center')
+			h4 Địa chỉ: Số nhà 70, ngách 23, ngõ 82, Chùa Láng, Láng Thượng, Đống Đa, Hà Nội
+			h4 Liên hệ: 097 785 55 94
+			h4 Website: greenspace-cw.com
+		form(class="row column small-12 large-6 large-push-3 invoice" ng-submit='vm.ctrl.createNewCustomer()')
+			div(class='priceSection')
+				div(class="row column")
+					div(class='row column paddingB15')
+						div(class='column small-6 text-right')
+							p Fullname
+						div(class='column small-6 greenBorder')
+							p {{ vm.model.customer.newCustomerData.lastname}} {{ vm.model.customer.newCustomerData.middlename}} {{ vm.model.customer.newCustomerData.firstname}}
+					div(class='row column paddingB15')
+						div(class='column small-6 text-right')
+							p Gender
+						div(class='column small-6 greenBorder')
+							p {{ vm.model.customer.genders[vm.model.customer.newCustomerData.gender]}}
+					div(class='row column paddingB15')
+						div(class='column small-6 text-right')
+							p Birthday
+						div(class='column small-6 greenBorder')
+							p {{ vm.model.customer.newCustomerData.birthday | date:'dd/MM/yyyy'}}
+					div(class='row column paddingB15')
+						div(class='column small-6 text-right')
+							p Email
+						div(class='column small-6 greenBorder')
+							p {{ vm.model.customer.newCustomerData.email}}
+					div(class='row column paddingB15')
+						div(class='column small-6 text-right')
+							p Phone
+						div(class='column small-6 greenBorder')
+							p {{ vm.model.customer.newCustomerData.phone}}
+					div(class='row column paddingB15')
+						div(class='column small-6 text-right')
+							p School
+						div(class='column small-6 greenBorder')
+							p {{ vm.model.customer.newCustomerData.edu.school}}
+					div(class='row column paddingB15')
+						div(class='column small-6 text-right')
+							p Job
+						div(class='column small-6 greenBorder')
+							p {{ vm.model.customer.selectCustomerTitleConvert[vm.model.customer.newCustomerData.edu.title]}}
+					
+			div(class="row column")
+				div(class='column small-12 large-paddingLR0')
+					input(class="paddingL15 button primary" type="submit" value="Confirm")
+					button(class=" paddingR15 button float-right secondary" ng-click='vm.ctrl.reset(); $event.preventDefault()') Cancel
