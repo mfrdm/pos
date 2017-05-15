@@ -11,14 +11,14 @@ div(ng-switch='vm.tab')
 							li
 								a(class="button primary" ng-click="vm.toggleBookingDiv()") 
 									<span class="show-for-large">Booking</span><i class="material-icons customIcon hide-for-large"> add</i>
-					div(class="column small-9")
-						ul(class="menu clearfix")
-							li(class="float-right marginL15")
-								<a class="button secondary" ng-click="vm.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
-							li(class="float-right")
-								ul(class="menu")
-									li: label(class="paddingR15 show-for-large") Sort by
-									li: select(ng-model="vm.model.orderBy" ng-options="key as value for (key , value) in vm.model.orderOptions")
+					//- div(class="column small-9")
+					//- 	ul(class="menu clearfix")
+					//- 		li(class="float-right marginL15")
+					//- 			<a class="button secondary" ng-click="vm.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
+					//- 		li(class="float-right")
+					//- 			ul(class="menu")
+					//- 				li: label(class="paddingR15 show-for-large") Sort by
+					//- 				li: select(ng-model="vm.model.orderBy" ng-options="key as value for (key , value) in vm.model.orderOptions")
 				//Booking Toggle Content********************************************************//
 				div(class="column")
 					div(class="borderT newBox row column paddingLR0" ng-show='vm.look.bookingDiv')
@@ -52,42 +52,42 @@ div(ng-switch='vm.tab')
 									div(class='column small-12 paddingLR0')
 										input(class="button warning" type="submit" value="Reset Search Results" ng-click='vm.resetSearch()')
 							div(class='row column')
-								div(class='column small-6 paddingL0')
+								div(class='column small-4 paddingL0')
 									label Location
 										select(name="selectedLocation" ng-model="vm.customer.location" ng-options="val.name for val in vm.data.locationNames")
-								div(class='column small-6 paddingLR0')
+								div(class='column small-4')
 									label Service
 										select(name="selectedService" ng-model="vm.customer.service" ng-options="val.name for val in vm.data.serviceNames")
-								div(class='column small-12 paddingLR0')
+								div(class='column small-4 paddingR0')
 									label Quantity
 										input(type="number" ng-model="vm.customer.quantity")
 								
-								div(class='column small-6 paddingL0')
+								div(class='column small-2 paddingL0')
 									label Checkin Hour
 										input(type='number' min='0' max='23' ng-model='vm.customer.intime.hour' required)
-								div(class='column small-6 paddingR0')
+								div(class='column small-2')
 									label Checkin Minute
 										input(type='number' min='0' max='60' ng-model='vm.customer.intime.minute' required)
-								div(class='column small-4 paddingL0')
+								div(class='column small-2')
 									label Checkin Day
 										input(type='number' min='1' max='31' ng-model='vm.customer.intime.day' required)
-								div(class='column small-4 paddingL0')
+								div(class='column small-2')
 									label Checkin Month
 										input(type='number' min='1' max='12' ng-model='vm.customer.intime.month' required)
 								div(class='column small-4 paddingR0')
 									label Checkin Year
 										input(type='number' ng-model='vm.customer.intime.year' required)
 
-								div(class='column small-6 paddingL0')
+								div(class='column small-2 paddingL0')
 									label Checkout Hour
 										input(type='number' min='0' max='23' ng-model='vm.customer.outtime.hour')
-								div(class='column small-6 paddingR0')
+								div(class='column small-2')
 									label Checkout Minute
 										input(type='number' min='0' max='60' ng-model='vm.customer.outtime.minute')
-								div(class='column small-4 paddingL0')
+								div(class='column small-2')
 									label Checkout Day
 										input(type='number' min='1' max='31' ng-model='vm.customer.outtime.day')
-								div(class='column small-4 paddingL0')
+								div(class='column small-2')
 									label Checkout Month
 										input(type='number' min='1' max='12' ng-model='vm.customer.outtime.month')
 								div(class='column small-4 paddingR0')
@@ -99,7 +99,7 @@ div(ng-switch='vm.tab')
 										textarea(type='text' ng-model='vm.customer.message')
 							div(class="row column")
 								div(class='column small-12 paddingLR0')
-									input(class="button success" type="submit" value="Add Booking")
+									input(class="button" type="submit" value="Add Booking")
 									button(class="button float-right" ng-click='vm.reload(); event.preventDefault()') Cancel
 				// Filter
 				div(class="column")
@@ -180,11 +180,11 @@ div(ng-switch='vm.tab')
 											td(ng-if='result.status == 2') Refused
 											td(ng-if='result.status == 4') Canceled
 											td
-												button(type="button" class="warning button" ng-click='vm.refuseBooking(result)') Refuse
+												button(type="button" class=" button" ng-click='vm.refuseBooking(result)') Refuse
 											td
-												button(type="button" class="alert button" ng-click='vm.cancelBooking(result)') Cancel
+												button(type="button" class=" button" ng-click='vm.cancelBooking(result)') Cancel
 											td
-												button(type="button" class="success button" ng-click='vm.acceptBooking(result)') Accept
+												button(type="button" class=" button" ng-click='vm.acceptBooking(result)') Accept
 	//- div(ng-switch-when='tab-profile')
 	//- 	div(class="columns row")
 	//- 		div(class="row colums")

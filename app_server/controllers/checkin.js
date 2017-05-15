@@ -17,6 +17,7 @@ module.exports = new Checkin();
 function Checkin() {
 	this.validatePromocodes = function (req, res, next){
 		// validate if exist and if not expire
+		console.log(req.query)
 		var codes = req.query.codes;
 		if (req.query.isStudent){
 			var studentCode = 'STUDENTPRICE';
@@ -41,6 +42,7 @@ function Checkin() {
 
 	// assume promocode are validated
 	this.checkin = function(req, res, next) {
+		console.log(req.body.data)
 		var occ = new Occupancy (req.body.data.occupancy);
 
 		if (occ.customer.isStudent)
@@ -195,6 +197,10 @@ function Checkin() {
 	//Render ng-view main checkin
 	this.readAngularCheckin = function(req, res) {
 		helper.angularRender( req, res,'checkin/Checkin')
+	};
+
+	this.readAngularOrder = function(req, res) {
+		helper.angularRender( req, res,'orders')
 	};
 
 

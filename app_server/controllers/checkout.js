@@ -36,7 +36,6 @@ function Checkout() {
 		var usage = req.body.data.usage;
 		var checkoutTime = req.body.data.checkoutTime;
 		var status = 2;
-
 		Customers.findOneAndUpdate({_id:req.body.data.customer._id}, {$set:{checkinStatus:false}}, function(err, cus){
 			if (err){
 				next (err)

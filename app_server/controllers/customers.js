@@ -75,6 +75,7 @@ function CustomersCtrl() {
 		}else{
 			req.body.data.isStudent = false;
 		}
+		console.log(req.body.data)
 		var newCustomer = new Customers (req.body.data);
 
 		// sanitize
@@ -110,7 +111,8 @@ function CustomersCtrl() {
 				return 
 			}
 			else{
-				cus = cus.getPublicFields ();
+				//cus = cus.getPublicFields ();
+				//Fix later
 
 				res.json ({data: cus});
 			}

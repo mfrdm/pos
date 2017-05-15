@@ -37,6 +37,11 @@ function config ($locationProvider, $routeProvider){
 			controller:"CheckinCtrl",
 			controllerAs:"vm"
 		})
+		.when('/orders', {
+			templateUrl : "/angular/orders",
+			controller:"OrderCtrl",
+			controllerAs:"vm"
+		})
 		.when('/customers', {
 			templateUrl : "/angular/customers",
 			resolve: {

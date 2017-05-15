@@ -1,9 +1,9 @@
 div(class="columns row")
 	div(class="row colums")
 		div(class="column")
-			h2 Check-in List
+			h2 Order
 		// Setting
-		div(class="row column")
+		//div(class="row column")
 			div(class="column small-3")
 				ul(class="menu")
 					li
@@ -13,44 +13,42 @@ div(class="columns row")
 			div(class="column small-9")
 				ul(class="menu clearfix")
 					li(class="float-right marginL15")
-						<a class="button primary" ng-click="vm.ctrl.seeMore()"><span class="show-for-large">See More</span><i class="material-icons customIcon hide-for-large">add_box</i></a>
-					li(class="float-right marginL15")
 						<a class="button primary" ng-click="vm.ctrl.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
 					li(class="float-right")
 						ul(class="menu")
 							li: label(class="paddingR15 show-for-large") {{ vm.model.dom.dataDom.using.fieldSortBy}}
 							li: select(ng-model="vm.model.filter.orderBy" ng-options="key as value for (key , value) in vm.model.filter.orderOptions" ng-init='vm.model.filter.orderBy="-checkinTime"')
 		// Filter
-		div(class="column" ng-show="vm.model.dom.filterDiv")
+		//div(class="column" ng-show="vm.model.dom.filterDiv")
 			div(class="borderT newBox row column")
-				div(class="marginB15 column small-12 large-4 paddingL0")
+				div(class="marginB15 column small-12 large-4")
 					legend {{ vm.model.dom.dataDom.using.fieldStatus}}
 					select(ng-model='vm.model.filter.myfilter.status' ng-options='key as value for (key , value) in vm.model.filter.statusOptions' ng-init='vm.model.filter.myfilter.status=1')
 						option
 				div(class='marginB15 column small-12 large-4')
 					legend {{ vm.model.dom.dataDom.using.fieldSearchByFirstname}}
 					input(type='text' ng-model='vm.model.filter.others.customer.firstname')
-				div(class='marginB15 column small-12 large-4 paddingR0')
+				div(class='marginB15 column small-12 large-4')
 					legend {{ vm.model.dom.dataDom.using.fieldSearchByPhone}}
 					input(type='text' ng-model='vm.model.filter.others.customer.phone')
 		// Check-in
 		div(class="column")
-			div(class="borderT newBox row column paddingB45" ng-show="vm.model.dom.checkInDiv")
+			div(class="borderT newBox row column paddingB45 paddingLR15" ng-show="vm.model.dom.checkInDiv")
 				
 				//Search Customer*********************************************//
 				div(class="row column")
-					form(ng-submit="vm.ctrl.searchCustomers()")
+					form()
 						div(class="row column")
-							label {{vm.model.dom.dataDom.using.fieldPhoneEmail}}
-								input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.model.search.username')
-						div(ng-show='vm.model.dom.messageSearchResult' class='marginB15')
+							label 
+								input(type="text" placeholder="Enter phone or email to search customer")
+						div(class='marginB15')
 							div(class='callout alert')
-								p {{vm.model.search.messageNoResult}}
+								p 
 									span: a(href='/#!/customers') Create new customer
-						div(ng-show='vm.model.dom.messageSearchAlreadyCheckin' class='marginB15')
+						div(class='marginB15')
 							div(class='callout alert')
-								p {{vm.model.search.messageAlreadyCheckin}}
-						div(ng-show="vm.model.dom.checkingInCustomerSearchResult" class="marginB15")
+								p 
+						//div(ng-show="vm.model.dom.checkingInCustomerSearchResult" class="marginB15")
 							div(class="table-scroll")
 								table(class="hover unstriped borderAll")
 									thead
@@ -74,16 +72,16 @@ div(class="columns row")
 											td {{ result.phone[0] }}
 				
 				//Checkin Confirmation Modal****************************************//
-				div(class='reveal small' id='checkinModal' data-reveal data-animation-in="slide-in-down fast")
+				//div(class='reveal small' id='checkinModal' data-reveal data-animation-in="slide-in-down fast")
 					div(class='column row paddingTB15 text-center')
 						h4 Checkin Confirmation
 					div(class='column row')
 						div(class="invoice")
 							div(class='row column')
 								div(class='column small-6')
-									p {{vm.model.dom.dataDom.using.invoiceFullname}}: {{ vm.model.customer.checkingInData.occupancy.customer.lastname}} {{ vm.model.customer.checkingInData.occupancy.customer.middlename}} {{ vm.model.customer.checkingInData.occupancy.customer.firstname}}
+									p {{vm.model.dom.dataDom.using.invoiceFullname}}: {{ vm.model.customer.checkingInData.customer.lastname}} {{ vm.model.customer.checkingInData.customer.middlename}} {{ vm.model.customer.checkingInData.customer.firstname}}
 								div(class='column small-6 text-right')
-									p {{vm.model.dom.dataDom.using.invoicePhone}}: {{ vm.model.customer.checkingInData.occupancy.customer.phone}}
+									p {{vm.model.dom.dataDom.using.invoicePhone}}: {{ vm.model.customer.checkingInData.customer.phone}}
 							div(class='priceSection')
 
 								//Checkin TIme
@@ -92,17 +90,17 @@ div(class="columns row")
 										div(class='column small-4 text-right')
 											p Checkin
 										div(class='column small-4 greenBorder')
-											p {{ vm.model.customer.checkingInData.occupancy.checkinTime | date:'shortTime'}}
+											p {{ vm.model.customer.checkingInData.checkinTime | date:'shortTime'}}
 										div(class='column small-4')
-											p {{ vm.model.customer.checkingInData.occupancy.checkinTime | date:'dd/MM/yyyy'}}
+											p {{ vm.model.customer.checkingInData.checkinTime | date:'dd/MM/yyyy'}}
 
 								//Other Products
-								//- div(class="borderT newBox row column" ng-if='vm.model.customer.checkingInData.occupancy.orderline.length > 1')
+								div(class="borderT newBox row column" ng-if='vm.model.customer.checkingInData.orderline.length > 1')
 									div(class='row column' )
 										div(class='column small-4 text-right')
 											p {{vm.model.dom.dataDom.using.invoiceOtherProducts}}
 										div(class='column small-8 greenBorder')
-											div(class='row column small-12' ng-repeat='service in vm.model.customer.checkingInData.occupancy.orderline.slice(1)')
+											div(class='row column small-12' ng-repeat='service in vm.model.customer.checkingInData.orderline.slice(1)')
 												div(class='column small-6 paddingLR0 marginT0')
 													p {{ service.productName}}
 												div(class='column small-6 marginT0')
@@ -116,17 +114,19 @@ div(class="columns row")
 										div(class='column small-8 greenBorder')
 											div(class='row column small-12')
 												div(class='column small-6 paddingLR0 marginT0')
-													p {{ vm.model.products[vm.model.customer.checkingInData.occupancy.service.name]}}
-									div(class='row column paddingTB15' ng-if='vm.model.customer.checkingInData.occupancy.parent.length > 0')
+													p {{ vm.model.products[vm.model.customer.checkingInData.orderline[0].productName]}}
+												div(class='column small-6 marginT0')
+													p x {{vm.model.customer.checkingInData.orderline[0].quantity}}
+									div(class='row column paddingTB15' ng-if='vm.model.customer.checkingInData.parent.length > 0')
 										div(class='column small-4 text-right')
 											p {{vm.model.dom.dataDom.using.parentGroup}}
 										div(class='column small-8 greenBorder')
-											p {{vm.model.parents.options[vm.model.customer.checkingInData.occupancy.parent]}}
-									div(class='row column paddingTB15' ng-if='vm.model.customer.checkingInData.occupancy.promocodes.length > 0')
+											p {{vm.model.parents.options[vm.model.customer.checkingInData.parent]}}
+									div(class='row column paddingTB15' ng-if='vm.model.customer.checkingInData.orderline[0].promocodes.length > 0')
 										div(class='column small-4 text-right')
 											p {{vm.model.dom.dataDom.using.invoicePromoteCode}}
 										div(class='column small-8 greenBorder')
-											p(ng-repeat='promocode in vm.model.customer.checkingInData.occupancy.promocodes') {{ promocode.name}}
+											p(ng-repeat='promocode in vm.model.customer.checkingInData.orderline[0].promocodes') {{ promocode.name}}
 					div(class='column row')
 						div(class='column small-6')
 							input(class='button' type='submit' ng-click='vm.ctrl.checkin()' value='Yes' data-close='')
@@ -138,62 +138,38 @@ div(class="columns row")
 				//Checkin Form****************************************//
 
 				//Main Form
-				form(ng-submit="vm.ctrl.validatePromoteCode ()")
-					div(class="row column addPromotion")
-						div(class='column small-12')
-							label {{vm.model.dom.dataDom.using.fieldPromotionCode}}
-								table(ng-if='vm.model.customer.promocode.codeList.length > 0')
-									tbody
-										tr(ng-repeat='code in vm.model.customer.promocode.codeList')
-											td {{code}}
-											td(class='text-center deleteIcon')
-												i(class="material-icons customIcon" ng-click='vm.ctrl.deletePromoteCode(code); $event.preventDefault()') close
-						div(class='column small-11 paddingR0')
-							label Add
-								input(type='text' ng-model='vm.model.customer.promocode.codeInput')
-						div(class='column small-1 iconAdd')
-							i(class="material-icons customIcon" ng-click='vm.ctrl.addPromoteCode(); $event.preventDefault()') add
-					
-					//Main service for checkin
-					div(class="row column")
-						label {{vm.model.dom.dataDom.using.fieldService}}
-							select(ng-change='vm.ctrl.changeMainService()' ng-model="vm.model.customer.checkingInData.occupancy.service.name" ng-options="key as value for (key , value) in vm.model.products")
-
-					
-					//Choose Group
-					div(class="row column" ng-if='vm.model.customer.checkingInData.occupancy.service.name == "medium group private" || vm.model.customer.checkingInData.occupancy.service.name == "small group private"')
-						label {{vm.model.dom.dataDom.using.fieldChooseGroup}}
-							select(name="selectedService" ng-model="vm.model.customer.checkingInData.occupancy.parent" ng-options="key as value for (key , value) in vm.model.parents.options")
-				
+				form()
+									
 					//Other services for checkin
-					div(class='addItemSection row column paddingTB15 marginB15')
-						div(class='column small-12')
-							label(ng-if='vm.model.customer.checkingInData.occupancy.orderline.length > 1') {{vm.model.dom.dataDom.using.fieldOtherProducts}}
+					div(class='addItemSection paddingB15')
+						div(class='row column')
+							label() 
 								table
 									thead
 										tr
-											th {{vm.model.dom.dataDom.using.fieldProduct}}
-											th {{vm.model.dom.dataDom.using.fieldQuantity}}
+											th 
+											th 
 									tbody
-										tr(ng-repeat='product in vm.model.customer.checkingInData.occupancy.orderline.slice(1)')
-											td {{product.productName}}
-											td {{product.quantity}}
+										tr()
+											td 
+											td 
 											td(class='text-center deleteIcon')
-												i(class="material-icons customIcon" ng-click='vm.ctrl.deleteSelectService(product); $event.preventDefault()') close
-						div(class="column small-6")
-							label {{vm.model.dom.dataDom.using.fieldAddItems}}
-								select( ng-model="vm.model.other.selectedItem.name" ng-options="val for val in vm.model.other.listOtherProducts")
-						div(class="column small-5 paddingR0")
-							label {{vm.model.dom.dataDom.using.fieldQuantity}}
-								input( ng-model="vm.model.other.selectedItem.quantity" string-to-number type="number" min='0')
-						div(class="column small-1 iconAdd")
-							i(class="material-icons customIcon" ng-click='vm.ctrl.selectService(); $event.preventDefault()') add
+												i(class="material-icons customIcon") close
+						div(class="row column")
+							div(class="column small-6 paddingL0")
+								label
+									select()
+							div(class="column small-5 paddingL0")
+								label 
+									input( string-to-number type="number" min='0')
+							div(class="column small-1 iconAdd")
+								i(class="material-icons customIcon") add
 					div(class="row column")
 						input(class="button" type="submit" value="Submit")
-						button(class="button float-right primary" ng-click='vm.ctrl.reset(); $event.preventDefault()') Cancel
+						button(class="button float-right primary") Cancel
 		
 		// Edit check-in *********************************************//
-		div(class='reveal small' id='editModal' data-reveal data-animation-in="slide-in-down fast")
+		//div(class='reveal small' id='editModal' data-reveal data-animation-in="slide-in-down fast")
 			div(class='column row paddingTB15 text-center')
 				h4 Edit Confirmation
 			div(class='column row')
@@ -244,7 +220,7 @@ div(class="columns row")
 				span(aria-hidden="true") &times;
 		
 		//Main Form Edit
-		div(class="column" ng-show="vm.model.dom.checkInEditDiv")
+		//div(class="column" ng-show="vm.model.dom.checkInEditDiv")
 			div(class='borderT newBox row column paddingLR15')
 				form(ng-submit='vm.ctrl.confirmEdit()')
 					h3 {{ vm.model.customer.editedCheckedInCustomer.customer.lastname}} {{ vm.model.customer.editedCheckedInCustomer.customer.middlename}} {{ vm.model.customer.editedCheckedInCustomer.customer.firstname}}
@@ -287,17 +263,17 @@ div(class="columns row")
 						button(class="button float-right primary" ng-click='vm.ctrl.reset(); $event.preventDefault()') Cancel
 
 		// Check-in list *********************************************//
-		div(class="column" ng-show="vm.model.dom.checkInListDiv")
+		//div(class="column" ng-show="vm.model.dom.checkInListDiv")
 			div(class="table-scroll newBox")
 				table(class="borderAll")
 					thead
 						tr
 							th {{vm.model.dom.dataDom.using.headerNo}}
 							th {{vm.model.dom.dataDom.using.headerName}}
-							//- th {{vm.model.dom.dataDom.using.headerBirthday}}
-							th(ng-if='vm.model.dom.seeMore == true') {{vm.model.dom.dataDom.using.headerCheckinDate}}
+							th {{vm.model.dom.dataDom.using.headerPhone}}
+							th {{vm.model.dom.dataDom.using.headerCheckinDate}}
 							th {{vm.model.dom.dataDom.using.headerCheckinTime}}
-							th(ng-if='vm.model.dom.seeMore == true')  {{vm.model.dom.dataDom.using.headerCheckoutDate}}
+							th {{vm.model.dom.dataDom.using.headerCheckoutDate}}
 							th {{vm.model.dom.dataDom.using.headerCheckoutTime}}
 							th {{vm.model.dom.dataDom.using.headerService}}
 							th {{vm.model.dom.dataDom.using.headerCheckout}}
@@ -306,12 +282,12 @@ div(class="columns row")
 						tr(ng-repeat='customer in vm.model.customer.checkedInList | myfilter:vm.model.filter.myfilter.status | orderBy: [vm.model.filter.orderBy] | filter:vm.model.filter.others')
 							td {{ $index + 1 }}
 							td {{customer.customer.lastname}} {{customer.customer.middlename}} {{ customer.customer.firstname }} 
-							//- td {{ customer.customer.birthday}}
-							td(ng-if='vm.model.dom.seeMore == true')  {{ customer.checkinTime | date:'dd/MM/yyyy' }}
+							td {{ customer.customer.phone }}
+							td {{ customer.checkinTime | date:'dd/MM/yyyy' }}
 							td {{ customer.checkinTime | date: 'shortTime' }}
-							td(ng-if='vm.model.dom.seeMore == true')  {{ customer.checkoutTime | date:'dd/MM/yyyy' }}
+							td {{ customer.checkoutTime | date:'dd/MM/yyyy' }}
 							td {{ customer.checkoutTime | date: 'shortTime' }}
-							td {{ vm.model.products[customer.service.name]	}}
+							td {{ vm.model.products[customer.orderline[0].productName]	}}
 							td
 								button(type="button" ng-if='customer.status == 1' class="primary button" ng-click="vm.ctrl.getInvoiceForCheckout (customer)") Checkout
 								button(type='button' ng-if='customer.status == 2' class="disabled button") Checkout
@@ -320,7 +296,7 @@ div(class="columns row")
 								button(type='button' ng-if='customer.status == 2' class="disabled button") Edit
 
 //Invoice *********************************************//
-div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
+//div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
 	div(class='row column paddingT15')
 		div(class='row coumn header-invoice-img text-center')
 			img(src='/img/logo.png')
@@ -328,7 +304,7 @@ div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
 			h4 Địa chỉ: Số nhà 70, ngách 23, ngõ 82, Chùa Láng, Láng Thượng, Đống Đa, Hà Nội
 			h4 Liên hệ: 097 785 55 94
 			h4 Website: greenspace-cw.com
-		form(class="row column small-12 large-6 large-push-3 invoice" ng-submit='vm.ctrl.askConfirmCheckout()')
+		form(class="row column small-12 large-6 large-push-3 invoice" ng-submit='vm.ctrl.confirmCheckout()' confirm-submit = "Are you sure to checkout")
 			div(class='row column')
 				div(class='column small-6')
 					p {{vm.model.dom.dataDom.using.invoiceFullname}}: {{ vm.model.customer.checkoutCustomer.customer.lastname}} {{ vm.model.customer.checkoutCustomer.customer.middlename}} {{ vm.model.customer.checkoutCustomer.customer.firstname}}
@@ -351,6 +327,20 @@ div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
 						div(class='column small-5')
 							p {{ vm.model.customer.checkoutCustomer.checkoutTime | date:'dd/MM/yyyy'}}
 				
+				//Other products
+				div(class="borderT newBox row column" ng-if='vm.model.customer.checkoutCustomer.orderline.slice(1).length > 0')
+					div(class='row column' )
+						div(class='column small-2 text-right')
+							p {{vm.model.dom.dataDom.using.invoiceOtherProducts}}
+						div(class='column small-10 greenBorder')
+							div(class='row column small-12' ng-repeat='service in vm.model.customer.checkoutCustomer.orderline.slice(1)')
+								div(class='column small-6 paddingLR0 marginT0')
+									p {{ service.productName}}
+								div(class='column small-4 marginT0')
+									p {{ service.quantity}} x {{ (service.price | number)}}
+								div(class='column small-2 marginT0')
+									p {{ service.subTotal | number}}
+				
 				//Main Product
 				div(class="borderT newBox row column")
 					div(class='row column paddingTB15')
@@ -359,9 +349,9 @@ div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
 						div(class='column small-10 greenBorder')
 							div(class='row column small-12')
 								div(class='column small-6 paddingLR0 marginT0')
-									p {{ vm.model.products[vm.model.customer.checkoutCustomer.service.name]}}
+									p {{ vm.model.products[vm.model.customer.checkoutCustomer.orderline[0].productName]}}
 								div(class='column small-4 marginT0')
-									p {{vm.model.customer.checkoutCustomer.usage}} x {{(vm.model.customer.checkoutCustomer.service.price | number)}}
+									p {{vm.model.customer.checkoutCustomer.usage}} x {{(vm.model.customer.checkoutCustomer.orderline[0].price | number)}}
 								div(class='column small-2 marginT0')
 									p {{ vm.model.customer.checkoutCustomer.orderline[0].subTotal | number}}
 					
@@ -400,46 +390,3 @@ div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
 					button(class=" paddingR15 button float-right secondary" ng-click='vm.ctrl.reset(); $event.preventDefault()') Cancel
 	
 //Validate Reveal Form ************************************************************************//
-//Validate add same promote code
-div(id='addSameCode' class='reveal text-center small' data-reveal data-animation-in="slide-in-down fast")
-	div(class=' text-center paddingTB15 marginB15')
-		h5 Thêm trùng mã code
-	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
-			span(aria-hidden="true") &times;
-
-//Ask user check out
-div(id='askCheckout' class='reveal small column row' data-reveal data-animation-in="slide-in-down fast")
-	div(class=' text-center paddingTB15 marginB15')
-		h5 Bạn có chắc muốn checkout?
-	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
-			span(aria-hidden="true") &times;
-	div(class="row column")
-		div(class='column small-12 large-paddingLR0')
-			input(class=" button primary" type="submit" value="Confirm" ng-click='vm.ctrl.confirmCheckout()')
-			button(class=" paddingR15 button float-right secondary" ng-click='vm.ctrl.reset(); $event.preventDefault()' data-close='') Cancel
-//Announce checkout successfull
-div(id='announceCheckoutSuccess' class='reveal small column row' data-reveal data-animation-in="slide-in-down fast")
-	div(class=' text-center paddingTB15 marginB15')
-		h5 Bạn đã Checkout thành công!
-	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
-			span(aria-hidden="true") &times;
-
-//Announce edit successfull
-div(id='announceEditSuccess' class='reveal small column row' data-reveal data-animation-in="slide-in-down fast")
-	div(class=' text-center paddingTB15 marginB15')
-		h5 Bạn đã Edit thành công!
-	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
-			span(aria-hidden="true") &times;
-
-
-//Announce promote codes are wrong
-div(id='wrongPromoCodes' class='reveal text-center small' data-reveal data-animation-in="slide-in-down fast")
-	div(class='headerModal text-center paddingTB15 marginB15')
-		h5 Mã code không đúng
-	div(ng-repeat='wrongCode in vm.model.customer.promocode.errorCodes track by $index' class='text-center')
-		p {{wrongCode}}
-	div(ng-repeat='conflict in vm.model.customer.promocode.conflictedCode track by $index' class='text-center')
-		p {{conflict.name}} conflict with
-			span(ng-repeat='code in conflict.conflicted track by $index') : {{code.name}}
-	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
-			span(aria-hidden="true") &times;
