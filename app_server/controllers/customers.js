@@ -70,7 +70,6 @@ function CustomersCtrl() {
 	};
 
 	this.createOneCustomer = function(req, res, next) {
-		console.log(req.body)
 		if(req.body.data.edu.title == 1){
 			req.body.data.isStudent = true;
 		}else{
@@ -109,15 +108,7 @@ function CustomersCtrl() {
 				return 
 			}
 			else{
-				// var data = {
-					// firstname: cus.firstname,
-					// middlename: cus.middlename,
-					// lastname: cus.lastname,
-					// _id: cus._id,
-					// email: cus.email [0],
-					// phone: cus.phone [0]
-				// }
-				console.log(cus)
+				cus = cus.getPublicFields ();
 
 				res.json ({data: cus});
 			}

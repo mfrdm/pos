@@ -25,6 +25,7 @@ require('./depts');
 require('./products');
 require('./promocodes');
 require('./orders');
+require('./occupancy.model');
 require('./transactions');
 require('./bookings');
 require('./assets');

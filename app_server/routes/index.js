@@ -22,6 +22,7 @@ var deptsCtrl = require("../controllers/depts");
 var productsCtrl = require("../controllers/products");
 var promoCodesCtrl = require ('../controllers/promoCodes.ctrl')
 var combosCtrl = require ('../controllers/combos.ctrl');
+var OrdersCtrl = require ('../controllers/orders.ctrl'); 
 
 router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
 router.get('/auth/google/callback', 
@@ -45,11 +46,16 @@ router.post ('/checkin/cancel', checkinCtrl.cancelCheckin);
 
 router.post('/checkin/customer/:cusId', checkinCtrl.checkin);
 router.get ('/checkin/search-customers', checkinCtrl.searchCheckingCustomers);
-router.post('/checkin/customer/:cusId/edit/:orderId', checkinCtrl.updateCheckin); //cusid is order id
+router.post('/checkin/customer/:cusId/edit/:occId', checkinCtrl.updateCheckin); //cusid is order id
 router.get ('/checkin/validate-promotion-code', checkinCtrl.validatePromocodes);
 
-router.get('/checkout/invoice/:orderId', checkoutCtrl.createInvoice);
+router.get('/checkout/invoice/:occId', checkoutCtrl.createInvoice);
 router.post('/checkout', checkoutCtrl.confirmCheckout);
+
+router.get ('/orders/', OrdersCtrl.readOrders);
+router.post ('/orders/create', OrdersCtrl.createAnOrder);
+router.get ('/orders/order/:orderId', OrdersCtrl.readAnOrder);
+router.post ('/orders/order/:orderId/edit', OrdersCtrl.updateAnOrder);
 
 router.get('/bookings', bookingCtrl.readBooking);
 router.post('/bookings/:cusId', bookingCtrl.booking);

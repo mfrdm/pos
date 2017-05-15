@@ -36,6 +36,7 @@ var customersSchema = mongoose.Schema({
 		by: mongoose.Schema.Types.ObjectId
 	}],
 	orders: [{type: mongoose.Schema.Types.ObjectId}],
+	occupancy: [{type: mongoose.Schema.Types.ObjectId}],
 	bookings: [{type:mongoose.Schema.Types.ObjectId}],
 	promoteCode: [{code: String, expire: Date,}],
 	checkinStatus: {type: Boolean, default: false},
@@ -63,7 +64,10 @@ var customersSchema = mongoose.Schema({
 	///////// Login local
 	hash: String, 
 	salt: String,
-
+	referer: { // indicate customer account created from an event, at store, or direct in website.
+		_id: {type:mongoose.Schema.Types.ObjectId},
+		name: String, 
+	}
 
 });
 
@@ -94,5 +98,17 @@ customersSchema.methods.generateJwt = function (passwd, dayNum){
 	);
 };
 
+
+customersSchema.methods.getPublicFields = function (){
+	return {
+		_id: this._id,
+		firstname: this.firstname,
+		middlename: this.middlename,
+		lastname: this.lastname,
+		email: this.email[0],
+		phone: this.phone[0],
+		birthday: this.birthday,
+	}
+}
 
 mongoose.model ('customers', customersSchema);

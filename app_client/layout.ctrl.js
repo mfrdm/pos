@@ -40,9 +40,9 @@
 		};
 
 		$scope.layout.model.summary = {
-			$scope.layout.customerNumber = 100; // TESTING
-			$scope.layout.bookingNumber = 20; // TESTING
-			$scope.layout.staffNumber = 2; // TESTING
+			customerNumber: 100, // TESTING
+			bookingNumber: 20, // TESTING
+			staffNumber: 2, // TESTING
 		};		
 
 		$scope.layout.model.dom  = {
@@ -106,9 +106,8 @@
 		angular.element(document).ready(function () {
 			$("body").foundation();
 			$scope.$apply();
-		}
+		});
 		
-
 	}
 
 })();

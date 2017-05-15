@@ -6,8 +6,7 @@ app
 	    $rootScope.$on('$viewContentLoaded', function () {
 	        $("#mainContentDiv").foundation(); // initialize elements in ng-view
 	    });
-	})	
-	.controller ('ErrorCtrl', [ErrorCtrl])
+	})
 
 function config ($locationProvider, $routeProvider){
 	// $locationProvider.html5Mode (true);

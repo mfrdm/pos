@@ -44,6 +44,10 @@ describe ('Customer', function (){
 		it ('should be valid when being ask to create a customer using registed email after receiving a confirm from staff')
 		it ('should be valid when being ask to create a customer using registed phone after receiving a confirm from staff')
 
+		it ('should realizes and record customer is refered by Facebook fanpage');
+		it ('should realizes and record customer is refered by Offical website');
+		it ('should realizes and record customer is refered by Staff at store');
+
 		it ('should successfully create an customer account locally', function (done){
 			chai.request (server)
 				.post ('/customers/create')
@@ -61,6 +65,7 @@ describe ('Customer', function (){
 					res.body.data.email.should.to.exist;
 					res.body.data.phone.should.to.exist;
 					res.body.data._id.should.to.exist;
+					res.body.data.isStudent.should.to.exist;
 					done ();
 				});
 		});
