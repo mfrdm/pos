@@ -46,26 +46,19 @@
 		};		
 
 		$scope.layout.model.dom  = {
-
-		};				
-
-		$scope.layout.loginBtn = true;
-
-		$scope.layout.today = new Date ();
-		$scope.layout.notifications = [];
-		$scope.layout.style = {};
-
-		$scope.layout.updateAfterLogin = function (storeName) {
-			if (!storeName)
-				storeName = 'Green Space Chua Lang 82/70';
-			$scope.layout.storeName = storeName;
-			$scope.layout.accountBtn = true;
-			$scope.layout.notiBtn = true;
-			$scope.layout.sideBarMenu = true;
-			$scope.layout.sideBarMenu = true;
-			$scope.layout.commonStatisticBar = true;
-			$scope.layout.loginBtn = false;
+			pageTitle: 'GS POS',
+			loginBtn: true,
+			accountBtn: false,
+			notiBtn: false,
+			sideBarMenu: false
 		};
+
+		$scope.layout.ctrl.updateAfterLogin = function (){
+			$scope.layout.model.dom.loginBtn = false;
+			$scope.layout.model.dom.accountBtn = true;
+			// $scope.layout.model.dom.notiBtn = true;
+			$scope.layout.model.dom.sideBarMenu = true;
+		}		
 
 		$scope.layout.updateMessage = function (message, mode) {
 			$scope.layout.message = message;
@@ -77,7 +70,7 @@
 			$scope.layout.messageDiv = false;
 		}
 
-		$scope.layout.logout = function(){
+		$scope.layout.ctrl.logout = function(){
 			var beforeAction = function(){};
 			var afterAction = function(){};
 			authentication.logout(beforeAction, afterAction)
@@ -105,6 +98,10 @@
 
 		angular.element(document).ready(function () {
 			$("body").foundation();
+			if (authentication.isLoggedIn ()){
+				$scope.layout.ctrl.updateAfterLogin ();
+			}
+
 			$scope.$apply();
 		});
 		

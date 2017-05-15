@@ -1,5 +1,4 @@
-
-describe ('Controller: CheckinCtrl', function (){
+xdescribe ('Controller: CheckinCtrl', function (){
 	var CheckinService, Scope, createController, $rootScope, $httpBackend;
 
 	beforeEach (module('posApp'));

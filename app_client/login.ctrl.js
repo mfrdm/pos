@@ -5,18 +5,12 @@
 
 
 	function LoginCtrl ($route, $scope, $location, authentication) {
-
 		var vm = this;
+		var LayoutCtrl = $scope.$parent.layout;
+
 		vm.other = {};
-
-		vm.other.returnPage = $location.search ().page || '/checkin';
-
-		if ($route.current.locals.checkPermission.pass){
-			var storeName = 'Green Space Chua Lang 82/70'; // TESTING
-			$scope.layout.updateAfterLogin (storeName);
-			$location.path (vm.other.returnPage);
-			return
-		}
+		
+		vm.other.returnPage = LayoutCtrl.model.dom.returnPage || '/checkin';
 
 		vm.credentials = {
 			firstname: '',
@@ -30,13 +24,11 @@
 			username: '', // phone or email
 		}
 
-		
-
 		vm.loginSuccessAction = function (data) {
-			var storeName = 'Green Space Chua Lang 82/70'; // TESTING
+			// var storeName = 'Green Space Chua Lang 82/70'; // TESTING
 			vm.credentials = {};
 			$location.search ('page', null);
-			$scope.layout.updateAfterLogin (storeName);
+			LayoutCtrl.ctrl.updateAfterLogin ();
 			$location.path (vm.other.returnPage);			
 		};
 

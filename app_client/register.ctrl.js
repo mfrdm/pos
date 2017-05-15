@@ -6,8 +6,9 @@
 
 	function RegisterCtrl ($location, authentication) {
 		var vm = this;
+		var LayoutCtrl = $scope.$parent.layout;
 		vm.other = {};
-
+		vm.other.returnPage = LayoutCtrl.model.dom.returnPage || '/checkin';
 		vm.credentials = {
 			firstname: '',
 			lastname: '',
@@ -20,16 +21,20 @@
 			username: '', // phone or email
 		}
 
-		vm.other.returnPage = $location.search ().page || '/';
-
-		vm.registerSuccessAction = function (data){
-			vm.credentials = {};
-			$location.search ('page', null);
-			$location.path (vm.other.returnPage);
-		};
-
 		vm.registerFailAction = function (err){
 			// display message
+		};
+
+		vm.registerSuccessAction = function (data) {
+			// var storeName = 'Green Space Chua Lang 82/70'; // TESTING
+			vm.credentials = {};
+			$location.search ('page', null);
+			LayoutCtrl.ctrl.updateAfterLogin ();
+			$location.path (vm.other.returnPage);			
+		};
+
+		vm.loginFailAction = function (data) {
+
 		};
 
 		vm.submitRegister = function (){
