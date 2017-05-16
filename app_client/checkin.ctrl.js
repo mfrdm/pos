@@ -2,6 +2,7 @@ angular.module('posApp')
 	.controller('CheckinCtrl', ['$scope', '$window','$route','CheckinService', CheckinCtrl])
 
 function CheckinCtrl ($scope, $window, $route, CheckinService){
+
 	var vm = this;
 	//////////////////////////////////////////////////////////////////////////////////
 	//Models
@@ -84,7 +85,9 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		headerCheckout:'Checkout',
 		headerEdit:'Edit',
 
-		parentGroup:'Group'
+		parentGroup:'Group',
+
+		noResult: 'There is no result'
 	}
 	vm.model.dom.dataDom.vi = {
 		title: 'Checkin',
@@ -134,7 +137,9 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		headerCheckout:'Checkout',
 		headerEdit:'Chỉnh sửa',
 
-		parentGroup:'Nhóm'
+		parentGroup:'Nhóm',
+
+		noResult: 'Không có kết quả'
 	}
 	vm.model.dom.dataDom.using = vm.model.dom.dataDom.vi;
 
@@ -225,6 +230,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			,
 			customer: currentCus
 		}
+
 	}
 	//Default empty product to add more to orderline
 	// function getDefaultProduct (){
@@ -412,10 +418,8 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 
 	//Select extra product
 	vm.model.other.selectedItem = {};
-	// vm.model.customer.checkingInData.order.orderline = []
 	var count = 0;
 	vm.ctrl.selectService = function(){
-		//if(vm.model.customer.checkingInData.order){
 			vm.model.customer.checkingInData.order.orderline.map(function(ele){
 				if(ele.productName == vm.model.other.selectedItem.name){
 					count += 1;
@@ -431,9 +435,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 				count = 0;
 			}
 			console.log(vm.model.customer.checkingInData.order)
-			count = 0;
-		//}
-		
+			count = 0;		
 	}
 
 	//Delete selected item when checkin
@@ -509,6 +511,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			vm.model.customer.checkingInData.occupancy.service._id = vm.model.customer.services [vm.model.customer.checkingInData.occupancy.service.name]._id
 
 			vm.model.customer.checkingInData.occupancy.checkinTime = new Date();
+
 			$('#checkinModal').foundation('open')
 		}
 	}
@@ -603,16 +606,6 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			})
 		}
 	}
-
-	
-	//Update check in
-	// vm.ctrl.updateCheckin = function(){
-	// 	CheckinService.updateOne(vm.model.customer.editedCheckedInCustomer._id, vm.model.customer.editedCheckedInCustomer.orderline)
-	// 	.then(function success(res){
-	// 		console.log(res)
-	// 		vm.ctrl.reset();
-	// 	})
-	// }
 
 	vm.ctrl.reset = function(){
 		vm.model.customer.editedCheckedInCustomer = {};

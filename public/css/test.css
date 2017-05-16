@@ -248,7 +248,7 @@ ul.listOrder li i{
 .selectedItemDiv{
 	padding: 15px;
 	margin-bottom: 15px;
-	border: 2px solid #69a9d3;
+	border: 1px solid #69a9d3;
 }
 
 .selectedItemDiv label{
@@ -262,7 +262,7 @@ ul.listOrder li i{
 
 /*main checkin section*/
 .addItemSection{
-	border: 2px solid #ccc;
+	border: 1px solid #ccc;
 }
 
 /* Invoice checkout*/
@@ -410,13 +410,13 @@ ul.listOrder li i{
 }
 
 .greenBorderR{
-	border-right: 2px solid #3adb76;
+	border-right: 1px solid #3adb76;
 }
 
 .addPromotion{
 	padding: 15px;
 	margin-bottom: 15px;
-	border: 2px solid #ccc;
+	border: 1px solid #ccc;
 }
 
 .headerModal{
@@ -425,4 +425,14 @@ ul.listOrder li i{
 
 #askCheckout, #announceCheckoutSuccess{
 	z-index: 10;
+}
+
+/* No result */
+.emptyResult{
+	border: 1px solid #ccc;
+	padding: 30px 0;
+}
+
+.emptyResult p {
+	margin-bottom: 0;
 }

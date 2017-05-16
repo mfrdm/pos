@@ -280,6 +280,8 @@ div(class="columns row")
 							td
 								button(type="button" ng-if='customer.status == 1' class="primary button" ng-click="vm.ctrl.editCheckInCustomer (customer)") Edit
 								button(type='button' ng-if='customer.status == 2' class="disabled button") Edit
+			div(class='emptyResult text-center' ng-if='vm.model.customer.checkedInList.length == 0')
+				p {{vm.model.dom.dataDom.using.noResult}}
 
 //Invoice *********************************************//
 div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')

@@ -44,7 +44,6 @@ function Checkin() {
 
 	// assume promocode are validated
 	this.checkin = function(req, res, next) {
-		console.log(req.body.data)
 		var occ = new Occupancy (req.body.data.occupancy);
 
 		if (occ.customer.isStudent)
@@ -85,7 +84,7 @@ function Checkin() {
 						if (customer.checkinStatus == true && newOcc._id.equals (customer.occupancy.pop())){
 
 							if (order){
-								
+								console.log(order)
 								order.save (function (err, newOrder){
 									if (err) {
 										// console.log (err);
