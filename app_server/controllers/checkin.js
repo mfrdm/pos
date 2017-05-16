@@ -46,10 +46,9 @@ function Checkin() {
 	this.checkin = function(req, res, next) {
 		var occ = new Occupancy (req.body.data.occupancy);
 
-		if (occ.customer.isStudent)
-
 		if (req.body.data.order){
 			var order = new Orders (req.body.data.order);
+			order._id = new mongoose.Types.ObjectId ();
 			occ.orders = [order._id];
 		};
 
@@ -63,10 +62,6 @@ function Checkin() {
 			var customerUpdate = {
 				$push: {occupancy: newOcc._id}, 
 				$set:{checkinStatus: true}
-			};
-
-			if (order){
-				customerUpdate.$push.orders = order._id;
 			};
 
 			Customers.findByIdAndUpdate (req.params.cusId, customerUpdate, {upsert: true, new: true}, function (err, customer){
@@ -84,7 +79,7 @@ function Checkin() {
 						if (customer.checkinStatus == true && newOcc._id.equals (customer.occupancy.pop())){
 
 							if (order){
-								console.log(order, 'tessssssssst')
+								order.occupancyId = newOcc._id;
 								order.save (function (err, newOrder){
 									if (err) {
 										// console.log (err);
@@ -146,7 +141,7 @@ function Checkin() {
 	};
 
 
-	this.readCheckinList = function (req, res) {
+	this.readCheckinList = function (req, res, next) {
 		var today = moment ();
 		var start = req.query.start ? moment(req.query.start) : moment (today.format ('YYYY-MM-DD'));
 		var end = req.query.end ? moment(req.query.end + ' 23:59:59') : moment (today.format ('YYYY-MM-DD') + ' 23:59:59');
@@ -195,16 +190,6 @@ function Checkin() {
 		});	
 	};
 
-	//Render ng-view main checkin
-	this.readAngularCheckin = function(req, res) {
-		helper.angularRender( req, res,'checkin/Checkin')
-	};
-
-	this.readAngularOrder = function(req, res) {
-		helper.angularRender( req, res,'orders')
-	};
-
-
 	this.cancelCheckin = function (req, res) {
 		// later
 	}
@@ -225,6 +210,6 @@ function Checkin() {
 				res.json ({data: occ});
 			}
 		});
-	}
+	};
 
 };

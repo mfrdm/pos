@@ -86,6 +86,7 @@ function getTotal (){
 }
 
 var OccupancySchema = new mongoose.Schema({
+	_id: {type: mongoose.Schema.Types.ObjectId, default: mongoose.Types.ObjectId},
 	total: {type: Number, min: 0, default: 0},
 	usage: {type: Number, min: 0}, // in hour
 	paymentMethod: Number, // required. card, cash, account
@@ -120,6 +121,7 @@ var OccupancySchema = new mongoose.Schema({
 		explain: {type: Number},
 		by: {type: mongoose.Schema.Types.ObjectId}, // staff id
 	}],
+	bookingId: {type: mongoose.Schema.Types.ObjectId}, // if any
 	note: [String], // note if something unexpected happens
 });
 

@@ -7,19 +7,23 @@ var apiOptions = helper.getAPIOption();
 module.exports = new Others();
 
 function Others() {
-	this.test = function(req, res){
-		var data = {
-			user:{
 
-			},
-			look:{
-				title:"Home Page",
-				css:['common'],
-				js:['app.js'],
-			}
-		};
-		res.render ('layout', {data: data});
-	}
+	this.getBookingTemplate = function (req, res, next){
+		res.render ('booking');
+	};
+
+	this.getOrderTemplate = function (req, res, next){
+		res.render ('orders');
+	};
+
+	this.getCustomerTemplate = function (req, res, next){
+		res.render ('customer');
+	};
+
+	this.getCheckinTemplate = function (req, res, next){
+		res.render ('checkin');
+	};	
+
 
 	this.angularApp = function (req, res){
 
@@ -40,7 +44,7 @@ function Others() {
 			},
 			look:{
 				title:"Home Page",
-				css:['common'],
+				css:['common', 'layout'],
 				js:['app.js'],
 			}
 		};

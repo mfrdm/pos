@@ -13,7 +13,6 @@ html(ng-app='posApp')
 		link(rel="stylesheet", href="https://fonts.googleapis.com/icon?family=Material+Icons")
 		link(rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css")
 		link(rel="stylesheet" href="/vendor/css/angularjs-datetime-picker.min.css")
-		link(rel="stylesheet", href='/css/test.css')
 		if (data.look.css && data.look.css[0])
 			- var cssFileNum = data.look.css.length
 			- for (var i = 0; i < cssFileNum; i++)
@@ -27,18 +26,18 @@ html(ng-app='posApp')
 						<span class="show-for-large title"> {{ layout.model.dom.pageTitle }}						
 			div(class="medium-10 columns")
 				ul(class="menu float-left")
-					li {{ layout.storeName }} - Wifi: Green Space Chua Lang - Password: greenspace
-				ul(class="menu dropdown float-right stdBox paddingLR15 stdBoxRight" data-dropdown-menu)
-					li(class="childHStdBox"): a(class="button" href="#!/login" ng-show="layout.model.dom.loginBtn") Login
-					li(ng-show="layout.model.dom.notiBtn" class="childHStdBox")
+					li(class="menu-text") {{ layout.model.dept.name }}
+				ul(class="menu dropdown float-right paddingLR15" data-dropdown-menu)
+					li: a(class="button" href="#!/login" ng-show="layout.model.dom.loginBtn") Login
+					li(ng-show="layout.model.dom.notiBtn")
 						a(ng-style='layout.style' class="dropDownNoIcon paddingLR0"): i(class="material-icons") notifications
 						ul(class="menu noti" )
 							li(ng-repeat='noti in layout.notifications')
 								p {{noti.firstname}}
 								p {{noti.msg}}
 
-					li(ng-show="layout.model.dom.accountBtn" class="childHStdBox")
-						a(class="dropDownNoIcon paddingLR0"): i(class="material-icons") account_circle
+					li(ng-show="layout.model.dom.accountBtn" class="paddingT0")
+						a(class="dropDownNoIcon paddingAll0"): i(class="material-icons paddingT5") account_circle
 						ul(class="menu")
 							li: a Profile
 							li: a Setting
@@ -58,7 +57,7 @@ html(ng-app='posApp')
 					li: a(href="/#!/orders") Order
 					li: a(href="/#!/bookings") Booking
 					li: a(href="/#!/customers") Customer
-			div(class="large-10 small-12 columns stdBox" id="mainContentDiv")
+			div(class="large-10 small-12 columns" id="mainContentDiv")
 				//- div(class="row medium-up-3 show-for-medium colorGrey" ng-show="layout.commonStatisticBar")
 					div(class="column column-block text-center")
 						div(class="newBox")

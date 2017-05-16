@@ -67,6 +67,18 @@ label {
 	padding-left: 0!important;
 }
 
+.paddingT0 {
+	padding-top: 0!important;
+}
+
+.paddingAll0 {
+	padding: 0!important;
+}
+
+.paddingT5 {
+	padding-top: 0.313rem;
+}
+
 .paddingT15 {
 	padding-top: .9375rem;
 }

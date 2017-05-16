@@ -342,9 +342,9 @@ ul.listOrder li i{
 #alternativeMenu{
 	height: 100%;
 	position: fixed;
-	width: 16.66667%;
-	max-width: 10vw;
-	top:70.7px;
+	/*width: 16.66667%;*/
+	/*max-width: 10vw;*/
+	top:48px;
 	float: left;
 	min-height: 100vh;
 	padding: 0;
@@ -372,7 +372,7 @@ ul.listOrder li i{
 	position: fixed;
 	z-index: 4;
 	width: 100%;
-	height: 70.7px;
+/*	height: 70.7px;*/
 }
 
 #topNavBar li{
@@ -380,7 +380,7 @@ ul.listOrder li i{
 }
 
 #topNavBar .medium-2{
-	max-width: 10vw;
+	/*max-width: 10vw;*/
 }
 
 #topNavBar .medium-10 li{
@@ -393,7 +393,7 @@ ul.listOrder li i{
 }
 
 #mainContentDiv{
-	min-width: 89vw;
+/*	min-width: 89vw;*/
 	margin-top: 75px;
 	padding-left:30px;
 	padding-right: 30px;

@@ -8,16 +8,16 @@ var auth = jwt ({
     userProperty: 'payload', // NOTICE
 });
 
-var checkinCtrl = require("../controllers/checkin");
+var CheckinCtrl = require("../controllers/checkin");
 var checkoutCtrl = require("../controllers/checkout");
-var bookingCtrl = require("../controllers/booking.ctrl");
+var BookingCtrl = require("../controllers/booking.ctrl");
 var hrCtrl = require("../controllers/hr");
 var biCtrl = require("../controllers/bi");
 var assetsCtrl = require("../controllers/assets");
-var customersCtrl = require("../controllers/customers");
+var CustomersCtrl = require("../controllers/customers");
 var finCtrl = require("../controllers/fin");
 var companiesCtrl = require("../controllers/companies");
-var othersCtrl = require("../controllers/others");
+var OthersCtrl = require("../controllers/others");
 var deptsCtrl = require("../controllers/depts");
 var productsCtrl = require("../controllers/products");
 var promoCodesCtrl = require ('../controllers/promoCodes.ctrl');
@@ -34,27 +34,32 @@ router.get('/auth/google/callback',
 	)
 );
 
-// router.get('/', auth, othersCtrl.angularApp); // TEST local authen
-router.get('/', othersCtrl.angularApp);
+// router.get('/', auth, OthersCtrl.angularApp); // TEST local authen
+router.get('/', OthersCtrl.angularApp);
+
+//Login page
+router.get('/login', OthersCtrl.login);
+router.get('/register', OthersCtrl.register);
+
+// get template
+router.get('/template/checkin', OthersCtrl.getCheckinTemplate);
+router.get('/template/customers', OthersCtrl.getCustomerTemplate);
+router.get('/template/bookings', OthersCtrl.getBookingTemplate);
+router.get('/template/orders', OthersCtrl.getOrderTemplate);
 
 // Checkin
-router.get('/angular/checkin', checkinCtrl.readAngularCheckin);
-// router.get('/angular/checkin-list', checkinCtrl.readCheckinList);
-router.get('/checkin', checkinCtrl.readCheckinList);
-router.post ('/checkin/cancel', checkinCtrl.cancelCheckin);
-
-router.get('/angular/orders', checkinCtrl.readAngularOrder);
-
-router.post('/checkin/customer/:cusId', checkinCtrl.checkin);
-router.get ('/checkin/search-customers', checkinCtrl.searchCheckingCustomers);
-router.post('/checkin/customer/edit/:occId', checkinCtrl.updateCheckin);
-router.get ('/checkin/validate-promotion-code', checkinCtrl.validatePromocodes);
+router.get('/checkin', CheckinCtrl.readCheckinList);
+router.post ('/checkin/cancel', CheckinCtrl.cancelCheckin);
+router.post('/checkin/customer/:cusId', CheckinCtrl.checkin);
+router.get ('/checkin/search-customers', CheckinCtrl.searchCheckingCustomers);
+router.post('/checkin/customer/edit/:occId', CheckinCtrl.updateCheckin);
+router.get ('/checkin/validate-promotion-code', CheckinCtrl.validatePromocodes);
 
 router.get('/checkout/invoice/:occId', checkoutCtrl.createInvoice);
 router.post('/checkout', checkoutCtrl.confirmCheckout);
 
-router.get ('/occupancies/', checkinCtrl.readOccupancies);
-// router.get ('/occupancies/occupancy/:occId', checkinCtrl.readOneOccupancy);
+router.get ('/occupancies/', CheckinCtrl.readOccupancies);
+// router.get ('/occupancies/occupancy/:occId', CheckinCtrl.readOneOccupancy);
 
 router.get ('/orders/', OrdersCtrl.readOrders);
 router.post ('/orders/confirm', OrdersCtrl.confirmCheckout);
@@ -62,35 +67,30 @@ router.post ('/orders/checkout', OrdersCtrl.checkout);
 router.get ('/orders/order/:orderId', OrdersCtrl.readAnOrder);
 router.post ('/orders/order/:orderId/edit', OrdersCtrl.updateAnOrder);
 
-router.get('/bookings', bookingCtrl.readBooking);
-router.post('/bookings/', bookingCtrl.booking);
-router.post('/bookings/:bookingId/edit', bookingCtrl.updateBooking);
-router.get('/bookings/booking/:bookingId', bookingCtrl.readOneBooking);
-router.get('/angular/bookings', bookingCtrl.readAngularBooking)
+router.get('/bookings', BookingCtrl.readSomeBookings);
+router.post('/bookings/:customerId', BookingCtrl.booking);
+router.post('/bookings/:bookingId/edit', BookingCtrl.updateBooking);
+router.get('/bookings/booking/:bookingId', BookingCtrl.readOneBooking);
 
 router.get('/hr', hrCtrl.readOverview);
 router.get('/hr/employees/employee/:uId', hrCtrl.readOneUser);
 router.post('/hr/employees/employee/:uId/edit', hrCtrl.editOneUser);
 router.get('/angular/employees', hrCtrl.readAngularEmployees);
 
-// router.get('/angular/combo', combosCtrl.readAngularCombo);
-// router.post ('/combos/buy', combosCtrl.buy)
-
 // router.get('/bi', biCtrl.readReport);
 
-// router.get('/assets', auth, assetsCtrl.readSomeAsset); // TEST local authen
 router.get('/assets', assetsCtrl.readSomeAsset);
 router.get('/assets/asset/:assetId', assetsCtrl.readOneAssetById);
 router.post('/assets/create', assetsCtrl.createOneAsset);
 router.post('/assets/asset/:assetid/edit', assetsCtrl.updateOneAsset);
 router.get('/angular/assets', assetsCtrl.readAngularAsset);
 
-router.get('/customer-management', customersCtrl.readOverview);
-router.get('/customers', customersCtrl.readSomeCustomers);
-router.get('/customers/customer/:cusId', customersCtrl.readOneCustomerById);
-router.post('/customers/create', customersCtrl.createOneCustomer);
-router.post('/customers/customer/:cusId/edit', customersCtrl.updateOneCustomer);
-router.get('/angular/customers', customersCtrl.readAngularCustomers);
+router.get('/customer-management', CustomersCtrl.readOverview);
+router.get('/customers', CustomersCtrl.readSomeCustomers);
+router.get('/customers/customer/:cusId', CustomersCtrl.readOneCustomerById);
+router.post('/customers/create', CustomersCtrl.createOneCustomer);
+router.post('/customers/customer/:cusId/edit', CustomersCtrl.updateOneCustomer);
+router.get('/angular/customers', CustomersCtrl.readAngularCustomers);
 
 router.get('/fin/costs', finCtrl.readSomeCosts);
 router.post('/fin/costs/create', finCtrl.createOneCost);
@@ -110,28 +110,15 @@ router.get('/products/product/:productId', productsCtrl.readOneProductById);
 router.post('/products/product/:productId/edit', productsCtrl.updateOneProduct);
 router.get('/angular/products', productsCtrl.readAngularProducts);
 
-router.get('/angular/attendances', othersCtrl.readAngularAttendance);
+router.get('/angular/attendances', OthersCtrl.readAngularAttendance);
 
 router.get ('/promo-codes', promoCodesCtrl.readSomeCodes);
 router.get ('/promo-codes/code/:codeId', promoCodesCtrl.readOneCodeById);
 router.post ('/promo-codes/create', promoCodesCtrl.createOneCode);
 router.post ('/promo-codes/code/:codeId', promoCodesCtrl.updateOneCode);
 
-// router.post ('/combos/customer/:customerId', combosCtrl.purchaseCombos);
-
 // Others
-router.get ('/components/template/message', othersCtrl.getMessageTemplate);
-router.get ('/components/template/asset', othersCtrl.getAssetTemplate);
+router.get ('/components/template/message', OthersCtrl.getMessageTemplate);
+router.get ('/components/template/asset', OthersCtrl.getAssetTemplate);
 
-//Login page
-router.get('/login', othersCtrl.login);
-router.get('/register', othersCtrl.register);
-
-// function isLoggedIn(req, res, next) {
-// 	// if user is authenticated in the session, carry on
-// 	if (req.isAuthenticated())
-// 		return next();
-// 	// if they aren't redirect them to the home page
-// 	res.redirect('/');
-// }
 module.exports = router;
