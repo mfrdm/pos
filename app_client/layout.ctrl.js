@@ -11,9 +11,7 @@
 			ctrl: {},
 		};
 
-		$scope.layout.model.user = {
-
-		};	
+		$scope.layout.model.user = {};	
 
 		$scope.layout.model.company = {
 			contact: {
@@ -35,9 +33,9 @@
 		};
 
 		$scope.layout.model.summary = {
-			customerNumber: 100, // TESTING
-			bookingNumber: 20, // TESTING
-			staffNumber: 2, // TESTING
+			// customerNumber: 100, // TESTING
+			// bookingNumber: 20, // TESTING
+			// staffNumber: 2, // TESTING
 		};		
 
 		$scope.layout.model.dom  = {
@@ -49,6 +47,18 @@
 			returnPage: '/checkin' // default
 		};
 
+		$scope.layout.ctrl.addCompany = function (data){
+			$scope.layout.model.company = data;
+		};
+
+		$scope.layout.ctrl.addDept = function (data){
+			$scope.layout.model.dept = data;
+		};		
+
+		$scope.layout.ctrl.addUser = function (data){
+			$scope.layout.model.user = data;
+		};
+
 		$scope.layout.ctrl.updateAfterLogin = function (){
 			$scope.layout.model.dom.loginBtn = false;
 			$scope.layout.model.dom.accountBtn = true;
@@ -56,13 +66,13 @@
 			$scope.layout.model.dom.sideBarMenu = true;
 		}		
 
-		$scope.layout.updateMessage = function (message, mode) {
+		$scope.layout.ctrl.updateMessage = function (message, mode) {
 			$scope.layout.message = message;
 			$scope.layout.messageMode = mode;
 			$scope.layout.messageDiv = true;
 		};
 
-		$scope.layout.closeMessageDiv = function (){
+		$scope.layout.ctrl.closeMessageDiv = function (){
 			$scope.layout.messageDiv = false;
 		}
 

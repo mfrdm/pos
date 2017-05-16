@@ -14,17 +14,17 @@ function config ($locationProvider, $routeProvider){
 	$routeProvider
 		.when ('/login', {
 			templateUrl: '/login',
-			// resolve: {
-			// 	'checkAuth': ['$q', 'authentication','$location', '$rootScope', checkAuth]
-			// },			
+			resolve: {
+				'checkAuth': ['$q', 'authentication','$location', '$rootScope', checkAuth]
+			},			
 			controller: 'LoginCtrl',
 			controllerAs: 'vm',			
 		})
 		.when ('/register', {
 			templateUrl: '/register',
-			// resolve: {
-			// 	'checkAuth': ['$q', 'authentication', '$location', checkAuth]
-			// },			
+			resolve: {
+				'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
+			},			
 			controller: 'RegisterCtrl',
 			controllerAs: 'vm',
 		})	
@@ -114,12 +114,23 @@ function config ($locationProvider, $routeProvider){
 // Check if a user has permission to access a certain page or resource
 function checkAuth ($q, authentication, $location, $rootScope) {
 	var Layout = $rootScope.$$childHead.layout;
-	Layout.model.dom.returnPage = $location.path();
 
 	var deferred = $q.defer();
 
 	if (!authentication.isLoggedIn ()){
-		$location.path ('/login')
+		if ($location.path() != '/login' && $location.path() != '/register'){
+			Layout.model.dom.returnPage = $location.path();
+			$location.path ('/login');
+		}
+		
+	}
+	else{
+		if ($location.path() == '/login' || $location.path() == '/register'){
+			$location.path (Layout.model.dom.returnPage);
+		}
+		else {
+			Layout.model.dom.returnPage = $location.path();
+		}	
 	}
 
 	deferred.resolve ();
