@@ -30,7 +30,7 @@ function config ($locationProvider, $routeProvider){
 		})	
 
 		.when('/checkin', {
-			templateUrl : "/angular/checkin",
+			templateUrl : "/template/checkin",
 			resolve: {
 				'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
 			},			
@@ -38,71 +38,71 @@ function config ($locationProvider, $routeProvider){
 			controllerAs:"vm"
 		})
 		.when('/orders', {
-			templateUrl : "/angular/orders",
+			templateUrl : "/template/orders",
 			controller:"OrderCtrl",
 			controllerAs:"vm"
 		})
 		.when('/customers', {
-			templateUrl : "/angular/customers",
+			templateUrl : "/template/customers",
 			resolve: {
 				'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
 			},			
 			controller: "CustomerCtrl",
 			controllerAs:'vm'
 		})
-		.when ('/assets', {
-			templateUrl: '/assets',
-			resolve: {
-				'checkAuth': ['$q', 'authentication','$location', '$rootScope', checkAuth]
-			},
-			controller: 'assetsCtrl',
-			controllerAs: 'vm',
-		})
-		.when ('/fin', {
-			templateUrl: '/fin/costs',
-			resolve: {
-				'checkAuth': ['$q', 'authentication','$location', '$rootScope', checkAuth]
-			},			
-			controller: 'costsCtrl',
-			controllerAs: 'vm',
-		})
-		.when("/attendance", {
-			templateUrl: "/angular/attendances",
-			resolve: {
-				'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
-			},			
-			controller: "AttendanceCtrl",
-			controllerAs: 'vm'
-		})
-		.when("/store", {
-			templateUrl: "/angular/depts",
-			resolve: {
-				'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
-			},			
-			controller: "DeptCtrl",
-			controllerAs: 'vm'
-		})
-		.when("/products", {
-			templateUrl: "/angular/products",
-			resolve: {
-				'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
-			},			
-			controller: "ProductCtrl",
-			controllerAs: 'vm'
-		})
-		.when('/hr', {
-			templateUrl: "/angular/employees",
-			controller: "EmployeeCtrl",
-			controllerAs: 'vm'
-		})
 		.when('/bookings', {
-			templateUrl: "/angular/bookings",
+			templateUrl: "/template/bookings",
 			resolve: {
 				'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
 			},			
 			controller: "BookingCtrl",
 			controllerAs: 'vm'
-		})
+		})		
+		// .when ('/assets', {
+		// 	templateUrl: '/assets',
+		// 	resolve: {
+		// 		'checkAuth': ['$q', 'authentication','$location', '$rootScope', checkAuth]
+		// 	},
+		// 	controller: 'assetsCtrl',
+		// 	controllerAs: 'vm',
+		// })
+		// .when ('/fin', {
+		// 	templateUrl: '/fin/costs',
+		// 	resolve: {
+		// 		'checkAuth': ['$q', 'authentication','$location', '$rootScope', checkAuth]
+		// 	},			
+		// 	controller: 'costsCtrl',
+		// 	controllerAs: 'vm',
+		// })
+		// .when("/attendance", {
+		// 	templateUrl: "/template/attendances",
+		// 	resolve: {
+		// 		'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
+		// 	},			
+		// 	controller: "AttendanceCtrl",
+		// 	controllerAs: 'vm'
+		// })
+		// .when("/store", {
+		// 	templateUrl: "/template/depts",
+		// 	resolve: {
+		// 		'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
+		// 	},			
+		// 	controller: "DeptCtrl",
+		// 	controllerAs: 'vm'
+		// })
+		// .when("/products", {
+		// 	templateUrl: "/template/products",
+		// 	resolve: {
+		// 		'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
+		// 	},			
+		// 	controller: "ProductCtrl",
+		// 	controllerAs: 'vm'
+		// })
+		// .when('/hr', {
+		// 	templateUrl: "/template/employees",
+		// 	controller: "EmployeeCtrl",
+		// 	controllerAs: 'vm'
+		// })
 		// .when ('/error', {
 		// 	templateUrl: "/error",
 		// 	controller: "ErrorCtrl",

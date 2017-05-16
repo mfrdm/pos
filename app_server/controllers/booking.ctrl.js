@@ -8,9 +8,9 @@ var mongoose = require ('mongoose');
 var Bookings = mongoose.model ('bookings');
 var moment = require ('moment');
 
-module.exports = new Booking();
+module.exports = new BookingCtrl();
 
-function Booking() {
+function BookingCtrl() {
 
 	this.readSomeBookings = function(req, res, next) {
 		var today = moment ();

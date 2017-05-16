@@ -210,6 +210,6 @@ function Checkin() {
 				res.json ({data: occ});
 			}
 		});
-	}
+	};
 
 };

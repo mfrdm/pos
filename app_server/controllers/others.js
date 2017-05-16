@@ -7,6 +7,24 @@ var apiOptions = helper.getAPIOption();
 module.exports = new Others();
 
 function Others() {
+
+	this.getBookingTemplate = function (req, res, next){
+		res.render ('booking');
+	};
+
+	this.getOrderTemplate = function (req, res, next){
+		res.render ('orders');
+	};
+
+	this.getCustomerTemplate = function (req, res, next){
+		res.render ('customer');
+	};
+
+	this.getCheckinTemplate = function (req, res, next){
+		res.render ('checkin');
+	};	
+
+
 	this.angularApp = function (req, res){
 
 		//var listFile = ['checkin', 'checkout', 'customers', 'assets', 'costs', 'home'];
