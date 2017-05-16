@@ -3,48 +3,34 @@
 		.module ('posApp')
 		.controller ('LoginCtrl', ['$route', '$scope', '$location', 'authentication', LoginCtrl])
 
-
 	function LoginCtrl ($route, $scope, $location, authentication) {
-		var vm = this;
 		var LayoutCtrl = $scope.$parent.layout;
+		var vm = this;
+		vm.model = {};
+		vm.ctrl = {};
 
-		vm.other = {};
-		
-		vm.other.returnPage = LayoutCtrl.model.dom.returnPage || '/checkin';
-
-		vm.credentials = {
-			firstname: '',
-			lastname: '',
-			midname: '',
-			email: '',
-			birthday: '',
-			gender: '',
-			phone: '',
-			password: '',
-			username: '', // phone or email
+		vm.model.dom = {
+			returnPage: LayoutCtrl.model.dom.returnPage || '/checkin',
 		}
 
-		vm.loginSuccessAction = function (data) {
-			// var storeName = 'Green Space Chua Lang 82/70'; // TESTING
-			vm.credentials = {};
+		vm.model.user = {
+			password: '',
+			username: '', // phone or email			
+		}
+
+		vm.ctrl.loginSuccessAction = function (data) {
+			LayoutCtrl.ctrl.addUser (authentication.getCurUser());
 			$location.search ('page', null);
 			LayoutCtrl.ctrl.updateAfterLogin ();
-			$location.path (vm.other.returnPage);			
+			$location.path (vm.model.dom.returnPage);			
 		};
 
-		vm.loginFailAction = function (data) {
-
+		vm.ctrl.loginFailAction = function (data) {
+			// display message
 		};
 
-		vm.submitLogin = function (){
-			authentication.login (vm.credentials, vm.loginSuccessAction, vm.loginFailAction);
-		};
-
-
-		vm.logout = function (){
-			authentication.logout (null, function (){
-				$location.path ('/login');					
-			});
+		vm.ctrl.submitLogin = function (){
+			authentication.login (vm.model.user, vm.ctrl.loginSuccessAction, vm.ctrl.loginFailAction);
 		};
 	}
 

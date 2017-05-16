@@ -32,7 +32,6 @@
 			var auth = this;
 			return $http.post ('/api/login', user).then (
 				function (data){
-					console.log (data)
 					auth.saveToken (data.data.token);
 					successAction (data);
 				},

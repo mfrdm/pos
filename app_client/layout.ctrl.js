@@ -111,6 +111,7 @@
 		angular.element(document).ready(function () {
 			$("body").foundation();
 			if (authentication.isLoggedIn ()){
+				$scope.layout.ctrl.addUser (authentication.getCurUser());
 				$scope.layout.ctrl.updateAfterLogin ();
 			}
 

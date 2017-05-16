@@ -104,9 +104,10 @@ usersSchema.methods.generateJwt = function (passwd, dayNum){
 	return jwt.sign ( // include fields to return when user login or register
 		{	
 			_id: this._id,
-			phone: this.phone,
+			phone: this.phone ? this.phone[0] : '',
 			firstname: this.firstname,
 			lastname: this.lastname,
+			email: this.email ? this.email[0] : '',
 			exp: parseInt(expiry.getTime() / 1000)
 		},
 		process.env.JWT_SECRET

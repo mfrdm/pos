@@ -1,25 +1,20 @@
 var mongoose = require('mongoose');
 
 var bookingSchema = mongoose.Schema({
-	// _customer: {type: mongoose.Schema.Types.ObjectId, ref:'customers', required:true},//Fix: may ref instead of embedded name
 	customer:{
 		id: {type: mongoose.Schema.Types.ObjectId},
 		firstname: String,
 		middlename: String,
 		lastname: String,
-		email: String
+		email: String,
+		phone: String,
+		isStudent: Boolean,
 	},
 	checkinTime: {type: Date, required: true},
 	checkoutTime: {type: Date}, 
-	storeId: {type: String},
-	// promoteCode: [{type: String}],
-	orderline: [
-		{
-			productId: {type: mongoose.Schema.Types.ObjectId},
-			quantity: Number,
-		}
-	],
-	status: {type:Number, default: 3}, 
+	storeId: {type: mongoose.Schema.Types.ObjectId},
+	staffId: {type: mongoose.Schema.Types.ObjectId},
+	status: {type:Number, default: 3}, // default is pendding
 	updatedAt: [{
 		time: {type: Date}, 
 		explain: String,

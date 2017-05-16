@@ -46,6 +46,8 @@ var redeemUsage = function (code, usage){
 		else usage = usage - 2;		
 	}
 
+	usage = Number(Math.round(usage+'e1')+'e-1');
+
 	return usage
 };
 

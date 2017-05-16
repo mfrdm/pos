@@ -2,7 +2,9 @@ angular.module('posApp')
 	.controller('CheckinCtrl', ['$scope', '$window','$route','CheckinService', CheckinCtrl])
 
 function CheckinCtrl ($scope, $window, $route, CheckinService){
+	var LayoutCtrl = $scope.$parent.layout;
 	var vm = this;
+
 	//////////////////////////////////////////////////////////////////////////////////
 	//Models
 	//Root vm

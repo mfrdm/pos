@@ -276,7 +276,7 @@ describe ('Read orders', function (){
 
 	});
 
-	xit ('should return orders on today if day range is not provided', function (done){
+	it ('should return orders on today if day range is not provided', function (done){
 		chai.request (server)
 			.get ('/orders')
 			.query (query)
@@ -328,7 +328,7 @@ describe ('Read orders', function (){
 });
 
 describe ('Update an order', function (){
-
+	// later
 });
 
 

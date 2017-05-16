@@ -31,6 +31,7 @@
 
 		vm.ctrl.registerSuccessAction = function (data) {
 			vm.model.user = {};
+			LayoutCtrl.ctrl.addUser (authentication.getCurUser());
 			LayoutCtrl.ctrl.updateAfterLogin ();
 			$location.path (vm.model.dom.returnPage);			
 		};
