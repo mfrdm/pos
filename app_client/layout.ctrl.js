@@ -6,7 +6,6 @@
 			model: {
 				dom: {},
 				user: {},
-				customers: {},
 				dept:{},
 			},
 			ctrl: {},
@@ -14,11 +13,7 @@
 
 		$scope.layout.model.user = {
 
-		};
-
-		$scope.layout.model.customers = {
-
-		};		
+		};	
 
 		$scope.layout.model.company = {
 			contact: {
@@ -50,7 +45,8 @@
 			loginBtn: true,
 			accountBtn: false,
 			notiBtn: false,
-			sideBarMenu: false
+			sideBarMenu: false,
+			returnPage: '/checkin' // default
 		};
 
 		$scope.layout.ctrl.updateAfterLogin = function (){

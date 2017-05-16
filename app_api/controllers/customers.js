@@ -26,8 +26,8 @@ function CustomerCtrl() {
 
 	this.createManyCustomers = function (req, res, next){
 		console.log (req.body.data);
-		console.log (req.body.data.length);
-		// Customers.insertMany (req.)
+
+		
 	}
 
 };

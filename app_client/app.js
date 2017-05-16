@@ -15,7 +15,7 @@ function config ($locationProvider, $routeProvider){
 		.when ('/login', {
 			templateUrl: '/login',
 			// resolve: {
-			// 	'checkAuth': ['$q', 'authentication','$location', checkAuth]
+			// 	'checkAuth': ['$q', 'authentication','$location', '$rootScope', checkAuth]
 			// },			
 			controller: 'LoginCtrl',
 			controllerAs: 'vm',			
@@ -120,7 +120,7 @@ function checkAuth ($q, authentication, $location, $rootScope) {
 
 	if (!authentication.isLoggedIn ()){
 		$location.path ('/login')
-	}	
+	}
 
 	deferred.resolve ();
 	return deferred.promise;

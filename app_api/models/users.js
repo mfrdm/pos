@@ -35,12 +35,10 @@ var usersSchema = mongoose.Schema({
 	lastname: {type: String, required: true},
 	birthday: {type: Date, required: true},
 	gender: {type: Number, required: true},
-	phone: {type: String, required: true},
-	// secondPhones: [{type: String}],
+	phone: [{type: String, required: true}],
 	// tempAddress: addrSchema,
 	// perAddress: addrSchema,
-	email: {type: String},
-	secondEmails: [{type: String}],
+	email: [{type: String, required: true}],
 	edu: [eduSchema],
 	workexp: [workexpSchema], // past working experience 
 	/////////////////////////////////// Sercurity
@@ -88,6 +86,7 @@ var usersSchema = mongoose.Schema({
 // }
 
 usersSchema.methods.setPassword = function (passwd){
+	console.log (passwd)
 	this.salt = crypto.randomBytes(16).toString('hex');
 	this.hash = crypto.pbkdf2Sync(passwd, this.salt, 1000, 64).toString('hex');
 };

@@ -1,44 +1,46 @@
 (function () {
 	angular
 		.module ('posApp')
-		.controller ('RegisterCtrl', ['$location', 'authentication', RegisterCtrl])
+		.controller ('RegisterCtrl', ['$scope', '$location', 'authentication', RegisterCtrl])
 
 
-	function RegisterCtrl ($location, authentication) {
+	function RegisterCtrl ($scope, $location, authentication) {
 		var vm = this;
 		var LayoutCtrl = $scope.$parent.layout;
-		vm.other = {};
-		vm.other.returnPage = LayoutCtrl.model.dom.returnPage || '/checkin';
-		vm.credentials = {
+		vm.model = {};
+		vm.ctrl = {};
+		vm.model.user = {
 			firstname: '',
 			lastname: '',
-			midname: '',
+			middlename: '',
 			email: '',
 			birthday: '',
 			gender: '',
 			phone: '',
 			password: '',
-			username: '', // phone or email
+			username: '', // phone or email			
 		}
 
-		vm.registerFailAction = function (err){
+		vm.model.dom = {
+			returnPage: LayoutCtrl.model.dom.returnPage || '/checkin',
+		}
+
+		vm.ctrl.registerFailAction = function (err){
 			// display message
 		};
 
-		vm.registerSuccessAction = function (data) {
-			// var storeName = 'Green Space Chua Lang 82/70'; // TESTING
-			vm.credentials = {};
-			$location.search ('page', null);
+		vm.ctrl.registerSuccessAction = function (data) {
+			vm.model.user = {};
 			LayoutCtrl.ctrl.updateAfterLogin ();
-			$location.path (vm.other.returnPage);			
+			$location.path (vm.model.dom.returnPage);			
 		};
 
-		vm.loginFailAction = function (data) {
-
+		vm.ctrl.loginFailAction = function (data) {
+			// display warning message
 		};
 
-		vm.submitRegister = function (){
-			authentication.register (vm.credentials, vm.registerSuccessAction, vm.registerFailAction);
+		vm.ctrl.submitRegister = function (){
+			authentication.register (vm.model.user, vm.ctrl.registerSuccessAction, vm.ctrl.registerFailAction);
 		};
 
 	}
