@@ -9,15 +9,6 @@ var eduSchema = new mongoose.Schema({
 	end: {type: Date}, // max = start + 6 years
 });	
 
-var combosSchema = new mongoose.Schema ({
-	_id: mongoose.Schema.Types.ObjectId, 
-	value: String,
-	product: {
-		_id: mongoose.Schema.Types.ObjectId,
-		name: String,
-	},
-	expired: Date,
-});
 
 var customersSchema = mongoose.Schema({
 	firstname: {type:String, required: true},
@@ -25,11 +16,11 @@ var customersSchema = mongoose.Schema({
 	lastname: {type:String, required: true},
 	// gender: {type: Number, required: true},
 	gender: Number,
-	birthday: {type: Date, required: true},
+	// birthday: {type: Date, required: true},
 	phone: [{type: String}],
 	email: [{type: String}], // manuallt required in some cases
 	edu: [eduSchema],
-	isStudent: {type: Boolean, required: true, default: false},
+	isStudent: {type: Boolean, default: false},
 	createdAt: {type: Date, default: Date.now},
 	updatedAt: [{
 		time: {type: Date}, 
@@ -38,15 +29,7 @@ var customersSchema = mongoose.Schema({
 	}],
 	occupancy: [{type: mongoose.Schema.Types.ObjectId}],
 	bookings: [{type:mongoose.Schema.Types.ObjectId}],
-	promoteCode: [{code: String, expire: Date,}],
 	checkinStatus: {type: Boolean, default: false},
-	balance: {
-		oneDay: [combosSchema],
-		threeDays: [combosSchema],
-		oneMonth: [combosSchema],
-		threeMonths: [combosSchema],
-		oneYear: [combosSchema],	
-	},
 	////////// Login Google
 	google: { // not complete
 		token: String,
