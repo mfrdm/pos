@@ -25,6 +25,7 @@
 
 		vm.look.bookingDiv = false;
 		vm.look.bookingSearchResultDiv = false;
+		vm.look.filter = true;
 
 		vm.model = {};
 
@@ -59,11 +60,21 @@
 		vm.toggleBookingDiv = function (){
 			if (!vm.look.bookingDiv){
 				vm.look.bookingDiv = true;
+				vm.look.filter = false;
 			}
 			else{
 				vm.look.bookingDiv = false;
+				vm.look.filter = true;
 			}
 		};
+		vm.toggleFilterDiv = function(){
+			if (!vm.look.filter){
+				vm.look.filter = true;
+			}
+			else{
+				vm.look.filter = false;
+			}
+		}
 		////////////////////////////////////////////////////////
 		//Get products list
 		otherService.readSome('products')
@@ -119,8 +130,8 @@
 						bookingData.customer.lastname = vm.customer.results[index].lastname
 						bookingData.customer.middlename = vm.customer.results[index].middlename
 						bookingData.customer.email = vm.customer.results[index].email[0]
-						bookingData.checkinTime = new Date(vm.customer.intime.year, vm.customer.intime.month - 1, vm.customer.intime.day, vm.customer.intime.hour, vm.customer.intime.minute)
-						bookingData.checkoutTime = new Date(vm.customer.outtime.year, vm.customer.outtime.month - 1, vm.customer.outtime.day, vm.customer.outtime.hour, vm.customer.outtime.minute)
+						bookingData.checkinTime = new Date(vm.customer.intime.day.getFullYear(),vm.customer.intime.day.getMonth(), vm.customer.intime.day.getDate(), vm.customer.intime.hour, vm.customer.intime.minute)
+						bookingData.checkoutTime = new Date(vm.customer.outtime.day.getFullYear(),vm.customer.outtime.day.getMonth(),vm.customer.outtime.day.getDate(), vm.customer.outtime.hour, vm.customer.outtime.minute)
 						bookingData.message = vm.customer.message
 						// bookingData.storeName = vm.customer.location.name;
 						// bookingData.productName = vm.customer.service.name;
@@ -130,7 +141,6 @@
 						console.log(vm.customer.service.name)
 						bookingData.orderline.productId = vm.data.serviceNames.filter(function(ele){return ele.name == vm.customer.service.name})[0]._id
 						bookingData.storeId = vm.data.locationNames.filter(function(ele){return ele.name == vm.customer.location.name})[0]._id
-						console.log(bookingData)
 						bookingService.createOne(bookingData)
 							.then(function success(res){
 								console.log(res)

@@ -97,12 +97,12 @@ div(class="columns row")
 											p {{ vm.model.customer.checkingInData.occupancy.checkinTime | date:'dd/MM/yyyy'}}
 
 								//Other Products
-								//- div(class="borderT newBox row column" ng-if='vm.model.customer.checkingInData.occupancy.orderline.length > 1')
+								div(class="borderT newBox row column" ng-if='vm.model.customer.checkingInData.order.orderline.length > 0')
 									div(class='row column' )
 										div(class='column small-4 text-right')
 											p {{vm.model.dom.dataDom.using.invoiceOtherProducts}}
 										div(class='column small-8 greenBorder')
-											div(class='row column small-12' ng-repeat='service in vm.model.customer.checkingInData.occupancy.orderline.slice(1)')
+											div(class='row column small-12' ng-repeat='service in vm.model.customer.checkingInData.order.orderline')
 												div(class='column small-6 paddingLR0 marginT0')
 													p {{ service.productName}}
 												div(class='column small-6 marginT0')
@@ -280,6 +280,8 @@ div(class="columns row")
 							td
 								button(type="button" ng-if='customer.status == 1' class="primary button" ng-click="vm.ctrl.editCheckInCustomer (customer)") Edit
 								button(type='button' ng-if='customer.status == 2' class="disabled button") Edit
+			div(class='emptyResult text-center' ng-if='vm.model.customer.checkedInList.length == 0')
+				p {{vm.model.dom.dataDom.using.noResult}}
 
 //Invoice *********************************************//
 div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')

@@ -39,7 +39,8 @@ function CheckinService ($http, $q){
 			method:'GET',
 			url:'/checkin',
 			params: {
-				storeId:'59112972685d0127e59de962'
+				storeId:'59112972685d0127e59de962',
+				status:4
 			},
 		})
 	}

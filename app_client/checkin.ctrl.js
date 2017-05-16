@@ -86,7 +86,9 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		headerCheckout:'Checkout',
 		headerEdit:'Edit',
 
-		parentGroup:'Group'
+		parentGroup:'Group',
+
+		noResult: 'There is no result'
 	}
 	vm.model.dom.dataDom.vi = {
 		title: 'Checkin',
@@ -136,7 +138,9 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		headerCheckout:'Checkout',
 		headerEdit:'Chỉnh sửa',
 
-		parentGroup:'Nhóm'
+		parentGroup:'Nhóm',
+
+		noResult: 'Không có kết quả'
 	}
 	vm.model.dom.dataDom.using = vm.model.dom.dataDom.vi;
 
@@ -211,7 +215,6 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			customer:{},
 			storeId:vm.model.customer.storeId,
 			staffId:vm.model.customer.staffId,
-			occupancyId:''
 		}
 	}
 	//Get customer data from current created Customer
@@ -227,6 +230,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			,
 			customer: currentCus
 		}
+
 	}
 	//Default empty product to add more to orderline
 	// function getDefaultProduct (){
@@ -414,10 +418,8 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 
 	//Select extra product
 	vm.model.other.selectedItem = {};
-	// vm.model.customer.checkingInData.order.orderline = []
 	var count = 0;
 	vm.ctrl.selectService = function(){
-		//if(vm.model.customer.checkingInData.order){
 			vm.model.customer.checkingInData.order.orderline.map(function(ele){
 				if(ele.productName == vm.model.other.selectedItem.name){
 					count += 1;
@@ -433,9 +435,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 				count = 0;
 			}
 			console.log(vm.model.customer.checkingInData.order)
-			count = 0;
-		//}
-		
+			count = 0;		
 	}
 
 	//Delete selected item when checkin
@@ -503,7 +503,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	vm.ctrl.confirmCheckin = function(code){
 		if(vm.model.customer.checkingInData.occupancy.customer.firstname){
 			vm.model.customer.checkingInData.occupancy.storeId = vm.model.customer.storeId;
-			vm.model.customer.checkingInData.occupancy.staffId = vm.model.customer.userId;
+			vm.model.customer.checkingInData.occupancy.staffId = vm.model.customer.staffId;
 			vm.model.customer.checkingInData.occupancy.promocodes = code.map(function(ele){
 				return {name:ele.name, _id:ele._id, codeType: ele.codeType}//need to get id from database
 			});
@@ -511,6 +511,12 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			vm.model.customer.checkingInData.occupancy.service._id = vm.model.customer.services [vm.model.customer.checkingInData.occupancy.service.name]._id
 
 			vm.model.customer.checkingInData.occupancy.checkinTime = new Date();
+
+			//Remove order if there is no orderline
+			if(vm.model.customer.checkingInData.order.orderline.length == 0){
+				vm.model.customer.checkingInData.order = null
+			}
+
 			$('#checkinModal').foundation('open')
 		}
 	}
@@ -518,9 +524,11 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	vm.ctrl.checkin = function(){
 		// before checkin
 		CheckinService.createOne (vm.model.customer.checkingInData.occupancy.customer._id, vm.model.customer.checkingInData).then(
-			function success(data){
-				vm.model.customer.checkedInList.push (data.data.data);
-				vm.ctrl.reset();
+			function success(res){
+				console.log(res.data.data)
+				vm.model.customer.checkedInList.push (res.data.data.occupancy);
+				$window.location.reload();
+				//vm.ctrl.reset();
  			}, 
 			function error(err){
 				console.log(err);
@@ -605,16 +613,6 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			})
 		}
 	}
-
-	
-	//Update check in
-	// vm.ctrl.updateCheckin = function(){
-	// 	CheckinService.updateOne(vm.model.customer.editedCheckedInCustomer._id, vm.model.customer.editedCheckedInCustomer.orderline)
-	// 	.then(function success(res){
-	// 		console.log(res)
-	// 		vm.ctrl.reset();
-	// 	})
-	// }
 
 	vm.ctrl.reset = function(){
 		vm.model.customer.editedCheckedInCustomer = {};

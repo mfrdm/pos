@@ -190,16 +190,6 @@ function Checkin() {
 		});	
 	};
 
-	//Render ng-view main checkin
-	this.readAngularCheckin = function(req, res) {
-		helper.angularRender( req, res,'checkin/Checkin')
-	};
-
-	this.readAngularOrder = function(req, res) {
-		helper.angularRender( req, res,'orders')
-	};
-
-
 	this.cancelCheckin = function (req, res) {
 		// later
 	}
