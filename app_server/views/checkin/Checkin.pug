@@ -13,7 +13,7 @@ div(class="columns row")
 			div(class="column small-9")
 				ul(class="menu clearfix")
 					li(class="float-right marginL15")
-						<a class="button primary" ng-click="vm.ctrl.seeMore()"><span class="show-for-large">See More</span><i class="material-icons customIcon hide-for-large">add_box</i></a>
+						<a class="button primary" ng-click="vm.ctrl.seeMore()"><span class="show-for-large">{{ vm.model.dom.dataDom.using.seeMoreBtn}}</span><i class="material-icons customIcon hide-for-large">add_box</i></a>
 					li(class="float-right marginL15")
 						<a class="button primary" ng-click="vm.ctrl.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
 					li(class="float-right")
