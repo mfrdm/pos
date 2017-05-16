@@ -48,11 +48,14 @@ router.get('/angular/orders', checkinCtrl.readAngularOrder);
 
 router.post('/checkin/customer/:cusId', checkinCtrl.checkin);
 router.get ('/checkin/search-customers', checkinCtrl.searchCheckingCustomers);
-router.post('/checkin/customer/:cusId/edit/:occId', checkinCtrl.updateCheckin); //cusid is order id
+router.post('/checkin/customer/edit/:occId', checkinCtrl.updateCheckin);
 router.get ('/checkin/validate-promotion-code', checkinCtrl.validatePromocodes);
 
 router.get('/checkout/invoice/:occId', checkoutCtrl.createInvoice);
 router.post('/checkout', checkoutCtrl.confirmCheckout);
+
+router.get ('/occupancies/', checkinCtrl.readOccupancies);
+// router.get ('/occupancies/occupancy/:occId', checkinCtrl.readOneOccupancy);
 
 router.get ('/orders/', OrdersCtrl.readOrders);
 router.post ('/orders/confirm', OrdersCtrl.confirmCheckout);

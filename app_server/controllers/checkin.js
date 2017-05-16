@@ -17,10 +17,12 @@ module.exports = new Checkin();
 function Checkin() {
 	this.validatePromocodes = function (req, res, next){
 		// validate if exist and if not expire
-		console.log(req.query)
-		var codes = req.query.codes;
-		if (req.query.isStudent){
-			var studentCode = 'STUDENTPRICE';
+		var q = JSON.parse(req.query.data);
+		console.log(q)
+		var codes = q.codes;
+		if (q.isStudent){
+			// var studentCode = 'STUDENTPRICE';
+			var studentCode = 'studentprice';//uppercase doesn't work
 			codes.push (studentCode);
 		};
 
@@ -183,7 +185,7 @@ function Checkin() {
 	};
 
 	this.updateCheckin = function(req, res, next) {
-		Occupancy.findByIdAndUpdate (req.params.occId, req.body.data, {new: true}, function (err, updatedOcc){
+		Occupancy.findByIdAndUpdate (req.params.occId, req.body, {new: true}, function (err, updatedOcc){
 			if (err){
 				console.log (err);
 				next (err);
@@ -206,6 +208,24 @@ function Checkin() {
 
 	this.cancelCheckin = function (req, res) {
 		// later
+	}
+
+	this.readOccupancies = function(req, res){
+		var q = Occupancy.find (
+			{
+				status:req.query.status
+			});
+
+		q.exec(function (err, occ){
+			if (err){
+				console.log (err);
+				next (err);
+				return
+			}
+			else {
+				res.json ({data: occ});
+			}
+		});
 	}
 
 };

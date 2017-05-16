@@ -8,10 +8,14 @@ function CheckinService ($http, $q){
 		var array = [{"firstname" : { $regex: input, $options: 'i' }}, {"lastname" : { $regex: input, $options: 'i' }}]
 		return $http({
 			method:'GET',
-			url:'/checkin/search-customers',
+			url:'/api/customers',
 			params:{
-				input:input
-			}
+					queryInput:JSON.stringify({
+					conditions: {$or: array},
+					projection: {firstname: 1, middlename:1, lastname: 1, phone: 1, email: 1, edu:1,checkinStatus:1, parent:1, isStudent:1},
+					opts: null
+				})
+  			}
 		})
 	}
 
@@ -20,9 +24,11 @@ function CheckinService ($http, $q){
 		return $http({
 			method: 'GET',
 			url: '/checkin/validate-promotion-code',
-			params:{
-				codes:data
-			}
+			params:
+				{data:JSON.stringify({
+									codes:data.codes,
+									isStudent:data.isStudent
+								})}
 		})
 	}
 
@@ -56,30 +62,20 @@ function CheckinService ($http, $q){
 	this.readOneParent = function(id){
 		return $http({
 			method:'GET',
-			url:'/api/orders/order/'+id
+			url:'/occupancies/occupancy/'+id
 		})
 	}
 	//Update new Order
-	this.updateOne = function(id, data){
+	this.updateOne = function(id, service, parent){
 		return $http({
 			method: 'POST',
-			url: '/api/orders/order/'+ id +'/edit',
+			url: '/checkin/customer/edit/'+id,
 			data: JSON.stringify({
-				$set: { orderline: data }
+				$set: { service: service, parent:parent }
 			})
 		})
 	};
 
-	//Get parents order
-	this.readSomeParent = function(){
-		return $http({
-			method:'GET',
-			url:'/api/orders',
-			params: {
-				status:1,
-			},
-		})
-	}
 
 	//Checkout for customer
 	this.confirmCheckout = function(order){
