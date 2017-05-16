@@ -62,11 +62,10 @@ router.post ('/orders/checkout', OrdersCtrl.checkout);
 router.get ('/orders/order/:orderId', OrdersCtrl.readAnOrder);
 router.post ('/orders/order/:orderId/edit', OrdersCtrl.updateAnOrder);
 
-router.get('/bookings', bookingCtrl.readBooking);
-router.post('/bookings/', bookingCtrl.booking);
+router.get('/bookings', bookingCtrl.readSomeBookings);
+router.post('/bookings/:customerId', bookingCtrl.booking);
 router.post('/bookings/:bookingId/edit', bookingCtrl.updateBooking);
 router.get('/bookings/booking/:bookingId', bookingCtrl.readOneBooking);
-router.get('/angular/bookings', bookingCtrl.readAngularBooking)
 
 router.get('/hr', hrCtrl.readOverview);
 router.get('/hr/employees/employee/:uId', hrCtrl.readOneUser);

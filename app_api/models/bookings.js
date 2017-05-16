@@ -11,10 +11,14 @@ var bookingSchema = mongoose.Schema({
 		isStudent: Boolean,
 	},
 	checkinTime: {type: Date, required: true},
-	checkoutTime: {type: Date}, 
+	checkoutTime: {type: Date},
+	service: {
+		price: {type: Number, required: true},
+		name: {type: String, required: true},
+	},
 	storeId: {type: mongoose.Schema.Types.ObjectId},
 	staffId: {type: mongoose.Schema.Types.ObjectId},
-	status: {type:Number, default: 3}, // default is pendding
+	status: {type: Number, default: 3}, // default is pendding
 	updatedAt: [{
 		time: {type: Date}, 
 		explain: String,

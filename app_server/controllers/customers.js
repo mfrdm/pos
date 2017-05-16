@@ -75,7 +75,7 @@ function CustomersCtrl() {
 		}else{
 			req.body.data.isStudent = false;
 		}
-		console.log(req.body.data)
+
 		var newCustomer = new Customers (req.body.data);
 
 		// sanitize

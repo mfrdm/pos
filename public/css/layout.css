@@ -342,8 +342,8 @@ ul.listOrder li i{
 #alternativeMenu{
 	height: 100%;
 	position: fixed;
-	width: 16.66667%;
-	max-width: 10vw;
+	/*width: 16.66667%;*/
+	/*max-width: 10vw;*/
 	top:70.7px;
 	float: left;
 	min-height: 100vh;
@@ -372,7 +372,7 @@ ul.listOrder li i{
 	position: fixed;
 	z-index: 4;
 	width: 100%;
-	height: 70.7px;
+/*	height: 70.7px;*/
 }
 
 #topNavBar li{

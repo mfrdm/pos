@@ -7,20 +7,6 @@ var apiOptions = helper.getAPIOption();
 module.exports = new Others();
 
 function Others() {
-	this.test = function(req, res){
-		var data = {
-			user:{
-
-			},
-			look:{
-				title:"Home Page",
-				css:['common'],
-				js:['app.js'],
-			}
-		};
-		res.render ('layout', {data: data});
-	}
-
 	this.angularApp = function (req, res){
 
 		//var listFile = ['checkin', 'checkout', 'customers', 'assets', 'costs', 'home'];
@@ -40,7 +26,7 @@ function Others() {
 			},
 			look:{
 				title:"Home Page",
-				css:['common'],
+				css:['common', 'layout'],
 				js:['app.js'],
 			}
 		};

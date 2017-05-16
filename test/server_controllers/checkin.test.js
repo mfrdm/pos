@@ -238,7 +238,7 @@ xdescribe ('Validate promotion code', function (){
 	it ('should return code conflicts when there are');
 });
 
-xdescribe ('Check in', function (){
+describe ('Check in', function (){
 	this.timeout (3000);
 	var order, customer, newCustomer, newOrder, newOcc, checkinData;
 	beforeEach (function (done){
@@ -285,7 +285,7 @@ xdescribe ('Check in', function (){
 			.send ({data: customer})
 			.end (function (err, res){
 				if (err){
-					// console.log (err)
+					console.log (err)
 					return
 				}
 
@@ -334,7 +334,7 @@ xdescribe ('Check in', function (){
 
 	});
 
-	it ('should create an occupancy, an order, and update customer order', function (done){
+	it ('should create an occupancy, an order, and update customer', function (done){
 		checkinData.occupancy.promocodes = [];
 		chai.request (server)
 			.post ('/checkin/customer/' + newCustomer._id)
@@ -357,7 +357,7 @@ xdescribe ('Check in', function (){
 				res.body.data.occupancy.service.price.should.to.exist;
 				res.body.data.occupancy.checkinTime.should.to.exist;
 
-				res.body.data.occupancy.orders.slice (-1)[0].should.to.equal (newOrder._id);
+				newOcc.orders[0].should.to.equal (newOrder._id);
 
 				Customers.findOne ({_id: newCustomer._id}, {checkinStatus: 1, orders: 1, occupancy: 1}, function (err, data){
 					if (err){
@@ -366,6 +366,16 @@ xdescribe ('Check in', function (){
 
 					data.checkinStatus.should.to.be.true;
 					data.occupancy[data.occupancy.length-1].toString().should.to.equal (newOcc._id);
+					
+					Orders.findOne ({_id: newOrder._id}, function (err, ord){
+						if (err){
+							console.log (err);
+						}
+
+						ord.should.to.exist;
+						ord.should.to.have.property ('occupancyId');
+					})
+
 					done ();
 
 				});

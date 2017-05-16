@@ -44,13 +44,11 @@ function Checkin() {
 
 	// assume promocode are validated
 	this.checkin = function(req, res, next) {
-		console.log(req.body.data)
 		var occ = new Occupancy (req.body.data.occupancy);
-
-		if (occ.customer.isStudent)
 
 		if (req.body.data.order){
 			var order = new Orders (req.body.data.order);
+			order._id = new mongoose.Types.ObjectId ();
 			occ.orders = [order._id];
 		};
 
@@ -64,10 +62,6 @@ function Checkin() {
 			var customerUpdate = {
 				$push: {occupancy: newOcc._id}, 
 				$set:{checkinStatus: true}
-			};
-
-			if (order){
-				customerUpdate.$push.orders = order._id;
 			};
 
 			Customers.findByIdAndUpdate (req.params.cusId, customerUpdate, {upsert: true, new: true}, function (err, customer){
@@ -85,7 +79,7 @@ function Checkin() {
 						if (customer.checkinStatus == true && newOcc._id.equals (customer.occupancy.pop())){
 
 							if (order){
-								
+								order.occupancyId = newOcc._id;
 								order.save (function (err, newOrder){
 									if (err) {
 										// console.log (err);
