@@ -20,11 +20,11 @@ html(ng-app='posApp')
 
 	body(ng-controller="LayoutCtrl")
 		nav(class="show-for-large top-bar paddingLR0" id="topNavBar")
-			div(class="medium-3 columns")
+			div(class="medium-2 columns")
 				ul(class="menu paddingLR15 text-center")
 					li: a(href="#!/" class="paddingLR0")
 						<span class="show-for-large title"> {{ layout.model.dom.pageTitle }}						
-			div(class="medium-9 columns")
+			div(class="medium-10 columns")
 				ul(class="menu float-left")
 					li(class="menu-text") {{ layout.model.dept.name }}
 				ul(class="menu dropdown float-right paddingLR15" data-dropdown-menu)
