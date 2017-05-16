@@ -84,7 +84,7 @@ function Checkin() {
 						if (customer.checkinStatus == true && newOcc._id.equals (customer.occupancy.pop())){
 
 							if (order){
-								console.log(order)
+								console.log(order, 'tessssssssst')
 								order.save (function (err, newOrder){
 									if (err) {
 										// console.log (err);

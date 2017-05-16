@@ -1,4 +1,4 @@
-describe ('Service: CheckinService', function (){
+xdescribe ('Service: CheckinService', function (){
 	var createController, $httpBackend, CheckinService, checkinListHandler;
 
 	beforeEach (module ('posApp'));

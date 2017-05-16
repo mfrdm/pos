@@ -28,7 +28,7 @@ function getTotal (){
 var ordersSchema = new mongoose.Schema({
 	total: {type: Number, min: 0, default: 0},
 	paymentMethod: Number, // required. card, cash, local account
-	occupancyId: mongoose.Schema.Types.ObjectId,	
+	occupancyId: mongoose.Schema.Types.ObjectId,
 	orderline: [{
 		_id: {type: mongoose.Schema.Types.ObjectId, required: true},
 		productName: {type: String, required: true},

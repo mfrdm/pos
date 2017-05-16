@@ -97,12 +97,12 @@ div(class="columns row")
 											p {{ vm.model.customer.checkingInData.occupancy.checkinTime | date:'dd/MM/yyyy'}}
 
 								//Other Products
-								//- div(class="borderT newBox row column" ng-if='vm.model.customer.checkingInData.occupancy.orderline.length > 1')
+								div(class="borderT newBox row column" ng-if='vm.model.customer.checkingInData.order.orderline.length > 0')
 									div(class='row column' )
 										div(class='column small-4 text-right')
 											p {{vm.model.dom.dataDom.using.invoiceOtherProducts}}
 										div(class='column small-8 greenBorder')
-											div(class='row column small-12' ng-repeat='service in vm.model.customer.checkingInData.occupancy.orderline.slice(1)')
+											div(class='row column small-12' ng-repeat='service in vm.model.customer.checkingInData.order.orderline')
 												div(class='column small-6 paddingLR0 marginT0')
 													p {{ service.productName}}
 												div(class='column small-6 marginT0')

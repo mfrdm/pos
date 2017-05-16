@@ -10,7 +10,7 @@ var auth = jwt ({
 
 var checkinCtrl = require("../controllers/checkin");
 var checkoutCtrl = require("../controllers/checkout");
-var bookingCtrl = require("../controllers/bookings");
+var bookingCtrl = require("../controllers/booking.ctrl");
 var hrCtrl = require("../controllers/hr");
 var biCtrl = require("../controllers/bi");
 var assetsCtrl = require("../controllers/assets");
@@ -20,8 +20,7 @@ var companiesCtrl = require("../controllers/companies");
 var othersCtrl = require("../controllers/others");
 var deptsCtrl = require("../controllers/depts");
 var productsCtrl = require("../controllers/products");
-var promoCodesCtrl = require ('../controllers/promoCodes.ctrl')
-var combosCtrl = require ('../controllers/combos.ctrl');
+var promoCodesCtrl = require ('../controllers/promoCodes.ctrl');
 var OrdersCtrl = require ('../controllers/orders.ctrl'); 
 
 router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
@@ -64,8 +63,9 @@ router.get ('/orders/order/:orderId', OrdersCtrl.readAnOrder);
 router.post ('/orders/order/:orderId/edit', OrdersCtrl.updateAnOrder);
 
 router.get('/bookings', bookingCtrl.readBooking);
-router.post('/bookings/:cusId', bookingCtrl.booking);
-router.post('/bookings/:cusId/edit', bookingCtrl.updateBooking);
+router.post('/bookings/', bookingCtrl.booking);
+router.post('/bookings/:bookingId/edit', bookingCtrl.updateBooking);
+router.get('/bookings/booking/:bookingId', bookingCtrl.readOneBooking);
 router.get('/angular/bookings', bookingCtrl.readAngularBooking)
 
 router.get('/hr', hrCtrl.readOverview);

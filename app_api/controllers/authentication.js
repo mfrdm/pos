@@ -2,7 +2,7 @@ var helper = require('../../libs/node/helper');
 var dbHelper = require('../../libs/node/dbHelper');
 var requestHelper = require('../../libs/node/requestHelper');
 var mongoose = require('mongoose');
-var UsersModel = mongoose.model ('users');
+var Users = mongoose.model ('users');
 var passport = require ('passport');
 
 module.exports = new Authentication ();
@@ -31,7 +31,7 @@ function Authentication () {
 		}
 
 		try {
-			var user = new UsersModel (req.body);
+			var user = new Users (req.body);
 			user.setPassword (req.body.password);
 			user.save (function (err, data){
 				if (err) {
@@ -40,7 +40,7 @@ function Authentication () {
 				}
 				else {
 					var token = user.generateJwt ();
-					requestHelper.sendJsonRes (res, 201, {token: token})					
+					requestHelper.sendJsonRes (res, 200, {token: token})					
 				}
 			});
 		}

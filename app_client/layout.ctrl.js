@@ -6,19 +6,12 @@
 			model: {
 				dom: {},
 				user: {},
-				customers: {},
 				dept:{},
 			},
 			ctrl: {},
 		};
 
-		$scope.layout.model.user = {
-
-		};
-
-		$scope.layout.model.customers = {
-
-		};		
+		$scope.layout.model.user = {};	
 
 		$scope.layout.model.company = {
 			contact: {
@@ -40,47 +33,59 @@
 		};
 
 		$scope.layout.model.summary = {
-			customerNumber: 100, // TESTING
-			bookingNumber: 20, // TESTING
-			staffNumber: 2, // TESTING
+			// customerNumber: 100, // TESTING
+			// bookingNumber: 20, // TESTING
+			// staffNumber: 2, // TESTING
 		};		
 
 		$scope.layout.model.dom  = {
-
-		};				
-
-		$scope.layout.loginBtn = true;
-
-		$scope.layout.today = new Date ();
-		$scope.layout.notifications = [];
-		$scope.layout.style = {};
-
-		$scope.layout.updateAfterLogin = function (storeName) {
-			if (!storeName)
-				storeName = 'Green Space Chua Lang 82/70';
-			$scope.layout.storeName = storeName;
-			$scope.layout.accountBtn = true;
-			$scope.layout.notiBtn = true;
-			$scope.layout.sideBarMenu = true;
-			$scope.layout.sideBarMenu = true;
-			$scope.layout.commonStatisticBar = true;
-			$scope.layout.loginBtn = false;
+			pageTitle: 'GS POS',
+			loginBtn: true,
+			accountBtn: false,
+			notiBtn: false,
+			sideBarMenu: false,
+			returnPage: '/checkin' // default
 		};
 
-		$scope.layout.updateMessage = function (message, mode) {
+		$scope.layout.ctrl.addCompany = function (data){
+			$scope.layout.model.company = data;
+		};
+
+		$scope.layout.ctrl.addDept = function (data){
+			$scope.layout.model.dept = data;
+		};		
+
+		$scope.layout.ctrl.addUser = function (data){
+			$scope.layout.model.user = data;
+		};
+
+		$scope.layout.ctrl.updateAfterLogin = function (){
+			$scope.layout.model.dom.loginBtn = false;
+			$scope.layout.model.dom.accountBtn = true;
+			// $scope.layout.model.dom.notiBtn = true;
+			$scope.layout.model.dom.sideBarMenu = true;
+		}		
+
+		$scope.layout.ctrl.updateMessage = function (message, mode) {
 			$scope.layout.message = message;
 			$scope.layout.messageMode = mode;
 			$scope.layout.messageDiv = true;
 		};
 
-		$scope.layout.closeMessageDiv = function (){
+		$scope.layout.ctrl.closeMessageDiv = function (){
 			$scope.layout.messageDiv = false;
 		}
 
-		$scope.layout.logout = function(){
+		$scope.layout.ctrl.logout = function(){
 			var beforeAction = function(){};
-			var afterAction = function(){};
-			authentication.logout(beforeAction, afterAction)
+			var afterAction = function(){
+				$scope.layout.model.dom.loginBtn = true;
+				$scope.layout.model.dom.accountBtn = false;
+				// $scope.layout.model.dom.notiBtn = false;
+				$scope.layout.model.dom.sideBarMenu = false;				
+			};
+
+			authentication.logout(beforeAction, afterAction);
 		}
 
 		// $scope.layout.notiAlert = function(msg){
@@ -105,6 +110,11 @@
 
 		angular.element(document).ready(function () {
 			$("body").foundation();
+			if (authentication.isLoggedIn ()){
+				$scope.layout.ctrl.addUser (authentication.getCurUser());
+				$scope.layout.ctrl.updateAfterLogin ();
+			}
+
 			$scope.$apply();
 		});		
 	}

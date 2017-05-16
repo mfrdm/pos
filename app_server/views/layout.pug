@@ -24,28 +24,25 @@ html(ng-app='posApp')
 			div(class="medium-2 columns")
 				ul(class="menu paddingLR15 text-center")
 					li: a(href="#!/" class="paddingLR0")
-						<span class="show-for-large title">GS POS						
+						<span class="show-for-large title"> {{ layout.model.dom.pageTitle }}						
 			div(class="medium-10 columns")
 				ul(class="menu float-left")
 					li {{ layout.storeName }} - Wifi: Green Space Chua Lang - Password: greenspace
 				ul(class="menu dropdown float-right stdBox paddingLR15 stdBoxRight" data-dropdown-menu)
-					li(class="childHStdBox"): a(class="button" href="#!/login" ng-show="layout.loginBtn") Login
-					li(ng-show="layout.notiBtn" class="childHStdBox")
+					li(class="childHStdBox"): a(class="button" href="#!/login" ng-show="layout.model.dom.loginBtn") Login
+					li(ng-show="layout.model.dom.notiBtn" class="childHStdBox")
 						a(ng-style='layout.style' class="dropDownNoIcon paddingLR0"): i(class="material-icons") notifications
 						ul(class="menu noti" )
-							// - var notiData = ['Pham Manh Hiep booked a private room at 20:00', 'Pham Manh Hiep book a common spot at 21:00'];
-							// - for (var i=0; i < notiData.length; i ++)
-							// 	li(class="menu-text")= notiData[i]
 							li(ng-repeat='noti in layout.notifications')
 								p {{noti.firstname}}
 								p {{noti.msg}}
 
-					li(ng-show="layout.accountBtn" class="childHStdBox")
+					li(ng-show="layout.model.dom.accountBtn" class="childHStdBox")
 						a(class="dropDownNoIcon paddingLR0"): i(class="material-icons") account_circle
 						ul(class="menu")
 							li: a Profile
 							li: a Setting
-							li(ng-click='layout.logout()'): a Logout
+							li(ng-click='layout.ctrl.logout()'): a Logout
 
 
 		div(class="title-bar text-center" data-responsive-toggle="mainMenu" data-hide-for="large")
@@ -55,25 +52,12 @@ html(ng-app='posApp')
 
 		div(class="row marginLR0 relative")
 
-			div(class="large-2 columns" id="alternativeMenu")
+			div(class="large-2 columns show-for-large" id="alternativeMenu" ng-show="layout.model.dom.sideBarMenu")
 				ul(class="menu vertical")
 					li: a(href="/#!/checkin") Checkin
 					li: a(href="/#!/orders") Order
 					li: a(href="/#!/bookings") Booking
 					li: a(href="/#!/customers") Customer
-					
-			//- div(class="large-2 columns" ng-show="layout.sideBarMenu" id="mainMenu")
-				ul(class="menu vertical")
-					li: a(href="/#!/checkin") Checkin
-					//- li: a(href="/#!/combo") Combo
-					li: a(href="/#!/bookings") Booking
-					li: a(href="/#!/customers") Customer
-					//- li: a(href="/#!/assets") Assets
-					//- li: a(href="/#!/hr") HR
-					//- li: a(href="/#!/fin") Finance
-					//- li: a(href="/#!/products") Product
-					//- li: a(href="/#!/attendance") Attendance
-					//- li: a(href="/#!/store") Store
 			div(class="large-10 small-12 columns stdBox" id="mainContentDiv")
 				//- div(class="row medium-up-3 show-for-medium colorGrey" ng-show="layout.commonStatisticBar")
 					div(class="column column-block text-center")

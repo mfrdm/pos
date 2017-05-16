@@ -4,6 +4,9 @@ var requestHelper = require('../../libs/node/requestHelper')
 var request = require('request')
 var apiOptions = helper.getAPIOption()
 
+var mongoose = require ('mongoose');
+var Bookings = mongoose.model ('bookings');
+
 module.exports = new Booking();
 
 function Booking() {
@@ -76,26 +79,42 @@ function Booking() {
 		// requestHelper.readApi(req, res, apiUrl, view, qs, dataFilter, send);
 	};
 
-	this.booking = function(req, res) {
-		var apiUrl = apiOptions.server + "/api/bookings/create";
-		var view = null;
-		var body = req.body;
-		var dataFilter = null;
-		body.customerId = req.params.cusid;
-		body.checkinTime = Date.now();
-		body.storeId = '123';
-		var send = function(req, res, view, data, cb){
-			var apiUrl = apiOptions.server + '/customers/customer/' + data.customerId + '/edit';
-			var view = null;
-			var dataFilter = null;
-			var body = {$push: {"booking":{"bookingId":data._id}}};
-			var send = function(req, res, view, data, cb){
-				requestHelper.sendJsonRes(res, 200, data)
+	this.booking = function(req, res, next) {
+		var booking = new Bookings (req.body.data);
+		booking.save (function (err, bk){
+			if (err){
+				console.log (err);
+				next (err);
+				return
 			}
-			requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
-		}
-		requestHelper.postApi(req, res, apiUrl, view, body, dataFilter, send);
+
+			if (bk){
+				res.json ({data: bk});
+			}
+			else{
+				next ();
+			}
+
+		});
 	};
+
+	this.readOneBooking = function (req, res, next){
+		Bookings.findOne ({_id: req.params.bookingId}, function (err, bk){
+			if (bk){
+				console.log (bk);
+				next (bk);
+				return
+			}
+
+			if (bk){
+				res.json ({data: bk});
+				return
+			}
+			else{
+				next ();
+			}
+		})
+	}
 
 	this.updateBooking = function(req, res) {
 		var apiUrl = apiOptions.server + "/api/bookings/booking/"+req.params.cusid+"/edit";

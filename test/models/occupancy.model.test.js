@@ -5,7 +5,7 @@ var Promocodes = require ('../../app_api/models/promocodes');
 var Occupancy = require ('../../app_api/models/occupancy.model');
 
 describe ('Occupancy Model', function (){
-	describe ('Get usage in hour', function (){
+	xdescribe ('Get usage in hour', function (){
 		var order, val;
 		beforeEach (function (){
 			val = {
@@ -54,7 +54,7 @@ describe ('Occupancy Model', function (){
 			}
 		});		
 
-		it ('should return total of service as 0 for members, not leader, using group private room', function (){
+		xit ('should return total of service as 0 for members, not leader, using group private room', function (){
 			val.parent = '58eb474538671b4224745192';
 			var occ = new Occupancy (val);
 			occ.getTotal ();
@@ -62,7 +62,7 @@ describe ('Occupancy Model', function (){
 
 		});
 
-		it ('should return correct subtotal given codes YEUGREENSPACE', function (){
+		xit ('should return correct subtotal given codes YEUGREENSPACE', function (){
 			val.promocodes = [{
 				codeType: 3, 
 				_id: '58eb474538671b4224745192',
@@ -77,7 +77,7 @@ describe ('Occupancy Model', function (){
 
 		});
 
-		it ('should return correct subtotal given code STUDENTPRICE', function (){
+		xit ('should return correct subtotal given code STUDENTPRICE', function (){
 			val.promocodes = [
 				{
 					codeType: 2, 
@@ -93,7 +93,7 @@ describe ('Occupancy Model', function (){
 			occ.total.should.to.equal (expectedTotal);
 		});
 
-		it ('should return correct subtotal given code STUDENTPRICE and YEUGREENSPACE', function (){
+		xit ('should return correct subtotal given code STUDENTPRICE and YEUGREENSPACE', function (){
 			val.promocodes = [
 				{
 					codeType: 3, 
@@ -114,7 +114,7 @@ describe ('Occupancy Model', function (){
 			occ.total.should.to.equal (expectedTotal);
 		});
 
-		it ('should return correct subtotal given code FREE1HOURCOMMON and STUDENTPRICE', function (){
+		xit ('should return correct subtotal given code FREE1HOURCOMMON and STUDENTPRICE', function (){
 			val.promocodes = [
 				{
 					codeType: 1, 
@@ -151,16 +151,17 @@ describe ('Occupancy Model', function (){
 				},						
 			];
 
-			val.checkoutTime = '2017-05-10 9:00:00',
+			val.checkinTime = '2017-05-10 10:31:00',
+			val.checkoutTime = '2017-05-10 13:43:00',
 
-			expectedTotal = 10000;
+			expectedTotal = 12000;
 
 			var occ = new Occupancy (val);
 			occ.getTotal ();
 			occ.total.should.to.equal (expectedTotal);
 		})
 
-		it ('should return correct subtotal given code PRIVATEDISCOUNTPRICE and product is Medium Group Private', function (){
+		xit ('should return correct subtotal given code PRIVATEDISCOUNTPRICE and product is Medium Group Private', function (){
 			val.promocodes = [
 				{
 					codeType: 4, 
@@ -185,7 +186,7 @@ describe ('Occupancy Model', function (){
 		});
 
 
-		it ('should return correct subtotal given code PRIVATEDISCOUNTPRICE and product is Small Group Private regardless customer has code STUDENTPRICE or not', function (){
+		xit ('should return correct subtotal given code PRIVATEDISCOUNTPRICE and product is Small Group Private regardless customer has code STUDENTPRICE or not', function (){
 			val.promocodes = [
 				{
 					codeType: 4, 

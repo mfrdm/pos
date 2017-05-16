@@ -1,39 +1,47 @@
 (function () {
 	angular
 		.module ('posApp')
-		.controller ('RegisterCtrl', ['$location', 'authentication', RegisterCtrl])
+		.controller ('RegisterCtrl', ['$scope', '$location', 'authentication', RegisterCtrl])
 
 
-	function RegisterCtrl ($location, authentication) {
+	function RegisterCtrl ($scope, $location, authentication) {
 		var vm = this;
-		vm.other = {};
-
-		vm.credentials = {
+		var LayoutCtrl = $scope.$parent.layout;
+		vm.model = {};
+		vm.ctrl = {};
+		vm.model.user = {
 			firstname: '',
 			lastname: '',
-			midname: '',
+			middlename: '',
 			email: '',
 			birthday: '',
 			gender: '',
 			phone: '',
 			password: '',
-			username: '', // phone or email
+			username: '', // phone or email			
 		}
 
-		vm.other.returnPage = $location.search ().page || '/';
+		vm.model.dom = {
+			returnPage: LayoutCtrl.model.dom.returnPage || '/checkin',
+		}
 
-		vm.registerSuccessAction = function (data){
-			vm.credentials = {};
-			$location.search ('page', null);
-			$location.path (vm.other.returnPage);
-		};
-
-		vm.registerFailAction = function (err){
+		vm.ctrl.registerFailAction = function (err){
 			// display message
 		};
 
-		vm.submitRegister = function (){
-			authentication.register (vm.credentials, vm.registerSuccessAction, vm.registerFailAction);
+		vm.ctrl.registerSuccessAction = function (data) {
+			vm.model.user = {};
+			LayoutCtrl.ctrl.addUser (authentication.getCurUser());
+			LayoutCtrl.ctrl.updateAfterLogin ();
+			$location.path (vm.model.dom.returnPage);			
+		};
+
+		vm.ctrl.loginFailAction = function (data) {
+			// display warning message
+		};
+
+		vm.ctrl.submitRegister = function (){
+			authentication.register (vm.model.user, vm.ctrl.registerSuccessAction, vm.ctrl.registerFailAction);
 		};
 
 	}

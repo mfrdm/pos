@@ -1,14 +1,14 @@
 div(class="columns row")
 	div(class="row colums")
 		div(class="column")
-			h2 Order
+			h2 {{ vm.model.dom.dataDom.using.title }}
 		// Setting
-		//div(class="row column")
+		div(class="row column")
 			div(class="column small-3")
 				ul(class="menu")
 					li
-						a(class="button primary" ng-click="vm.ctrl.toggleCheckInDiv()") 
-							span(class="show-for-large") Check-in
+						a(class="button primary" ng-click="vm.ctrl.toggleCreateOrderDiv()") 
+							span(class="show-for-large") Add New Order
 							i(class="material-icons customIcon hide-for-large") add
 			div(class="column small-9")
 				ul(class="menu clearfix")
@@ -17,7 +17,7 @@ div(class="columns row")
 					li(class="float-right")
 						ul(class="menu")
 							li: label(class="paddingR15 show-for-large") {{ vm.model.dom.dataDom.using.fieldSortBy}}
-							li: select(ng-model="vm.model.filter.orderBy" ng-options="key as value for (key , value) in vm.model.filter.orderOptions" ng-init='vm.model.filter.orderBy="-checkinTime"')
+							li: select(ng-model="vm.model.filter.orderBy" ng-options="key as value for (key , value) in vm.model.filter.orderOptions")
 		// Filter
 		//div(class="column" ng-show="vm.model.dom.filterDiv")
 			div(class="borderT newBox row column")
@@ -31,24 +31,21 @@ div(class="columns row")
 				div(class='marginB15 column small-12 large-4')
 					legend {{ vm.model.dom.dataDom.using.fieldSearchByPhone}}
 					input(type='text' ng-model='vm.model.filter.others.customer.phone')
-		// Check-in
+		// Order
 		div(class="column")
-			div(class="borderT newBox row column paddingB45 paddingLR15" ng-show="vm.model.dom.checkInDiv")
+			div(class="borderT newBox row column paddingB45 paddingLR15" ng-show="vm.model.dom.orderDiv")
 				
 				//Search Customer*********************************************//
 				div(class="row column")
-					form()
+					form(ng-submit="vm.ctrl.searchCustomers()")
 						div(class="row column")
-							label 
-								input(type="text" placeholder="Enter phone or email to search customer")
-						div(class='marginB15')
+							label {{vm.model.dom.dataDom.using.fieldPhoneEmail}}
+								input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.model.search.username')
+						div(ng-show='vm.model.dom.messageSearchResult' class='marginB15')
 							div(class='callout alert')
-								p 
+								p {{vm.model.search.messageNoResult}}
 									span: a(href='/#!/customers') Create new customer
-						div(class='marginB15')
-							div(class='callout alert')
-								p 
-						//div(ng-show="vm.model.dom.checkingInCustomerSearchResult" class="marginB15")
+						div(ng-show="vm.model.dom.customerSearchResult" class="marginB15")
 							div(class="table-scroll")
 								table(class="hover unstriped borderAll")
 									thead
@@ -63,7 +60,7 @@ div(class="columns row")
 										tr(ng-repeat='noti in vm.noties')
 											td {{noti.firstname}}
 											td {{noti.msg}}
-										tr(ng-repeat='result in vm.model.search.userResults' ng-click='vm.ctrl.selectCustomerToCheckin($index)' class="pointerCursor")
+										tr(ng-repeat='result in vm.model.search.userResults' ng-click='vm.ctrl.selectCustomer($index)' class="pointerCursor")
 											td {{ $index + 1 }}
 											td {{ result.lastname }}
 											td {{ result.middlename }}
@@ -72,64 +69,46 @@ div(class="columns row")
 											td {{ result.phone[0] }}
 				
 				//Checkin Confirmation Modal****************************************//
-				//div(class='reveal small' id='checkinModal' data-reveal data-animation-in="slide-in-down fast")
+				div(class='reveal small' id='orderModal' data-reveal data-animation-in="slide-in-down fast")
 					div(class='column row paddingTB15 text-center')
-						h4 Checkin Confirmation
+						h4 Create Order Confirmation
 					div(class='column row')
 						div(class="invoice")
 							div(class='row column')
 								div(class='column small-6')
-									p {{vm.model.dom.dataDom.using.invoiceFullname}}: {{ vm.model.customer.checkingInData.customer.lastname}} {{ vm.model.customer.checkingInData.customer.middlename}} {{ vm.model.customer.checkingInData.customer.firstname}}
+									p {{vm.model.dom.dataDom.using.fieldSearchByFirstname}}: {{ vm.model.order.customer.lastname}} {{ vm.model.order.customer.middlename}} {{ vm.model.order.customer.firstname}}
 								div(class='column small-6 text-right')
-									p {{vm.model.dom.dataDom.using.invoicePhone}}: {{ vm.model.customer.checkingInData.customer.phone}}
+									p {{vm.model.dom.dataDom.using.fieldSearchByPhone}}: {{ vm.model.order.customer.phone}}
 							div(class='priceSection')
-
-								//Checkin TIme
-								div(class="row column")
-									div(class='row column paddingB15')
-										div(class='column small-4 text-right')
-											p Checkin
-										div(class='column small-4 greenBorder')
-											p {{ vm.model.customer.checkingInData.checkinTime | date:'shortTime'}}
-										div(class='column small-4')
-											p {{ vm.model.customer.checkingInData.checkinTime | date:'dd/MM/yyyy'}}
-
 								//Other Products
-								div(class="borderT newBox row column" ng-if='vm.model.customer.checkingInData.orderline.length > 1')
+								div(class="row column" ng-if='vm.model.order.orderline.length > 0')
 									div(class='row column' )
 										div(class='column small-4 text-right')
-											p {{vm.model.dom.dataDom.using.invoiceOtherProducts}}
+											p {{vm.model.dom.dataDom.using.fieldItem}}
 										div(class='column small-8 greenBorder')
-											div(class='row column small-12' ng-repeat='service in vm.model.customer.checkingInData.orderline.slice(1)')
-												div(class='column small-6 paddingLR0 marginT0')
-													p {{ service.productName}}
-												div(class='column small-6 marginT0')
-													p x {{ service.quantity}}
-
-								//Main Product
-								div(class="borderT newBox row column")
-									div(class='row column paddingTB15')
+											div(class='row column small-12' ng-repeat='product in vm.model.order.orderline')
+												div(class='column small-3 paddingLR0 marginT0')
+													p {{ product.productName}}
+												div(class='column small-3 marginT0')
+													p x {{ product.quantity}}
+												div(class='column small-3 marginT0')
+													p {{ product.subTotal}}
+									div(class='row column' )
 										div(class='column small-4 text-right')
-											p {{vm.model.dom.dataDom.using.invoiceMainService}}
+											p {{vm.model.dom.dataDom.using.total}}
 										div(class='column small-8 greenBorder')
 											div(class='row column small-12')
-												div(class='column small-6 paddingLR0 marginT0')
-													p {{ vm.model.products[vm.model.customer.checkingInData.orderline[0].productName]}}
-												div(class='column small-6 marginT0')
-													p x {{vm.model.customer.checkingInData.orderline[0].quantity}}
-									div(class='row column paddingTB15' ng-if='vm.model.customer.checkingInData.parent.length > 0')
-										div(class='column small-4 text-right')
-											p {{vm.model.dom.dataDom.using.parentGroup}}
-										div(class='column small-8 greenBorder')
-											p {{vm.model.parents.options[vm.model.customer.checkingInData.parent]}}
-									div(class='row column paddingTB15' ng-if='vm.model.customer.checkingInData.orderline[0].promocodes.length > 0')
-										div(class='column small-4 text-right')
-											p {{vm.model.dom.dataDom.using.invoicePromoteCode}}
-										div(class='column small-8 greenBorder')
-											p(ng-repeat='promocode in vm.model.customer.checkingInData.orderline[0].promocodes') {{ promocode.name}}
+												div(class='column small-3 paddingLR0 marginT0')
+													p 
+												div(class='column small-3 marginT0')
+													p 
+												div(class='column small-3 marginT0')
+													strong {{vm.model.order.total}}
+											
+
 					div(class='column row')
 						div(class='column small-6')
-							input(class='button' type='submit' ng-click='vm.ctrl.checkin()' value='Yes' data-close='')
+							input(class='button' type='submit' ng-click='vm.ctrl.confirmOrder()' value='Yes' data-close='')
 						div(class='column small-6 text-right')
 							input(class='button secondary' data-close='' type='submit' value='No')
 					button(class="close-button"  data-close='' aria-label="Close modal" type="button")
@@ -138,32 +117,30 @@ div(class="columns row")
 				//Checkin Form****************************************//
 
 				//Main Form
-				form()
-									
+				form(ng-submit="vm.ctrl.validateOrder ()")
 					//Other services for checkin
-					div(class='addItemSection paddingB15')
-						div(class='row column')
-							label() 
+					div(class='addItemSection row column paddingTB15 marginB15')
+						div(class='column small-12')
+							label(ng-if='vm.model.order.orderline.length > 0') {{vm.model.dom.dataDom.using.fieldOtherProducts}}
 								table
 									thead
 										tr
-											th 
-											th 
+											th {{vm.model.dom.dataDom.using.fieldProduct}}
+											th {{vm.model.dom.dataDom.using.fieldQuantity}}
 									tbody
-										tr()
-											td 
-											td 
+										tr(ng-repeat='product in vm.model.order.orderline')
+											td {{product.productName}}
+											td {{product.quantity}}
 											td(class='text-center deleteIcon')
-												i(class="material-icons customIcon") close
-						div(class="row column")
-							div(class="column small-6 paddingL0")
-								label
-									select()
-							div(class="column small-5 paddingL0")
-								label 
-									input( string-to-number type="number" min='0')
-							div(class="column small-1 iconAdd")
-								i(class="material-icons customIcon") add
+												i(class="material-icons customIcon" ng-click='vm.ctrl.deleteSelectService(product); $event.preventDefault()') close
+						div(class="column small-6")
+							label {{vm.model.dom.dataDom.using.fieldAddItems}}
+								select( ng-model="vm.model.other.selectedItem.name" ng-options="val for val in vm.model.other.listOtherProducts")
+						div(class="column small-5 paddingR0")
+							label {{vm.model.dom.dataDom.using.fieldQuantity}}
+								input( ng-model="vm.model.other.selectedItem.quantity" string-to-number type="number" min='0')
+						div(class="column small-1 iconAdd")
+							i(class="material-icons customIcon" ng-click='vm.ctrl.selectService(); $event.preventDefault()') add
 					div(class="row column")
 						input(class="button" type="submit" value="Submit")
 						button(class="button float-right primary") Cancel
@@ -262,38 +239,21 @@ div(class="columns row")
 						input(class="button" type="submit" value="Submit")
 						button(class="button float-right primary" ng-click='vm.ctrl.reset(); $event.preventDefault()') Cancel
 
-		// Check-in list *********************************************//
-		//div(class="column" ng-show="vm.model.dom.checkInListDiv")
+		// Order list *********************************************//
+		div(class="column" ng-show="vm.model.dom.orderListDiv")
 			div(class="table-scroll newBox")
 				table(class="borderAll")
 					thead
 						tr
 							th {{vm.model.dom.dataDom.using.headerNo}}
 							th {{vm.model.dom.dataDom.using.headerName}}
-							th {{vm.model.dom.dataDom.using.headerPhone}}
-							th {{vm.model.dom.dataDom.using.headerCheckinDate}}
-							th {{vm.model.dom.dataDom.using.headerCheckinTime}}
-							th {{vm.model.dom.dataDom.using.headerCheckoutDate}}
-							th {{vm.model.dom.dataDom.using.headerCheckoutTime}}
-							th {{vm.model.dom.dataDom.using.headerService}}
-							th {{vm.model.dom.dataDom.using.headerCheckout}}
-							th {{vm.model.dom.dataDom.using.headerEdit}}
+							th {{vm.model.dom.dataDom.using.fieldItem}}
 					tbody
-						tr(ng-repeat='customer in vm.model.customer.checkedInList | myfilter:vm.model.filter.myfilter.status | orderBy: [vm.model.filter.orderBy] | filter:vm.model.filter.others')
+						tr(ng-repeat='order in vm.model.orderList')
 							td {{ $index + 1 }}
-							td {{customer.customer.lastname}} {{customer.customer.middlename}} {{ customer.customer.firstname }} 
-							td {{ customer.customer.phone }}
-							td {{ customer.checkinTime | date:'dd/MM/yyyy' }}
-							td {{ customer.checkinTime | date: 'shortTime' }}
-							td {{ customer.checkoutTime | date:'dd/MM/yyyy' }}
-							td {{ customer.checkoutTime | date: 'shortTime' }}
-							td {{ vm.model.products[customer.orderline[0].productName]	}}
-							td
-								button(type="button" ng-if='customer.status == 1' class="primary button" ng-click="vm.ctrl.getInvoiceForCheckout (customer)") Checkout
-								button(type='button' ng-if='customer.status == 2' class="disabled button") Checkout
-							td
-								button(type="button" ng-if='customer.status == 1' class="primary button" ng-click="vm.ctrl.editCheckInCustomer (customer)") Edit
-								button(type='button' ng-if='customer.status == 2' class="disabled button") Edit
+							td {{order.customer.lastname}} {{order.customer.middlename}} {{ order.customer.firstname }} 
+							td(ng-repeat='item in order.orderline')
+								p {{ item.productName}}
 
 //Invoice *********************************************//
 //div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')

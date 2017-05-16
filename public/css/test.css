@@ -213,9 +213,10 @@ html, body
 	.max-width1000{
 		max-width: 1000px;
 	}
-	#alternativeMenu{
-		display: inherit!important;
-	}
+
+/*	#alternativeMenu{
+		display: inherit;
+	}*/
 
 }
 
@@ -334,9 +335,9 @@ ul.listOrder li i{
 	font-size: 17px;
 }
 
-#alternativeMenu{
+/*#alternativeMenu{
 	display: none;
-}
+}*/
 
 #alternativeMenu{
 	height: 100%;
