@@ -25,11 +25,12 @@
 		};
 
 		$scope.layout.model.dept = {
+			_id: '',
 			name: 'Green Space Chùa Láng',
 			wifi: {
 				name: 'Green Space Chua Lang',
 				password: 'greenspace'
-			}
+			},
 		};
 
 		$scope.layout.model.summary = {

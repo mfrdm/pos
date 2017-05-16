@@ -22,7 +22,10 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		filter:{},//Filter model
 		other:{}//Other models
 	};
+
+	// vm.model = {};
 	vm.ctrl = {};
+
 	//DOM
 	vm.model.dom = {
 		messageSearchResult: false,
@@ -34,11 +37,12 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		checkOutDiv: false,
 		messageSearchAlreadyCheckin: false,
 		seeMore: false,
-		dataDom: {}//data about translate
-	}
-	//Translate English Vietnamese
-	vm.model.dom.dataDom.using = {}//Using language
-	vm.model.dom.dataDom.eng = {
+		data: {}//data about translate
+	};
+
+	// English version
+	vm.model.dom.data.selected = {}//Using language
+	vm.model.dom.data.eng = {
 		title: 'Check-in List',
 		buttonCheckin: 'Checkin',
 		buttonFilter:'Filter',
@@ -90,7 +94,9 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 
 		noResult: 'There is no result'
 	}
-	vm.model.dom.dataDom.vi = {
+
+	// Vietnamese version
+	vm.model.dom.data.vi = {
 		title: 'Checkin',
 		buttonCheckin: 'Checkin',
 		buttonFilter:'Filter',
@@ -126,7 +132,6 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		invoicePromoteCode: 'Mã giảm giá',
 		invoiceTotal: 'Tổng tiền',
 
-
 		headerNo:'No',
 		headerName:'Họ và tên',
 		headerBirthday:'Ngày sinh',
@@ -142,32 +147,26 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 
 		noResult: 'Không có kết quả'
 	}
-	vm.model.dom.dataDom.using = vm.model.dom.dataDom.vi;
+	
+	vm.model.dom.data.selected = vm.model.dom.data.vi;
 
 	//Filter
 	vm.model.filter = {
 		myfilter:{},//Customer Filter
 		orderBy:{},//Filter order
 		statusOptions:{
-			0:vm.model.dom.dataDom.using.selectStatusOptionAll, 1:vm.model.dom.dataDom.using.selectStatusOptionCheckin, 2:vm.model.dom.dataDom.using.selectStatusOptionCheckout
+			0:vm.model.dom.data.selected.selectStatusOptionAll, 
+			1:vm.model.dom.data.selected.selectStatusOptionCheckin, 
+			2:vm.model.dom.data.selected.selectStatusOptionCheckout
 		},//Options for status filter
 		orderOptions:{//Options for order filter
-			'customer.firstname': vm.model.dom.dataDom.using.selectFirstnameAZ,
-			'-customer.firstname':vm.model.dom.dataDom.using.selectFirstnameAZ,
-			'checkinTime': vm.model.dom.dataDom.using.selectBookingFarthest,
-			'-checkinTime': vm.model.dom.dataDom.using.selectBookingLastest
+			'customer.firstname': vm.model.dom.data.selected.selectFirstnameAZ,
+			'-customer.firstname':vm.model.dom.data.selected.selectFirstnameAZ,
+			'checkinTime': vm.model.dom.data.selected.selectBookingFarthest,
+			'-checkinTime': vm.model.dom.data.selected.selectBookingLastest
 		},
 		others:{
 			customer:{}
-		}
-	}
-
-	//See more
-	vm.ctrl.seeMore = function(){
-		if(vm.model.dom.seeMore == true){
-			vm.model.dom.seeMore = false
-		}else{
-			vm.model.dom.seeMore = true
 		}
 	}
 
@@ -189,6 +188,14 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 
 	vm.model.parents = {}
 
+	// See more
+	vm.ctrl.seeMore = function(){
+		if(vm.model.dom.seeMore == true){
+			vm.model.dom.seeMore = false
+		}else{
+			vm.model.dom.seeMore = true
+		}
+	}
 
 	////////////////////////////////////////////////////////////////
 	// Default checkin data
@@ -217,6 +224,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			staffId:vm.model.customer.staffId,
 		}
 	}
+
 	//Get customer data from current created Customer
 	function getCheckinCurrentCreatedCus (){
 		var currentCus = $scope.layout.currentCustomer;
@@ -232,6 +240,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		}
 
 	}
+
 	//Default empty product to add more to orderline
 	// function getDefaultProduct (){
 	// 	return 	{
@@ -242,7 +251,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	// };
 
 	function getGroup(){
-		CheckinService.getCheckinList().then(
+		CheckinService.getCheckedinList().then(
 			function success(res){
 				vm.model.parents.list = res.data.data.filter(function(ele){
 					return (ele.service.name == 'small group private' || ele.service.name == 'medium group private') && !ele.parent
@@ -271,7 +280,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	}
 
 	function getCheckin(){
-		CheckinService.getCheckinList().then(
+		CheckinService.getCheckedinList().then(
 			function success(res){
 				vm.model.customer.checkedInList = res.data.data;
 			}, 
@@ -399,6 +408,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 
 	//Select Customer just searched to check in
 	vm.ctrl.selectCustomerToCheckin = function(index){
+		console.log (vm.model.search.userResults [index])
 		vm.model.customer.checkingInData.occupancy.customer = vm.model.customer.checkingInData.order.customer = {
 			_id: vm.model.search.userResults [index]._id,
 			firstname: vm.model.search.userResults [index].firstname,

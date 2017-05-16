@@ -85,10 +85,12 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 		3: vm.model.dom.lang.using.jobDoc
 	}
 
-	vm.model.customer.newCustomerData = {}//Model contain info to create new customer
-	vm.model.customer.newCustomerData.edu = {}
-	vm.model.customer.newCustomerData.phone = [];
-	vm.model.customer.newCustomerData.email = [];
+
+
+	vm.model.newCustomer = {}//Model contain info to create new customer
+	vm.model.newCustomer.edu = {}
+	vm.model.newCustomer.phone = [];
+	vm.model.newCustomer.email = [];
 	vm.model.form = {}//Anything about form data
 	vm.model.sorting = {}//Model for sorting a list search result
 
@@ -127,14 +129,18 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 	//Create Page
 	vm.ctrl.confirmCreateNewCustomer = function(){
 
-		console.log(vm.model.customer.newCustomerData.birthday)
+		console.log(vm.model.newCustomer.birthday)
 		if(vm.model.customer.otherSchool){
-			vm.model.customer.newCustomerData.edu.school = vm.model.customer.otherSchool
+			vm.model.newCustomer.edu.school = vm.model.customer.otherSchool
 		}
 		vm.model.dom.confirmCreateDiv = true;
 	}
+
 	vm.ctrl.createNewCustomer = function(){
-		customerService.createOne(vm.model.customer.newCustomerData)
+		vm.model.newCustomer.fullname = vm.model.newCustomer.lastname.trim () + ' ' + (vm.model.newCustomer.middlename ? vm.model.newCustomer.middlename.trim() + ' ' : '') + vm.model.newCustomer.firstname.trim ();
+		vm.model.newCustomer.fullname = vm.model.newCustomer.fullname.toUpperCase ();
+
+		customerService.createOne(vm.model.newCustomer)
 			.then(function success(res){
 				if(res.status == 200){
 					$('#announceCreateSuccessfull').foundation('open')

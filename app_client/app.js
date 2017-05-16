@@ -37,6 +37,14 @@ function config ($locationProvider, $routeProvider){
 			controller:"CheckinCtrl",
 			controllerAs:"vm"
 		})
+		// .when('/checkin', {
+		// 	templateUrl : "/template/newCheckin",
+		// 	resolve: {
+		// 		'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
+		// 	},			
+		// 	controller:"NewCheckinCtrl",
+		// 	controllerAs:"vm"
+		// })		
 		.when('/orders', {
 			templateUrl : "/template/orders",
 			controller:"OrderCtrl",

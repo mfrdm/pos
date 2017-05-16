@@ -94,12 +94,14 @@ function CustomersCtrl() {
 		req.body.data.email.map (function (x,i,arr){
 			if (!validator.isEmail (x)){
 				next (new Error ('Invalid email: ' + x));
+				return
 			};
 		});
 
 		req.body.data.phone.map (function (x,i,arr){
 			if (!validator.isMobilePhone (x, 'vi-VN')){
 				next (new Error ('Invalid phone: ' + x));
+				return
 			};
 		});
 
@@ -111,9 +113,6 @@ function CustomersCtrl() {
 				return 
 			}
 			else{
-				//cus = cus.getPublicFields ();
-				//Fix later
-
 				res.json ({data: cus});
 			}
 		});

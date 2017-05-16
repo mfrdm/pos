@@ -3,21 +3,29 @@ angular.module ('posApp')
 
 function CheckinService ($http, $q){
 
-	//Search Service
+	// //Search Service
+	// this.searchCustomers = function(input){
+	// 	var array = [{"firstname" : { $regex: input, $options: 'i' }}, {"lastname" : { $regex: input, $options: 'i' }}]
+	// 	return $http({
+	// 		method:'GET',
+	// 		url:'/api/customers',
+	// 		params:{
+	// 				queryInput:JSON.stringify({
+	// 				conditions: {$or: array},
+	// 				projection: {firstname: 1, middlename:1, lastname: 1, phone: 1, email: 1, edu:1,checkinStatus:1, parent:1, isStudent:1},
+	// 				opts: null
+	// 			})
+ //  			}
+	// 	})
+	// }
+
 	this.searchCustomers = function(input){
-		var array = [{"firstname" : { $regex: input, $options: 'i' }}, {"lastname" : { $regex: input, $options: 'i' }}]
 		return $http({
 			method:'GET',
-			url:'/api/customers',
-			params:{
-					queryInput:JSON.stringify({
-					conditions: {$or: array},
-					projection: {firstname: 1, middlename:1, lastname: 1, phone: 1, email: 1, edu:1,checkinStatus:1, parent:1, isStudent:1},
-					opts: null
-				})
-  			}
-		})
-	}
+			url:'/checkin/search-customers',
+			params:{ input: input}
+		});
+	}	
 
 	//Validate Promote Code
 	this.validatePromoteCode = function(data){
@@ -32,9 +40,9 @@ function CheckinService ($http, $q){
 		})
 	}
 
-	//Get all checked in customer
-	this.getCheckinList = function(query){
-		query = query ? query : {};
+	this.getCheckedinList = function(query){
+		// query.status = query.status ? query.status : 4; // get all by default
+
 		return $http({
 			method:'GET',
 			url:'/checkin',
@@ -44,6 +52,7 @@ function CheckinService ($http, $q){
 			},
 		})
 	}
+
 	this.readSomeProducts = function(){
 		return $http({
 			method:'GET',

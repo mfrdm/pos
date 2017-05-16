@@ -43,6 +43,7 @@ router.get('/register', OthersCtrl.register);
 
 // get template
 router.get('/template/checkin', OthersCtrl.getCheckinTemplate);
+router.get('/template/newCheckin', OthersCtrl.getNewCheckinTemplate);
 router.get('/template/customers', OthersCtrl.getCustomerTemplate);
 router.get('/template/bookings', OthersCtrl.getBookingTemplate);
 router.get('/template/orders', OthersCtrl.getOrderTemplate);
