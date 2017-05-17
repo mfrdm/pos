@@ -29,22 +29,22 @@ function config ($locationProvider, $routeProvider){
 			controllerAs: 'vm',
 		})	
 
-		.when('/checkin', {
-			templateUrl : "/template/checkin",
-			resolve: {
-				'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
-			},			
-			controller:"CheckinCtrl",
-			controllerAs:"vm"
-		})
 		// .when('/checkin', {
-		// 	templateUrl : "/template/newCheckin",
+		// 	templateUrl : "/template/checkin",
 		// 	resolve: {
 		// 		'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
 		// 	},			
-		// 	controller:"NewCheckinCtrl",
+		// 	controller:"CheckinCtrl",
 		// 	controllerAs:"vm"
-		// })		
+		// })
+		.when('/checkin', {
+			templateUrl : "/template/newCheckin",
+			resolve: {
+				'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
+			},			
+			controller:"NewCheckinCtrl",
+			controllerAs:"vm"
+		})		
 		.when('/orders', {
 			templateUrl : "/template/orders",
 			controller:"OrderCtrl",
@@ -118,6 +118,7 @@ function config ($locationProvider, $routeProvider){
 		// })
 		.otherwise ({redirectTo: '/checkin'});	
 };
+
 
 // Check if a user has permission to access a certain page or resource
 function checkAuth ($q, authentication, $location, $rootScope) {

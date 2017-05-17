@@ -35,41 +35,37 @@ div(class="columns row")
 					input(type='text' ng-model='vm.model.filter.others.customer.phone')
 		// Check-in
 		div(class="column")
-			div(class="borderT newBox row column paddingB45" ng-show="vm.model.dom.checkInDiv")
+			div(class="borderT newBox row column paddingB45" ng-show="vm.model.dom.checkin.checkinDiv")
 				
 				//Search Customer*********************************************//
 				div(class="row column")
 					form(ng-submit="vm.ctrl.searchCustomers()")
 						div(class="row column")
 							label {{vm.model.dom.data.selected.fieldPhoneEmail}}
-								input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.model.search.username')
-						div(ng-show='vm.model.dom.messageSearchResult' class='marginB15')
+								input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.model.search.checkin.username' required="true")
+						div(ng-show='vm.model.dom.checkin.search.message.notFound' class='marginB15')
 							div(class='callout alert')
-								p {{vm.model.search.messageNoResult}}
-									span: a(href='/#!/customers') Create new customer
-						div(ng-show='vm.model.dom.messageSearchAlreadyCheckin' class='marginB15')
+								p {{ vm.model.dom.data.selected.search.message.notFound + ' "' + vm.model.search.checkin.username + '". ' }}
+									span: a(href='/#!/customers') {{ vm.model.dom.data.selected.createCustomer}}			
+						//div(ng-show='vm.model.dom.messageSearchAlreadyCheckin' class='marginB15')
 							div(class='callout alert')
 								p {{vm.model.search.messageAlreadyCheckin}}
-						div(ng-show="vm.model.dom.checkingInCustomerSearchResult" class="marginB15")
+						div(ng-show="vm.model.dom.checkin.customerSearchResultDiv" class="marginB15")
 							div(class="table-scroll")
 								table(class="hover unstriped borderAll")
 									thead
 										tr
 											th No
-											th Last Name
-											th Middle Name
-											th First Name
+											th Full name
 											th Email
 											th Phone				
 									tbody
 										tr(ng-repeat='noti in vm.noties')
 											td {{noti.firstname}}
 											td {{noti.msg}}
-										tr(ng-repeat='result in vm.model.search.userResults' ng-click='vm.ctrl.selectCustomerToCheckin($index)' class="pointerCursor")
+										tr(ng-repeat='result in vm.model.search.checkin.customers' ng-click='vm.ctrl.selectCheckinginCustomer($index)' class="pointerCursor")
 											td {{ $index + 1 }}
-											td {{ result.lastname }}
-											td {{ result.middlename }}
-											td {{ result.firstname }}
+											td {{ result.fullname }}
 											td {{ result.email[0] }}
 											td {{ result.phone[0] }}
 				
@@ -265,7 +261,7 @@ div(class="columns row")
 							th {{vm.model.dom.data.selected.headerCheckout}}
 							th {{vm.model.dom.data.selected.headerEdit}}
 					tbody
-						tr(ng-repeat='customer in vm.model.customer.checkedInList | myfilter:vm.model.filter.myfilter.status | orderBy: [vm.model.filter.orderBy] | filter:vm.model.filter.others')
+						tr(ng-repeat='customer in vm.model.checkedinList.data | myfilter:vm.model.filter.myfilter.status | orderBy: [vm.model.filter.orderBy] | filter:vm.model.filter.others')
 							td {{ $index + 1 }}
 							td {{customer.customer.lastname}} {{customer.customer.middlename}} {{ customer.customer.firstname }} 
 							//- td {{ customer.customer.birthday}}
@@ -280,7 +276,7 @@ div(class="columns row")
 							td
 								button(type="button" ng-if='customer.status == 1' class="primary button" ng-click="vm.ctrl.editCheckInCustomer (customer)") Edit
 								button(type='button' ng-if='customer.status == 2' class="disabled button") Edit
-			div(class='emptyResult text-center' ng-if='vm.model.customer.checkedInList.length == 0')
+			div(class='emptyResult text-center' ng-if='vm.model.checkedinList.data.length == 0')
 				p {{vm.model.dom.data.selected.noResult}}
 
 //Invoice *********************************************//

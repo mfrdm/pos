@@ -23,7 +23,7 @@ function CheckinService ($http, $q){
 		return $http({
 			method:'GET',
 			url:'/checkin/search-customers',
-			params:{ input: input}
+			params: {input: input}
 		});
 	}	
 
@@ -41,15 +41,12 @@ function CheckinService ($http, $q){
 	}
 
 	this.getCheckedinList = function(query){
-		// query.status = query.status ? query.status : 4; // get all by default
+		query.status = query.status ? query.status : 4; // get all by default
 
 		return $http({
 			method:'GET',
 			url:'/checkin',
-			params: {
-				storeId:'59112972685d0127e59de962',
-				status:4
-			},
+			params: query,
 		})
 	}
 

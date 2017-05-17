@@ -1,7 +1,18 @@
 angular
 	.module ('posApp')
-	.service ('motion', [motion]);
+	.service ('dataPassingService', [dataPassingService])
 
-function motion (){
+function dataPassingService (){
+	this.passedData = {
+		curCustomer: '', // default value
+	};
 
-}
+	this.set = function (data, name){
+		this.passedData[name] = data;
+	};
+
+	this.get = function (name){
+		return this.passedData[name];
+	}
+};
+

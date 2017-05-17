@@ -1,21 +1,27 @@
 xdescribe ('Controller: CheckinCtrl', function (){
-	var CheckinService, Scope, createController, $rootScope, $httpBackend;
+	var CheckinService, $scope, createController, $rootScope, $httpBackend, dataPassingService, $window, $route;
 
 	beforeEach (module('posApp'));
 	beforeEach (inject (
 		function ($injector) {
 			$httpBackend = $injector.get ('$httpBackend');
 			$rootScope = $injector.get ('$rootScope');
-			var $controller = $injector.get ('$controller');
-			Scope = $rootScope.$new ();
+			$scope = $rootScope.$new ();
+			$window = $injector.get ('$window');
+			$route = $injector.get ($route)
 			CheckinService = $injector.get ('CheckinService');
+
+			var $controller = $injector.get ('$controller');
 
 			// checkinHandler = $httpBackend.when ('GET', /\/checkin\/.*/).respond ({data: []});
 
 			createController = function () {
 				return 	$controller ('CheckinCtrl', {
-					'$scope': Scope, 
-					'CheckinService': CheckinService,
+					dataPassingService: dataPassingService, 
+					$scope: $scope, 
+					$window: $window, 
+					$route: $route, 
+					CheckinService: CheckinService
 				});
 			}
 
@@ -27,21 +33,24 @@ xdescribe ('Controller: CheckinCtrl', function (){
 		$httpBackend.verifyNoOutstandingRequest();
 	}));
 
-	xdescribe ('Initialization', function (){
-		it ('should success fetch check-in list', function (){
-			var ctrl = createController ();
-			$httpBackend.flush ();
+	xdescribe ('Get checked-in list', function (){
+		it ('should success fetch check-in list')
+		it ('should display message when not found check-in');
+	});
 
-			expect (ctrl.status.getCheckinList).toEqual (true)
-		});
+	describe ('Check-in', function (){
+		xit ('should show check-in form when click check-in button 1st time');
+		xit ('should hide check-in form when click check-in button 2nd time');
+		xit ('should show customer search result div when having customer data after searching');
+		it ('should show customer search result div and not found message when having no customer data after searching');
+		it ('should show customer search result div and checked-in message when having customer data after searching but already checked-in');
+		it ('should hide customer search result when click check-in button 2nd time');
+		it ('should hide customer search result div when select a customer')
+		it ('should hide customer search result div when click out of the div')
+		it ('should hide customer search result div when remove all search input')
+		it ('should hide it when click check-in button second time');
+		
 
-		it ('should fail fetch check-in list', function (){
-			checkinListHandler.respond (401, {message: 'error'});
-			var ctrl = createController ();
-			$httpBackend.flush ();
-
-			expect (ctrl.status.getCheckinList).toEqual (false)
-		});	
 
 	});
 
