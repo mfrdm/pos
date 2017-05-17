@@ -5,6 +5,7 @@
 
 
 	function BookingCtrl ($scope, $route,bookingService, otherService, $window) {
+		var LayoutCtrl = $scope.$parent.layout;
 		var vm = this;
 		vm.tab = 'tab-main';
 		vm.look = {};

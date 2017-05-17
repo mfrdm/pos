@@ -45,9 +45,17 @@ html(ng-app='posApp')
 
 
 		div(class="title-bar text-center" data-responsive-toggle="mainMenu" data-hide-for="large")
-			button(class="menu-icon" type="button" data-toggle id="top-menu-btn")
+			button(class="menu-icon" type="button" data-toggle id="top-menu-btn" )
 			div(class="title-bar-title")
-				a(href="#!/" class="paddingLR0 title-bar-title title") GS POS
+				a(href="#!/" class="paddingLR0 title-bar-title") GS POS
+
+		div(class="row marginLR0")
+			div(class="large-2 columns colorGrey" id="mainMenu" ng-show='layout.model.dom.topMenu')
+				ul(class="menu vertical" ng-click='layout.ctrl.topMenu()')
+					li: a(href="/#!/checkin") Checkin
+					li: a(href="/#!/orders") Order
+					li: a(href="/#!/bookings") Booking
+					li: a(href="/#!/customers") Customer
 
 		div(class="row marginLR0 relative")
 			div(class="large-2 columns show-for-large" id="alternativeMenu" ng-show="layout.model.dom.sideBarMenu")

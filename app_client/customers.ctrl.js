@@ -1,4 +1,5 @@
 var CustomerCtrl = function($scope, customerService, $route, $window){
+	var LayoutCtrl = $scope.$parent.layout;
 	var vm = this;
 
 	vm.tab = 'tab-main';

@@ -44,6 +44,7 @@
 			accountBtn: false,
 			notiBtn: false,
 			sideBarMenu: false,
+			topMenu:true,
 			returnPage: '/checkin' // default
 		};
 
@@ -86,6 +87,18 @@
 			};
 
 			authentication.logout(beforeAction, afterAction);
+		}
+
+		$scope.layout.ctrl.topMenu = function(){
+			$scope.layout.model.dom.topMenu = false;
+		}
+
+		$scope.layout.ctrl.toggleTopMenu = function(){
+			if($scope.layout.model.dom.topMenu){
+				$scope.layout.model.dom.topMenu = false;
+			}else{
+				$scope.layout.model.dom.topMenu = true;
+			}
 		}
 
 		// $scope.layout.notiAlert = function(msg){
