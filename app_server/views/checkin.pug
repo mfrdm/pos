@@ -23,14 +23,14 @@ div(class="columns row")
 		// Filter
 		div(class="column" ng-show="vm.model.dom.filterDiv")
 			div(class="borderT newBox row column")
-				div(class="marginB15 column small-12 large-4 paddingL0")
+				div(class="marginB15 column small-12 large-4 paddingLR0 large-paddingR15")
 					legend {{ vm.model.dom.dataDom.using.fieldStatus}}
 					select(ng-model='vm.model.filter.myfilter.status' ng-options='key as value for (key , value) in vm.model.filter.statusOptions' ng-init='vm.model.filter.myfilter.status=1')
 						option
-				div(class='marginB15 column small-12 large-4')
+				div(class='marginB15 column small-12 large-4 paddingLR0 large-paddingR15')
 					legend {{ vm.model.dom.dataDom.using.fieldSearchByFirstname}}
 					input(type='text' ng-model='vm.model.filter.others.customer.firstname')
-				div(class='marginB15 column small-12 large-4 paddingR0')
+				div(class='marginB15 column small-12 large-4 paddingLR0')
 					legend {{ vm.model.dom.dataDom.using.fieldSearchByPhone}}
 					input(type='text' ng-model='vm.model.filter.others.customer.phone')
 		// Check-in
@@ -148,10 +148,10 @@ div(class="columns row")
 											td {{code}}
 											td(class='text-center deleteIcon')
 												i(class="material-icons customIcon" ng-click='vm.ctrl.deletePromoteCode(code); $event.preventDefault()') close
-						div(class='column small-11 paddingR0')
+						div(class='column small-10 large-11 paddingR0')
 							label Add
 								input(type='text' ng-model='vm.model.customer.promocode.codeInput')
-						div(class='column small-1 iconAdd')
+						div(class='column small-2 large-1 iconAdd')
 							i(class="material-icons customIcon" ng-click='vm.ctrl.addPromoteCode(); $event.preventDefault()') add
 					
 					//Main service for checkin
@@ -183,10 +183,10 @@ div(class="columns row")
 						div(class="column small-6")
 							label {{vm.model.dom.dataDom.using.fieldAddItems}}
 								select( ng-model="vm.model.other.selectedItem.name" ng-options="val for val in vm.model.other.listOtherProducts")
-						div(class="column small-5 paddingR0")
+						div(class="column small-4 large-5 paddingR0")
 							label {{vm.model.dom.dataDom.using.fieldQuantity}}
 								input( ng-model="vm.model.other.selectedItem.quantity" string-to-number type="number" min='0')
-						div(class="column small-1 iconAdd")
+						div(class="column small-2 large-1 iconAdd")
 							i(class="material-icons customIcon" ng-click='vm.ctrl.selectService(); $event.preventDefault()') add
 					div(class="row column")
 						input(class="button" type="submit" value="Submit")
@@ -301,26 +301,26 @@ div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
 			div(class='priceSection')
 				div(class="row column")
 					div(class='row column paddingB15')
-						div(class='column small-2 text-right')
+						div(class='column small-4 text-right')
 							p Checkin
-						div(class='column small-5 greenBorder')
+						div(class='column small-4 greenBorder')
 							p {{ vm.model.customer.checkoutCustomer.occupancy.checkinTime | date:'shortTime'}}
-						div(class='column small-5')
+						div(class='column small-4')
 							p {{ vm.model.customer.checkoutCustomer.occupancy.checkinTime | date:'dd/MM/yyyy'}}
 					div(class='row column')
-						div(class='column small-2 text-right')
+						div(class='column small-4 text-right')
 							p Checkout
-						div(class='column small-5 greenBorder')
+						div(class='column small-4 greenBorder')
 							p {{ vm.model.customer.checkoutCustomer.occupancy.checkoutTime | date:'shortTime'}}
-						div(class='column small-5')
+						div(class='column small-4')
 							p {{ vm.model.customer.checkoutCustomer.occupancy.checkoutTime | date:'dd/MM/yyyy'}}
 				
 				//Main Product
 				div(class="borderT newBox row column")
 					div(class='row column paddingTB15')
-						div(class='column small-2 text-right')
+						div(class='column small-4 text-right')
 							p {{vm.model.dom.dataDom.using.invoiceMainService}}
-						div(class='column small-10 greenBorder')
+						div(class='column small-8 greenBorder')
 							div(class='row column small-12')
 								div(class='column small-6 paddingLR0 marginT0')
 									p {{ vm.model.products[vm.model.customer.checkoutCustomer.occupancy.service.name]}}
@@ -329,23 +329,23 @@ div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
 					
 					// Group
 					div(class="row column" ng-if='vm.model.customer.checkoutCustomer.occupancy.orderline[0].productName == "medium group private" || vm.model.customer.checkoutCustomer.occupancy.orderline[0].productName == "small group private"')
-						div(class='column small-2 text-right')
+						div(class='column small-4 text-right')
 							p {{vm.model.dom.dataDom.using.fieldCheckoutGroup}}
-						div(class='column small-10 greenBorder')
+						div(class='column small-8 greenBorder')
 							p {{vm.model.customer.groupName}}
 
 					//Promo Code
 					div(class='row column paddingT15' ng-if='vm.model.customer.checkoutCustomer.occupancy.promocodes.length > 0')
-						div(class='column small-2 text-right')
+						div(class='column small-4 text-right')
 							p {{vm.model.dom.dataDom.using.invoicePromoteCode}}
-						div(class='column small-10 greenBorder')
+						div(class='column small-8 greenBorder')
 							p(ng-repeat='promocode in vm.model.customer.checkoutCustomer.occupancy.promocodes') {{ promocode.name}}
 					
 					//Total Money
 					div(class='row column borderT newBox')
-						div(class='column small-2 text-right')
+						div(class='column small-4 text-right')
 							p {{vm.model.dom.dataDom.using.invoiceTotal}}
-						div(class='column small-10 greenBorder')
+						div(class='column small-8 greenBorder')
 							div(class='row column small-12')
 								div(class='column small-6 paddingLR0 marginT0')
 									p 

@@ -155,7 +155,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		},//Options for status filter
 		orderOptions:{//Options for order filter
 			'customer.firstname': vm.model.dom.dataDom.using.selectFirstnameAZ,
-			'-customer.firstname':vm.model.dom.dataDom.using.selectFirstnameAZ,
+			'-customer.firstname':vm.model.dom.dataDom.using.selectFirstnameZA,
 			'checkinTime': vm.model.dom.dataDom.using.selectBookingFarthest,
 			'-checkinTime': vm.model.dom.dataDom.using.selectBookingLastest
 		},

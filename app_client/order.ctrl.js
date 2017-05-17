@@ -351,4 +351,8 @@ function OrderCtrl ($scope, $window, $route, OrderService){
 	// 		})
 	// }
 
+	vm.ctrl.reload = function(){
+		$window.location.reload()
+	}
+
 }
