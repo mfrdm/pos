@@ -88,6 +88,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 
 		parentGroup:'Group',
 		seeMoreBtn:'Expand',
+		seeMoreBtnIcon:'swap_horiz',
 
 		noResult: 'There is no result'
 	}
@@ -141,6 +142,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 
 		parentGroup:'Nhóm',
 		seeMoreBtn:'Expand',
+		seeMoreBtnIcon:'swap_horiz',
 
 		noResult: 'Không có kết quả'
 	}
@@ -169,9 +171,11 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		if(vm.model.dom.seeMore == true){
 			vm.model.dom.seeMore = false;
 			vm.model.dom.dataDom.using.seeMoreBtn = 'Expand'
+			vm.model.dom.dataDom.using.seeMoreBtnIcon = 'swap_horiz'
 		}else{
 			vm.model.dom.seeMore = true;
 			vm.model.dom.dataDom.using.seeMoreBtn = 'Shrink'
+			vm.model.dom.dataDom.using.seeMoreBtnIcon = 'compare_arrows'
 		}
 	}
 
@@ -632,4 +636,5 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		vm.model.dom.checkInListDiv=true;
 		vm.model.dom.messageSearchAlreadyCheckin = false;
 	}
+
 }

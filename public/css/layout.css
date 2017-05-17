@@ -453,3 +453,10 @@ ul.listOrder li i{
 .emptyResult p {
 	margin-bottom: 0;
 }
+
+@media print, screen and (max-width: 64em){
+	.menu select{
+		width:49.99px;
+	}
+}
+
