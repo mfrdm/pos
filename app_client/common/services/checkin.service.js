@@ -2,23 +2,6 @@ angular.module ('posApp')
 	.service ('CheckinService', ['$http','$q', CheckinService])
 
 function CheckinService ($http, $q){
-
-	// //Search Service
-	// this.searchCustomers = function(input){
-	// 	var array = [{"firstname" : { $regex: input, $options: 'i' }}, {"lastname" : { $regex: input, $options: 'i' }}]
-	// 	return $http({
-	// 		method:'GET',
-	// 		url:'/api/customers',
-	// 		params:{
-	// 				queryInput:JSON.stringify({
-	// 				conditions: {$or: array},
-	// 				projection: {firstname: 1, middlename:1, lastname: 1, phone: 1, email: 1, edu:1,checkinStatus:1, parent:1, isStudent:1},
-	// 				opts: null
-	// 			})
- //  			}
-	// 	})
-	// }
-
 	this.searchCustomers = function(input){
 		return $http({
 			method:'GET',
@@ -32,11 +15,7 @@ function CheckinService ($http, $q){
 		return $http({
 			method: 'GET',
 			url: '/checkin/validate-promotion-code',
-			params:
-				{data:JSON.stringify({
-									codes:data.codes,
-									isStudent:data.isStudent
-								})}
+			params: {data:JSON.stringify(data)}
 		})
 	}
 
@@ -57,13 +36,12 @@ function CheckinService ($http, $q){
 		})
 	}
 
-	this.createOne = function (userId, data) {
+	this.createOne = function (customerId, data) {
 		return $http({
 			method:'POST',
-			url:'/checkin/customer/' + userId,
+			url:'/checkin/customer/' + customerId,
 			data: JSON.stringify({data: data}),
 		});
-		// return $q.resolve({data: data})
 	};
 
 	this.readOneParent = function(id){
@@ -85,11 +63,11 @@ function CheckinService ($http, $q){
 
 
 	//Checkout for customer
-	this.confirmCheckout = function(order){
+	this.checkout = function(occupancy){
 		return $http({
 			url:'/checkout',
 			method:'POST',
-			data:JSON.stringify({data:order})
+			data:JSON.stringify({data: occupancy})
 		})
 	};
 

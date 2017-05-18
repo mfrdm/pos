@@ -17,14 +17,26 @@ module.exports = new Checkin();
 function Checkin() {
 	this.validatePromocodes = function (req, res, next){
 		// validate if exist and if not expire
+
 		var q = JSON.parse(req.query.data);
-		console.log(q)
 		var codes = q.codes;
-		if (q.isStudent){
-			// var studentCode = 'STUDENTPRICE';
-			var studentCode = 'studentprice';//uppercase doesn't work
-			codes.push (studentCode);
-		};
+		var studentCode = 'studentprice';
+
+		console.log (q)
+		if (q.isStudent && q.service){
+			var i = codes.indexOf (studentCode);
+			var validService = ['group common', 'individual common'];
+			if (validService.indexOf (q.service.toLowerCase ()) != -1 && i == -1){
+				codes.push (studentCode);
+			}
+			else{
+				if (i != -1){
+					codes.splice (i, 1);
+				}
+			}			
+		}
+
+		console.log (q)
 
 		Promocodes.find ({name: {$in: codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1, conflicted: 1, codeType: 1, override: 1}, function (err, pc){
 			if (err){
@@ -46,8 +58,10 @@ function Checkin() {
 	this.checkin = function(req, res, next) {
 		var occ = new Occupancy (req.body.data.occupancy);
 
-		if (req.body.data.order){
+		if (req.body.data.order && req.body.data.order.orderline && req.body.data.order.orderline.length){
 			var order = new Orders (req.body.data.order);
+			order.staffId = occ.staffId;
+			order.storeId = occ.storeId;
 			order._id = new mongoose.Types.ObjectId ();
 			occ.orders = [order._id];
 		};
@@ -145,19 +159,28 @@ function Checkin() {
 
 
 	this.readCheckinList = function (req, res, next) {
+		console.log (req.query)
 		var today = moment ();
 		var start = req.query.start ? moment(req.query.start) : moment (today.format ('YYYY-MM-DD'));
 		var end = req.query.end ? moment(req.query.end + ' 23:59:59') : moment (today.format ('YYYY-MM-DD') + ' 23:59:59');
 		var checkinStatus = req.query.status ? req.query.status : 1; // get checked-in by default
 
-		var q = Occupancy.find (
-			{
-				checkinTime: {
-					$gte: start, 
-					$lte: end,
-				},
-				storeId: req.query.storeId,
-			});
+		var stmt = 	{
+			checkinTime: {
+				$gte: start, 
+				$lte: end,
+			},
+			storeId: req.query.storeId,
+		};
+
+		if (req.query.service){
+			stmt['service.name'] = {$in: []};
+			req.query.service.map (function (x, i, arr){
+				stmt['service.name'].$in.push (x.toLowerCase ());
+			})
+		}
+
+		var q = Occupancy.find (stmt, {updatedAt: 0, orders: 0, staffId: 0, storeId: 0, createdAt: 0, bookingId: 0});
 
 		if (checkinStatus == 4){
 			// do nothing and get all checked-in and checked-out
@@ -166,8 +189,6 @@ function Checkin() {
 		else {
 			q.$where ('this.status == ' + checkinStatus);
 		}
-
-		console.log (req.query)
 
 		q.exec(function (err, occ){
 				if (err){
@@ -185,6 +206,8 @@ function Checkin() {
 	};
 
 	this.updateCheckin = function(req, res, next) {
+		var updateQuery = {}; 
+
 		Occupancy.findByIdAndUpdate (req.params.occId, req.body, {new: true}, function (err, updatedOcc){
 			if (err){
 				console.log (err);

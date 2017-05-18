@@ -4,26 +4,29 @@
 
 	function NewCheckinCtrl (dataPassingService, $scope, $window, $route, CheckinService){
 		var LayoutCtrl = $scope.$parent.layout;
-		var vm = this;	
+		var vm = this;
+
+		var expectedServiceNames = ['group common', 'individual common', 'small group private', 'medium group private'];
+
 		vm.ctrl = {
 			checkin: {},
-			editCheckin: {}
+			checkout: {}
 		};
 
 		vm.model = {
 			staff: LayoutCtrl.user,
 			company: LayoutCtrl.company,
 			dept: LayoutCtrl.dept,
-			services: [
-				{name: 'individual common', _id: ''},
-				{name: 'group common', _id: ''},
-				{name: 'small group private', _id: ''},
-				{name: 'medium group private', _id: ''},
-			],
-			items: {},
+			services: [],
+			items: [],
 			checkingin: {
-				occupancy: {},
-				order: {},
+				occupancy: {
+					staffId: LayoutCtrl.model.user._id || LayoutCtrl.model.user.id ,
+					storeId: LayoutCtrl.model.dept._id,
+				},
+				order: {
+					orderline: [],				
+				},
 			},
 			checkedinList: {
 				data: [],
@@ -34,6 +37,9 @@
 			editedCustomer: {
 
 			},
+			checkingout: {
+				occupancy: {}
+			},
 			dom: {
 				checkin: {
 					checkInDiv: false,
@@ -43,7 +49,8 @@
 							notFound: false,
 						}
 						
-					}
+					},
+					products: [],
 				},
 				checkedinList: true,
 				checkInEditDiv: false,
@@ -56,6 +63,13 @@
 					username: '',
 					customers: [],
 				}
+			},
+			temporary: {
+				checkin: {
+					item: {},
+					itemNames: [],
+					codeNames: [],
+				}
 			}
 
 		};
@@ -67,6 +81,7 @@
 		vm.model.dom.data.selected = {}//Using language
 
 		vm.model.dom.data.eng = {
+			modelLanguage: 'en',
 			title: 'Check-in List',
 			buttonCheckin: 'Checkin',
 			buttonFilter:'Filter',
@@ -119,11 +134,34 @@
 				message: {
 					notFound: 'Not Found!'
 				}
-			}
+			},
+			services: {
+				'group common': {
+					_id: '',
+					name: "Group Common",
+					price: 15000,
+				},
+				'individual common': {
+					_id: '',
+					name: "Individual Common",
+					price: 15000,
+				},
+				'medium group private': {
+					_id: '',
+					name: "Medium group private",
+					price: 220000,
+				},
+				'small group private': {
+					_id: '',
+					name: "Small group private",
+					price: 150000,
+				},															
+			},
 		}
 
 		// Vietnamese version
 		vm.model.dom.data.vi = {
+			modelLanguage: 'vn',
 			title: 'Checkin',
 			buttonCheckin: 'Checkin',
 			buttonFilter:'Filter',
@@ -175,12 +213,63 @@
 			createCustomer: ' Create an account',
 			search: {
 				message: {
-					notFound: 'Không tìm thấy kết quả!'
+					notFound: 'Không tìm thấy kết quả!',
 				}
-			}			
+			},					
 		}
 		
 		vm.model.dom.data.selected = vm.model.dom.data.vi;
+
+		vm.ctrl.addServiceLabel = function (service){
+			if (service.name.toLowerCase () == 'group common'){
+				if (vm.model.dom.data.selected.modelLanguage == 'vn') service.label = 'Nhóm chung';
+				else service.label = service.name;
+			}
+			else if (service.name.toLowerCase () == 'individual common'){
+				if (vm.model.dom.data.selected.modelLanguage == 'vn') service.label = 'Cá nhân';
+				else service.label = service.name;
+			}
+			else if (service.name.toLowerCase () == 'small group private'){
+				if (vm.model.dom.data.selected.modelLanguage == 'vn') service.label = 'Nhóm riêng 15';
+				else service.label = service.name;
+			}
+			else if (service.name.toLowerCase () == 'medium group private'){
+				if (vm.model.dom.data.selected.modelLanguage == 'vn') service.label = 'Nhóm riêng 30';
+				else service.label = service.name;
+			}												
+		
+		}
+
+		vm.ctrl.checkin.getProducts = function (){
+			CheckinService.readSomeProducts().then(
+				function success(res){
+					res.data.data.map(function(x, i, arr){
+						if(x.category == 1){
+							vm.model.services.push(x);
+						}
+					});
+
+					res.data.data.map(function(x, i, arr){
+						if(x.category != 1){
+							vm.model.items.push(x);
+						}
+					});
+
+					// push data into dom.data objects
+					vm.model.services.map (function (x, i, arr){
+						vm.ctrl.addServiceLabel (x);
+					});
+					
+
+					vm.model.dom.data.selected.services = vm.model.services;
+					vm.model.dom.data.selected.items = vm.model.items;
+
+				},
+				function error (err){
+					console.log (err);
+				}
+			);			
+		};
 
 		vm.ctrl.getCheckedinList = function (){
 			var query = {
@@ -191,32 +280,15 @@
 			CheckinService.getCheckedinList(query).then(
 				function success(res){
 					vm.model.checkedinList.data = res.data.data;
+					vm.model.checkedinList.data.map (function (x, i, arr){
+						vm.ctrl.addServiceLabel (x.service);
+					});
+					
 				}, 
 				function error(err){
 					console.log(err);
 				}
 			);
-
-		};
-
-		vm.ctrl.getDefaultCheckInData = function (){
-			return {
-				service: {
-						name: vm.model.services[0].name, // default service
-						_id: vm.model.services[0]._id,
-					}
-				,
-				customer: {
-					firstname: '',
-					middlename: '',
-					lastname: '',
-					fullname: '',
-					phone: '',
-					email:'',
-					_id: '',
-					// isStudent: '', // use later
-				}
-			}
 		};
 
 		vm.ctrl.getDefaultOrder = function (){
@@ -229,18 +301,74 @@
 		}
 
 		vm.ctrl.checkin.resetSearchCustomerDiv = function (){
-			
+			vm.model.dom.checkin.customerSearchResultDiv = false;
+			vm.model.search.checkin.customers = [];
 		};
 
-		vm.ctrl.turnOnCheckinDiv = function (){
+		vm.ctrl.checkin.addItem = function (){
+			if (vm.model.temporary.checkin.item.quantity && vm.model.temporary.checkin.item.name){
+				vm.model.items.map (function (x, i, arr){
+
+					if (x.name == vm.model.temporary.checkin.item.name && vm.model.temporary.checkin.itemNames.indexOf (x.name) == -1){
+						var obj = Object.assign({},{
+							quantity: vm.model.temporary.checkin.item.quantity,
+							_id: x._id,
+							productName: x.name,
+							price: x.price
+						});
+
+						vm.model.checkingin.order.orderline.push (obj);
+						vm.model.temporary.checkin.item = {};
+						vm.model.temporary.checkin.itemNames.push (x.name);
+
+						return;
+					}
+					else{
+						// display message
+					}
+
+				});
+			}
+		};
+
+		vm.ctrl.checkin.removeItem = function (index){
+			if (vm.model.checkingin.order.orderline){
+				vm.model.checkingin.order.orderline.splice (index, 1);
+				vm.model.temporary.checkin.itemNames.splice (index, 1);
+			}
+		};
+
+		vm.ctrl.checkin.addCode = function (){
+			if (!vm.model.checkingin.occupancy.promocodes) vm.model.checkingin.occupancy.promocodes = [];
+
+			if (vm.model.temporary.checkin.codeNames.indexOf (vm.model.temporary.checkin.codeName) == -1){
+				vm.model.checkingin.occupancy.promocodes.push ({name: vm.model.temporary.checkin.codeName});
+				vm.model.temporary.checkin.codeNames.push (vm.model.temporary.checkin.codeName);
+				vm.model.temporary.checkin.codeName = null;				
+			}
+
+		};
+
+		vm.ctrl.checkin.removeCode = function (index){
+			if (vm.model.checkingin.occupancy.promocodes){
+				vm.model.checkingin.occupancy.promocodes.splice (index, 1);
+				vm.model.temporary.checkin.codeNames.splice (index, 1);
+			}
+		};
+
+		vm.ctrl.checkin.initCheckinDiv = function (){
 			vm.model.dom.checkin.checkinDiv = true;
+			vm.ctrl.checkin.getGroupPrivateLeader ();
 		}
 
-		vm.ctrl.turnOffCheckinDiv = function (){
-			// vm.model.checkingin.occupancy = vm.ctrl.getDefaultCheckInData ();
-			// vm.model.dom.checkingInCustomerSearchResult = false;
-			vm.model.dom.checkin.checkinDiv = false;
-		}			
+		// FIX: should not reset the route. only the checkin div
+		vm.ctrl.checkin.resetCheckinDiv = function (){
+			$route.reload (); 
+		}
+
+		vm.ctrl.checkin.cancel = function (){
+			vm.ctrl.checkin.resetCheckinDiv ();
+		}
 
 		vm.ctrl.setCurrentCus = function (){
 			// 
@@ -259,10 +387,15 @@
 			if (!vm.model.dom.checkin.checkinDiv){
 				vm.model.dom.checkInEditDiv = false; // turn off
 				vm.model.dom.filterDiv = false; // turn off				
-				vm.ctrl.turnOnCheckinDiv ();
+				vm.ctrl.checkin.initCheckinDiv ();
+
+				if (!vm.model.dom.checkin.products.length){
+					vm.ctrl.checkin.getProducts ();
+				}
+				 
 			}
 			else{
-				vm.ctrl.turnOffCheckinDiv ();
+				vm.ctrl.checkin.resetCheckinDiv ();
 			}
 		};
 
@@ -274,7 +407,7 @@
 			}
 		}
 
-		vm.ctrl.searchCustomers =  function (){
+		vm.ctrl.checkin.searchCustomer =  function (){
 			CheckinService.searchCustomers(vm.model.search.checkin.username).then(
 				function success (res){
 					if (!res.data){
@@ -285,8 +418,6 @@
 							vm.model.search.checkin.customers = res.data.data;
 							vm.model.dom.checkin.search.message.notFound = false;
 							vm.model.dom.checkin.customerSearchResultDiv = true;
-							vm.model.dom.messageSearchResult = false;
-							vm.model.dom.messageSearchAlreadyCheckin = false;
 						}
 						else{
 							vm.model.dom.checkin.search.message.notFound = true;
@@ -295,38 +426,168 @@
 					}
 				}, 
 				function error (err){
-					console.log (2)
 					console.log(err)
 				}
 			);
 		};
 
-		vm.ctrl.selectCheckinginCustomer = function (index){
-			vm.model.checkingin.occupancy.customer = vm.model.checkingin.order.customer = vm.model.search.customers [index];
-
-			vm.model.dom.checkingInCustomerSearchResult = false;
-			vm.model.search.username = vm.model.search.customers[index].lastname + ' ' +vm.model.search.customers[index].middlename+ ' ' + vm.model.search.customers[index].firstname + (vm.model.search.customers[index].email[0] ? ' || ' + vm.model.search.customers[index].email[0] : '') + ' || ' + vm.model.search.customers[index].phone[0];			
+		vm.ctrl.checkin.selectCustomer = function (index){
+			vm.model.checkingin.occupancy.customer = vm.model.checkingin.order.customer = {
+				firstname: vm.model.search.checkin.customers [index].firstname,
+				lastname: vm.model.search.checkin.customers [index].lastname,
+				middlename: vm.model.search.checkin.customers [index].middlename,
+				fullname: vm.model.search.checkin.customers [index].fullname,
+				_id: vm.model.search.checkin.customers [index]._id,
+				phone: vm.model.search.checkin.customers [index].phone[0],
+				email: vm.model.search.checkin.customers [index].email[0]	,
+				isStudent: vm.model.search.checkin.customers [index].isStudent,
+			}
+			
+			vm.model.search.checkin.username = vm.model.search.checkin.customers[index].fullname + (vm.model.search.checkin.customers [index].email[0] ? ' || ' + vm.model.search.checkin.customers [index].email[0] : '') + (vm.model.search.checkin.customers [index].phone[0] ? ' || ' + vm.model.search.checkin.customers [index].phone[0] : '');
+			vm.ctrl.checkin.resetSearchCustomerDiv ();
 		}
 
+		vm.ctrl.checkin.serviceChangeHandler = function (){
+			vm.model.services.map (function (x, i, arr){
+				if (x.name.toLowerCase() == vm.model.checkingin.occupancy.service.name.toLowerCase()){
+					vm.model.checkingin.occupancy.service.price = x.price;
 
-		vm.ctrl.validatePromocodes = function (){
+					// Do sth when customer does uses private group service
+					if (vm.model.checkingin.occupancy.service.name.toLowerCase() != expectedServiceNames[2] && vm.model.checkingin.occupancy.service.name.toLowerCase() != expectedServiceNames[3]){
 
+						vm.model.dom.checkin.privateGroupLeaderDiv = false;
+					}	
+					else{
+						vm.model.dom.checkin.privateGroupLeaderDiv = true;
+					}
+
+					return
+				}
+			})
 		};
 
-		vm.ctrl.checkin = function (){
-
+		vm.ctrl.checkin.selectedGroupChangeHandler = function (){
+			if (vm.model.temporary.selectedGroupPrivate._id){
+				vm.model.checkingin.occupancy.parent = vm.model.temporary.selectedGroupPrivate._id;
+				console.log (vm.model.checkingin.occupancy.service, vm.model.temporary.selectedGroupPrivate.service)
+				vm.model.checkingin.occupancy.service = vm.model.temporary.selectedGroupPrivate.service
+			} 
 		};
 
-		vm.ctrl.checkout = function (){
+		// FIX: Fetching existing groups in client is not a good solution in long-term
+		vm.ctrl.checkin.getGroupPrivateLeader = function (){
+			vm.model.temporary.groupPrivateLeaders = [{_id: '', groupName: '', leader: ''}];
+			vm.model.checkedinList.data.map (function (x, i, arr){
+				if (x.service.name.toLowerCase () == expectedServiceNames[2] || x.service.name.toLowerCase () == expectedServiceNames[3]){
 
+					vm.model.temporary.groupPrivateLeaders.push ({
+						_id: x._id, // occupancy id
+						groupName: x.service.label + ' / ' + x.customer.fullname + (' / ' + x.customer.email[0] ? ' / ' + x.customer.email : '') + (x.customer.phone? ' / ' + x.customer.phone : ''),
+						leader: x.customer.fullname,
+						service: x.service
+					});
+				}
+			});
+			
+		} 
+
+		//Confirm checkin
+		vm.ctrl.checkin.confirm = function(){
+			if(vm.model.checkingin.occupancy.customer._id){
+				vm.ctrl.addServiceLabel (vm.model.checkingin.occupancy.service);
+				vm.model.checkingin.occupancy.checkinTime = new Date(); 
+				$('#checkinModal').foundation('open');
+			}
+		}
+
+		vm.ctrl.checkin.checkin = function (){
+			var customerId = vm.model.checkingin.occupancy.customer._id;
+			CheckinService.createOne (customerId, vm.model.checkingin).then(
+				function success(res){
+					var occupancy = res.data.data.occupancy;
+					vm.ctrl.reset ();
+	 			}, 
+				function error(err){
+					console.log(err);
+				}
+			);			
 		};
 
-		vm.ctrl.updateCheckin = function (){
+		vm.ctrl.checkin.validateCode = function (){
 
+			if(vm.model.checkingin.occupancy.customer.firstname){
+				var codes = [];
+				if (vm.model.checkingin.occupancy.promocodes && vm.model.checkingin.occupancy.promocodes.length){
+					codes = vm.model.checkingin.occupancy.promocodes.map (function(x, i, arr){
+						return x.name;
+					});
+				}
+
+				var data = {
+					codes: codes,
+					isStudent: vm.model.checkingin.occupancy.customer.isStudent,
+					service: vm.model.checkingin.occupancy.service.name,
+				};
+
+				CheckinService.validatePromoteCode(data)
+				.then(function success(res){
+					var foundCodes = res.data.data;
+					vm.model.checkingin.occupancy.promocodes = foundCodes;
+
+					if (foundCodes.length >= codes.length){
+						vm.ctrl.checkin.confirm ();
+					}
+			
+				})
+			}
 		};
 
+		vm.ctrl.checkin.update = function (){
+			vm.model.dom.checkInEditDiv = true;
+			vm.model.dom.checkInDiv = false;
+			vm.model.dom.checkInListDiv = true;
+			vm.model.dom.filterDiv = false;
+			vm.model.customer.editedCheckedInCustomer = {}
+			vm.model.customer.editedCheckedInCustomer.occupancy = item;		
+		};
 
-		////////////////////////// INITIALIZE ///////////////////////////////		
+		vm.ctrl.checkout.getInvoice = function (occupancy){
+			vm.model.dom.checkOutDiv = true;
+			CheckinService.readInvoice(occupancy._id).then(
+				function success(res){
+					console.log(res)
+					vm.model.checkingout.occupancy = res.data.data;
+					vm.ctrl.addServiceLabel (vm.model.checkingout.occupancy.service);
+					// vm.ctrl.addGroupParent (vm.model.checkingout.occupancy.service) // Build later
+				}, 
+				function error(err){
+					console.log(err)
+				}
+			);
+		
+		};
+
+		vm.ctrl.checkout.checkout = function (){
+			CheckinService.checkout(vm.model.checkingout.occupancy)
+				.then(function success(res){
+					vm.ctrl.reset();
+					$('#askCheckout').foundation('close');
+					$('#announceCheckoutSuccess').foundation('open');
+
+				}, function error(err){
+					console.log(err)
+				})
+		};
+
+		vm.ctrl.checkout.confirm = function (){
+			$('#askCheckout').foundation('open');
+		};
+
+		vm.ctrl.reset = function (){
+			$route.reload ();
+		};
+
+		////////////////////////////// INITIALIZE ///////////////////////////////		
 		angular.element(document.getElementById ('mainContentDiv')).ready(function () {
 			vm.ctrl.getCheckedinList ();
 			$scope.$apply();

@@ -26,23 +26,24 @@ function Checkout() {
 
 			foundOcc.checkoutTime = foundOcc.checkoutTime ? foundOcc.checkoutTime : moment ();
 			foundOcc.getTotal ();
+			console.log (foundOcc)
 			res.json ({data: foundOcc});
 		})
 	}
 
 	this.confirmCheckout = function(req, res, next) {
-
 		var total = req.body.data.total;
 		var usage = req.body.data.usage;
 		var checkoutTime = req.body.data.checkoutTime;
 		var status = 2;
+
 		Customers.findOneAndUpdate({_id:req.body.data.customer._id}, {$set:{checkinStatus:false}}, function(err, cus){
 			if (err){
 				next (err)
 				return
 			}
 			else{
-				Occupancy.findOneAndUpdate ({_id: req.body.data._id}, {$set: {status: status, total: total, usage: usage, checkoutTime: checkoutTime}}, {new: true, fields: {usage: 1, total: 1, status: 1, checkoutTime: 1, checkinTime: 1, customer: 1}}, function (err, occ){
+				Occupancy.findOneAndUpdate ({_id: req.body.data._id}, {$set: {status: status, total: total, usage: usage, checkoutTime: checkoutTime}}, {new: true, fields: {updatedAt: 0, orders: 0, staffId: 0, storeId: 0, createdAt: 0, bookingId: 0}}, function (err, occ){
 					if (err){
 						next (err)
 						return
