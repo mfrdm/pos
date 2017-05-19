@@ -26,50 +26,42 @@ div(ng-switch='vm.tab')
 					//- 						option(value="phone") Phone
 				div(class="column" ng-show='vm.model.dom.CreateCustomerDiv')
 					form(class="borderT newBox row column" ng-submit='vm.ctrl.confirmCreateNewCustomer()')
-						div(class=" row column")
-							div(class="column small-4 paddingTB15 paddingL0")
+						div(class="row column")
+							div(class="column small-12 large-4")
 								label Lastname
 									input(type="text" ng-model='vm.model.newCustomer.lastname')
-							div(class="column small-4 paddingTB15")
+							div(class="column small-12 large-4")
 								label Middle name
 									input(type="text" ng-model='vm.model.newCustomer.middlename')
-							div(class="column small-4 paddingTB15 paddingR0")
+							div(class="column small-12 large-4")
 								label Firstname
 									input(type="text" ng-model='vm.model.newCustomer.firstname')
 						div(class=" row column")
-							div(class="column small-6 large-3 paddingTB15 paddingL0")
+							div(class="column small-12 large-6")
 								label Gender
 									select(ng-model='vm.model.newCustomer.gender' ng-options="key as value for (key , value) in {1: 'Male',2: 'Female',3: 'Others'}")
-							div(class="column small-3 paddingTB15 paddingR0")
+							div(class="column small-12 large-6")
 								label Birthday
 									input(type="date" ng-model='vm.model.newCustomer.birthday')
 						div(class=" row column")
-							div(class="column small-6 large-3 paddingTB15 paddingL0 ")
+							div(class="column small-12 large-6")
 								label Email
 									input(type="text" ng-model='vm.model.newCustomer.email[0]')
-							div(class="column small-3 paddingTB15 paddingR0")
+							div(class="column small-12 large-6")
 
 								label Phone
 									input(type="text" ng-model='vm.model.newCustomer.phone[0]')
 						div(class=" row column")
-							div(class="column small-4 paddingTB15 paddingL0")
+							div(class="column small-12 large-6")
 								label School/ University
 									select(ng-model='vm.model.newCustomer.edu.school' ng-options="val for val in vm.model.customer.selectSchools")
-							div(class="column small-4 paddingTB15")
+							div(class="column small-12 large-6")
 								label Other Schools
 									input(type="text" ng-model='vm.model.customer.otherSchool')
-							div(class="column small-4 paddingTB15 paddingR0")
-								label Title at school/university
-									select(ng-model='vm.model.newCustomer.edu.title' ng-options="key as value for (key , value) in vm.model.customer.selectCustomerTitleConvert")
-							//- div(class="column small-12 ")
-							//- 	label Start at University
-							//- 		input(type="number" min='1900' max='2020' ng-model='vm.model.input.start')
-							//- div(class="column small-12")
-							//- 	label End at University
-							//- 		input(type="number" min='1900' max='2020' ng-model='vm.model.input.end')
 
-						div(class="row column paddingT15")
+						div(class="row column paddingT15 paddingLR15")
 							input(class="button" type="submit" value="Submit")
+							a(class="button float-right" ng-click="") Cancel
 				//div(class="column")
 					div(class="borderT newBox row column")
 						div(class="row column")
