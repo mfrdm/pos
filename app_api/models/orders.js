@@ -46,6 +46,7 @@ var ordersSchema = new mongoose.Schema({
 		firstname: {type:String, required: true},
 		middlename: {type:String},
 		lastname: {type:String, required: true},
+		fullname: {type:String},
 		phone: {type: String, required: true},
 		email: {type: String}, // optional. added if exists
 	},

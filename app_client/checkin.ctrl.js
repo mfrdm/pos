@@ -91,6 +91,8 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		headerEdit:'Edit',
 
 		parentGroup:'Group',
+		seeMoreBtn:'Expand',
+		seeMoreBtnIcon:'swap_horiz',
 
 		noResult: 'There is no result'
 	}
@@ -144,6 +146,8 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		headerEdit:'Chỉnh sửa',
 
 		parentGroup:'Nhóm',
+		seeMoreBtn:'Expand',
+		seeMoreBtnIcon:'swap_horiz',
 
 		noResult: 'Không có kết quả'
 	}
@@ -167,6 +171,19 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		},
 		others:{
 			customer:{}
+		}
+	}
+
+	//See more
+	vm.ctrl.seeMore = function(){
+		if(vm.model.dom.seeMore == true){
+			vm.model.dom.seeMore = false;
+			vm.model.dom.dataDom.using.seeMoreBtn = 'Expand'
+			vm.model.dom.dataDom.using.seeMoreBtnIcon = 'swap_horiz'
+		}else{
+			vm.model.dom.seeMore = true;
+			vm.model.dom.dataDom.using.seeMoreBtn = 'Shrink'
+			vm.model.dom.dataDom.using.seeMoreBtnIcon = 'compare_arrows'
 		}
 	}
 
@@ -242,13 +259,13 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 	}
 
 	//Default empty product to add more to orderline
-	// function getDefaultProduct (){
-	// 	return 	{
-	// 		productName: '', //
-	// 		_id: '',
-	// 		quantity: 0,
-	// 	}
-	// };
+	function getDefaultProduct (){
+		return 	{
+			productName: '', //
+			_id: '',
+			quantity: 0,
+		}
+	};
 
 	function getGroup(){
 		CheckinService.getCheckedinList().then(
@@ -444,7 +461,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 				});
 				count = 0;
 			}
-			console.log(vm.model.customer.checkingInData.order)
+			vm.model.other.selectedItem = getDefaultProduct()
 			count = 0;		
 	}
 
@@ -456,7 +473,7 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 
 	//Promotion Code
 	vm.ctrl.addPromoteCode = function(){
-		if(vm.model.customer.promocode.codeInput){
+		if(vm.model.customer.promocode.codeInput.length > 0){
 			var testArr = vm.model.customer.promocode.codeList.filter(function(ele){return ele == vm.model.customer.promocode.codeInput})
 			if(testArr.length > 0){
 				$('#addSameCode').foundation('open')
@@ -526,7 +543,6 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 			if(vm.model.customer.checkingInData.order.orderline.length == 0){
 				vm.model.customer.checkingInData.order = null
 			}
-
 			$('#checkinModal').foundation('open')
 		}
 	}
@@ -639,4 +655,5 @@ function CheckinCtrl ($scope, $window, $route, CheckinService){
 		vm.model.dom.checkInListDiv=true;
 		vm.model.dom.messageSearchAlreadyCheckin = false;
 	}
+
 }

@@ -159,6 +159,18 @@ label {
 	border-bottom: 1px solid #D7D4D4;
 }
 
+.fullBox {
+	position: fixed;
+	background-color: #fff;
+	top:0;
+	left:0;
+	width: 100%;
+	height: 100%;
+	z-index: 100;
+	overflow-y: scroll;
+	padding: .9375rem;	
+}
+
 /* New box */
 .newBox {
 	padding-top: .9375rem;
@@ -208,7 +220,7 @@ label {
 	padding: 1.875rem;
 	border: 1px solid #D7D4D4;
 }
-
+*/
 /*////////// Specific component ///////////// */
 #top-menu-btn{
 	position: absolute;

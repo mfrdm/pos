@@ -12,30 +12,36 @@ function Others() {
 		res.render ('booking');
 	};
 
-	this.getOrderTemplate = function (req, res, next){
-		res.render ('orders');
-	};
-
-	this.getCustomerTemplate = function (req, res, next){
-		res.render ('customer');
-	};
-
-	this.getCheckinTemplate = function (req, res, next){
-		res.render ('checkin');
-	};	
-
 	this.getNewCheckinTemplate = function (req, res, next){
 		res.render ('newCheckin');
 	};
 
+	this.getNewOrdersTemplate = function (req, res, next){
+		res.render ('newOrders');
+	};
+
+	this.getNewCustomersTemplate = function (req, res, next){
+		res.render ('newCustomers');
+	};	
+
+	// this.getOrderTemplate = function (req, res, next){
+	// 	res.render ('orders');
+	// };
+
+	// this.getCustomerTemplate = function (req, res, next){
+	// 	res.render ('customer');
+	// };
+
+	// this.getCheckinTemplate = function (req, res, next){
+	// 	res.render ('checkin');
+	// };	
 
 	this.angularApp = function (req, res){
 
 		// load company and dept data
 
-
 		//var listFile = ['checkin', 'checkout', 'customers', 'assets', 'costs', 'home'];
-		var ctrFileNames = ['layout', 'checkin', 'newCheckin', 'checkout','products', 'customers', 'assets', 'costs', 'home', 'depts', 'employees', 'login', 'register', 'booking', 'attendance', 'combo', 'order'];
+		var ctrFileNames = ['layout', 'newCheckin', 'checkout','products', 'assets', 'costs', 'home', 'depts', 'employees', 'login', 'register', 'booking', 'attendance', 'newOrders', 'newCustomers'];
 		var serviceFileNames = ['common', 'checkin', 'checkout', 'products','customers', 'assets', 'costs', 'home', 'depts','employees','authentication', 'socket', 'attendance', 'booking', 'other', 'combo', 'order'];
 		var directiveFileNames = ['components'];
 		var filterFileNames = ['myFilter'];

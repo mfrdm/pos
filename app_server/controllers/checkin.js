@@ -19,24 +19,26 @@ function Checkin() {
 		// validate if exist and if not expire
 
 		var q = JSON.parse(req.query.data);
+		console.log (q)
 		var codes = q.codes;
 		var studentCode = 'studentprice';
 
-		console.log (q)
 		if (q.isStudent && q.service){
 			var i = codes.indexOf (studentCode);
 			var validService = ['group common', 'individual common'];
 			if (validService.indexOf (q.service.toLowerCase ()) != -1 && i == -1){
 				codes.push (studentCode);
 			}
-			else{
-				if (i != -1){
-					codes.splice (i, 1);
-				}
+			else if (validService.indexOf (q.service.toLowerCase ()) == -1 && i != -1){
+				codes.splice (i, 1);
+			}
+		}
+		else if (!q.isStudent){
+			var i = codes.indexOf (studentCode);
+			if (i != -1){
+				codes.splice (i, 1);
 			}			
 		}
-
-		console.log (q)
 
 		Promocodes.find ({name: {$in: codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1, conflicted: 1, codeType: 1, override: 1}, function (err, pc){
 			if (err){
@@ -60,10 +62,12 @@ function Checkin() {
 
 		if (req.body.data.order && req.body.data.order.orderline && req.body.data.order.orderline.length){
 			var order = new Orders (req.body.data.order);
-			order.staffId = occ.staffId;
-			order.storeId = occ.storeId;
-			order._id = new mongoose.Types.ObjectId ();
-			occ.orders = [order._id];
+			order.getSubTotal ();
+			order.getTotal ();
+			// order.staffId = occ.staffId;
+			// order.storeId = occ.storeId;
+			// order._id = new mongoose.Types.ObjectId ();
+			// occ.orders = [order._id];
 		};
 
 		occ.save (function (err, newOcc){
@@ -91,19 +95,23 @@ function Checkin() {
 					}
 					else {
 						if (customer.checkinStatus == true && newOcc._id.equals (customer.occupancy.pop())){
-
+							console.log (order)
 							if (order){
-								order.occupancyId = newOcc._id;
-								order.save (function (err, newOrder){
-									if (err) {
-										// console.log (err);
-										next (err);
-										return
-									}
+								res.json ({data: {occupancy: newOcc, order: order}});
+								return								
+								// order.occupancyId = newOcc._id;
+								// order.getSubTotal ();
+								// order.getTotal ();
+								// order.save (function (err, newOrder){
+								// 	if (err) {
+								// 		// console.log (err);
+								// 		next (err);
+								// 		return
+								// 	}
 
-									res.json ({data: {order: newOrder, occupancy: newOcc}});
-									return
-								});
+								// 	res.json ({data: {order: newOrder, occupancy: newOcc}});
+								// 	return
+								// });
 							}
 							else {
 								res.json ({data: {occupancy: newOcc, order: null}});
@@ -123,6 +131,7 @@ function Checkin() {
 		});
 	};
 
+	// Only return non-checked-in customers
 	this.searchCheckingCustomers = function (req, res, next){
 		var input = req.query.input; // email, phone, fullname
 		if (!input){
@@ -159,7 +168,6 @@ function Checkin() {
 
 
 	this.readCheckinList = function (req, res, next) {
-		console.log (req.query)
 		var today = moment ();
 		var start = req.query.start ? moment(req.query.start) : moment (today.format ('YYYY-MM-DD'));
 		var end = req.query.end ? moment(req.query.end + ' 23:59:59') : moment (today.format ('YYYY-MM-DD') + ' 23:59:59');

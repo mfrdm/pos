@@ -183,7 +183,7 @@ xdescribe ('Validate promotion code', function (){
 		})
 	})
 
-	it ('should be invalid when codes are expired', function (done){
+	xit ('should be invalid when codes are expired', function (done){
 		codeNames = [newCodes[2].name, newCodes[3].name];
 		chai.request (server)
 			.get ('/checkin/validate-promotion-code')
@@ -199,7 +199,7 @@ xdescribe ('Validate promotion code', function (){
 			});	
 	})
 
-	it ('should be invalid when codes do not existed', function (done){
+	xit ('should be invalid when codes do not existed', function (done){
 		codeNames = ['NOEXISTCODE1','NOEXISTCODE2'];
 		chai.request (server)
 			.get ('/checkin/validate-promotion-code')
@@ -215,7 +215,7 @@ xdescribe ('Validate promotion code', function (){
 			});
 	});
 
-	it ('should return codes when they are valid', function (done){
+	xit ('should return codes when they are valid', function (done){
 		chai.request (server)
 			.get ('/checkin/validate-promotion-code')
 			.query ({codes: codeNames})
@@ -235,7 +235,8 @@ xdescribe ('Validate promotion code', function (){
 	});
 
 	it ('should add STUDENTPRICE to customers are students and service are group private');
-
+	it ('should remove code STUDENTPRICE if added and the customer is not student and service is not valid service')
+	it ('should remove code STUDENTPRICE if added and server is not valid service, even though the customer is a student')
 	it ('should return no code conflict when there are not');
 	it ('should return code conflicts when there are');
 });
@@ -336,7 +337,8 @@ xdescribe ('Check in', function (){
 
 	});
 
-	it ('should create an occupancy, an order, and update customer', function (done){
+	// DEPRICATED
+	xit ('should create an occupancy and update customer', function (done){
 		checkinData.occupancy.promocodes = [];
 		chai.request (server)
 			.post ('/checkin/customer/' + newCustomer._id)
@@ -383,6 +385,8 @@ xdescribe ('Check in', function (){
 				});
 			});
 	});
+
+	it ('should calculate subtotal and total of order and return order when customer who checking in also making an order, and should wait for customer to')
 
 	xit ('should create an occupancy and update customer order when having no order', function (done){
 		checkinData.occupancy.promocodes = [];

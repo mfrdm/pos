@@ -37,10 +37,10 @@
 			1:'Accepted', 2:'Refused', 3:'Waiting', 4:'Canceled', 0:'All'
 		}
 		vm.model.orderOptions = {
-			'customer.firstname':'Firstname A-Z',
-			'-customer.firstname':'Firstname Z-A',
-			'checkinTime': 'Checkin Time Farthest',
-			'-checkinTime': 'Checkin Time Lastest'
+			'customer.firstname':'Firstname AZ',
+			'-customer.firstname':'Firstname ZA',
+			'checkinTime': 'Checkin Time AZ',
+			'-checkinTime': 'Checkin Time ZA'
 		}
 
 

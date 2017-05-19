@@ -29,7 +29,7 @@ function config ($locationProvider, $routeProvider){
 			controllerAs: 'vm',
 		})	
 
-		// .when('/checkin', {
+		// .when('/oldcheckin', {
 		// 	templateUrl : "/template/checkin",
 		// 	resolve: {
 		// 		'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
@@ -45,19 +45,35 @@ function config ($locationProvider, $routeProvider){
 			controller:"NewCheckinCtrl",
 			controllerAs:"vm"
 		})		
+		// .when('/oldorders', {
+		// 	templateUrl : "/template/orders",
+		// 	controller:"OrderCtrl",
+		// 	controllerAs:"vm"
+		// })
 		.when('/orders', {
-			templateUrl : "/template/orders",
-			controller:"OrderCtrl",
+			templateUrl : "/template/newOrders",
+			resolve: {
+				'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
+			},				
+			controller:"NewOrdersCtrl",
 			controllerAs:"vm"
 		})
 		.when('/customers', {
-			templateUrl : "/template/customers",
+			templateUrl : "/template/newCustomers",
 			resolve: {
 				'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
 			},			
-			controller: "CustomerCtrl",
+			controller: "NewCustomersCtrl",
 			controllerAs:'vm'
-		})
+		})		
+		// .when('/customers', {
+		// 	templateUrl : "/template/customers",
+		// 	resolve: {
+		// 		'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
+		// 	},			
+		// 	controller: "CustomerCtrl",
+		// 	controllerAs:'vm'
+		// })
 		.when('/bookings', {
 			templateUrl: "/template/bookings",
 			resolve: {

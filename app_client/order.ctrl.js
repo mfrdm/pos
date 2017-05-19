@@ -296,7 +296,7 @@ function OrderCtrl ($scope, $window, $route, OrderService){
 			vm.model.order.staffId = vm.model.customer.staffId;
 			//Remove order if there is no orderline
 			console.log(vm.model.order)
-			OrderService.createOrder(vm.model.order)
+			OrderService.getInvoice (vm.model.order)
 				.then(function success(res){
 					console.log(res.data.data)
 					vm.model.order = res.data.data
@@ -350,5 +350,9 @@ function OrderCtrl ($scope, $window, $route, OrderService){
 	// 			console.log(err)
 	// 		})
 	// }
+
+	vm.ctrl.reload = function(){
+		$window.location.reload()
+	}
 
 }

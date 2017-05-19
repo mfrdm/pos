@@ -85,6 +85,7 @@ xdescribe ('Controller: CheckinCtrl', function (){
 
 		xit ('should checkin success')
 		it ('should be invalid and cannot be submitted when customer being checking in are not selected')
+		it ('should display order invoice when checked in and customer makes an order')
 
 		it ('should route to order page after checkin success if the customer makes an order')
 

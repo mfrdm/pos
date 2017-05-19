@@ -42,11 +42,14 @@ router.get('/login', OthersCtrl.login);
 router.get('/register', OthersCtrl.register);
 
 // get template
-router.get('/template/checkin', OthersCtrl.getCheckinTemplate);
+// router.get('/template/checkin', OthersCtrl.getCheckinTemplate);
+// router.get('/template/orders', OthersCtrl.getOrderTemplate);
+// router.get('/template/customers', OthersCtrl.getCustomerTemplate);
+
 router.get('/template/newCheckin', OthersCtrl.getNewCheckinTemplate);
-router.get('/template/customers', OthersCtrl.getCustomerTemplate);
+router.get('/template/newOrders', OthersCtrl.getNewOrdersTemplate);
+router.get('/template/newCustomers', OthersCtrl.getNewCustomersTemplate);
 router.get('/template/bookings', OthersCtrl.getBookingTemplate);
-router.get('/template/orders', OthersCtrl.getOrderTemplate);
 
 // Checkin
 router.get('/checkin', CheckinCtrl.readCheckinList);
@@ -67,6 +70,7 @@ router.post ('/orders/confirm', OrdersCtrl.confirmCheckout);
 router.post ('/orders/checkout', OrdersCtrl.checkout);
 router.get ('/orders/order/:orderId', OrdersCtrl.readAnOrder);
 router.post ('/orders/order/:orderId/edit', OrdersCtrl.updateAnOrder);
+router.get ('/orders/search-customers', OrdersCtrl.searchCustomers);
 
 router.get('/bookings', BookingCtrl.readSomeBookings);
 router.post('/bookings/:customerId', BookingCtrl.booking);

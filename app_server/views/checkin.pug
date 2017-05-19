@@ -13,7 +13,7 @@ div(class="columns row")
 			div(class="column small-9")
 				ul(class="menu clearfix")
 					li(class="float-right marginL15")
-						<a class="button primary" ng-click="vm.ctrl.seeMore()"><span class="show-for-large">See More</span><i class="material-icons customIcon hide-for-large">add_box</i></a>
+						<a class="button primary" ng-click="vm.ctrl.seeMore()"><span class="show-for-large">{{ vm.model.dom.dataDom.using.seeMoreBtn}}</span><i class="material-icons customIcon hide-for-large">{{vm.model.dom.dataDom.using.seeMoreBtnIcon}}</i></a>
 					li(class="float-right marginL15")
 						<a class="button primary" ng-click="vm.ctrl.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
 					li(class="float-right")
@@ -148,10 +148,10 @@ div(class="columns row")
 											td {{code}}
 											td(class='text-center deleteIcon')
 												i(class="material-icons customIcon" ng-click='vm.ctrl.deletePromoteCode(code); $event.preventDefault()') close
-						div(class='column small-11 paddingR0')
+						div(class='column small-10 large-11 paddingR0')
 							label Add
 								input(type='text' ng-model='vm.model.customer.promocode.codeInput')
-						div(class='column small-1 iconAdd')
+						div(class='column small-2 large-1 iconAdd')
 							i(class="material-icons customIcon" ng-click='vm.ctrl.addPromoteCode(); $event.preventDefault()') add
 					
 					//Main service for checkin
@@ -186,7 +186,7 @@ div(class="columns row")
 						div(class="column small-5 paddingR0")
 							label {{vm.model.dom.data.selected.fieldQuantity}}
 								input( ng-model="vm.model.other.selectedItem.quantity" string-to-number type="number" min='0')
-						div(class="column small-1 iconAdd")
+						div(class="column small-2 large-1 iconAdd")
 							i(class="material-icons customIcon" ng-click='vm.ctrl.selectService(); $event.preventDefault()') add
 					div(class="row column")
 						input(class="button" type="submit" value="Submit")
@@ -284,7 +284,7 @@ div(class="columns row")
 				p {{vm.model.dom.data.selected.noResult}}
 
 //Invoice *********************************************//
-div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
+//div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
 	div(class='row column paddingT15')
 		div(class='row coumn header-invoice-img text-center')
 			img(src='/img/logo.png')
@@ -301,18 +301,18 @@ div(ng-show='vm.model.dom.checkOutDiv' id='checkoutDiv')
 			div(class='priceSection')
 				div(class="row column")
 					div(class='row column paddingB15')
-						div(class='column small-2 text-right')
+						div(class='column small-4 text-right')
 							p Checkin
-						div(class='column small-5 greenBorder')
+						div(class='column small-4 greenBorder')
 							p {{ vm.model.customer.checkoutCustomer.occupancy.checkinTime | date:'shortTime'}}
-						div(class='column small-5')
+						div(class='column small-4')
 							p {{ vm.model.customer.checkoutCustomer.occupancy.checkinTime | date:'dd/MM/yyyy'}}
 					div(class='row column')
-						div(class='column small-2 text-right')
+						div(class='column small-4 text-right')
 							p Checkout
-						div(class='column small-5 greenBorder')
+						div(class='column small-4 greenBorder')
 							p {{ vm.model.customer.checkoutCustomer.occupancy.checkoutTime | date:'shortTime'}}
-						div(class='column small-5')
+						div(class='column small-4')
 							p {{ vm.model.customer.checkoutCustomer.occupancy.checkoutTime | date:'dd/MM/yyyy'}}
 				
 				//Main Product
