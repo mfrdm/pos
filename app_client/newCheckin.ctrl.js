@@ -169,8 +169,8 @@
 			fieldItem: 'Sản phẩm',
 			fieldQuantity: 'Số lượng',
 			fieldOtherProducts: 'Sản phẩm đã chọn',
-			fieldProduct:'Tên sản phẩm',
-			fieldAddItems:'Thêm sản phẩm',
+			fieldProduct:'Sản phẩm',
+			fieldAddItems:'Sản phẩm',
 			fieldChooseGroup:'Chọn nhóm',
 			fieldCheckoutGroup:'Nhóm',
 
@@ -314,7 +314,7 @@
 		};
 
 		vm.ctrl.checkin.removeItem = function (index){
-			if (vm.model.checkingin.order.orderline & vm.model.checkingin.order.orderline.length){
+			if (vm.model.checkingin.order.orderline && vm.model.checkingin.order.orderline.length){
 				vm.model.checkingin.order.orderline.splice (index, 1);
 				vm.model.temporary.checkin.selectedItems.splice (index, 1);
 			}

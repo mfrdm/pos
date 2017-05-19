@@ -126,6 +126,10 @@ label {
 	font-size: 1rem!important;
 }
 
+.fontWeight600 {
+	font-weight: 600;
+}
+
 /*//////////////////////// Component //////////////////////////*/
 .pointerCursor {
 	cursor: pointer;

@@ -416,6 +416,12 @@ ul.listOrder li i{
 	padding-right: 30px;
 }
 
+.checkinSubBox {
+	padding: 15px;
+	margin-bottom: 15px;
+	border: 1px solid #ccc;	
+}
+
 .priceSection{
 	border-top: 3px solid #ccc;
 	border-bottom: 3px solid #ccc;
