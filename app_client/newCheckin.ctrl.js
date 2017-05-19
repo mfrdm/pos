@@ -507,7 +507,7 @@
 
 		// FIX: should validate after adding code
 		vm.ctrl.checkin.validateCode = function (){
-			if(vm.model.checkingin.occupancy.customer.firstname){
+			if(vm.model.checkingin.occupancy.customer.fullname){
 				var codes = [];
 				if (vm.model.checkingin.occupancy.promocodes && vm.model.checkingin.occupancy.promocodes.length){
 					codes = vm.model.checkingin.occupancy.promocodes.map (function(x, i, arr){
@@ -521,16 +521,27 @@
 					service: vm.model.checkingin.occupancy.service.name,
 				};
 
-				CheckinService.validatePromoteCode(data)
-				.then(function success(res){
-					var foundCodes = res.data.data;
-					vm.model.checkingin.occupancy.promocodes = foundCodes;
+				console.log (data)
 
-					if (foundCodes.length >= codes.length){
-						vm.ctrl.checkin.confirm ();
-					}
+				CheckinService.validatePromoteCode(data).then(
+					function success(res){
+						var foundCodes = res.data.data;
+						vm.model.checkingin.occupancy.promocodes = foundCodes;
+						vm.model.temporary.checkin.codeNames = [];
+						foundCodes.map (function (x, i, arr){
+							vm.model.temporary.checkin.codeNames.push (x.name);
+						});
+
+						if (foundCodes.length >= codes.length){
+							vm.ctrl.checkin.confirm ();
+						}
 			
-				})
+					},
+					function failure (err){
+						console.log (err);
+						// display warning
+					}
+				)
 			}
 		};
 

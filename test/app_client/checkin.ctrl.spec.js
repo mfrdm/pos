@@ -75,6 +75,7 @@ xdescribe ('Controller: CheckinCtrl', function (){
 		it ('should validate code before adding code into checking-in form and keep the code in the code input')
 		it ('should display warning message when promocode are invalid')
 		xit ('should update codes after validate')
+		xit ('should allow to add any code even if invalid code after validate')
 
 		xit ('should display confirm modal when user click submit in check-in form')
 		xit ('should update new data in confirm modal when user cancel confirm and update check-in')

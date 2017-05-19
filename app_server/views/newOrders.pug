@@ -35,7 +35,6 @@ div(class="columns row")
 		// ORDER FORM
 		div(class="column")
 			div(class="borderT newBox row column" ng-show="vm.model.dom.orderDiv")
-				
 				// SEARCH CUSTOMER
 				div(class="row column")
 					form(ng-submit="vm.ctrl.order.searchCustomer()")
@@ -62,79 +61,36 @@ div(class="columns row")
 											td {{ result.email[0] }}
 											td {{ result.phone[0] }}
 				
-				// ORDER CONFIRMATION - REMOVED LATER
-				// div(class='reveal small' id='orderModal' data-reveal data-animation-in="slide-in-down fast")
-					div(class='column row paddingTB15 text-center')
-						h2 GREENSPACE
-						h3 Order Confirmation
-					div(class='column row')
-						div(class="invoice")
-							div(class='row column')
-								div(class='column small-6')
-									p {{vm.model.dom.data.selected.fieldSearchByFirstname}}: {{ vm.model.order.customer.lastname}} {{ vm.model.order.customer.middlename}} {{ vm.model.order.customer.firstname}}
-								div(class='column small-6 text-right')
-									p {{vm.model.dom.data.selected.fieldSearchByPhone}}: {{ vm.model.order.customer.phone}}
-							div(class='priceSection')
-								//Other Products
-								div(class="row column" ng-if='vm.model.order.orderline.length > 0')
-									div(class='row column' )
-										div(class='column small-4 text-right')
-											p {{vm.model.dom.data.selected.fieldItem}}
-										div(class='column small-8 greenBorder')
-											div(class='row column small-12' ng-repeat='product in vm.model.order.orderline')
-												div(class='column small-3 paddingLR0 marginT0')
-													p {{ product.productName}}
-												div(class='column small-3 marginT0')
-													p x {{ product.quantity}}
-												div(class='column small-3 marginT0')
-													p {{ product.subTotal}}
-									div(class='row column' )
-										div(class='column small-4 text-right')
-											p {{vm.model.dom.data.selected.total}}
-										div(class='column small-8 greenBorder')
-											div(class='row column small-12')
-												div(class='column small-3 paddingLR0 marginT0')
-													p 
-												div(class='column small-3 marginT0')
-													p 
-												div(class='column small-3 marginT0')
-													strong {{vm.model.order.total}}
-											
-
-					div(class='column row')
-						div(class='column small-6')
-							input(class='button' type='submit' ng-click='vm.ctrl.confirmOrder()' value='Yes' data-close='')
-						div(class='column small-6 text-right')
-							input(class='button secondary' data-close='' type='submit' value='No')
-					button(class="close-button"  data-close='' aria-label="Close modal" type="button")
-						span(aria-hidden="true") &times;
-
-				
 				// ORDER FORM
 				form(ng-submit="vm.ctrl.order.validate ()")
-					
-					div(class='addItemSection row column paddingTB15 marginB15')
-						div(class='column small-12')
-							label(ng-if='vm.model.ordering.orderline.length > 0') {{vm.model.dom.data.selected.fieldOtherProducts}}
-								table
+					div(class='checkinSubBox row column paddingTB15 marginB15')
+						// ADD ITEMS
+						div(class="column row")
+							h3(class="paddingLR15 fontSize20 fontWeight600") Chọn sản phẩm
+						div(class="column row")
+							div(class="column small-8")
+								label {{vm.model.dom.data.selected.fieldAddItems}}
+									select(ng-model="vm.model.temporary.ordering.item.name" ng-options="item.name as item.name for item in vm.model.dom.data.selected.items track by item.name")
+							div(class="column small-3")
+								label {{vm.model.dom.data.selected.fieldQuantity}}
+									input( ng-model="vm.model.temporary.ordering.item.quantity" string-to-number type="number" min='0')
+							div(class="column small-1 iconAdd")
+								i(class="material-icons customIcon" ng-click='vm.ctrl.order.addItem (); $event.preventDefault()') add
+						// SELECTED ITEMS
+						div(class="row column")
+							div(class='column small-12')
+								table(ng-if='vm.model.ordering.orderline.length > 0' class="unstriped hover")
 									thead
 										tr
 											th {{ vm.model.dom.data.selected.fieldProduct }}
 											th {{ vm.model.dom.data.selected.fieldQuantity }}
-									tbody
-										tr(ng-repeat='item in vm.model.ordering.orderline')
-											td {{ item.productName }}
-											td {{ item.quantity }}
+
+									tbody 
+										tr(ng-repeat='ord in vm.model.ordering.orderline track by ord._id')
+											td {{ ord.productName }}
+											td {{ ord.quantity }}
 											td(class='text-center deleteIcon')
-												i(class="material-icons customIcon" ng-click='vm.ctrl.order.removeItem ($index); $event.preventDefault()') close
-						div(class="column small-6")
-							label {{vm.model.dom.data.selected.fieldAddItems}}
-								select(ng-model="vm.model.temporary.ordering.item.name" ng-options="item.name as item.name for item in vm.model.dom.data.selected.items track by item.name")
-						div(class="column small-5 paddingR0")
-							label {{vm.model.dom.data.selected.fieldQuantity}}
-								input( ng-model="vm.model.temporary.ordering.item.quantity" string-to-number type="number" min='0')
-						div(class="column small-1 iconAdd")
-							i(class="material-icons customIcon" ng-click='vm.ctrl.order.addItem (); $event.preventDefault()') add
+												i(class="material-icons customIcon" ng-click="vm.ctrl.order.removeItem ($index)") close
 					div(class="row column")
 						input(class="button" type="submit" value="Submit")
 						button(class="button float-right primary" ng-click='vm.ctrl.reset(); event.preventDefault()') Cancel

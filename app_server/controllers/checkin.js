@@ -16,29 +16,19 @@ module.exports = new Checkin();
 
 function Checkin() {
 	this.validatePromocodes = function (req, res, next){
-		// validate if exist and if not expire
-
 		var q = JSON.parse(req.query.data);
-		console.log (q)
+		var excludedCodes = ['studentprice', 'privatediscountprice']; // default code cannot be insert manually
 		var codes = q.codes;
-		var studentCode = 'studentprice';
+		var tempCodes = [];
 
-		if (q.isStudent && q.service){
-			var i = codes.indexOf (studentCode);
-			var validService = ['group common', 'individual common'];
-			if (validService.indexOf (q.service.toLowerCase ()) != -1 && i == -1){
-				codes.push (studentCode);
+		// remove excluded code
+		codes.map (function (x, i, arr){
+			if (excludedCodes.indexOf (x.toLowerCase ()) == -1){
+				tempCodes.push (x);
 			}
-			else if (validService.indexOf (q.service.toLowerCase ()) == -1 && i != -1){
-				codes.splice (i, 1);
-			}
-		}
-		else if (!q.isStudent){
-			var i = codes.indexOf (studentCode);
-			if (i != -1){
-				codes.splice (i, 1);
-			}			
-		}
+		});
+
+		codes = tempCodes;
 
 		Promocodes.find ({name: {$in: codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1, conflicted: 1, codeType: 1, override: 1}, function (err, pc){
 			if (err){
@@ -95,7 +85,6 @@ function Checkin() {
 					}
 					else {
 						if (customer.checkinStatus == true && newOcc._id.equals (customer.occupancy.pop())){
-							console.log (order)
 							if (order){
 								res.json ({data: {occupancy: newOcc, order: order}});
 								return								

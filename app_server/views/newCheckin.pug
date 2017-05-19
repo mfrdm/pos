@@ -81,25 +81,6 @@ div(class="columns row")
 					div(class="column small-12" ng-if="vm.model.dom.checkin.privateGroupLeaderDiv && vm.model.temporary.groupPrivateLeaders && vm.model.temporary.groupPrivateLeaders.length > 1")
 						label {{vm.model.dom.data.selected.fieldChooseGroup}}
 							select(name="selectedGroup" ng-model="vm.model.temporary.selectedGroupPrivate" ng-options="leader as leader.groupName for leader in vm.model.temporary.groupPrivateLeaders track by leader._id" ng-change="vm.ctrl.checkin.selectedGroupChangeHandler ()")
-
-				// CODES
-				div(class="row column checkinSubBox")
-					div(class="column row")
-						h3(class="paddingLR15 fontSize20 fontWeight600") Điền code giảm giá
-					div(class="column row")
-						div(class='column small-11')
-							label Code
-								input(type='text' ng-model='vm.model.temporary.checkin.codeName')
-						div(class='column small-1 iconAdd')
-							i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.addCode()') add
-					div(class='column small-12')
-						table(ng-if='vm.model.checkingin.occupancy.promocodes.length > 0')
-							tbody
-								tr(ng-repeat='code in vm.model.checkingin.occupancy.promocodes track by code.name')
-									td {{ code.name }}
-									td(class='text-center deleteIcon')
-										i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.removeCode ($index)') close							
-
 				// ORDER
 				div(class='checkinSubBox row column paddingTB15 marginB15')
 					// ADD ITEMS
@@ -129,6 +110,23 @@ div(class="columns row")
 										td {{ ord.quantity }}
 										td(class='text-center deleteIcon')
 											i(class="material-icons customIcon" ng-click="vm.ctrl.checkin.removeItem ($index)") close
+				// CODES
+				div(class="row column checkinSubBox")
+					div(class="column row")
+						h3(class="paddingLR15 fontSize20 fontWeight600") Điền code giảm giá
+					div(class="column row")
+						div(class='column small-11')
+							label Code
+								input(type='text' ng-model='vm.model.temporary.checkin.codeName')
+						div(class='column small-1 iconAdd')
+							i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.addCode()') add
+					div(class='column small-12')
+						table(ng-if='vm.model.checkingin.occupancy.promocodes.length > 0')
+							tbody
+								tr(ng-repeat='code in vm.model.checkingin.occupancy.promocodes track by code.name')
+									td {{ code.name }}
+									td(class='text-center deleteIcon')
+										i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.removeCode ($index)') close
 
 				div(class="row column")
 					input(class="button" type="submit" value="Submit")

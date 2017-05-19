@@ -137,7 +137,7 @@ describe ('Occupancy Model', function (){
 			occ.total.should.to.equal (expectedTotal);		
 		});
 
-		it ('should return correct subtotal given code FREE2HOURSCOMMON and STUDENTPRICE', function (){
+		xit ('should return correct subtotal given code FREE2HOURSCOMMON and STUDENTPRICE', function (){
 			val.promocodes = [
 				{
 					codeType: 1, 
@@ -186,7 +186,7 @@ describe ('Occupancy Model', function (){
 		});
 
 
-		xit ('should return correct subtotal given code PRIVATEDISCOUNTPRICE and product is Small Group Private regardless customer has code STUDENTPRICE or not', function (){
+		it ('should return correct subtotal given code PRIVATEDISCOUNTPRICE and product is Small Group Private regardless customer has code STUDENTPRICE or not', function (){
 			val.promocodes = [
 				{
 					codeType: 4, 
@@ -204,13 +204,14 @@ describe ('Occupancy Model', function (){
 				name: 'Small Group Private',
 				price: 150000,
 			}
+			val.checkinTime = '2017-05-10 7:03:00'
+			val.checkoutTime = '2017-05-10 14:55:00',
 
-			val.checkoutTime = '2017-05-10 9:00:00',
-
-			expectedTotal = 390000;
+			expectedTotal = 978000;
 
 			var occ = new Occupancy (val);
 			occ.getTotal ();
+			console.log (occ)
 			occ.total.should.to.equal (expectedTotal);
 		});
 

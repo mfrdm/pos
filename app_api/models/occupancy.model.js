@@ -47,13 +47,16 @@ function getTotal (){
 		occ.total = 0;
 	}
 	else{
+
+		// add default codes
+		Promocodes.addDefaultCodes (occ);
+
 		if (occ.promocodes && occ.promocodes.length){
 			
 			// sort to prioritize codes applied
 			occ.promocodes = occ.promocodes.sort (function (code1, code2){
 				return code1.codeType > code2.codeType;
 			});
-			console.log(occ.promocodes)
 
 			occ.promocodes.map (function (code, k, t){
 				
