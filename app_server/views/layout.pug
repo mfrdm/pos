@@ -21,9 +21,8 @@ html(ng-app='posApp')
 	body(ng-controller="LayoutCtrl")
 		nav(class="show-for-large top-bar paddingLR0" id="topNavBar")
 			div(class="medium-2 columns")
-				ul(class="menu paddingLR15 text-center")
-					li: a(href="#!/" class="paddingLR0")
-						<span class="show-for-large title"> {{ layout.model.dom.pageTitle }}						
+				a(href="#!/" class="paddingLR0")
+					<span class="show-for-large title"> {{ layout.model.dom.pageTitle }}						
 			div(class="medium-10 columns")
 				ul(class="menu float-left")
 					li(class="menu-text") {{ layout.model.dept.name }}
@@ -44,7 +43,7 @@ html(ng-app='posApp')
 							li(ng-click='layout.ctrl.logout()'): a Logout
 
 
-		div(class="title-bar text-center" data-responsive-toggle="mainMenu" data-hide-for="large")
+		div(class="title-bar" data-responsive-toggle="mainMenu" data-hide-for="large")
 			button(class="menu-icon" type="button" data-toggle id="top-menu-btn")
 			div(class="title-bar-title")
 				a(href="#!/" class="paddingLR0 title-bar-title title") GS POS

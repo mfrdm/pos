@@ -15,8 +15,11 @@
 			originalOrderedList: [],
 			ordering: {
 				orderline: [],
-				staffId: LayoutCtrl.model.user._id || LayoutCtrl.model.user.id,
-				storeId: LayoutCtrl.model.dept._id || LayoutCtrl.model.dept.id, 				
+				staffId: LayoutCtrl.model.user._id,
+				location: {
+					_id: LayoutCtrl.model.dept._id || LayoutCtrl.model.dept.id,
+					name: LayoutCtrl.model.dept.name,
+				},				
 			},
 			dom:{
 				messageSearchResult: false,
@@ -172,6 +175,7 @@
 			return adjusted;
 		}
 
+		// FIX: only get orders from the store
 		vm.ctrl.getOrderedList = function (){
 			OrderService.getOrderList().then(
 				function success(res){

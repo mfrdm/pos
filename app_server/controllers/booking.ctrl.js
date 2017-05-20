@@ -12,6 +12,27 @@ module.exports = new BookingCtrl();
 
 function BookingCtrl() {
 
+	 // get only checked-in and pendding of all day
+	this.readAllBookings = function (req, res, next){
+
+		var q = Bookings.find ({
+			status: {$in: req.query.status},
+			"location._id": req.query.storeId,
+		});
+
+		q.exec(function (err, bk){
+				if (err){
+					console.log (err);
+					next (err);
+					return
+				}
+				else {
+					res.json ({data: bk});
+				}
+			}
+		); 	
+	}
+
 	this.readSomeBookings = function(req, res, next) {
 		var today = moment ();
 		var start = req.query.start ? moment(req.query.start) : moment (today.format ('YYYY-MM-DD'));
@@ -23,7 +44,7 @@ function BookingCtrl() {
 					$gte: start, 
 					$lte: end,
 				},
-				storeId: req.query.storeId,
+				"location._id": req.query.storeId,
 			});
 
 		q.exec(function (err, bk){
@@ -77,7 +98,16 @@ function BookingCtrl() {
 	}
 
 	this.updateBooking = function(req, res, next) {
-		// later
+		var bookingId = req.params.bookingId;
+		Bookings.findOneAndUpdate ({_id: bookingId}, req.body, {new: true}, function (err, updatedBooking){
+			if (err){
+				console.log (err);
+				next (err); 
+				return
+			}
+
+			res.json ({data: updatedBooking});
+		})
 	};
 
 };

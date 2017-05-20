@@ -1,46 +1,23 @@
 angular
 	.module ('posApp')
-	.service ('bookingService', ['$http', bookingService]);
+	.service ('BookingService', ['$http', BookingService]);
 
-function bookingService ($http){
+function BookingService ($http){
 
-	this.searchCustomer = function(input){
-		var array = [{"firstname" : { $regex: input, $options: 'i' }},
-		{"lastname" : { $regex: input, $options: 'i' }}]
-		return $http({
-			method:'GET',
-			url:'/api/customers',
-			params:{
-				queryInput:JSON.stringify({
-					conditions: {$or: array},
-					projection: null,
-					opts: null
-				})
-			}
-		})
-	}
-
-	this.searchBooking = function(input){
-		var array = [{"customer.firstname" : { $regex: input, $options: 'i' }},
-		{"customer.lastname" : { $regex: input, $options: 'i' }}, 
-		{"customer.email" : { $regex: input, $options: 'i' }}]
-		return $http({
-			method:'GET',
-			url:'/api/bookings',
-			params:{
-				queryInput:JSON.stringify({
-					conditions: {$or: array},
-					projection: null,
-					opts: null
-				})
-			}
-		})
+	this.readAll = function (query){
+		var url = '/bookings/all';
+		return $http ({
+			method: 'GET',
+			url: url,
+			params: query
+		});
 	}
 
 	this.readSome = function (){
-		var url = '/api/bookings';
+		var url = '/bookings';
 		return $http.get (url);				
 	};
+
 	this.readOne = function(id){
 		return $http({
 		method:'GET',
@@ -55,18 +32,13 @@ function bookingService ($http){
 	}
 
 	this.updateOne = function (id, data){
-		var url = '/api/bookings/booking/' + id + '/edit';
+		var url = '/bookings/'+ id + '/edit';
 		return $http.post (url, data);	
 	}
 
-	// this.deleteOne = function (id){
-	// 	var url = '/api/bookings/booking/' + id + '/delete';
-	// 	return $http.post (url, {});
-	// }
-
-	this.createOne = function (data){
-		var url = '/api/bookings/create/';
-		return $http.post (url, data);
+	this.book = function (data){
+		var url = '/bookings/create/';
+		return $http.post (url, {data: data});
 	}
 
 };

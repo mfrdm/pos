@@ -1,4 +1,6 @@
-var productService = function($http){
+app.service('ProductService', ['$http', ProductService])
+
+function ProductService ($http){
 	//Search Service
 	this.createOne = function(data){
 		return $http({
@@ -27,13 +29,20 @@ var productService = function($http){
 				})
 			}
 		})
-	}
+	};
+
 	this.readOne = function(id){
 		return $http({
 		method:'GET',
 			url:'api/products/product/'+id
 		})
-	}
-}
+	};
 
-app.service('productService', ['$http',productService])
+	this.readSome = function (){
+		return $http({
+			method:'GET',
+			url:'/api/products'
+		})		
+	}
+
+}

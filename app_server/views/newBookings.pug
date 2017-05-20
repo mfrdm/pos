@@ -1,0 +1,227 @@
+div(class="row columns")
+	div(class="column small-12")
+		h2 Booking List
+	
+	// SETTING
+	div(class="row column")
+		div(class="column small-3")
+			ul(class="menu")
+				li
+					a(class="button primary" ng-click="vm.ctrl.booking.toggleBookingDiv ()") 
+						<span class="show-for-large">Booking</span><i class="material-icons customIcon hide-for-large"> add</i>
+		// FILTER CONTROLLER
+		//div(class="column small-9")
+			ul(class="menu clearfix")
+				li(class="float-right marginL15")
+					<a class="button" ng-click="vm.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
+				li(class="float-right")
+					ul(class="menu")
+						li: label(class="paddingR15 show-for-large") Sort by
+						li: select(ng-model="vm.model.orderBy" ng-options="key as value for (key , value) in vm.model.orderOptions")
+	
+	// BOOKING
+	div(class="column small-12")
+		div(class="borderT newBox row column" ng-show='vm.model.dom.booking.bookingDiv')
+			// SEARCH CUSTOMER
+			div(class="column row")
+				form(ng-submit="vm.ctrl.booking.searchCustomer()")
+					div(class="row column")
+						label {{ vm.model.dom.data.selected.booking.label.username }}
+							input(type="text" placeholder="{{ vm.model.dom.data.selected.booking.placeholder.username }}" ng-model='vm.model.search.booking.username' required="true")
+					div(ng-show='vm.model.dom.booking.search.message.notFound' class='marginB15')
+						div(class='callout alert')
+							p {{ vm.model.dom.data.selected.search.message.notFound + ' "' + vm.model.search.booking.username + '". ' }}
+								span: a(href='/#!/customers') {{ vm.model.dom.data.selected.createCustomer}}			
+					div(ng-show="vm.model.dom.booking.customerSearchResultDiv" class="marginB15")
+						div(class="table-scroll")
+							table(class="hover unstriped borderAll")
+								thead
+									tr
+										th No
+										th Name
+										th Email
+										th Phone				
+								tbody
+									tr(ng-repeat='result in vm.model.search.booking.customers' ng-click='vm.ctrl.booking.selectCustomer($index)' class="pointerCursor")
+										td {{ $index + 1 }}
+										td {{ result.fullname }}
+										td {{ result.email[0] }}
+										td {{ result.phone[0] }}
+
+			// BOOKING FORM
+			form(ng-submit='vm.ctrl.booking.confirm ()')
+				div(class='row column')
+					label Địa Điểm
+						select(name="selectedLocation" ng-model="vm.model.booking.location" ng-options="loc as loc.name for loc in vm.model.dom.data.selected.locations track by loc._id")
+				
+				div(class='row column basicBox')
+					div(class='column small-12 large-6')
+						label Dịch vụ
+							select(name="selectedService" ng-model="vm.model.booking.service" ng-options="s as s.label for s in vm.model.dom.data.selected.services track by s.name")
+					div(class='column small-12 large-6')
+						label Số lượng thành viên
+							input(type="number" ng-model="vm.model.booking.quantity" min=1 max=100)
+				div(class='row column basicBox')
+					div(class='column small-12 large-3 large-paddingL15')
+						label Check-in ngày
+							input(type='date' min='1' max='31' ng-model='vm.model.temporary.booking.checkinDate' required ng-change="vm.ctrl.booking.checkinTimehangeHandler ()")
+					div(class='column small-12 large-2')
+						label Giờ
+							input(type='number' min='0' max='23' ng-model='vm.model.temporary.booking.checkinHour' required ng-change="vm.ctrl.booking.checkinTimehangeHandler ()")
+					div(class='column small-12 large-2 large-paddingR15')
+						label Phút
+							input(type='number' min='0' max='60' ng-model='vm.model.temporary.booking.checkinMin' ng-change="vm.ctrl.booking.checkinTimehangeHandler ()")
+					div(class='column small-12 large-3 large-paddingR15')
+						label Số giờ sử dụng
+							input(type='number' min='0' max='24' ng-model='vm.model.temporary.booking.checkinDuration' ng-change="vm.ctrl.booking.checkinTimehangeHandler ()")
+
+				div(class='row column')
+					label Yêu cầu khác
+						textarea(type='text' ng-model='vm.model.booking.note')
+				div(class="row column")
+					input(class="button" type="submit" value="Create")
+					button(class="button float-right" ng-click='vm.ctrl.reset(); event.preventDefault()') Cancel
+	
+	// FILTER
+	//div(class="column" ng-show='vm.look.filter')
+		div(class="borderT newBox row column")
+			div(class="marginB15 column small-12 large-4 large-paddingL0")
+				legend Status
+				select(ng-model='vm.model.filter.status' ng-options='key as value for (key , value) in vm.model.statusOptions' ng-init='vm.model.filter.status=1')
+					option
+			div(class='marginB15 column small-12 large-4')
+				legend Search By Firstname
+				input(type='text' ng-model='vm.model.filter.customer.firstname')
+			div(class='marginB15 column small-12 large-4 large-paddingR0')
+				legend Search By Email
+				input(type='text' ng-model='vm.model.filter.customer.email')
+	
+	// SEARCH
+	//- div(class="column")
+		div(class="borderT newBox row column")
+			form(ng-submit="vm.searchBooking()")
+				div(class="row column")
+					label Name
+						input(type="text" placeholder="Enter name to search booking" ng-model='vm.booking.input')
+			div(ng-show="vm.look.bookingSearchResultDiv" class="marginB15")
+				div(class="table-scroll")
+					table(class="hover unstriped borderAll")
+						thead
+							tr
+								th No
+								th Name
+								th Email
+								th Checkin Time
+								th Checkin Date
+								th Status
+								th Refuse
+								th Customer Cancel
+								th Accept
+						tbody
+							tr(ng-repeat='result in vm.booking.results')
+								td {{ $index + 1 }}
+								td {{ result.customer.lastname }} {{ result.customer.middlename }} {{ result.customer.firstname }}
+								td {{ result.customer.email }}
+								td {{ result.checkinTime | date:'shortTime'}}
+								td {{ result.checkinTime | date:'dd/MM/yyyy'}}
+								td(ng-if='result.status == 3') Waiting
+								td(ng-if='result.status == 1') Accepted
+								td(ng-if='result.status == 2') Refused
+								td(ng-if='result.status == 4') Canceled
+								td
+									button(type="button" class="warning button" ng-click='vm.refuseBooking(result)') Refuse
+								td
+									button(type="button" class="alert button" ng-click='vm.cancelBooking(result)') Cancel
+								td
+									button(type="button" class="success button" ng-click='vm.acceptBooking(result)') Accept
+	
+	// BOOKING LIST
+	div(class="column small-12")
+		div(class="borderT newBox table-scroll")
+			table(class="hover unstriped borderAll")
+				thead
+					tr
+						th No
+						th Tên
+						th Dịch vụ
+						th Check-in
+						th 
+						th
+				tbody
+					tr(ng-repeat='booking in vm.model.bookingList.data')
+						td {{ $index + 1 }}
+						td {{ booking.customer.fullname }}
+						td {{ booking.service.label }}
+						td {{ booking.checkinTime | date:'dd/MM/yyyy'}} {{ booking.checkinTime | date:'shortTime'}}
+						//td(ng-if='booking.status == 3') Waiting
+						//td(ng-if='booking.status == 1') Accepted
+						//td(ng-if='booking.status == 2') Refused
+						//td(ng-if='booking.status == 4') Canceled
+						td(ng-if="booking.status == 3"): a(class="button" ng-click="vm.ctrl.bookingList.checkin($index)") Check-in
+						td(ng-if="booking.status == 5"): a(class="button disabled") Check-in
+						td(ng-if="booking.status == 5"): a(class="button secondary disabled") Cancel
+						td(ng-if="booking.status == 3"): a(class="button secondary" ng-click="vm.ctrl.bookingList.confirmCancel ($index)") Cancel
+
+		div(class='emptyResult text-center' ng-if='vm.model.bookingList.data.length == 0')
+			p {{vm.model.dom.data.selected.noResult}}
+
+// CANCEL BOOKING CONFIRM
+div(class="fullBox row column" ng-show='vm.model.dom.bookingList.cancelConfirmDiv')
+	div(class="column small-12 text-center paddingTB20")
+		h2 GREEN SPACE
+		h3 Booking cancel confirmation
+	div(class="column small-12 paddingB20")
+		div(class="column small-12 large-6 large-push-3")
+			table(class="hover unstriped")
+				tbody
+					tr
+						th(class="text-right") Khách hàng
+						td {{ vm.model.temporary.canceledBooking.customer.fullname }}
+					tr
+						th(class="text-right") Địa điểm
+						td {{ vm.model.temporary.canceledBooking.location.name }}				
+					tr
+						th(class="text-right") Dịch vụ
+						td {{ vm.model.temporary.canceledBooking.service.label }}					
+					tr
+						th(class="text-right") Check-in
+						td {{ vm.model.temporary.canceledBooking.checkinTime | date:'dd/MM/yyyy'}} {{ vm.model.temporary.canceledBooking.checkinTime | date:'shortTime'}}
+	div(class="row column")
+		div(class="column small-12 large-6 large-push-3")
+			a(class="paddingL15 button primary" ng-click="vm.ctrl.bookingList.cancel ()") Confirm
+			a(class="paddingR15 button float-right secondary" ng-click="vm.ctrl.bookingList.closeCancel (); $event.preventDefault()") Cancel
+
+// BOOKING CONFIRM
+div(class="fullBox row column" ng-show='vm.model.dom.booking.confirmDiv')
+	div(class="column small-12 text-center paddingTB20")
+		h2 GREEN SPACE
+		h3 Booking confirmation
+	div(class="column small-12 paddingB20")
+		div(class="column small-12 large-6 large-push-3")
+			table(class="hover unstriped")
+				tbody
+					tr
+						th(class="text-right") Khách hàng
+						td {{ vm.model.booking.customer.fullname }}
+					tr
+						th(class="text-right") Địa điểm
+						td {{ vm.model.booking.location.name }}				
+					tr
+						th(class="text-right") Dịch vụ
+						td {{ vm.model.booking.service.label }}				
+					tr(ng-if="vm.model.booking.quantity > 1")
+						th(class="text-right") Số thành viên
+						td {{ vm.model.booking.quantity }}						
+					tr
+						th(class="text-right") Check-in
+						td {{ vm.model.booking.checkinTime | date:'dd/MM/yyyy'}} {{ vm.model.booking.checkinTime | date:'shortTime'}}
+					tr(ng-if="vm.model.booking.checkoutTime")
+						th(class="text-right") Check-out
+						td {{ vm.model.booking.checkoutTime | date:'dd/MM/yyyy'}} {{ vm.model.booking.checkoutTime | date:'shortTime'}}	
+					tr(ng-if="vm.model.booking.note")
+						th(class="text-right") Yêu cầu khác
+						td {{ vm.model.booking.note }}	
+	div(class="row column")
+		div(class="column small-12 large-6 large-push-3")
+			a(class="paddingL15 button primary" ng-click="vm.ctrl.booking.book ()") Check-in
+			a(class="paddingR15 button float-right secondary" ng-click="vm.ctrl.booking.closeConfirm (); $event.preventDefault()") Cancel												

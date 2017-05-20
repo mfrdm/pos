@@ -1,8 +1,8 @@
 (function (){
 	angular.module('posApp')
-		.controller('NewCustomersCtrl', ['$scope', '$window','$route','customerService', NewCustomersCtrl])
+		.controller('NewCustomersCtrl', ['$scope', '$window','$route','CustomerService', NewCustomersCtrl])
 
-	function NewCustomersCtrl ($scope, $window, $route, customerService){
+	function NewCustomersCtrl ($scope, $window, $route, CustomerService){
 		var vm = this;
 
 		vm.tab = 'tab-main';
@@ -112,14 +112,14 @@
 		//Search Page
 		vm.ctrl.searchFunc = function(){
 
-			customerService.search(vm.model.search.input)
+			CustomerService.search(vm.model.search.input)
 			.then(function success(res){
 				vm.model.search.customerList = res.data.data;
 				vm.model.dom.customerSearchResultDiv = true;
 				//Go to view one customer
 				vm.ctrl.selectCustomerToViewProfile = function(index){
 					vm.tab = 'tab-profile';
-					customerService.readOne(vm.model.search.customerList[index]._id)
+					CustomerService.readOne(vm.model.search.customerList[index]._id)
 						.then(function success(res){
 							vm.model.customer.profile = res.data.data
 							console.log(vm.model.customer.profile)
@@ -145,7 +145,7 @@
 			vm.model.newCustomer.fullname = vm.model.newCustomer.lastname.trim () + ' ' + (vm.model.newCustomer.middlename ? vm.model.newCustomer.middlename.trim() + ' ' : '') + vm.model.newCustomer.firstname.trim ();
 			vm.model.newCustomer.fullname = vm.model.newCustomer.fullname.toUpperCase ();
 
-			customerService.createOne(vm.model.newCustomer)
+			CustomerService.createOne(vm.model.newCustomer)
 				.then(function success(res){
 					if(res.status == 200){
 						$('#announceCreateSuccessfull').foundation('open')
@@ -175,9 +175,7 @@
 				}
 			}
 
-			console.log(data)
-
-			customerService.updateOne(vm.model.customer.editProfile._id, data)
+			CustomerService.updateOne(vm.model.customer.editProfile._id, data)
 				.then(function success(res){
 					console.log(res)
 					$route.reload()

@@ -75,13 +75,21 @@ function config ($locationProvider, $routeProvider){
 		// 	controllerAs:'vm'
 		// })
 		.when('/bookings', {
-			templateUrl: "/template/bookings",
+			templateUrl: "/template/newBookings",
 			resolve: {
 				'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
 			},			
-			controller: "BookingCtrl",
+			controller: "NewBookingCtrl",
 			controllerAs: 'vm'
-		})		
+		})			
+		// .when('/bookings', {
+		// 	templateUrl: "/template/bookings",
+		// 	resolve: {
+		// 		'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
+		// 	},			
+		// 	controller: "BookingCtrl",
+		// 	controllerAs: 'vm'
+		// })		
 		// .when ('/assets', {
 		// 	templateUrl: '/assets',
 		// 	resolve: {

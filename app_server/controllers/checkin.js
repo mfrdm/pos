@@ -10,6 +10,7 @@ var Orders = mongoose.model ('orders');
 var Occupancy = mongoose.model ('occupancy')
 var Customers = mongoose.model ('customers');
 var Promocodes = mongoose.model ('promocodes');
+var Bookings = mongoose.model ('bookings');
 var moment = require ('moment');
 
 module.exports = new Checkin();
@@ -48,21 +49,18 @@ function Checkin() {
 
 	// assume promocode are validated
 	this.checkin = function(req, res, next) {
+		console.log (req.body.data.occupancy)
 		var occ = new Occupancy (req.body.data.occupancy);
 
 		if (req.body.data.order && req.body.data.order.orderline && req.body.data.order.orderline.length){
 			var order = new Orders (req.body.data.order);
 			order.getSubTotal ();
 			order.getTotal ();
-			// order.staffId = occ.staffId;
-			// order.storeId = occ.storeId;
-			// order._id = new mongoose.Types.ObjectId ();
-			// occ.orders = [order._id];
 		};
 
 		occ.save (function (err, newOcc){
 			if (err){
-				// console.log (err);
+				console.log (err);
 				next (err);
 				return
 			}
@@ -85,26 +83,33 @@ function Checkin() {
 					}
 					else {
 						if (customer.checkinStatus == true && newOcc._id.equals (customer.occupancy.pop())){
-							if (order){
-								res.json ({data: {occupancy: newOcc, order: order}});
-								return								
-								// order.occupancyId = newOcc._id;
-								// order.getSubTotal ();
-								// order.getTotal ();
-								// order.save (function (err, newOrder){
-								// 	if (err) {
-								// 		// console.log (err);
-								// 		next (err);
-								// 		return
-								// 	}
+							if (newOcc.bookingId){
+								Bookings.update ({_id: newOcc.bookingId}, {status: 5}, function (err, b){
+									if (err){
+										console.log (err);
+										next (err);
+										return
+									}
 
-								// 	res.json ({data: {order: newOrder, occupancy: newOcc}});
-								// 	return
-								// });
+									if (order){
+										res.json ({data: {occupancy: newOcc, order: order}});
+										return
+									}
+									else {
+										res.json ({data: {occupancy: newOcc, order: null}});
+										return
+									}
+								});
 							}
-							else {
-								res.json ({data: {occupancy: newOcc, order: null}});
-								return
+							else{
+								if (order){
+									res.json ({data: {occupancy: newOcc, order: order}});
+									return
+								}
+								else {
+									res.json ({data: {occupancy: newOcc, order: null}});
+									return
+								}
 							}
 						}
 						else{
@@ -167,7 +172,7 @@ function Checkin() {
 				$gte: start, 
 				$lte: end,
 			},
-			storeId: req.query.storeId,
+			'location._id': req.query.storeId,
 		};
 
 		if (req.query.service){
@@ -177,7 +182,7 @@ function Checkin() {
 			})
 		}
 
-		var q = Occupancy.find (stmt, {updatedAt: 0, orders: 0, staffId: 0, storeId: 0, createdAt: 0, bookingId: 0});
+		var q = Occupancy.find (stmt, {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0});
 
 		if (checkinStatus == 4){
 			// do nothing and get all checked-in and checked-out

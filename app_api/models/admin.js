@@ -57,6 +57,7 @@ bookingStatus = [
 	{value: '2', name: 'Refuse'},
 	{value: '3', name: 'Pending'},
 	{value: '4', name: 'Cancel'},
+	{value: '5', name: 'Checked-in'},
 ],
 
 promoType = [

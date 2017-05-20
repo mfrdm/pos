@@ -8,8 +8,8 @@ module.exports = new Others();
 
 function Others() {
 
-	this.getBookingTemplate = function (req, res, next){
-		res.render ('booking');
+	this.getNewBookingTemplate = function (req, res, next){
+		res.render ('newBookings');
 	};
 
 	this.getNewCheckinTemplate = function (req, res, next){
@@ -23,6 +23,10 @@ function Others() {
 	this.getNewCustomersTemplate = function (req, res, next){
 		res.render ('newCustomers');
 	};	
+
+	// this.getBookingTemplate = function (req, res, next){
+	// 	res.render ('booking');
+	// };
 
 	// this.getOrderTemplate = function (req, res, next){
 	// 	res.render ('orders');
@@ -40,8 +44,7 @@ function Others() {
 
 		// load company and dept data
 
-		//var listFile = ['checkin', 'checkout', 'customers', 'assets', 'costs', 'home'];
-		var ctrFileNames = ['layout', 'newCheckin', 'checkout','products', 'assets', 'costs', 'home', 'depts', 'employees', 'login', 'register', 'booking', 'attendance', 'newOrders', 'newCustomers'];
+		var ctrFileNames = ['layout', 'newCheckin', 'checkout','products', 'assets', 'costs', 'home', 'depts', 'employees', 'login', 'register', 'newBooking', 'attendance', 'newOrders', 'newCustomers'];
 		var serviceFileNames = ['common', 'checkin', 'checkout', 'products','customers', 'assets', 'costs', 'home', 'depts','employees','authentication', 'socket', 'attendance', 'booking', 'other', 'combo', 'order'];
 		var directiveFileNames = ['components'];
 		var filterFileNames = ['myFilter'];

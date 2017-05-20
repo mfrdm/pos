@@ -1,5 +1,5 @@
 div(class="columns row")
-	div(class="row column")
+	div(class="small-12 column")
 		h2 Check-in List
 	
 	// SETTING
@@ -10,7 +10,8 @@ div(class="columns row")
 					a(class="button primary" ng-click="vm.ctrl.toggleCheckInDiv()") 
 						span(class="show-for-large") Check-in
 						i(class="material-icons customIcon hide-for-large") add
-		div(class="column small-9")
+		// FILTER CONTROLLER
+		//div(class="column small-9")
 			ul(class="menu clearfix")
 				li(class="float-right marginL15")
 					<a class="button primary" ng-click="vm.ctrl.seeMore()"><span class="show-for-large">See More</span><i class="material-icons customIcon hide-for-large">add_box</i></a>
@@ -20,8 +21,9 @@ div(class="columns row")
 					ul(class="menu")
 						li: label(class="paddingR15 show-for-large") {{ vm.model.dom.data.selected.fieldSortBy}}
 						li: select(ng-model="vm.model.filter.orderBy" ng-options="key as value for (key , value) in vm.model.filter.orderOptions" ng-init='vm.model.filter.orderBy="-checkinTime"')
-	// Filter
-	div(class="column" ng-show="vm.model.dom.filterDiv")
+	
+	// FILTER 
+	//div(class="column" ng-show="vm.model.dom.filterDiv")
 		div(class="borderT newBox row column")
 			div(class="marginB15 column small-12 large-4 paddingL0")
 				legend {{ vm.model.dom.data.selected.fieldStatus}}
@@ -69,7 +71,7 @@ div(class="columns row")
 
 			// CHECK-IN FORM
 			form(ng-submit="vm.ctrl.checkin.validateCode ()")
-				div(class="row column checkinSubBox")
+				div(class="row column basicBox")
 					div(class="column row")
 						h3(class="paddingLR15 fontSize20 fontWeight600") Lựa chọn dịch vụ
 					// SERVICE
@@ -82,7 +84,7 @@ div(class="columns row")
 						label {{vm.model.dom.data.selected.fieldChooseGroup}}
 							select(name="selectedGroup" ng-model="vm.model.temporary.selectedGroupPrivate" ng-options="leader as leader.groupName for leader in vm.model.temporary.groupPrivateLeaders track by leader._id" ng-change="vm.ctrl.checkin.selectedGroupChangeHandler ()")
 				// ORDER
-				div(class='checkinSubBox row column paddingTB15 marginB15')
+				div(class='basicBox row column paddingTB15 marginB15')
 					// ADD ITEMS
 					div(class="column row")
 						h3(class="paddingLR15 fontSize20 fontWeight600") Chọn sản phẩm
@@ -111,7 +113,7 @@ div(class="columns row")
 										td(class='text-center deleteIcon')
 											i(class="material-icons customIcon" ng-click="vm.ctrl.checkin.removeItem ($index)") close
 				// CODES
-				div(class="row column checkinSubBox")
+				div(class="row column basicBox")
 					div(class="column row")
 						h3(class="paddingLR15 fontSize20 fontWeight600") Điền code giảm giá
 					div(class="column row")
@@ -229,7 +231,7 @@ div(class="fullBox row column" ng-show='vm.model.dom.checkin.confirmDiv')
 		h3 Check-in confirmation
 	div(class="column small-12 paddingB20")
 		div(class="column small-12 large-6 large-push-3")
-			table(class="hover unstriped stack")
+			table(class="hover unstriped")
 				tbody
 					tr
 						th(class="text-right") Khách hàng
@@ -246,10 +248,7 @@ div(class="fullBox row column" ng-show='vm.model.dom.checkin.confirmDiv')
 						td {{ vm.model.temporary.selectedGroupPrivate.leader }}
 					tr(ng-show="vm.model.checkingin.occupancy.promocodes.length" ng-repeat="code in vm.model.checkingin.occupancy.promocodes")
 						th(class="text-right") Code
-						td {{ code.name | uppercase }}			
-
-
-
+						td {{ code.name | uppercase }}
 	div(class="row column")
 		div(class="column small-12 large-6 large-push-3")
 			a(class="paddingL15 button primary" ng-click="vm.ctrl.checkin.checkin ()") Check-in
@@ -262,7 +261,7 @@ div(class="fullBox row column" ng-show='vm.model.temporary.justCheckedin.order.o
 		h3 Order
 	div(class="column small-12 paddingB20")
 		div(class="column small-12 large-6 large-push-3")
-			table(class="hover unstriped stack")
+			table(class="hover unstriped")
 				tbody
 					tr
 						th Khách hàng

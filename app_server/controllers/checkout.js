@@ -17,7 +17,7 @@ function Checkout() {
 
 	// assume promotion codes, if provided, are valid, since checked when checking in
 	this.createInvoice = function (req, res, next){
-		Occupancy.findOne ({_id: req.params.occId}, {storeId: 0, staffId: 0, updateAt: 0}, function (err, foundOcc){
+		Occupancy.findOne ({_id: req.params.occId}, {location: 0, staffId: 0, updateAt: 0}, function (err, foundOcc){
 			if (err){
 				console.log (err);
 				next (err);
@@ -43,7 +43,7 @@ function Checkout() {
 				return
 			}
 			else{
-				Occupancy.findOneAndUpdate ({_id: req.body.data._id}, {$set: {status: status, total: total, usage: usage, checkoutTime: checkoutTime}}, {new: true, fields: {updatedAt: 0, orders: 0, staffId: 0, storeId: 0, createdAt: 0, bookingId: 0}}, function (err, occ){
+				Occupancy.findOneAndUpdate ({_id: req.body.data._id}, {$set: {status: status, total: total, usage: usage, checkoutTime: checkoutTime}}, {new: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function (err, occ){
 					if (err){
 						next (err)
 						return

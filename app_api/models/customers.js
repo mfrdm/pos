@@ -23,6 +23,10 @@ var customersSchema = mongoose.Schema({
 	edu: [eduSchema],
 	isStudent: {type: Boolean, default: false},
 	createdAt: {type: Date, default: Date.now},
+	createdBy: { 
+		storeId: mongoose.Schema.Types.ObjectId, // if not created by POS
+		staffId: mongoose.Schema.Types.ObjectId
+	}, 
 	updatedAt: [{
 		time: {type: Date}, 
 		explain: String,

@@ -1,8 +1,8 @@
 (function (){
 	angular.module('posApp')
-		.controller('NewCheckinCtrl', ['dataPassingService', '$scope', '$window','$route','CheckinService', 'OrderService', NewCheckinCtrl])
+		.controller('NewCheckinCtrl', ['DataPassingService', '$scope', '$window','$route','CheckinService', 'OrderService', NewCheckinCtrl])
 
-	function NewCheckinCtrl (dataPassingService, $scope, $window, $route, CheckinService, OrderService){
+	function NewCheckinCtrl (DataPassingService, $scope, $window, $route, CheckinService, OrderService){
 		var LayoutCtrl = $scope.$parent.layout;
 		var vm = this;
 
@@ -22,13 +22,19 @@
 			items: [],
 			checkingin: {
 				occupancy: {
-					staffId: LayoutCtrl.model.user._id || LayoutCtrl.model.user.id ,
-					storeId: LayoutCtrl.model.dept._id || LayoutCtrl.model.dept.id,
+					staffId: LayoutCtrl.model.user._id,
+					location: {
+						_id: LayoutCtrl.model.dept._id,
+						name: LayoutCtrl.model.dept.name,
+					},
 				},
 				order: {
 					orderline: [],
-					staffId: LayoutCtrl.model.user._id || LayoutCtrl.model.user.id,
-					storeId: LayoutCtrl.model.dept._id || LayoutCtrl.model.dept.id, 									
+					staffId: LayoutCtrl.model.user._id,
+					location: {
+						_id: LayoutCtrl.model.dept._id,
+						name: LayoutCtrl.model.dept.name,
+					},									
 				},
 			},
 			checkedinList: {
@@ -417,19 +423,22 @@
 			);
 		};
 
+		vm.ctrl.checkin.createUsername = function (customer){
+			return customer.fullname + (customer.email[0] ? ' / ' + customer.email[0] : '') + (customer.phone[0] ? ' / ' + customer.phone[0] : '');
+		};
+
 		vm.ctrl.checkin.selectCustomer = function (index){
+			var selectedCustomer = vm.model.search.checkin.customers [index];
+
 			vm.model.checkingin.occupancy.customer = vm.model.checkingin.order.customer = {
-				firstname: vm.model.search.checkin.customers [index].firstname,
-				lastname: vm.model.search.checkin.customers [index].lastname,
-				middlename: vm.model.search.checkin.customers [index].middlename,
-				fullname: vm.model.search.checkin.customers [index].fullname,
-				_id: vm.model.search.checkin.customers [index]._id,
-				phone: vm.model.search.checkin.customers [index].phone[0],
-				email: vm.model.search.checkin.customers [index].email[0]	,
-				isStudent: vm.model.search.checkin.customers [index].isStudent,
+				fullname: selectedCustomer.fullname,
+				_id: selectedCustomer._id,
+				phone: selectedCustomer.phone[0],
+				email: selectedCustomer.email[0],
+				isStudent: selectedCustomer.isStudent,
 			}
 			
-			vm.model.search.checkin.username = vm.model.search.checkin.customers[index].fullname + (vm.model.search.checkin.customers [index].email[0] ? ' || ' + vm.model.search.checkin.customers [index].email[0] : '') + (vm.model.search.checkin.customers [index].phone[0] ? ' || ' + vm.model.search.checkin.customers [index].phone[0] : '');
+			vm.model.search.checkin.username = vm.ctrl.checkin.createUsername(selectedCustomer);
 			vm.ctrl.checkin.resetSearchCustomerDiv ();
 		}
 
@@ -480,8 +489,7 @@
 		vm.ctrl.checkin.confirm = function(){
 			if(vm.model.checkingin.occupancy.customer._id){
 				vm.ctrl.addServiceLabel (vm.model.checkingin.occupancy.service);
-				vm.model.checkingin.occupancy.checkinTime = new Date(); 
-				// $('#checkinModal').foundation('open');
+				vm.model.checkingin.occupancy.checkinTime = new Date();
 				vm.model.dom.checkin.confirmDiv = true;
 			}
 		}
@@ -521,8 +529,6 @@
 					service: vm.model.checkingin.occupancy.service.name,
 				};
 
-				console.log (data)
-
 				CheckinService.validatePromoteCode(data).then(
 					function success(res){
 						var foundCodes = res.data.data;
@@ -549,7 +555,6 @@
 			OrderService.confirmOrder (vm.model.temporary.justCheckedin.order).then(
 				function success (res){
 					// display confirm message and reset route
-					// console.log (res.data.data)	
 					vm.ctrl.reset ();
 				},
 				function failure (err){
@@ -559,14 +564,14 @@
 			)
 		};	
 
-		vm.ctrl.checkin.update = function (){
-			vm.model.dom.checkInEditDiv = true;
-			vm.model.dom.checkInDiv = false;
-			vm.model.dom.checkInListDiv = true;
-			vm.model.dom.filterDiv = false;
-			vm.model.customer.editedCheckedInCustomer = {}
-			vm.model.customer.editedCheckedInCustomer.occupancy = item;		
-		};
+		// vm.ctrl.checkin.update = function (){
+		// 	vm.model.dom.checkInEditDiv = true;
+		// 	vm.model.dom.checkInDiv = false;
+		// 	vm.model.dom.checkInListDiv = true;
+		// 	vm.model.dom.filterDiv = false;
+		// 	vm.model.customer.editedCheckedInCustomer = {}
+		// 	vm.model.customer.editedCheckedInCustomer.occupancy = item;		
+		// };
 
 		vm.ctrl.checkout.getInvoice = function (occupancy){
 			vm.model.dom.checkOutDiv = true;
@@ -600,6 +605,26 @@
 			$('#askCheckout').foundation('open');
 		};
 
+		vm.ctrl.checkinBooking = function (){
+			var b = DataPassingService.get ('booking');
+			
+			if (b){
+				vm.ctrl.toggleCheckInDiv ();
+				Object.assign (vm.model.checkingin.occupancy, b);
+				var tempCustomer = {
+					email: [b.customer.email],
+					phone: [b.customer.phone],
+					fullname: b.customer.fullname,
+				}
+
+				vm.model.search.checkin.username = vm.ctrl.checkin.createUsername (tempCustomer);			
+			}
+
+			DataPassingService.reset ('booking');
+
+			// STOP here cannot click submit in check-in div
+		}
+
 		vm.ctrl.reset = function (){
 			$route.reload ();
 		};
@@ -608,6 +633,7 @@
 		angular.element(document.getElementById ('mainContentDiv')).ready(function () {
 			vm.model.dom.data.selected = vm.model.dom.data.vi;
 			vm.ctrl.getCheckedinList ();
+			vm.ctrl.checkinBooking ();
 			$scope.$apply();
 		});	
 
