@@ -56,7 +56,7 @@ function OrdersCtrl() {
 					$gte: start, 
 					$lte: end,
 				},
-				storeId: req.query.storeId,
+				'location._id': req.query.storeId,
 			});
 
 		q.exec(function (err, ord){

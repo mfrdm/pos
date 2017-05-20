@@ -17,7 +17,7 @@ function BookingCtrl() {
 
 		var q = Bookings.find ({
 			status: {$in: req.query.status},
-			"location._id": req.query.storeId,
+			'location._id': req.query.storeId,
 		});
 
 		q.exec(function (err, bk){

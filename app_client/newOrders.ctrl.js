@@ -104,7 +104,7 @@
 		};
 
 		// FIX format
-		vm.model.dom.data.vi = {
+		vm.model.dom.data.vn = {
 			order: {
 				label: {
 					username: 'Khách hàng'
@@ -350,7 +350,7 @@
 
 		////////////////////////////// INITIALIZE ///////////////////////////////		
 		angular.element(document.getElementById ('mainContentDiv')).ready(function () {
-			vm.model.dom.data.selected = vm.model.dom.data.vi;
+			vm.model.dom.data.selected = vm.model.dom.data.vn;
 			vm.ctrl.order.getItems ();
 			vm.ctrl.getOrderedList ();
 			$scope.$apply();
