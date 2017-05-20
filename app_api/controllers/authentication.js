@@ -8,7 +8,9 @@ var passport = require ('passport');
 module.exports = new Authentication ();
 
 function Authentication () {
+
 	this.register = function (req, res, next){
+		// next (); // NOT ALLOW TO CREATE A NEW USER
 
 		// FIX: include other required data
 		function checkRequiredInput (data){
