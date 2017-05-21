@@ -59,13 +59,15 @@ div(class="columns row")
 								thead
 									tr
 										th No
-										th Full name
+										th Full Name
+										th Birthday
 										th Email
 										th Phone				
 								tbody
 									tr(ng-repeat='result in vm.model.search.checkin.customers' ng-click='vm.ctrl.checkin.selectCustomer($index)' class="pointerCursor")
 										td {{ $index + 1 }}
 										td {{ result.fullname }}
+										td {{ result.birthday | date:'dd/MM/yyyy' }}
 										td {{ result.email[0] }}
 										td {{ result.phone[0] }}
 
@@ -119,7 +121,7 @@ div(class="columns row")
 					div(class="column row")
 						h3(class="paddingLR15 fontSize20 fontWeight600") Điền code giảm giá
 					div(class="column row")
-						div(class='column small-11')
+						div(class='column small-12 large-11')
 							label Code
 								input(type='text' ng-model='vm.model.temporary.checkin.codeName')
 						div(class='column large-1 show-for-large iconAdd')
@@ -196,8 +198,8 @@ div(class="columns row")
 
 	// CHECKED-IN LIST 
 	div(class="column" ng-show="vm.model.dom.checkedinList")
-		div(class="table-scroll newBox")
-			table(class="borderAll stack")
+		div(class="table-scroll paddingT15 marginT15")
+			table(class="borderAll")
 				thead
 					tr
 						th {{vm.model.dom.data.selected.headerNo}}

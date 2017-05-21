@@ -14,7 +14,7 @@
 		$scope.layout.model.user = {};	
 
 		$scope.layout.model.company = {
-			_id: '',
+			_id: '59203cee03b00119ac8d77fe',
 			contact: {
 				address: 'Số 70, ngách 82/83, Chùa Láng, Láng Thượng, Đống Đa, Hà Nội',
 				fb: 'www.facebook.com/greenspace.cw',
@@ -25,8 +25,9 @@
 			description: '',
 		};
 
+		// FIX: fetch from db
 		$scope.layout.model.dept = {
-			_id: '59112972685d0127e59de962', // TESTING
+			_id: '59203df203b00119ac8d77ff', 
 			name: 'Green Space Chùa Láng',
 			wifi: {
 				name: 'Green Space Chua Lang',

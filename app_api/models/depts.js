@@ -10,8 +10,8 @@ var deptsSchema = mongoose.Schema({
 	childDeptList: [mongoose.Schema.Types.ObjectId],
 	parentDeptId: mongoose.Schema.Types.ObjectId, // could be null
 	contact: {
-		phone: {type:String},
-		email: {type:String},
+		phone: [{type:String}],
+		email: [{type:String}],
 	},
 	createdAt: {type: Date, default: Date.now},
 	updatedAt: [{

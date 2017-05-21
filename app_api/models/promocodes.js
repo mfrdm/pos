@@ -114,8 +114,7 @@ var PromocodesSchema = mongoose.Schema ({
 		explain: String,
 		by: mongoose.Schema.Types.ObjectId,
 	}],
-	conflictCodes: [{name: String, _id: mongoose.Schema.Types.ObjectId}],
-	conflicted: [{name: String, _id: mongoose.Schema.Types.ObjectId}], // used temporary when check conflict. Never insert into db.
+	conflict: [{name: String, _id: mongoose.Schema.Types.ObjectId}],
 	override: [{name: String, _id: mongoose.Schema.Types.ObjectId}] // code that are not used when the code is apply
 });
 

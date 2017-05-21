@@ -100,10 +100,4 @@ customersSchema.methods.getPublicFields = function (){
 	}
 }
 
-customersSchema.methods.setStudentStatus = function (){
-	if (this.edu.title){
-		this.isStudent = true;
-	}
-}
-
 mongoose.model ('customers', customersSchema);

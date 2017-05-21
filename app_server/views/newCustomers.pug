@@ -1,12 +1,13 @@
 div(class="row columns")
 	div(class="column small-12")
 		h2 Customer List
-	// Create Account
+	
+	// SETTING
 	div(class="row column")
 		div(class="column small-3")
 			ul(class="menu")
 				li
-					a(class="button" ng-click="vm.ctrl.toggleCreateCustomerDiv()") 
+					a(class="button" ng-click="vm.ctrl.toggleRegisterDiv()") 
 						span(class="show-for-large") Create an account
 						i(class="material-icons customIcon hide-for-large") add
 		//div(class="column small-9")
@@ -22,110 +23,90 @@ div(class="row columns")
 							option(value="email") Email
 							option(value="phone") Phone
 
+	// CREATE CUSTOMER FORM						
+	div(class="column" ng-show='vm.model.dom.register.registerDiv')
+		form(class="borderT newBox row column" ng-submit='vm.ctrl.register.confirm()')
+			div(class="row column")
+				div(class="column small-12 large-4 large-paddingR15 paddingLR0")
+					label Họ
+						input(type="text" ng-model='vm.model.register.lastname' required)
+				div(class="column small-12 large-4 large-paddingLR15 paddingLR0")
+					label Tên đệm
+						input(type="text" ng-model='vm.model.register.middlename')
+				div(class="column small-12 large-4 large-paddingL15 paddingLR0")
+					label Tên
+						input(type="text" ng-model='vm.model.register.firstname' required)
+			div(class=" row column")
+				div(class="column small-12 large-6 large-paddingR15 paddingLR0")
+					label Giới tính
+						select(ng-model='vm.model.register.gender' ng-options="gender.value as gender.label for gender in vm.model.dom.data.selected.register.genders track by gender.value" ng-change="vm.ctrl.register.getGenderLabel ()" required)
+							<option value="">Chọn giới tính</option>
+				div(class="column small-12 large-6 large-paddingL15 large-paddingR0 paddingLR0")
+					label Ngày sinh
+						input(type="date" ng-model='vm.model.register.birthday' required)
+			div(class=" row column")
+				div(class="column small-12 large-6 large-paddingR15 paddingLR0")
+					label Email
+						input(type="email" ng-model='vm.model.register.email' required)
+				div(class="column small-12 large-6 large-paddingL15 paddingLR0")
+					label Phone
+						input(type="tel" ng-model='vm.model.register.phone' required)
+			div(class=" row column")
+				div(class="column small-12 paddingLR0")
+					label Trường
+						select(ng-model='vm.model.register.edu.school' ng-options="s.value as s.label for s in vm.model.dom.data.selected.register.schools track by s.value" ng-change="vm.ctrl.register.getSchoolLabel ()")
+							<option value="">Chọn trường</option>
 
-div(class="column" ng-show='vm.model.dom.CreateCustomerDiv')
-	form(class="borderT newBox row column" ng-submit='vm.ctrl.confirmCreateNewCustomer()')
-		div(class="row column")
-			div(class="column small-12 large-4")
-				label Lastname
-					input(type="text" ng-model='vm.model.newCustomer.lastname')
-			div(class="column small-12 large-4")
-				label Middle name
-					input(type="text" ng-model='vm.model.newCustomer.middlename')
-			div(class="column small-12 large-4")
-				label Firstname
-					input(type="text" ng-model='vm.model.newCustomer.firstname')
-		div(class=" row column")
-			div(class="column small-12 large-6")
-				label Gender
-					select(ng-model='vm.model.newCustomer.gender' ng-options="key as value for (key , value) in {1: 'Male',2: 'Female',3: 'Others'}")
-			div(class="column small-12 large-6")
-				label Birthday
-					input(type="date" ng-model='vm.model.newCustomer.birthday')
-		div(class=" row column")
-			div(class="column small-12 large-6")
-				label Email
-					input(type="text" ng-model='vm.model.newCustomer.email[0]')
-			div(class="column small-12 large-6")
+			div(class="row column paddingT15")
+				input(class="button" type="submit" value="Submit")
+				a(class="button float-right" ng-click="vm.ctrl.toggleRegisterDiv()") Cancel
 
-				label Phone
-					input(type="text" ng-model='vm.model.newCustomer.phone[0]')
-		div(class=" row column")
-			div(class="column small-12 large-6")
-				label School/ University
-					select(ng-model='vm.model.newCustomer.edu.school' ng-options="val for val in vm.model.customer.selectSchools")
-			div(class="column small-12 large-6")
-				label Other Schools
-					input(type="text" ng-model='vm.model.customer.otherSchool')
+// CONFRIM CREATE A CUSTOMER
+div(id='registerConfirmDiv' class='reveal paddingAll0' data-reveal data-animation-in="slide-in-down fast")
+	div(class="column small-12 text-center paddingTB20")
+		h2 GREEN SPACE
+		h3 Create account confirmation
+	div(class="column small-12 paddingB20")
+		div(class="column small-12")
+			table(class="hover unstriped stack")
+				tbody
+					tr
+						th Họ và tên
+						td {{ vm.model.register.fullname }}
+					tr
+						th Giới tính
+						td {{ vm.model.temporary.register.genderLabel }}
+					tr
+						th Ngày sinh
+						td {{ vm.model.register.birthday | date:'dd/MM/yyyy' }}
+					tr(ng-if="vm.model.register.email")
+						th Email
+						td {{ vm.model.register.email }}						
+					tr(ng-if="vm.model.register.phone")
+						th Phone
+						td {{ vm.model.register.phone }}
+					tr(ng-if="vm.model.register.edu.school")
+						th Trường
+						td {{ vm.model.temporary.register.schoolLabel }}
 
-		div(class="row column paddingT15 paddingLR15")
-			input(class="button" type="submit" value="Submit")
-			a(class="button float-right" ng-click="") Cancel
-
-
-// CONFIRM CREATE A CUSTOMER
-div(ng-show='vm.model.dom.confirmCreateDiv' id='checkoutDiv')
-	div(class='row column paddingT15')
-		div(class='row coumn header-invoice-img text-center')
-			img(src='/img/logo.png')
-		div(class='row coumn header-invoice text-center')
-			h4 Địa chỉ: Số nhà 70, ngách 23, ngõ 82, Chùa Láng, Láng Thượng, Đống Đa, Hà Nội
-			h4 Liên hệ: 097 785 55 94
-			h4 Website: greenspace-cw.com
-		form(class="row column small-12 large-6 large-push-3 invoice" ng-submit='vm.ctrl.createNewCustomer()')
-			div(class='priceSection')
-				div(class="row column")
-					div(class='row column paddingB15')
-						div(class='column small-6 text-right')
-							p Fullname
-						div(class='column small-6 greenBorder')
-							p {{ vm.model.newCustomer.lastname}} {{ vm.model.newCustomer.middlename}} {{ vm.model.newCustomer.firstname}}
-					div(class='row column paddingB15')
-						div(class='column small-6 text-right')
-							p Gender
-						div(class='column small-6 greenBorder')
-							p {{ vm.model.customer.genders[vm.model.newCustomer.gender]}}
-					div(class='row column paddingB15')
-						div(class='column small-6 text-right')
-							p Birthday
-						div(class='column small-6 greenBorder')
-							p {{ vm.model.newCustomer.birthday | date:'dd/MM/yyyy'}}
-					div(class='row column paddingB15')
-						div(class='column small-6 text-right')
-							p Email
-						div(class='column small-6 greenBorder')
-							p {{ vm.model.newCustomer.email[0]}}
-					div(class='row column paddingB15')
-						div(class='column small-6 text-right')
-							p Phone
-						div(class='column small-6 greenBorder')
-							p {{ vm.model.newCustomer.phone[0]}}
-					div(class='row column paddingB15')
-						div(class='column small-6 text-right')
-							p School
-						div(class='column small-6 greenBorder')
-							p {{ vm.model.newCustomer.edu.school}}
-					div(class='row column paddingB15')
-						div(class='column small-6 text-right')
-							p Job
-						div(class='column small-6 greenBorder')
-							p {{ vm.model.customer.selectCustomerTitleConvert[vm.model.newCustomer.edu.title]}}
-					
 			div(class="row column")
 				div(class='column small-12 large-paddingLR0')
-					input(class="paddingL15 button primary" type="submit" value="Confirm")
-					button(class=" paddingR15 button float-right secondary" ng-click='vm.ctrl.reset(); $event.preventDefault()') Cancel
+					a(class="paddingL15 button primary" ng-click="vm.ctrl.register.create ()") Confirm
+					a(class="paddingR15 button float-right secondary" data-close='' aria-label="Close modal") Cancel
 
 //Announce create successfull
-div(id='announceCreateSuccessfull' class='reveal small column row' data-reveal data-animation-in="slide-in-down fast")
-	div(class=' text-center paddingTB15 marginB15')
-		h5 Bạn đã tạo tài khoản thành công!
-	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
-			span(aria-hidden="true") &times;
+div(id='createAccountSuccess' class='reveal paddingAll0' data-reveal data-animation-in="slide-in-down fast")
+	div(class="row column text-center paddingTB15 marginB15 callout success borderAll0")
+		h2 Success
+		p Tạo tài khoản khách hàng thành công!
+	div(class="row column")
+		a(class="button" ng-click="vm.ctrl.checkin()") Check-in
+		a(class="button float-right secondary"  data-close='' aria-label="Close modal") close
 
 //Announce create fail
-div(id='announceCreateFail' class='reveal small column row' data-reveal data-animation-in="slide-in-down fast")
-	div(class=' text-center paddingTB15 marginB15')
-		h5 Bạn đã tạo tài khoản không thành công. Hãy thử lại!
-	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
-			span(aria-hidden="true") &times;
+div(id='createAccountFailure' class='reveal text-center paddingAll0' data-reveal data-animation-in="slide-in-down fast")
+	div(class="row column paddingTB15 marginB15 callout alert borderAll0")
+		h2 Failure
+		p Tạo tài khoản khách hàng thất bại!
+	div(class="row column")
+		a(class="button secondary" data-close='') close

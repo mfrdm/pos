@@ -1,193 +1,221 @@
 (function (){
 	angular.module('posApp')
-		.controller('NewCustomersCtrl', ['$scope', '$window','$route','CustomerService', NewCustomersCtrl])
+		.controller('NewCustomersCtrl', ['DataPassingService', 'CustomerService', '$scope', '$window','$route', '$location', NewCustomersCtrl])
 
-	function NewCustomersCtrl ($scope, $window, $route, CustomerService){
+	function NewCustomersCtrl (DataPassingService, CustomerService, $scope, $window, $route, $location){
+		var LayoutCtrl = $scope.$parent.layout;
 		var vm = this;
 
-		vm.tab = 'tab-main';
-		////////////////////////////////////////////////////////
-		vm.model = {};
-		vm.ctrl = {};
+		vm.model = {
+			register: {
+				edu: {
+					title:'',
+					school: '',
+				},
+				firstname:'',
+				lastname: '',
+				middlename: '',
+				gender: '',
+				birthday: '',
+				email: '',
+				phone: '',
+				storeId: LayoutCtrl.model.dept._id,
+				staffId: LayoutCtrl.model.user._id,
+			},
+			customerList:[],
+			dom:{
+				register: {
+					confirmDiv: false,
+					registerDiv: true,
+				},
+				customerSearchResultDiv: false,
+				data:{},
+			},
+			search: {
 
-		////////////////////////////////////////////////////////
-		// Setup ng-switch
-		vm.ctrl.toMain = function(){
-			vm.tab = 'tab-main'
-		}
-		vm.ctrl.toProfile = function(index){
-			vm.tab = 'tab-profile';
-
-		}
-		vm.ctrl.toEdit = function(index){
-			vm.tab = 'tab-edit';
-			vm.model.customer.editProfile = angular.copy(vm.model.customer.profile)
-			vm.model.customer.editProfile.phone.map(function(ele){
-				ele =  parseInt(ele)
-			})
-			// vm.model.customer.editProfile.edu.title = vm.model.customer.selectCustomerTitleConvert[vm.model.customer.profile.edu[0].title];
-		}
-		////////////////////////////////////////////////////////
-		vm.model.customer = {};//Anything about customer
-		vm.model.dom = {
-			lang:{},
-			confirmCreateDiv:false
-		};//Anything about DOM
-		vm.model.search = {};//Anything about Search
-		vm.model.input = {};//input field model for start and end of school
-
-		//Translate
-		vm.model.dom.lang.en = {
-			jobStudent:'Undergraduate',
-			jobGraduate:'Graduate',
-			jobDoc:'Doctorate'
-		}
-
-		vm.model.dom.lang.vi = {
-			jobStudent:'Sinh viên',
-			jobGraduate:'Đã tốt nghiệp',
-			jobDoc:'Thạc sĩ'
-		}
-
-		// Need 
-		//Schools
-		vm.model.customer.selectSchools = [
-			'Đại học Bách khoa',
-			'Đại học Hà Nội',
-			'Đại học sư phạm',
-			'Đại học văn hóa',
-			'Đại học Giao thông',
-			'Học viện báo chí và tuyên truyền',
-			'Học viện hành chính',
-			'Học viện ngân hàng',
-			'Học viện nông nghiệp',
-			'Học viện quân y',
-			'Học viện tài chính',
-			'Học viện thanh thiếu niên',
-			'Đại học Khoa học tự nhiên',
-			'Đại học Kinh tế quốc dân',
-			'Đại học Luật',
-			'Đại học Mỏ địa chất',
-			'Đại học Ngoại giao',
-			'Đại học Ngoại thương',
-			'Đại học Quốc gia',
-			'Đại học Thương mại',
-			'Đại học Xây dựng',
-			'Đại học FTU',
-		]
-
-		vm.model.customer.genders = {
-			1: 'Male',
-			2: 'Female',
-			3: 'Others'
-		}
-
-		vm.model.dom.lang.using = vm.model.dom.lang.vi
-
-		vm.model.customer.selectCustomerTitleConvert = {
-			1: vm.model.dom.lang.using.jobStudent,
-			2: vm.model.dom.lang.using.jobGraduate,
-			3: vm.model.dom.lang.using.jobDoc
-		}
-
-
-
-		vm.model.newCustomer = {}//Model contain info to create new customer
-		vm.model.newCustomer.edu = {}
-		vm.model.newCustomer.phone = [];
-		vm.model.newCustomer.email = [];
-		vm.model.form = {}//Anything about form data
-		vm.model.sorting = {}//Model for sorting a list search result
-
-		vm.model.dom.customerSearchResultDiv = false;
-		vm.model.dom.CreateCustomerDiv = true;
-
-		////////////////////////////////////////////////////////
-		//Toggle Div
-		vm.ctrl.toggleCreateCustomerDiv = function(){
-			if (!vm.model.dom.CreateCustomerDiv) vm.model.dom.CreateCustomerDiv = true;
-				else vm.model.dom.CreateCustomerDiv = false;
-		}
-		////////////////////////////////////////////////////////
-		//Search Page
-		vm.ctrl.searchFunc = function(){
-
-			CustomerService.search(vm.model.search.input)
-			.then(function success(res){
-				vm.model.search.customerList = res.data.data;
-				vm.model.dom.customerSearchResultDiv = true;
-				//Go to view one customer
-				vm.ctrl.selectCustomerToViewProfile = function(index){
-					vm.tab = 'tab-profile';
-					CustomerService.readOne(vm.model.search.customerList[index]._id)
-						.then(function success(res){
-							vm.model.customer.profile = res.data.data
-							console.log(vm.model.customer.profile)
-						})
+			},
+			temporary: {
+				register: {
 				}
-			}, function error(err){
-				console.log(err)
-			})
+			}
+		};
+
+		vm.ctrl = {
+			register: {}
+		};
+
+		vm.model.dom.data.eng = {
+			register: {
+				gender: [
+					{value: 1, label: 'Male'},
+					{value: 2, label: 'Female'},
+					{value: 3, label: 'Other'},
+				]
+			}
+		}
+
+		vm.model.dom.data.vn = {
+			register: {
+				genders: [
+					{value: 1, label: 'Nam'},
+					{value: 2, label: 'Nữ'},
+					{value: 3, label: 'Khác'},
+				],
+				schools: [
+					{value: 1, label: 'Đại học Kinh tế quốc dân'},
+					{value: 2, label: 'Đại học Ngoại thương'},
+					{value: 14, label: 'Đại học Bách khoa'},
+					{value: 18, label: 'Đại học Hà Nội'},
+					{value: 3, label: 'Đại học Sư phạm'},
+					{value: 4, label: 'Đại học Văn hóa'},
+					{value: 5, label: 'Đại học Giao thông'},
+					{value: 6, label: 'Học viện Báo chí và tuyên truyền'},
+					{value: 7, label: 'Học viện Hành chính'},
+					{value: 8, label: 'Học viện Ngân hàng'},
+					{value: 9, label: 'Học viện Nông nghiệp'},
+					{value: 10, label: 'Học viện Quân y'},
+					{value: 11, label: 'Học viện Tài chính'},
+					{value: 12, label: 'Học viện Thanh thiếu niên'},
+					{value: 13, label: 'Đại học Khoa học tự nhiên'},
+					{value: 15, label: 'Đại học Luật'},
+					{value: 16, label: 'Đại học Mỏ địa chất'},
+					{value: 17, label: 'Đại học Ngoại giao'},
+					{value: 19, label: 'Đại học Quốc gia'},
+					{value: 20, label: 'Đại học Thương mại'},
+					{value: 21, label: 'Đại học Xây dựng'},
+					{value: 22, label: 'Đại học Ngoại ngữ'},
+					{value: -1, label: 'Trường khác'},
+				],
+				label:{
+					// 	
+				}				
+			}
+		}
+
+		vm.model.dom.data.selected = {};
+
+		vm.ctrl.toggleRegisterDiv = function(){
+			if (!vm.model.dom.register.registerDiv) vm.model.dom.register.registerDiv = true;
+				else vm.model.dom.register.registerDiv = false;
+		}
+
+		vm.ctrl.register.closeConfirmDiv = function (){
+			vm.model.dom.register.confirmDiv = false;
+		}
+
+		vm.ctrl.register.getSchoolLabel	= function (){
+			vm.model.dom.data.selected.register.schools.map (function (x, i, arr){
+				if (x.value == vm.model.register.edu.school){
+					vm.model.temporary.register.schoolLabel = x.label;
+				}
+			});
+		}	
+
+		vm.ctrl.register.getGenderLabel = function (){
+			vm.model.dom.data.selected.register.genders.map (function (x, i, arr){
+				if (x.value == vm.model.register.gender){
+					vm.model.temporary.register.genderLabel = x.label;
+				}				
+			});
+		}
+
+		vm.ctrl.register.sanatizeRawData = function (){
+			// trim
+			vm.model.register.firstname = vm.model.register.firstname ? vm.model.register.firstname.trim () : vm.model.register.firstname;
+			vm.model.register.lastname = vm.model.register.lastname ? vm.model.register.lastname.trim () : vm.model.register.lastname;
+			vm.model.register.middlename = vm.model.register.middlename ? vm.model.register.middlename.trim () : vm.model.register.middlename;
+			vm.model.temporary.register.otherSchool = vm.model.temporary.register.otherSchool ? vm.model.temporary.register.otherSchool.trim () : vm.model.temporary.register.otherSchool;
+			vm.model.register.email = vm.model.register.email ? vm.model.register.email.trim() : vm.model.register.email;
+			vm.model.register.phone = vm.model.register.phone ? vm.model.register.phone.trim() : vm.model.register.phone;
+
+			// upper case first letter of name
+			function upperCaseFirstLetter (s){
+				sArr = s.split ('');
+				sArr[0] = sArr[0].toUpperCase ();
+				return sArr.join ('');
+			}
+
+			vm.model.register.firstname = upperCaseFirstLetter (vm.model.register.firstname);
+			vm.model.register.lastname = upperCaseFirstLetter (vm.model.register.lastname);
+			vm.model.register.middlename = upperCaseFirstLetter (vm.model.register.middlename);
+		
+			vm.model.register.email = vm.model.register.email ? vm.model.register.email.toLowerCase () : vm.model.register.email;
+
+			if(vm.model.temporary.register.otherSchool){
+				vm.model.register.edu.school = vm.model.temporary.register.otherSchool; 
+			}
+
+			// Add full name
+			vm.model.register.fullname = vm.model.register.lastname + ' ' + (vm.model.register.middlename ? vm.model.register.middlename + ' ' : '') + vm.model.register.firstname;
+			vm.model.register.fullname = vm.model.register.fullname.toUpperCase ();
+
+			// set student status
+			vm.model.register.isStudent = vm.model.register.edu.school ? true : false;
 		}
 		
-		////////////////////////////////////////////////////////
-		//Create Page
-		vm.ctrl.confirmCreateNewCustomer = function(){
-
-			console.log(vm.model.newCustomer.birthday)
-			if(vm.model.customer.otherSchool){
-				vm.model.newCustomer.edu.school = vm.model.customer.otherSchool
-			}
-			vm.model.dom.confirmCreateDiv = true;
+		vm.ctrl.register.confirm = function(){
+			vm.ctrl.register.sanatizeRawData (vm.model.register);
+			// vm.model.dom.register.confirmDiv = true;	
+			vm.ctrl.register.showConfirm ();		
 		}
 
-		vm.ctrl.createNewCustomer = function(){
-			vm.model.newCustomer.fullname = vm.model.newCustomer.lastname.trim () + ' ' + (vm.model.newCustomer.middlename ? vm.model.newCustomer.middlename.trim() + ' ' : '') + vm.model.newCustomer.firstname.trim ();
-			vm.model.newCustomer.fullname = vm.model.newCustomer.fullname.toUpperCase ();
-
-			CustomerService.createOne(vm.model.newCustomer)
+		vm.ctrl.register.create = function(){
+			CustomerService.createOne(vm.model.register)
 				.then(function success(res){
 					if(res.status == 200){
-						$('#announceCreateSuccessfull').foundation('open')
-						$scope.layout.currentCustomer = res.data.data;
-						$window.location.href = '/#!/checkin'
+						vm.model.temporary.register.newCustomer = res.data.data;
+						vm.ctrl.register.showSuccessMessage ();
 					}else{
-						$('#announceCreateFail').foundation('open')
+						vm.ctrl.register.showFailureMessage ();
 					}
 					
 				}, function error(err){
 					console.log(err)
 				})
+		}	
+
+		vm.ctrl.register.showSuccessMessage = function (){
+			$('#registerConfirmDiv').foundation ('close');
+			$('#createAccountSuccess').foundation('open')
+		};
+
+		vm.ctrl.register.showFailureMessage = function (){
+			$('#createAccountFailure').foundation('open')
+		};	
+
+		vm.ctrl.register.showConfirm = function (){
+			$('#registerConfirmDiv').foundation ('open');
 		}
-		////////////////////////////////////////////////////////
-		//Edit Page
-		vm.ctrl.saveEdit = function(){
-			var data={
-				$set:{
-					lastname:vm.model.customer.editProfile.lastname,
-					middlename:vm.model.customer.editProfile.lastname,
-					firstname:vm.model.customer.editProfile.firstname,
-					edu:{
-						school: vm.model.customer.editProfile.edu[0].school
-					},
-					email:vm.model.customer.editProfile.email[0],
-					phone: vm.model.customer.editProfile.phone[0]
-				}
+
+		vm.ctrl.checkin = function (){
+			$('#createAccountSuccess').foundation('close');
+			var newCustomer = vm.model.temporary.register.newCustomer;
+			var data = {
+				fullname: newCustomer.fullname,
+				_id: newCustomer._id,
+				email: newCustomer.email,
+				phone: newCustomer.phone,
+				isStudent: newCustomer.isStudent
 			}
 
-			CustomerService.updateOne(vm.model.customer.editProfile._id, data)
-				.then(function success(res){
-					console.log(res)
-					$route.reload()
-					vm.tab = 'tab-main';
-				}, function error(err){
-					console.log(err)
-				})
+			DataPassingService.set ('customer', data);
+			$location.url ('/checkin');			
+		}
+
+		vm.ctrl.booking = function (){
+			// later
 		}
 
 		vm.ctrl.reset = function(){
-			$window.location.reload();
+			$route.reload();
 		}
+
+		////////////////////////////// INITIALIZE /////////////////////////////////////		
+		angular.element(document.getElementById ('mainContentDiv')).ready(function () {
+			vm.model.dom.data.selected = vm.model.dom.data.vn;
+			$scope.$apply();
+		});	
+
 	}
 	
 }());

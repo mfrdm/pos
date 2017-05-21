@@ -97,7 +97,6 @@ router.get('/customers', CustomersCtrl.readSomeCustomers);
 router.get('/customers/customer/:cusId', CustomersCtrl.readOneCustomerById);
 router.post('/customers/create', CustomersCtrl.createOneCustomer);
 router.post('/customers/customer/:cusId/edit', CustomersCtrl.updateOneCustomer);
-router.get('/angular/customers', CustomersCtrl.readAngularCustomers);
 
 router.get('/fin/costs', finCtrl.readSomeCosts);
 router.post('/fin/costs/create', finCtrl.createOneCost);

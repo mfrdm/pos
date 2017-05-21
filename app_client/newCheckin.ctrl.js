@@ -1,8 +1,8 @@
 (function (){
 	angular.module('posApp')
-		.controller('NewCheckinCtrl', ['DataPassingService', '$scope', '$window','$route','CheckinService', 'OrderService', NewCheckinCtrl])
+		.controller('NewCheckinCtrl', ['DataPassingService', 'CheckinService', 'OrderService', 'CustomerService', '$scope', '$window','$route', NewCheckinCtrl])
 
-	function NewCheckinCtrl (DataPassingService, $scope, $window, $route, CheckinService, OrderService){
+	function NewCheckinCtrl (DataPassingService, CheckinService, OrderService, CustomerService, $scope, $window, $route){
 		var LayoutCtrl = $scope.$parent.layout;
 		var vm = this;
 
@@ -133,9 +133,9 @@
 			headerName:'Name',
 			headerBirthday:'Birthday',
 			headerCheckinDate:'Checkin Date',
-			headerCheckinTime:'Checkin Time',
+			headerCheckinTime:'Check-in',
 			headerCheckoutDate:'Checkout Date',
-			headerCheckoutTime:'Checkout Time',
+			headerCheckoutTime:'Check-out',
 			headerService:'Service',
 			headerCheckout:'Checkout',
 			headerEdit:'Edit',
@@ -150,7 +150,7 @@
 
 		// FIX format
 		// Vietnamese version
-		vm.model.dom.data.vi = {
+		vm.model.dom.data.vn = {
 			modelLanguage: 'vn',
 			title: 'Checkin',
 			buttonCheckin: 'Checkin',
@@ -191,11 +191,11 @@
 			headerName:'Họ và tên',
 			headerBirthday:'Ngày sinh',
 			headerCheckinDate:'Ngày Checkin',
-			headerCheckinTime:'Giờ Checkin',
+			headerCheckinTime:'Check-in',
 			headerCheckoutDate:'Ngày Checkout',
-			headerCheckoutTime:'Giờ Checkout',
+			headerCheckoutTime:'Check-out',
 			headerService:'Dịch vụ',
-			headerCheckout:'Checkout',
+			headerCheckout:'',
 			headerEdit:'Chỉnh sửa',
 			parentGroup:'Nhóm',
 			noResult: 'Không tìm thấy kết quả',
@@ -225,6 +225,63 @@
 				if (vm.model.dom.data.selected.modelLanguage == 'vn') service.label = 'Nhóm riêng 30';
 				else service.label = service.name;
 			}												
+		}
+
+		vm.ctrl.getCheckedinList = function (){
+			var query = {
+				status: 4, // get both checked out and checked in
+				storeId: LayoutCtrl.model.dept._id,
+			}
+
+			CheckinService.getCheckedinList(query).then(
+				function success(res){
+					vm.model.checkedinList.data = res.data.data;
+					vm.model.checkedinList.data.map (function (x, i, arr){
+						vm.ctrl.addServiceLabel (x.service);
+					});
+					
+				}, 
+				function error(err){
+					console.log(err);
+				}
+			);
+		};
+
+		vm.ctrl.setCurrentCus = function (){
+			// 
+		}
+
+		vm.ctrl.toggleFilterDiv = function (){
+			if (!vm.model.dom.filterDiv) {
+				vm.model.dom.filterDiv = true;
+				vm.model.dom.checkInEditDiv = false;
+				vm.model.dom.checkin.checkinDiv = false;
+			}
+			else vm.model.dom.filterDiv = false;
+		};
+
+		vm.ctrl.toggleCheckInDiv = function(){
+			if (!vm.model.dom.checkin.checkinDiv){
+				vm.model.dom.checkInEditDiv = false; // turn off
+				vm.model.dom.filterDiv = false; // turn off				
+				vm.ctrl.checkin.initCheckinDiv ();
+
+				if (!vm.model.dom.checkin.products.length){
+					vm.ctrl.checkin.getItems ();
+				}
+				 
+			}
+			else{
+				vm.ctrl.checkin.resetCheckinDiv ();
+			}
+		};
+
+		vm.ctrl.seeMore = function(){
+			if(vm.model.dom.seeMore == true){
+				vm.model.dom.seeMore = false
+			}else{
+				vm.model.dom.seeMore = true
+			}
 		}
 
 		// Get both items and services
@@ -258,35 +315,6 @@
 				}
 			);			
 		};
-
-		vm.ctrl.getCheckedinList = function (){
-			var query = {
-				status: 4, // get both checked out and checked in
-				storeId: LayoutCtrl.model.dept._id,
-			}
-
-			CheckinService.getCheckedinList(query).then(
-				function success(res){
-					vm.model.checkedinList.data = res.data.data;
-					vm.model.checkedinList.data.map (function (x, i, arr){
-						vm.ctrl.addServiceLabel (x.service);
-					});
-					
-				}, 
-				function error(err){
-					console.log(err);
-				}
-			);
-		};
-
-		// vm.ctrl.getDefaultOrder = function (){
-		// 	return {
-		// 		orderline:[],
-		// 		customer:{},
-		// 		storeId: vm.model.dept._id,
-		// 		staffId: vm.model.user._id,
-		// 	}
-		// }
 
 		vm.ctrl.checkin.resetSearchCustomerDiv = function (){
 			vm.model.dom.checkin.customerSearchResultDiv = false;
@@ -358,49 +386,12 @@
 			vm.ctrl.checkin.resetCheckinDiv ();
 		}
 
-		vm.ctrl.setCurrentCus = function (){
-			// 
-		}
-
-		vm.ctrl.toggleFilterDiv = function (){
-			if (!vm.model.dom.filterDiv) {
-				vm.model.dom.filterDiv = true;
-				vm.model.dom.checkInEditDiv = false;
-				vm.model.dom.checkin.checkinDiv = false;
-			}
-			else vm.model.dom.filterDiv = false;
-		};
-
-		vm.ctrl.toggleCheckInDiv = function(){
-			if (!vm.model.dom.checkin.checkinDiv){
-				vm.model.dom.checkInEditDiv = false; // turn off
-				vm.model.dom.filterDiv = false; // turn off				
-				vm.ctrl.checkin.initCheckinDiv ();
-
-				if (!vm.model.dom.checkin.products.length){
-					vm.ctrl.checkin.getItems ();
-				}
-				 
-			}
-			else{
-				vm.ctrl.checkin.resetCheckinDiv ();
-			}
-		};
-
-		vm.ctrl.seeMore = function(){
-			if(vm.model.dom.seeMore == true){
-				vm.model.dom.seeMore = false
-			}else{
-				vm.model.dom.seeMore = true
-			}
-		}
-
 		vm.ctrl.checkin.closeConfirm = function (){
 			vm.model.dom.checkin.confirmDiv = false;
 		};
 
 		vm.ctrl.checkin.searchCustomer =  function (){
-			CheckinService.searchCustomers(vm.model.search.checkin.username).then(
+			CustomerService.readCustomers (vm.model.search.checkin.username).then(
 				function success (res){
 					if (!res.data){
 						// unexpected result. should never exist
@@ -564,15 +555,6 @@
 			)
 		};	
 
-		// vm.ctrl.checkin.update = function (){
-		// 	vm.model.dom.checkInEditDiv = true;
-		// 	vm.model.dom.checkInDiv = false;
-		// 	vm.model.dom.checkInListDiv = true;
-		// 	vm.model.dom.filterDiv = false;
-		// 	vm.model.customer.editedCheckedInCustomer = {}
-		// 	vm.model.customer.editedCheckedInCustomer.occupancy = item;		
-		// };
-
 		vm.ctrl.checkout.getInvoice = function (occupancy){
 			vm.model.dom.checkOutDiv = true;
 			CheckinService.readInvoice(occupancy._id).then(
@@ -618,11 +600,25 @@
 				}
 
 				vm.model.search.checkin.username = vm.ctrl.checkin.createUsername (tempCustomer);			
+				DataPassingService.reset ('booking');
+			}
+		};
+
+		vm.ctrl.checkinNewCustomer = function (){
+			var c = DataPassingService.get ('customer');
+			if (c){
+				vm.ctrl.toggleCheckInDiv ();
+				vm.model.checkingin.occupancy.customer = vm.model.checkingin.order.customer = c;
+				var tempCustomer = {
+					email: [c.email],
+					phone: [c.phone],
+					fullname: c.fullname,
+				}
+				vm.model.search.checkin.username = vm.ctrl.checkin.createUsername (tempCustomer);			
+				DataPassingService.reset ('customer');
 			}
 
-			DataPassingService.reset ('booking');
-
-			// STOP here cannot click submit in check-in div
+						
 		}
 
 		vm.ctrl.reset = function (){
@@ -631,9 +627,10 @@
 
 		////////////////////////////// INITIALIZE ///////////////////////////////		
 		angular.element(document.getElementById ('mainContentDiv')).ready(function () {
-			vm.model.dom.data.selected = vm.model.dom.data.vi;
+			vm.model.dom.data.selected = vm.model.dom.data.vn;
 			vm.ctrl.getCheckedinList ();
 			vm.ctrl.checkinBooking ();
+			vm.ctrl.checkinNewCustomer ();
 			$scope.$apply();
 		});	
 

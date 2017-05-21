@@ -153,6 +153,10 @@ label {
 	border: 1px solid #D7D4D4;
 }
 
+.borderAll0 {
+	border: none;
+}
+
 .customIcon {
 	position: relative;
 	margin: 0!important;
@@ -241,5 +245,19 @@ label {
 @media print, screen and (min-width: 64rem){
 	#top-menu-btn{
 		left: .9375rem;
+	};
+
+	.large-paddingR0{
+		padding-right: 0px;
+	};
+
+	.large-paddingL0{
+		padding-left: 0px;
+	};
+
+	.large-paddingLR0{
+		padding-left: 0px;
+		padding-right: 0px;
 	}
+
 }

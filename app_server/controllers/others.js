@@ -42,7 +42,7 @@ function Others() {
 
 	this.angularApp = function (req, res){
 
-		// load company and dept data
+		// load company and dept data and sent to client
 
 		var ctrFileNames = ['layout', 'newCheckin', 'checkout','products', 'assets', 'costs', 'home', 'depts', 'employees', 'login', 'register', 'newBooking', 'attendance', 'newOrders', 'newCustomers'];
 		var serviceFileNames = ['common', 'checkin', 'checkout', 'products','customers', 'assets', 'costs', 'home', 'depts','employees','authentication', 'socket', 'attendance', 'booking', 'other', 'combo', 'order'];

@@ -134,7 +134,7 @@ function Checkin() {
 
 		input = validator.trim (input);
 		var splited = input.split (' ');
-		var projections = {firstname: 1, lastname: 1, middlename: 1, fullname: 1, phone: {$slice: [0,1]}, email: {$slice: [0,1]}, checkinStatus: 1, isStudent: 1, edu: 1};
+		var projections = {fullname: 1, phone: {$slice: [0,1]}, email: {$slice: [0,1]}, checkinStatus: 1, isStudent: 1, edu: 1, birthday: 1};
 
 		var query;
 

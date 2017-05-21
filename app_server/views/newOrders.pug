@@ -114,6 +114,9 @@ div(class="row columns")
 						td {{ order.quantity }}
 						td {{ order.createdAt | date:'dd/MM/yyyy' }} {{ order.createdAt | date:'shortTime' }}
 
+		div(class='emptyResult text-center' ng-if='vm.model.orderedList.length == 0')
+			p {{ vm.model.dom.data.selected.noResult }}
+
 // ORDER INVOICE
 div(class="fullBox row column" ng-show='vm.model.dom.order.confirm')
 	div(class="column small-12 text-center paddingTB20")

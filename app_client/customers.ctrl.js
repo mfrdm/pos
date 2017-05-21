@@ -129,14 +129,16 @@ var CustomerCtrl = function($scope, customerService, $route, $window){
 	//Create Page
 	vm.ctrl.confirmCreateNewCustomer = function(){
 
-		console.log(vm.model.newCustomer.birthday)
 		if(vm.model.customer.otherSchool){
 			vm.model.newCustomer.edu.school = vm.model.customer.otherSchool
 		}
+		
 		vm.model.dom.confirmCreateDiv = true;
 	}
 
 	vm.ctrl.createNewCustomer = function(){
+
+
 		vm.model.newCustomer.fullname = vm.model.newCustomer.lastname.trim () + ' ' + (vm.model.newCustomer.middlename ? vm.model.newCustomer.middlename.trim() + ' ' : '') + vm.model.newCustomer.firstname.trim ();
 		vm.model.newCustomer.fullname = vm.model.newCustomer.fullname.toUpperCase ();
 
