@@ -95,8 +95,11 @@
 		vm.model.dom.data.selected = {};
 
 		vm.ctrl.toggleRegisterDiv = function(){
-			if (!vm.model.dom.register.registerDiv) vm.model.dom.register.registerDiv = true;
-				else vm.model.dom.register.registerDiv = false;
+			if (!vm.model.dom.register.registerDiv) {
+				vm.model.dom.register.registerDiv = true;
+			}
+			
+			else vm.model.dom.register.registerDiv = false;
 		}
 
 		vm.ctrl.register.closeConfirmDiv = function (){

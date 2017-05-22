@@ -1,9 +1,9 @@
 (function () {
 	angular
 		.module ('posApp')
-		.controller ('NewBookingCtrl', ['DataPassingService', 'CustomerService', 'BookingService', 'ProductService', '$scope','$route', '$location', '$window', NewBookingCtrl])
+		.controller ('NewBookingCtrl', ['DataPassingService', 'CheckinService', 'BookingService', 'ProductService', '$scope','$route', '$location', '$window', NewBookingCtrl])
 
-	function NewBookingCtrl (DataPassingService, CustomerService, BookingService, ProductService, $scope, $route, $location, $window) {
+	function NewBookingCtrl (DataPassingService, CheckinService, BookingService, ProductService, $scope, $route, $location, $window) {
 		var LayoutCtrl = $scope.$parent.layout;
 		var vm = this;
 
@@ -189,7 +189,7 @@
 
 
 		vm.ctrl.booking.searchCustomer = function (){
-			CustomerService.readCustomers (vm.model.search.booking.username).then(
+			CheckinService.readCustomers (vm.model.search.booking.username).then(
 				function success (res){
 					if (!res.data){
 						// unexpected result. should never exist
