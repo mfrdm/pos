@@ -42,14 +42,26 @@ var redeemUsage = function (code, usage){
 
 	code = code ? code.toLowerCase () : code;
 
-	if (code === 'free1hourcommon'){
+	if (code === 'free1hourcommon'){ // change name later
 		if (usage <= 1) usage = 0;
 		else usage = usage - 1;
 	}
-	else if (code === 'free2hourscommon'){
+	else if (code === 'free2hourscommon'){ // change name later
 		if (usage <= 2) usage = 0;
 		else usage = usage - 2;		
 	}
+	else if (code === 'gs05'){
+		if (usage <= 1) usage = 0;
+		else usage = usage - 1;
+	}
+	else if (code === 'mar05'){
+		if (usage <= 1) usage = 0;
+		else usage = usage - 1;
+	}
+	else if (code === 'freewed'){
+		if (usage <= 1) usage = 0;
+		else usage = usage - 1;
+	}		
 
 	usage = Number(Math.round(usage+'e1')+'e-1');
 
