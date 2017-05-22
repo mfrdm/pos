@@ -16,9 +16,7 @@ function OrderService ($http, $q){
 		return $http({
 			method:'GET',
 			url:'/orders',
-			params: {
-				storeId:'59112972685d0127e59de962'
-			},
+			params: query,
 		})
 	};
 

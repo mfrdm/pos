@@ -1,8 +1,8 @@
 (function (){
 	angular.module('posApp')
-		.controller('NewCheckinCtrl', ['DataPassingService', 'CheckinService', 'OrderService', 'CustomerService', '$scope', '$window','$route', NewCheckinCtrl])
+		.controller('NewCheckinCtrl', ['DataPassingService', 'CheckinService', 'OrderService', '$scope', '$window','$route', NewCheckinCtrl])
 
-	function NewCheckinCtrl (DataPassingService, CheckinService, OrderService, CustomerService, $scope, $window, $route){
+	function NewCheckinCtrl (DataPassingService, CheckinService, OrderService, $scope, $window, $route){
 		var LayoutCtrl = $scope.$parent.layout;
 		var vm = this;
 
@@ -11,7 +11,9 @@
 		vm.ctrl = {
 			checkin: {},
 			checkout: {},
-			order: {}
+			order: {},
+			filter: {},
+			sort: {},
 		};
 
 		vm.model = {
@@ -391,7 +393,7 @@
 		};
 
 		vm.ctrl.checkin.searchCustomer =  function (){
-			CustomerService.readCustomers (vm.model.search.checkin.username).then(
+			CheckinService.searchCustomers (vm.model.search.checkin.username).then(
 				function success (res){
 					if (!res.data){
 						// unexpected result. should never exist
@@ -559,7 +561,6 @@
 			vm.model.dom.checkOutDiv = true;
 			CheckinService.readInvoice(occupancy._id).then(
 				function success(res){
-					console.log(res)
 					vm.model.checkingout.occupancy = res.data.data;
 					vm.ctrl.addServiceLabel (vm.model.checkingout.occupancy.service);
 					// vm.ctrl.addGroupParent (vm.model.checkingout.occupancy.service) // Build later

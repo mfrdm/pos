@@ -1,8 +1,8 @@
 (function (){
 	angular.module('posApp')
-		.controller('NewOrdersCtrl', ['$scope', '$window','$route','OrderService', NewOrdersCtrl])
+		.controller('NewOrdersCtrl', ['OrderService', 'CheckinService', '$scope', '$window','$route', NewOrdersCtrl])
 
-	function NewOrdersCtrl ($scope, $window, $route, OrderService){
+	function NewOrdersCtrl (OrderService, CheckinService, $scope, $window, $route){
 		var LayoutCtrl = $scope.$parent.layout;
 		var vm = this;
 
@@ -157,7 +157,9 @@
 		};
 		
 		vm.ctrl = {
-			order: {}
+			order: {},
+			orderedList: {}
+
 		};
 
 		// Rebuilt order list to make it easy for presenting purpose
@@ -177,7 +179,8 @@
 
 		// FIX: only get orders from the store
 		vm.ctrl.getOrderedList = function (){
-			OrderService.getOrderList().then(
+			var query = {storeId: LayoutCtrl.model.dept._id};
+			OrderService.getOrderList(query).then(
 				function success(res){
 					vm.model.originalOrderedList = res.data.data;
 					vm.model.orderedList = vm.ctrl.createAdjustedOrderList (vm.model.originalOrderedList);
@@ -223,7 +226,7 @@
 		};
 
 		vm.ctrl.order.searchCustomer =  function (){
-			OrderService.searchCustomers(vm.model.search.order.username).then(
+			CheckinService.searchCustomers (vm.model.search.order.username).then(
 				function success (res){
 					if (!res.data){
 						// unexpected result. should never exist
@@ -342,6 +345,10 @@
 
 		vm.ctrl.order.closeInvoice = function (){
 			vm.model.dom.order.confirm = false;
+		}
+
+		vm.ctrl.orderedList.selectPage = function (){
+			//
 		}
 
 		vm.ctrl.reset = function (){

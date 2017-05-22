@@ -127,16 +127,14 @@ function Checkin() {
 
 	// Only return non-checked-in customers
 	this.searchCheckingCustomers = function (req, res, next){
+		var query;
 		var input = req.query.input; // email, phone, fullname
 		if (!input){
 			next (); // 
 		}
 
 		input = validator.trim (input);
-		var splited = input.split (' ');
 		var projections = {fullname: 1, phone: {$slice: [0,1]}, email: {$slice: [0,1]}, checkinStatus: 1, isStudent: 1, edu: 1, birthday: 1};
-
-		var query;
 
 		if (validator.isEmail (input)){
 			query = Customers.find ({email: input, checkinStatus: false}, projections);

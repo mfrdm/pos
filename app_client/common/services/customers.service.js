@@ -16,6 +16,7 @@ function CustomerService ($http){
 		})
 	}
 
+	// FIX: user /customers
 	this.readCustomers = function(input){
 		return $http({
 			method:'GET',
