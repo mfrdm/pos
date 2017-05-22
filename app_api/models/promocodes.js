@@ -1,10 +1,11 @@
 var mongoose = require('mongoose');
 
-var productNames = ['group common', 'individual common', 'medium group private', 'small group private'];
+var productNames = ['group common', 'individual common', 'medium group private', 'small group private', 'large group private'];
 
 var rewardUsagePrice = {
 	'medium group private': 200000,
 	'small group private': 120000,
+	'large group private': 450000,
 };
 
 var studentPrice = {
@@ -77,7 +78,7 @@ var redeemMixed = function (code, usage, price, productName){
 	productName = productName ? productName.toLowerCase() : productName;
 	code = code ? code.toLowerCase () : code;
 
-	if (code == "privatediscountprice" && usage > 1 && (productName == productNames[2] || productName == productNames[3])){
+	if (code == "privatediscountprice" && usage > 1 && (productName == productNames[2] || productName == productNames[3] || productName == productNames[4])){
 		total = price * 1 + rewardUsagePrice[productName] * (usage - 1);
 	}
 

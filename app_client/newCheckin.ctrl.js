@@ -226,7 +226,11 @@
 			else if (service.name.toLowerCase () == 'medium group private'){
 				if (vm.model.dom.data.selected.modelLanguage == 'vn') service.label = 'Nhóm riêng 30';
 				else service.label = service.name;
-			}												
+			}	
+			else if (service.name.toLowerCase () == 'large group private'){
+				if (vm.model.dom.data.selected.modelLanguage == 'vn') service.label = 'Nhóm riêng 40';
+				else service.label = service.name;
+			}															
 		}
 
 		vm.ctrl.getCheckedinList = function (){

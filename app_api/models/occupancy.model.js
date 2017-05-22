@@ -127,7 +127,7 @@ var OccupancySchema = new mongoose.Schema({
 		by: {type: mongoose.Schema.Types.ObjectId}, // staff id
 	}],
 	bookingId: {type: mongoose.Schema.Types.ObjectId}, // if any
-	note: [String], // note if something unexpected happens
+	note: String, // note if something unexpected happens
 });
 
 OccupancySchema.methods.getUsageTime = getUsageTime;
