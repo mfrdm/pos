@@ -130,7 +130,11 @@
 			else if (service.name.toLowerCase () == 'medium group private'){
 				if (vm.model.dom.data.selected.modelLanguage == 'vn') service.label = 'Nhóm riêng 30';
 				else service.label = service.name;
-			}												
+			}
+			else if (service.name.toLowerCase () == 'large group private'){
+				if (vm.model.dom.data.selected.modelLanguage == 'vn') service.label = 'Nhóm riêng 40';
+				else service.label = service.name;
+			}														
 		}
 
 		// FIX: actually fetch from server
@@ -189,7 +193,7 @@
 
 
 		vm.ctrl.booking.searchCustomer = function (){
-			CheckinService.readCustomers (vm.model.search.booking.username).then(
+			CheckinService.searchCustomers (vm.model.search.booking.username).then(
 				function success (res){
 					if (!res.data){
 						// unexpected result. should never exist
