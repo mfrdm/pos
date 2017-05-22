@@ -29,35 +29,67 @@ function config ($locationProvider, $routeProvider){
 			controllerAs: 'vm',
 		})	
 
+		// .when('/oldcheckin', {
+		// 	templateUrl : "/template/checkin",
+		// 	resolve: {
+		// 		'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
+		// 	},			
+		// 	controller:"CheckinCtrl",
+		// 	controllerAs:"vm"
+		// })
 		.when('/checkin', {
-			templateUrl : "/template/checkin",
+			templateUrl : "/template/newCheckin",
 			resolve: {
 				'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
 			},			
-			controller:"CheckinCtrl",
+			controller:"NewCheckinCtrl",
 			controllerAs:"vm"
-		})
+		})		
+		// .when('/oldorders', {
+		// 	templateUrl : "/template/orders",
+		// 	controller:"OrderCtrl",
+		// 	controllerAs:"vm"
+		// })
 		.when('/orders', {
-			templateUrl : "/template/orders",
-			controller:"OrderCtrl",
+			templateUrl : "/template/newOrders",
+			resolve: {
+				'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
+			},				
+			controller:"NewOrdersCtrl",
 			controllerAs:"vm"
 		})
 		.when('/customers', {
-			templateUrl : "/template/customers",
+			templateUrl : "/template/newCustomers",
 			resolve: {
 				'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
 			},			
-			controller: "CustomerCtrl",
+			controller: "NewCustomersCtrl",
 			controllerAs:'vm'
-		})
+		})		
+		// .when('/customers', {
+		// 	templateUrl : "/template/customers",
+		// 	resolve: {
+		// 		'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
+		// 	},			
+		// 	controller: "CustomerCtrl",
+		// 	controllerAs:'vm'
+		// })
 		.when('/bookings', {
-			templateUrl: "/template/bookings",
+			templateUrl: "/template/newBookings",
 			resolve: {
 				'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
 			},			
-			controller: "BookingCtrl",
+			controller: "NewBookingCtrl",
 			controllerAs: 'vm'
-		})		
+		})			
+		// .when('/bookings', {
+		// 	templateUrl: "/template/bookings",
+		// 	resolve: {
+		// 		'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
+		// 	},			
+		// 	controller: "BookingCtrl",
+		// 	controllerAs: 'vm'
+		// })		
 		// .when ('/assets', {
 		// 	templateUrl: '/assets',
 		// 	resolve: {
@@ -110,6 +142,7 @@ function config ($locationProvider, $routeProvider){
 		// })
 		.otherwise ({redirectTo: '/checkin'});	
 };
+
 
 // Check if a user has permission to access a certain page or resource
 function checkAuth ($q, authentication, $location, $rootScope) {

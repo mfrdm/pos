@@ -63,7 +63,7 @@
 		this.getCurUser = function (){
 			if (thisObj.isLoggedIn ()){
 				return {
-					id: thisObj.payload._id,
+					_id: thisObj.payload._id,
 					email: thisObj.payload.email,
 					phone: thisObj.payload.phone,
 					firstname: thisObj.payload.firstname,

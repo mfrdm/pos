@@ -183,7 +183,7 @@ xdescribe ('Validate promotion code', function (){
 		})
 	})
 
-	it ('should be invalid when codes are expired', function (done){
+	xit ('should be invalid when codes are expired', function (done){
 		codeNames = [newCodes[2].name, newCodes[3].name];
 		chai.request (server)
 			.get ('/checkin/validate-promotion-code')
@@ -199,7 +199,7 @@ xdescribe ('Validate promotion code', function (){
 			});	
 	})
 
-	it ('should be invalid when codes do not existed', function (done){
+	xit ('should be invalid when codes do not existed', function (done){
 		codeNames = ['NOEXISTCODE1','NOEXISTCODE2'];
 		chai.request (server)
 			.get ('/checkin/validate-promotion-code')
@@ -215,7 +215,7 @@ xdescribe ('Validate promotion code', function (){
 			});
 	});
 
-	it ('should return codes when they are valid', function (done){
+	xit ('should return codes when they are valid', function (done){
 		chai.request (server)
 			.get ('/checkin/validate-promotion-code')
 			.query ({codes: codeNames})
@@ -234,11 +234,14 @@ xdescribe ('Validate promotion code', function (){
 			});			
 	});
 
+	it ('should add STUDENTPRICE to customers are students and service are group private');
+	it ('should remove code STUDENTPRICE if added and the customer is not student and service is not valid service')
+	it ('should remove code STUDENTPRICE if added and server is not valid service, even though the customer is a student')
 	it ('should return no code conflict when there are not');
 	it ('should return code conflicts when there are');
 });
 
-describe ('Check in', function (){
+xdescribe ('Check in', function (){
 	this.timeout (3000);
 	var order, customer, newCustomer, newOrder, newOcc, checkinData;
 	beforeEach (function (done){
@@ -334,7 +337,8 @@ describe ('Check in', function (){
 
 	});
 
-	it ('should create an occupancy, an order, and update customer', function (done){
+	// DEPRICATED
+	xit ('should create an occupancy and update customer', function (done){
 		checkinData.occupancy.promocodes = [];
 		chai.request (server)
 			.post ('/checkin/customer/' + newCustomer._id)
@@ -381,6 +385,8 @@ describe ('Check in', function (){
 				});
 			});
 	});
+
+	it ('should calculate subtotal and total of order and return order when customer who checking in also making an order, and should wait for customer to')
 
 	xit ('should create an occupancy and update customer order when having no order', function (done){
 		checkinData.occupancy.promocodes = [];
@@ -555,8 +561,8 @@ xdescribe ('Update checked-in', function (){
 
 	});
 
-
-	it ('should successfully edit data of a checked-in record', function (done){
+	// Depricated. Only allow to update certain fields.
+	xit ('should successfully replace old data with new data of a checked-in record', function (done){
 		newOcc.service.name = 'Individual Common';		
 
 		chai.request (server)
@@ -573,11 +579,11 @@ xdescribe ('Update checked-in', function (){
 			});
 	});
 
-	it ('should successfully edit part of data of a checked-in record');
+	it ('should update only allowed fields')
 
 });
 
-xdescribe ('Read check-in list', function (){
+describe ('Read check-in list', function (){
 	var query, occ, customer, newCustomer, newOcc;
 	beforeEach (function (done){
 		query = {
@@ -601,7 +607,7 @@ xdescribe ('Read check-in list', function (){
 			{
 				service: {
 					price: 15000,
-					name: 'Group Common'
+					name: 'group common'
 				},
 				customer: {},
 				storeId: "58eb474538671b4224745192",
@@ -610,8 +616,28 @@ xdescribe ('Read check-in list', function (){
 			},
 			{
 				service: {
+					price: 150000,
+					name: 'small group private'
+				},
+				customer: {},
+				storeId: "58eb474538671b4224745192",
+				staffId: "58eb474538671b4224745192",		
+
+			},
+			{
+				service: {
+					price: 220000,
+					name: 'medium group private'
+				},
+				customer: {},
+				storeId: "58eb474538671b4224745192",
+				staffId: "58eb474538671b4224745192",		
+
+			},			
+			{
+				service: {
 					price: 15000,
-					name: 'Group Common'
+					name: 'group common'
 				},
 				customer: {},
 				storeId: "58eb474538671b4224745192",
@@ -697,7 +723,7 @@ xdescribe ('Read check-in list', function (){
 			});
 	});
 
-	it ('should return checked-in in a given date range provided', function (done){
+	xit ('should return checked-in in a given date range provided', function (done){
 		query.start = '2017-01-01';
 		query.end = '2017-01-10';
 		query.status = 2;
@@ -725,7 +751,7 @@ xdescribe ('Read check-in list', function (){
 			});		
 	});
 
-	it ('should return both checked-in and checked-out customer when required', function (done){
+	xit ('should return both checked-in and checked-out customer when required', function (done){
 		query.start = '2017-01-01';
 		query.status = 4;
 		chai.request (server)
@@ -750,6 +776,29 @@ xdescribe ('Read check-in list', function (){
 			});	
 
 	});
+
+	xit ('should return checked-in of specific service when service name is provided', function (done){
+		query.service = ['small group private', 'medium group private'];
+		chai.request (server)
+			.get ('/checkin')
+			.query (query)
+			.end (function (err, res){
+				if (err){
+					console.log (err);
+				}
+
+				var expectedServices = ['small group private', 'medium group private'];
+
+				res.should.to.have.status (200);
+				res.body.data.should.to.have.length.of.at.least (2);
+				res.body.data.map (function (x, i, arr){
+					expectedServices.should.to.include (x.service.name.toLowerCase ());
+				});
+
+				done ();
+
+			});
+	})
 
 	it ('should be invalid when required input is not provided /angular/checkin-list');
 

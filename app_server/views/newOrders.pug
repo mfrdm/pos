@@ -1,0 +1,152 @@
+div(class="row columns")
+	div(class="column small-12")
+		h2 {{ vm.model.dom.data.selected.title }}
+	
+	// SETTING
+	div(class="row column")
+		div(class="column small-3")
+			ul(class="menu")
+				li
+					a(class="button primary" ng-click="vm.ctrl.toggleOrderDiv()") 
+						span(class="show-for-large") Make order
+						i(class="material-icons customIcon hide-for-large") add
+		//div(class="column small-9")
+			ul(class="menu clearfix")
+				li(class="float-right marginL15")
+					<a class="button primary" ng-click="vm.ctrl.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
+				li(class="float-right")
+					ul(class="menu")
+						li: label(class="paddingR15 show-for-large") {{ vm.model.dom.data.selected.fieldSortBy}}
+						li: select(ng-model="vm.model.filter.orderBy" ng-options="key as value for (key , value) in vm.model.filter.orderOptions")
+	// Filter
+	//div(class="column" ng-show="vm.model.dom.filterDiv")
+		div(class="borderT newBox row column")
+			div(class="marginB15 column small-12 large-4")
+				legend {{ vm.model.dom.data.selected.fieldStatus}}
+				select(ng-model='vm.model.filter.myfilter.status' ng-options='key as value for (key , value) in vm.model.filter.statusOptions' ng-init='vm.model.filter.myfilter.status=1')
+					option
+			div(class='marginB15 column small-12 large-4')
+				legend {{ vm.model.dom.data.selected.fieldSearchByFirstname}}
+				input(type='text' ng-model='vm.model.filter.others.customer.firstname')
+			div(class='marginB15 column small-12 large-4')
+				legend {{ vm.model.dom.data.selected.fieldSearchByPhone}}
+				input(type='text' ng-model='vm.model.filter.others.customer.phone')
+	
+	// MAKE ORDER
+	div(class="column")
+		div(class="borderT newBox row column" ng-show="vm.model.dom.orderDiv")
+			// SEARCH CUSTOMER
+			div(class="row column")
+				form(ng-submit="vm.ctrl.order.searchCustomer()")
+					div(class="row column")
+						label {{ vm.model.dom.data.selected.order.label.username }}
+							input(type="text" placeholder="{{ vm.model.dom.data.selected.order.placeholder.username }}" ng-model='vm.model.search.order.username' required="true")
+					div(ng-show='vm.model.dom.order.search.message.notFound' class='marginB15')
+						div(class='callout alert')
+							p {{ vm.model.dom.data.selected.search.message.notFound + ' "' + vm.model.search.order.username + '". ' }}
+								span: a(href='/#!/customers') {{ vm.model.dom.data.selected.createCustomer}}			
+					div(ng-show="vm.model.dom.order.customerSearchResult" class="marginB15")
+						div(class="table-scroll")
+							table(class="hover unstriped borderAll")
+								thead
+									tr
+										th No
+										th Full name
+										th Email
+										th Phone				
+								tbody
+									tr(ng-repeat='result in vm.model.search.order.customers' ng-click='vm.ctrl.order.selectCustomer($index)' class="pointerCursor")
+										td {{ $index + 1 }}
+										td {{ result.fullname }}
+										td {{ result.email[0] }}
+										td {{ result.phone[0] }}
+			
+			// MAKE ORDER FORM
+			form(ng-submit="vm.ctrl.order.validate ()")
+				div(class='basicBox row column paddingTB15 marginB15')
+					// ADD ITEMS
+					div(class="column row")
+						h3(class="paddingLR15 fontSize20 fontWeight600") Chọn sản phẩm
+					div(class="column row")
+						div(class="column small-8")
+							label {{vm.model.dom.data.selected.fieldAddItems}}
+								select(ng-model="vm.model.temporary.ordering.item.name" ng-options="item.name as item.name for item in vm.model.dom.data.selected.items track by item.name")
+						div(class="column small-3")
+							label {{vm.model.dom.data.selected.fieldQuantity}}
+								input( ng-model="vm.model.temporary.ordering.item.quantity" string-to-number type="number" min='0')
+						div(class="column small-1 iconAdd")
+							i(class="material-icons customIcon" ng-click='vm.ctrl.order.addItem (); $event.preventDefault()') add
+					// SELECTED ITEMS
+					div(class="row column")
+						div(class='column small-12')
+							table(ng-if='vm.model.ordering.orderline.length > 0' class="unstriped hover")
+								thead
+									tr
+										th {{ vm.model.dom.data.selected.fieldProduct }}
+										th {{ vm.model.dom.data.selected.fieldQuantity }}
+
+								tbody 
+									tr(ng-repeat='ord in vm.model.ordering.orderline track by ord._id')
+										td {{ ord.productName }}
+										td {{ ord.quantity }}
+										td(class='text-center deleteIcon')
+											i(class="material-icons customIcon" ng-click="vm.ctrl.order.removeItem ($index)") close
+				div(class="row column")
+					input(class="button" type="submit" value="Submit")
+					button(class="button float-right primary" ng-click='vm.ctrl.reset(); event.preventDefault()') Cancel
+	
+	// ORDER LIST
+	div(class="column" ng-show="vm.model.dom.orderList")
+		div(class="table-scroll newBox")
+			table(class="borderAll")
+				thead
+					tr
+						th {{ vm.model.dom.data.selected.headerNo }}
+						th {{ vm.model.dom.data.selected.headerName }}
+						th {{ vm.model.dom.data.selected.fieldItem }}
+						th {{ vm.model.dom.data.selected.itemQuantity }}
+						th {{ vm.model.dom.data.selected.createdAt }}
+				tbody
+					tr(ng-repeat='order in vm.model.orderedList')
+						td {{ $index + 1 }}
+						td {{ order.customer.fullname }}
+						td {{ order.productName }}
+						td {{ order.quantity }}
+						td {{ order.createdAt | date:'dd/MM/yyyy' }} {{ order.createdAt | date:'shortTime' }}
+
+		div(class='emptyResult text-center' ng-if='vm.model.orderedList.length == 0')
+			p {{ vm.model.dom.data.selected.noResult }}
+
+// ORDER INVOICE
+div(class="fullBox row column" ng-show='vm.model.dom.order.confirm')
+	div(class="column small-12 text-center paddingTB20")
+		h2 GREEN SPACE
+		h3 Order
+	div(class="column small-12 paddingB20")
+		div(class="column small-12 large-6 large-push-3")
+			table(class="hover unstriped stack")
+				tbody
+					tr
+						th Khách hàng
+						td(colspan="3") {{ vm.model.ordering.customer.fullname }}
+					tr
+						td(colspan="4")
+					tr
+						th Sản phẩm
+						th Giá
+						th Số lượng
+						th Tổng (VNĐ)
+					tr(ng-repeat="item in vm.model.ordering.orderline")
+						td {{ item.productName }}
+						td {{ item.price | number }}
+						td {{ item.quantity }}
+						td {{ item.subTotal | number }}
+					tr
+						td(colspan="3") 
+						td {{ vm.model.ordering.total | number }}
+
+
+	div(class="row column")
+		div(class="column small-12 large-6 large-push-3")
+			a(class="paddingL15 button primary" ng-click="vm.ctrl.order.confirm ()") Order
+			a(class="paddingR15 button float-right secondary" ng-click='vm.ctrl.order.closeInvoice (); $event.preventDefault()') Cancel

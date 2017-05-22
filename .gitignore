@@ -5,3 +5,7 @@ node_modules/
 *.log.*
 
 client_secret_service_account.json
+
+dbbackup/
+
+nohup.out

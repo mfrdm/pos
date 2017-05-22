@@ -47,13 +47,16 @@ function getTotal (){
 		occ.total = 0;
 	}
 	else{
+
+		// add default codes
+		Promocodes.addDefaultCodes (occ);
+
 		if (occ.promocodes && occ.promocodes.length){
 			
 			// sort to prioritize codes applied
 			occ.promocodes = occ.promocodes.sort (function (code1, code2){
 				return code1.codeType > code2.codeType;
 			});
-			console.log(occ.promocodes)
 
 			occ.promocodes.map (function (code, k, t){
 				
@@ -96,6 +99,7 @@ var OccupancySchema = new mongoose.Schema({
 	service: {
 		price: {type: Number, required: true},
 		name: {type: String, required: true},
+		quantity: {type: Number},
 	},
 	promocodes: [{
 		_id: mongoose.Schema.Types.ObjectId,
@@ -105,14 +109,15 @@ var OccupancySchema = new mongoose.Schema({
 	orders: [mongoose.Schema.Types.ObjectId], // id of occ
 	customer: {
 		_id: {type: mongoose.Schema.Types.ObjectId, required: true},
-		firstname: {type:String, required: true},
-		middlename: {type:String},
-		lastname: {type:String, required: true},
+		fullname: {type: String},
 		phone: {type: String, required: true},
 		email: {type: String}, // optional. added if exists
 		isStudent: {type: Boolean, default: false},
 	},
-	storeId: {type: mongoose.Schema.Types.ObjectId, required: true},
+	location: {
+		_id: {type: mongoose.Schema.Types.ObjectId},
+		name: String,
+	},
 	staffId: {type: mongoose.Schema.Types.ObjectId, required: true},	
 	status: {type: Number, default: 1}, // 1: checked in, 2: paid and checked out, 3: cancel
 	createdAt: {type: Date, default: Date.now},

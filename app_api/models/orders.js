@@ -43,13 +43,14 @@ var ordersSchema = new mongoose.Schema({
 	}],
 	customer: {
 		_id: {type: mongoose.Schema.Types.ObjectId, required: true},
-		firstname: {type:String, required: true},
-		middlename: {type:String},
-		lastname: {type:String, required: true},
+		fullname: {type:String},
 		phone: {type: String, required: true},
 		email: {type: String}, // optional. added if exists
 	},
-	storeId: {type: mongoose.Schema.Types.ObjectId, required: true},
+	location: {
+		_id: {type: mongoose.Schema.Types.ObjectId},
+		name: String,
+	},
 	staffId: {type: mongoose.Schema.Types.ObjectId, required: true},	
 	status: {type: Number, default: 2}, // 1: paid, 2: not paid yet
 	createdAt: {type: Date, default: Date.now},

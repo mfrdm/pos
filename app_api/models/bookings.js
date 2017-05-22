@@ -2,10 +2,8 @@ var mongoose = require('mongoose');
 
 var bookingSchema = mongoose.Schema({
 	customer:{
-		id: {type: mongoose.Schema.Types.ObjectId},
-		firstname: String,
-		middlename: String,
-		lastname: String,
+		_id: {type: mongoose.Schema.Types.ObjectId},
+		fullname: String,
 		email: String,
 		phone: String,
 		isStudent: Boolean,
@@ -15,8 +13,12 @@ var bookingSchema = mongoose.Schema({
 	service: {
 		price: {type: Number, required: true},
 		name: {type: String, required: true},
+		quantity: Number,
 	},
-	storeId: {type: mongoose.Schema.Types.ObjectId},
+	location: {
+		_id: {type: mongoose.Schema.Types.ObjectId},
+		name: String,
+	},
 	staffId: {type: mongoose.Schema.Types.ObjectId},
 	status: {type: Number, default: 3}, // default is pendding
 	updatedAt: [{
@@ -25,7 +27,7 @@ var bookingSchema = mongoose.Schema({
 		by: mongoose.Schema.Types.ObjectId
 	}],
 	createdAt: {type: Date, default: Date.now},
-	message: String, // other requirements from the customer
+	note: String, // other requirements from the customer
 	
 });
 

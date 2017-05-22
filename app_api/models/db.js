@@ -30,5 +30,3 @@ require('./transactions');
 require('./bookings');
 require('./assets');
 require('./attendances');
-require('./combos');
-require('./comboOrders');

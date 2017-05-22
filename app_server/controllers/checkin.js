@@ -10,21 +10,26 @@ var Orders = mongoose.model ('orders');
 var Occupancy = mongoose.model ('occupancy')
 var Customers = mongoose.model ('customers');
 var Promocodes = mongoose.model ('promocodes');
+var Bookings = mongoose.model ('bookings');
 var moment = require ('moment');
 
 module.exports = new Checkin();
 
 function Checkin() {
 	this.validatePromocodes = function (req, res, next){
-		// validate if exist and if not expire
 		var q = JSON.parse(req.query.data);
-		console.log(q)
+		var excludedCodes = ['studentprice', 'privatediscountprice']; // default code cannot be insert manually
 		var codes = q.codes;
-		if (q.isStudent){
-			// var studentCode = 'STUDENTPRICE';
-			var studentCode = 'studentprice';//uppercase doesn't work
-			codes.push (studentCode);
-		};
+		var tempCodes = [];
+
+		// remove excluded code
+		codes.map (function (x, i, arr){
+			if (excludedCodes.indexOf (x.toLowerCase ()) == -1){
+				tempCodes.push (x);
+			}
+		});
+
+		codes = tempCodes;
 
 		Promocodes.find ({name: {$in: codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1, conflicted: 1, codeType: 1, override: 1}, function (err, pc){
 			if (err){
@@ -44,17 +49,18 @@ function Checkin() {
 
 	// assume promocode are validated
 	this.checkin = function(req, res, next) {
+		console.log (req.body.data.occupancy)
 		var occ = new Occupancy (req.body.data.occupancy);
 
-		if (req.body.data.order){
+		if (req.body.data.order && req.body.data.order.orderline && req.body.data.order.orderline.length){
 			var order = new Orders (req.body.data.order);
-			order._id = new mongoose.Types.ObjectId ();
-			occ.orders = [order._id];
+			order.getSubTotal ();
+			order.getTotal ();
 		};
 
 		occ.save (function (err, newOcc){
 			if (err){
-				// console.log (err);
+				console.log (err);
 				next (err);
 				return
 			}
@@ -77,23 +83,33 @@ function Checkin() {
 					}
 					else {
 						if (customer.checkinStatus == true && newOcc._id.equals (customer.occupancy.pop())){
-
-							if (order){
-								order.occupancyId = newOcc._id;
-								order.save (function (err, newOrder){
-									if (err) {
-										// console.log (err);
+							if (newOcc.bookingId){
+								Bookings.update ({_id: newOcc.bookingId}, {status: 5}, function (err, b){
+									if (err){
+										console.log (err);
 										next (err);
 										return
 									}
 
-									res.json ({data: {order: newOrder, occupancy: newOcc}});
-									return
+									if (order){
+										res.json ({data: {occupancy: newOcc, order: order}});
+										return
+									}
+									else {
+										res.json ({data: {occupancy: newOcc, order: null}});
+										return
+									}
 								});
 							}
-							else {
-								res.json ({data: {occupancy: newOcc, order: null}});
-								return
+							else{
+								if (order){
+									res.json ({data: {occupancy: newOcc, order: order}});
+									return
+								}
+								else {
+									res.json ({data: {occupancy: newOcc, order: null}});
+									return
+								}
 							}
 						}
 						else{
@@ -109,26 +125,28 @@ function Checkin() {
 		});
 	};
 
+	// Only return non-checked-in customers
 	this.searchCheckingCustomers = function (req, res, next){
-		var input = req.query.input; // email, phone, fullname
-		input = validator.trim (input);
-		var splited = input.split (' ');
-		var projections = {firstname: 1, lastname: 1, middlename: 1, phone: {$slice: [0,1]}, email: {$slice: [0,1]}, checkinStatus: 1, isStudent: 1};
-
-		var nameValidator = {firstname: splited[splited.length - 1], lastname: splited[0]};
 		var query;
-
-		if (splited.length > 1){
-			query = Customers.find (nameValidator, projections);
+		var input = req.query.input; // email, phone, fullname
+		if (!input){
+			next (); // 
 		}
 
-		else if (validator.isEmail (input)){
-			query = Customers.find ({email: input}, projections);
+		input = validator.trim (input);
+		var projections = {fullname: 1, phone: {$slice: [0,1]}, email: {$slice: [0,1]}, checkinStatus: 1, isStudent: 1, edu: 1, birthday: 1};
+
+		if (validator.isEmail (input)){
+			query = Customers.find ({email: input, checkinStatus: false}, projections);
 		}
 
 		else if (validator.isMobilePhone (input, 'vi-VN')){
-			query = Customers.find ({phone: input}, projections);
+			query = Customers.find ({phone: input, checkinStatus: false}, projections);
 		}
+		else { 
+			query = Customers.find ({fullname: {$regex: input.toUpperCase ()}, checkinStatus: false}, projections);
+		}		
+
 
 		query.exec (function (err, cus){
 			if (err){
@@ -147,14 +165,22 @@ function Checkin() {
 		var end = req.query.end ? moment(req.query.end + ' 23:59:59') : moment (today.format ('YYYY-MM-DD') + ' 23:59:59');
 		var checkinStatus = req.query.status ? req.query.status : 1; // get checked-in by default
 
-		var q = Occupancy.find (
-			{
-				checkinTime: {
-					$gte: start, 
-					$lte: end,
-				},
-				storeId: req.query.storeId,
-			});
+		var stmt = 	{
+			checkinTime: {
+				$gte: start, 
+				$lte: end,
+			},
+			'location._id': req.query.storeId,
+		};
+
+		if (req.query.service){
+			stmt['service.name'] = {$in: []};
+			req.query.service.map (function (x, i, arr){
+				stmt['service.name'].$in.push (x.toLowerCase ());
+			})
+		}
+
+		var q = Occupancy.find (stmt, {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0});
 
 		if (checkinStatus == 4){
 			// do nothing and get all checked-in and checked-out
@@ -171,6 +197,7 @@ function Checkin() {
 					return
 				}
 				else {
+
 					res.json ({data: occ});
 				}
 			}
@@ -179,6 +206,8 @@ function Checkin() {
 	};
 
 	this.updateCheckin = function(req, res, next) {
+		var updateQuery = {}; 
+
 		Occupancy.findByIdAndUpdate (req.params.occId, req.body, {new: true}, function (err, updatedOcc){
 			if (err){
 				console.log (err);

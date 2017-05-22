@@ -1,5 +1,17 @@
 var mongoose = require('mongoose');
 
+var productNames = ['group common', 'individual common', 'medium group private', 'small group private'];
+
+var rewardUsagePrice = {
+	'medium group private': 200000,
+	'small group private': 120000,
+};
+
+var studentPrice = {
+	'group common': 10000,
+	'individual common': 10000,
+};
+
 // method to convert a value according to a promotion code
 // assume code is an array
 // assume code values are validated before redeemed
@@ -15,18 +27,11 @@ var redeemTotal = function (code, total){
 };
 
 var redeemPrice = function (code, price, productName){
-	var studentPrice = {
-		'group common': 10000,
-		'individual common': 10000,
-	};
-
-	var productNames = ['group common', 'individual common', 'medium group private', 'small group private'];
-
 	var newPrice = price;
 	productName = productName ? productName.toLowerCase () : productName;
 	code = code.toLowerCase ();
 	
-	if (code && code == 'studentprice' && (productName == productNames[0] || productName ==productNames[1])){
+	if (code && code == 'studentprice' && (productName == productNames[0] || productName == productNames[1])){
 		newPrice = studentPrice[productName];
 	}
 
@@ -37,14 +42,26 @@ var redeemUsage = function (code, usage){
 
 	code = code ? code.toLowerCase () : code;
 
-	if (code === 'free1hourcommon'){
+	if (code === 'free1hourcommon'){ // change name later
 		if (usage <= 1) usage = 0;
 		else usage = usage - 1;
 	}
-	else if (code === 'free2hourscommon'){
+	else if (code === 'free2hourscommon'){ // change name later
 		if (usage <= 2) usage = 0;
 		else usage = usage - 2;		
 	}
+	else if (code === 'gs05'){
+		if (usage <= 1) usage = 0;
+		else usage = usage - 1;
+	}
+	else if (code === 'mar05'){
+		if (usage <= 1) usage = 0;
+		else usage = usage - 1;
+	}
+	else if (code === 'freewed'){
+		if (usage <= 1) usage = 0;
+		else usage = usage - 1;
+	}		
 
 	usage = Number(Math.round(usage+'e1')+'e-1');
 
@@ -54,14 +71,8 @@ var redeemUsage = function (code, usage){
 // involve more than one type of redeem: total, usage, and price.
 // assume codes are checked and can be used concurrecy and in correct order
 var redeemMixed = function (code, usage, price, productName){
-	var rewardUsagePrice = {
-		'medium group private': 200000,
-		'small group private': 120000,
-	};
 
 	var total;
-
-	var productNames = ['group common', 'individual common', 'medium group private', 'small group private'];
 
 	productName = productName ? productName.toLowerCase() : productName;
 	code = code ? code.toLowerCase () : code;
@@ -71,6 +82,20 @@ var redeemMixed = function (code, usage, price, productName){
 	}
 
 	return total;	
+}
+
+
+var addDefaultCodes = function (occ){
+	var service = occ.service.name.toLowerCase ();
+	var usage = occ.usage;
+	if (occ.customer.isStudent && (service == productNames[0] || service == productNames[1])){
+		occ.promocodes = occ.promocodes ? occ.promocodes : [];
+		occ.promocodes.push ({name: 'studentprice', codeType: 2})
+	}
+	if (usage > 1 && (service == productNames[2] || service == productNames[3])){
+		occ.promocodes = occ.promocodes ? occ.promocodes : [];
+		occ.promocodes.push ({name: 'privatediscountprice', codeType: 4});
+	}
 }
 
 // FIX: Build actual test. This is just an placeholder, and assume no conflict and no override
@@ -101,8 +126,7 @@ var PromocodesSchema = mongoose.Schema ({
 		explain: String,
 		by: mongoose.Schema.Types.ObjectId,
 	}],
-	conflictCodes: [{name: String, _id: mongoose.Schema.Types.ObjectId}],
-	conflicted: [{name: String, _id: mongoose.Schema.Types.ObjectId}], // used temporary when check conflict. Never insert into db.
+	conflict: [{name: String, _id: mongoose.Schema.Types.ObjectId}],
 	override: [{name: String, _id: mongoose.Schema.Types.ObjectId}] // code that are not used when the code is apply
 });
 
@@ -111,5 +135,6 @@ PromocodesSchema.statics.redeemUsage = redeemUsage;
 PromocodesSchema.statics.redeemTotal = redeemTotal;
 PromocodesSchema.statics.redeemMixed = redeemMixed;
 PromocodesSchema.statics.validateCodes = validateCodes;
+PromocodesSchema.statics.addDefaultCodes = addDefaultCodes;
 
 module.exports = mongoose.model ('promocodes', PromocodesSchema);

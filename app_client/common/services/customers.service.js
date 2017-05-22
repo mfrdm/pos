@@ -1,4 +1,6 @@
-var customerService = function($http){
+app.service('CustomerService', ['$http', CustomerService])
+
+function CustomerService ($http){
 	this.createOne = function(data){
 		return $http({
 			method:'POST',
@@ -13,23 +15,15 @@ var customerService = function($http){
 			data:JSON.stringify(data)
 		})
 	}
-	this.search = function(input){
-		var array = [{"email" : { $regex: input, $options: 'i' }},
-		{"phone" : { $regex: input, $options: 'i' }},
-		{"lastname" : { $regex: input, $options: 'i' }},
-		{"firstname" : { $regex: input, $options: 'i' }}]
+
+	// FIX: user /customers
+	this.readCustomers = function(input){
 		return $http({
 			method:'GET',
-			url:'/api/customers',
-			params:{
-				queryInput:JSON.stringify({
-					conditions: {$or: array},
-					projection: null,
-					opts: null
-				})
-			}
-		})
-	}
+			url:'/checkin/search-customers',
+			params: {input: input}
+		});
+	}	
 	this.readOne = function(id){
 		return $http({
 		method:'GET',
@@ -38,4 +32,3 @@ var customerService = function($http){
 	}
 }
 
-app.service('customerService', ['$http',customerService])

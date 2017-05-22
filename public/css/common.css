@@ -54,6 +54,11 @@ label {
 	padding-right: .9375rem!important;	
 }
 
+.paddingLR10 {
+	padding-left: 0.625rem!important;
+	padding-right: 0.625rem!important;	
+}
+
 .paddingLR0 {
 	padding-left: 0!important;
 	padding-right: 0!important;	
@@ -96,6 +101,19 @@ label {
 	padding-bottom: .9375rem;
 }
 
+.paddingTB20 {
+	padding-top: 1.25rem;
+	padding-bottom: 1.25rem;	
+}
+
+.paddingB20 {
+	padding-bottom: 1.25rem;	
+}
+
+.paddingB100 {
+	padding-bottom: 6.25rem;
+}
+
 /*/////////////////////// Color & Text /////////////////////*/
 .colorGrey {
 	background-color: #D7D4D4;
@@ -111,6 +129,10 @@ label {
 
 .fontSize16 {
 	font-size: 1rem!important;
+}
+
+.fontWeight600 {
+	font-weight: 600;
 }
 
 /*//////////////////////// Component //////////////////////////*/
@@ -131,6 +153,10 @@ label {
 	border: 1px solid #D7D4D4;
 }
 
+.borderAll0 {
+	border: none;
+}
+
 .customIcon {
 	position: relative;
 	margin: 0!important;
@@ -146,6 +172,18 @@ label {
 	border-bottom: 1px solid #D7D4D4;
 }
 
+.fullBox {
+	position: fixed;
+	background-color: #fff;
+	top:0;
+	left:0;
+	width: 100%;
+	height: 100%;
+	z-index: 100;
+	overflow-y: scroll;
+	padding: .9375rem;	
+}
+
 /* New box */
 .newBox {
 	padding-top: .9375rem;
@@ -154,7 +192,7 @@ label {
 
 /* Standard box */
 .stdBox {
-
+	margin-bottom: 45px;
 }
 
 .stdBox > .stdBox {
@@ -195,7 +233,7 @@ label {
 	padding: 1.875rem;
 	border: 1px solid #D7D4D4;
 }
-
+*/
 /*////////// Specific component ///////////// */
 #top-menu-btn{
 	position: absolute;
@@ -204,8 +242,22 @@ label {
 	top: 12px;
 }
 
-@media print, screen and (min-width: 40em){
+@media print, screen and (min-width: 64rem){
 	#top-menu-btn{
 		left: .9375rem;
-	}	
+	};
+
+	.large-paddingR0{
+		padding-right: 0px;
+	};
+
+	.large-paddingL0{
+		padding-left: 0px;
+	};
+
+	.large-paddingLR0{
+		padding-left: 0px;
+		padding-right: 0px;
+	}
+
 }

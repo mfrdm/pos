@@ -1,11 +1,10 @@
 (function () {
 	angular
 		.module ('posApp')
-		.controller ('BookingCtrl', ['$scope','$route','bookingService','otherService','$window',BookingCtrl])
+		.controller ('BookingCtrl', ['dataPassingService', '$scope','$route','bookingService','otherService','$window',BookingCtrl])
 
 
 	function BookingCtrl ($scope, $route,bookingService, otherService, $window) {
-		var LayoutCtrl = $scope.$parent.layout;
 		var vm = this;
 		vm.tab = 'tab-main';
 		vm.look = {};

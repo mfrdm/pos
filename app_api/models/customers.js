@@ -14,6 +14,7 @@ var customersSchema = mongoose.Schema({
 	firstname: {type:String, required: true},
 	middlename: {type:String},
 	lastname: {type:String, required: true},
+	fullname: {type: String},
 	// gender: {type: Number, required: true},
 	gender: Number,
 	// birthday: {type: Date, required: true},
@@ -22,6 +23,10 @@ var customersSchema = mongoose.Schema({
 	edu: [eduSchema],
 	isStudent: {type: Boolean, default: false},
 	createdAt: {type: Date, default: Date.now},
+	createdBy: { 
+		storeId: mongoose.Schema.Types.ObjectId, // if not created by POS
+		staffId: mongoose.Schema.Types.ObjectId
+	}, 
 	updatedAt: [{
 		time: {type: Date}, 
 		explain: String,
@@ -92,12 +97,6 @@ customersSchema.methods.getPublicFields = function (){
 		phone: this.phone[0],
 		birthday: this.birthday,
 		isStudent: this.isStudent,
-	}
-}
-
-customersSchema.methods.setStudentStatus = function (){
-	if (this.edu.title){
-		this.isStudent = true;
 	}
 }
 

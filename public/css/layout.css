@@ -141,6 +141,7 @@ html, body
 .marginT0{
 	margin-top:0!important;
 }
+
 @media print, screen and (min-width: 64em){
 	.large-paddingT100: {
 
@@ -244,7 +245,7 @@ ul.listOrder li i{
 }
 
 /*Checkout Div*/
-#checkoutDiv{
+#checkoutDiv {
 	position: fixed;
 	background-color: #fff;
 	top:0;
@@ -283,12 +284,12 @@ ul.listOrder li i{
 }
 
 /* Invoice checkout*/
-.invoice .hightlight{
+/*.invoice .hightlight{
 	font-weight: bold;
 	color: red;
-}
+}*/
 
-#checkoutDiv .header-invoice-img{
+/*#checkoutDiv .header-invoice-img{
 	height: 60px;
 	width: 100%;
 	position: relative;
@@ -320,7 +321,7 @@ ul.listOrder li i{
 
 #checkoutDiv p{
 	margin:0;
-}
+}*/
 
 /**/
 .iconAdd{
@@ -374,7 +375,7 @@ ul.listOrder li i{
 
 #alternativeMenu li{
 	padding: 15px 0;
-	text-align: center;
+	/*text-align: center;*/
 	width: 100%;
 	-webkit-transition: background-color 0.5s; /* Safari */
     transition: background-color 0.5s;
@@ -409,10 +410,13 @@ ul.listOrder li i{
 }
 
 #mainContentDiv{
-/*	min-width: 89vw;*/
-	margin-top: 15px;
-	padding-left:30px;
-	padding-right: 30px;
+
+}
+
+.basicBox {
+	padding: 15px;
+	margin-bottom: 15px;
+	border: 1px solid #ccc;	
 }
 
 .priceSection{

@@ -168,4 +168,56 @@ describe ('Promotion Code', function (){
 
 	});
 
+	describe ('Add default codes', function (){
+		var occ;
+		beforeEach (function (){
+			occ = {
+				service: {
+					name: 'Group Common'
+				},
+				customer: {
+					isStudent: true,
+				},
+				usage: 3.2,
+			}
+		})
+
+		it ('should add code STUDENTPRICE if user is a student', function (){
+			var pdp = 0;
+			var sp = 0;
+			Promocodes.addDefaultCodes (occ);
+			occ.promocodes.should.to.have.property ('length');
+			occ.promocodes.map (function (x, i, arr){
+				if (x.name == 'privatediscountprice' && x.codeType == 4){
+					pdp ++;
+				}
+				if (x.name == 'studentprice' && x.codeType == 2){
+					sp ++;
+				}
+			});
+
+			pdp.should.to.equal (0);
+			sp.should.to.equal (1);	
+		});
+
+		it ('should add code PRIVATEDISCOUNTPRICE if using group private service and usage is more than 1 hour', function (){
+			var pdp = 0;
+			var sp = 0;
+			occ.service.name = 'Medium group private';
+			Promocodes.addDefaultCodes (occ);
+			occ.promocodes.should.to.have.property ('length');
+			occ.promocodes.map (function (x, i, arr){
+				if (x.name == 'privatediscountprice' && x.codeType == 4){
+					pdp ++;
+				}
+				if (x.name == 'studentprice' && x.codeType == 2){
+					sp ++;
+				}				
+			});
+
+			pdp.should.to.equal (1);
+			sp.should.to.equal (0);		
+		})
+	});
+
 });

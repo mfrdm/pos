@@ -1,161 +1,161 @@
-div(class="columns row")
-	div(class="row colums")
-		div(class="column")
-			h2 {{ vm.model.dom.dataDom.using.title }}
-		// Setting
-		div(class="row column")
-			div(class="column small-3")
-				ul(class="menu")
-					li
-						a(class="button primary" ng-click="vm.ctrl.toggleCreateOrderDiv()") 
-							span(class="show-for-large") Add New Order
-							i(class="material-icons customIcon hide-for-large") add
-			//- div(class="column small-9")
-				ul(class="menu clearfix")
-					li(class="float-right marginL15")
-						<a class="button primary" ng-click="vm.ctrl.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
-					li(class="float-right")
-						ul(class="menu")
-							li: label(class="paddingR15 show-for-large") {{ vm.model.dom.dataDom.using.fieldSortBy}}
-							li: select(ng-model="vm.model.filter.orderBy" ng-options="key as value for (key , value) in vm.model.filter.orderOptions")
-		// Filter
-		//div(class="column" ng-show="vm.model.dom.filterDiv")
-			div(class="borderT newBox row column")
-				div(class="marginB15 column small-12 large-4")
-					legend {{ vm.model.dom.dataDom.using.fieldStatus}}
-					select(ng-model='vm.model.filter.myfilter.status' ng-options='key as value for (key , value) in vm.model.filter.statusOptions' ng-init='vm.model.filter.myfilter.status=1')
-						option
-				div(class='marginB15 column small-12 large-4')
-					legend {{ vm.model.dom.dataDom.using.fieldSearchByFirstname}}
-					input(type='text' ng-model='vm.model.filter.others.customer.firstname')
-				div(class='marginB15 column small-12 large-4')
-					legend {{ vm.model.dom.dataDom.using.fieldSearchByPhone}}
-					input(type='text' ng-model='vm.model.filter.others.customer.phone')
-		// Order
-		div(class="column")
-			div(class="borderT newBox row column" ng-show="vm.model.dom.orderDiv")
-				
-				//Search Customer*********************************************//
-				div(class="row column")
-					form(ng-submit="vm.ctrl.searchCustomers()")
-						div(class="row column")
-							label {{vm.model.dom.dataDom.using.fieldPhoneEmail}}
-								input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.model.search.username')
-						div(ng-show='vm.model.dom.messageSearchResult' class='marginB15')
-							div(class='callout alert')
-								p {{vm.model.search.messageNoResult}}
-									span: a(href='/#!/customers') Create new customer
-						div(ng-show="vm.model.dom.customerSearchResult" class="marginB15")
-							div(class="table-scroll")
-								table(class="hover unstriped borderAll")
-									thead
-										tr
-											th No
-											th Last Name
-											th Middle Name
-											th First Name
-											th Email
-											th Phone				
-									tbody
-										tr(ng-repeat='noti in vm.noties')
-											td {{noti.firstname}}
-											td {{noti.msg}}
-										tr(ng-repeat='result in vm.model.search.userResults' ng-click='vm.ctrl.selectCustomer($index)' class="pointerCursor")
-											td {{ $index + 1 }}
-											td {{ result.lastname }}
-											td {{ result.middlename }}
-											td {{ result.firstname }}
-											td {{ result.email[0] }}
-											td {{ result.phone[0] }}
-				
-				//Checkin Confirmation Modal****************************************//
-				div(class='reveal small' id='orderModal' data-reveal data-animation-in="slide-in-down fast")
-					div(class='column row paddingTB15 text-center')
-						h4 Create Order Confirmation
-					div(class='column row')
-						div(class="invoice")
-							div(class='row column')
-								div(class='column small-6')
-									p {{vm.model.dom.dataDom.using.fieldSearchByFirstname}}: {{ vm.model.order.customer.lastname}} {{ vm.model.order.customer.middlename}} {{ vm.model.order.customer.firstname}}
-								div(class='column small-6 text-right')
-									p {{vm.model.dom.dataDom.using.fieldSearchByPhone}}: {{ vm.model.order.customer.phone}}
-							div(class='priceSection')
-								//Other Products
-								div(class="row column" ng-if='vm.model.order.orderline.length > 0')
-									div(class='row column' )
-										div(class='column small-4 text-right')
-											p {{vm.model.dom.dataDom.using.fieldItem}}
-										div(class='column small-8 greenBorder')
-											div(class='row column small-12' ng-repeat='product in vm.model.order.orderline')
-												div(class='column small-3 paddingLR0 marginT0')
-													p {{ product.productName}}
-												div(class='column small-3 marginT0')
-													p x {{ product.quantity}}
-												div(class='column small-3 marginT0')
-													p {{ product.subTotal}}
-									div(class='row column' )
-										div(class='column small-4 text-right')
-											p {{vm.model.dom.dataDom.using.total}}
-										div(class='column small-8 greenBorder')
-											div(class='row column small-12')
-												div(class='column small-3 paddingLR0 marginT0')
-													p 
-												div(class='column small-3 marginT0')
-													p 
-												div(class='column small-3 marginT0')
-													strong {{vm.model.order.total}}
-											
+div(class="row columns")
+	div(class="column small-12")
+		h2 {{ vm.model.dom.data.selected.title }}
 
-					div(class='column row')
-						div(class='column small-6')
-							input(class='button' type='submit' ng-click='vm.ctrl.confirmOrder()' value='Yes' data-close='')
-						div(class='column small-6 text-right')
-							input(class='button secondary' data-close='' type='submit' value='No')
-					button(class="close-button"  data-close='' aria-label="Close modal" type="button")
-						span(aria-hidden="true") &times;
-				
-				//Checkin Form****************************************//
+	// SETTING
+	div(class="row column")
+		div(class="column small-3")
+			ul(class="menu")
+				li
+					a(class="button primary" ng-click="vm.ctrl.toggleCreateOrderDiv()") 
+						span(class="show-for-large") Add New Order
+						i(class="material-icons customIcon hide-for-large") add
+		//div(class="column small-9")
+			ul(class="menu clearfix")
+				li(class="float-right marginL15")
+					<a class="button primary" ng-click="vm.ctrl.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
+				li(class="float-right")
+					ul(class="menu")
+						li: label(class="paddingR15 show-for-large") {{ vm.model.dom.data.selected.fieldSortBy}}
+						li: select(ng-model="vm.model.filter.orderBy" ng-options="key as value for (key , value) in vm.model.filter.orderOptions")
 
-				//Main Form
-				form(ng-submit="vm.ctrl.validateOrder ()")
-					//Other services for checkin
-					div(class='addItemSection row column paddingTB15 marginB15')
-						div(class='column small-12')
-							label(ng-if='vm.model.order.orderline.length > 0') {{vm.model.dom.dataDom.using.fieldOtherProducts}}
-								table
-									thead
-										tr
-											th {{vm.model.dom.dataDom.using.fieldProduct}}
-											th {{vm.model.dom.dataDom.using.fieldQuantity}}
-									tbody
-										tr(ng-repeat='product in vm.model.order.orderline')
-											td {{product.productName}}
-											td {{product.quantity}}
-											td(class='text-center deleteIcon')
-												i(class="material-icons customIcon" ng-click='vm.ctrl.deleteSelectService(product); $event.preventDefault()') close
-						div(class="column small-6")
-							label {{vm.model.dom.dataDom.using.fieldAddItems}}
-								select( ng-model="vm.model.other.selectedItem.name" ng-options="val for val in vm.model.other.listOtherProducts")
-						div(class="column small-4 large-5 paddingR0")
-							label {{vm.model.dom.dataDom.using.fieldQuantity}}
-								input( ng-model="vm.model.other.selectedItem.quantity" string-to-number type="number" min='0')
-						div(class="column small-2 large-1 iconAdd")
-							i(class="material-icons customIcon" ng-click='vm.ctrl.selectService(); $event.preventDefault()') add
+	// FILTER
+	//div(class="column" ng-show="vm.model.dom.filterDiv")
+		div(class="borderT newBox row column")
+			div(class="marginB15 column small-12 large-4")
+				legend {{ vm.model.dom.data.selected.fieldStatus}}
+				select(ng-model='vm.model.filter.myfilter.status' ng-options='key as value for (key , value) in vm.model.filter.statusOptions' ng-init='vm.model.filter.myfilter.status=1')
+					option
+			div(class='marginB15 column small-12 large-4')
+				legend {{ vm.model.dom.data.selected.fieldSearchByFirstname}}
+				input(type='text' ng-model='vm.model.filter.others.customer.firstname')
+			div(class='marginB15 column small-12 large-4')
+				legend {{ vm.model.dom.data.selected.fieldSearchByPhone}}
+				input(type='text' ng-model='vm.model.filter.others.customer.phone')
+	
+	// MAKE ORDER
+	div(class="column small-12")
+		div(class="borderT newBox row column" ng-show="vm.model.dom.orderDiv")
+			
+			// SEARCH CUSTOMER
+			div(class="row column")
+				form(ng-submit="vm.ctrl.searchCustomers()")
 					div(class="row column")
-						input(class="button" type="submit" value="Submit")
-						button(class="button float-right primary" ng-click='vm.ctrl.reload(); event.preventDefault()') Cancel
-		// Order list *********************************************//
-		div(class="column" ng-show="vm.model.dom.orderListDiv")
-			div(class="table-scroll newBox")
-				table(class="borderAll")
-					thead
-						tr
-							th {{vm.model.dom.dataDom.using.headerNo}}
-							th {{vm.model.dom.dataDom.using.headerName}}
-							th {{vm.model.dom.dataDom.using.fieldItem}}
-					tbody
-						tr(ng-repeat='order in vm.model.orderList')
-							td {{ $index + 1 }}
-							td {{order.customer.lastname}} {{order.customer.middlename}} {{ order.customer.firstname }} 
-							td(ng-repeat='item in order.orderline')
-								span {{ item.productName}}
+						label {{vm.model.dom.data.selected.fieldPhoneEmail}}
+							input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.model.search.username')
+					div(ng-show='vm.model.dom.messageSearchResult' class='marginB15')
+						div(class='callout alert')
+							p {{vm.model.search.messageNoResult}}
+								span: a(href='/#!/customers') Create new customer
+					div(ng-show="vm.model.dom.customerSearchResult" class="marginB15")
+						div(class="table-scroll")
+							table(class="hover unstriped borderAll")
+								thead
+									tr
+										th No
+										th Last Name
+										th Middle Name
+										th First Name
+										th Email
+										th Phone				
+								tbody
+									tr(ng-repeat='noti in vm.noties')
+										td {{noti.firstname}}
+										td {{noti.msg}}
+									tr(ng-repeat='result in vm.model.search.userResults' ng-click='vm.ctrl.selectCustomer($index)' class="pointerCursor")
+										td {{ $index + 1 }}
+										td {{ result.lastname }}
+										td {{ result.middlename }}
+										td {{ result.firstname }}
+										td {{ result.email[0] }}
+										td {{ result.phone[0] }}
+			
+			// PURCHASE CONFIRMATION
+			div(class='reveal small' id='orderModal' data-reveal data-animation-in="slide-in-down fast")
+				div(class='column row paddingTB15 text-center')
+					h4 Create Order Confirmation
+				div(class='column row')
+					div(class="invoice")
+						div(class='row column')
+							div(class='column small-6')
+								p {{vm.model.dom.data.selected.fieldSearchByFirstname}}: {{ vm.model.order.customer.lastname}} {{ vm.model.order.customer.middlename}} {{ vm.model.order.customer.firstname}}
+							div(class='column small-6 text-right')
+								p {{vm.model.dom.data.selected.fieldSearchByPhone}}: {{ vm.model.order.customer.phone}}
+						div(class='priceSection')
+							//Other Products
+							div(class="row column" ng-if='vm.model.order.orderline.length > 0')
+								div(class='row column' )
+									div(class='column small-4 text-right')
+										p {{vm.model.dom.data.selected.fieldItem}}
+									div(class='column small-8 greenBorder')
+										div(class='row column small-12' ng-repeat='product in vm.model.order.orderline')
+											div(class='column small-3 paddingLR0 marginT0')
+												p {{ product.productName}}
+											div(class='column small-3 marginT0')
+												p x {{ product.quantity}}
+											div(class='column small-3 marginT0')
+												p {{ product.subTotal}}
+								div(class='row column' )
+									div(class='column small-4 text-right')
+										p {{vm.model.dom.data.selected.total}}
+									div(class='column small-8 greenBorder')
+										div(class='row column small-12')
+											div(class='column small-3 paddingLR0 marginT0')
+												p 
+											div(class='column small-3 marginT0')
+												p 
+											div(class='column small-3 marginT0')
+												strong {{vm.model.order.total}}
+										
+
+				div(class='column row')
+					div(class='column small-6')
+						input(class='button' type='submit' ng-click='vm.ctrl.confirmOrder()' value='Yes' data-close='')
+					div(class='column small-6 text-right')
+						input(class='button secondary' data-close='' type='submit' value='No')
+				button(class="close-button"  data-close='' aria-label="Close modal" type="button")
+					span(aria-hidden="true") &times;
+
+			// MAKE ORDER FORM
+			form(ng-submit="vm.ctrl.validateOrder ()")
+				div(class='addItemSection row column paddingTB15 marginB15')
+					div(class='column small-12')
+						label(ng-if='vm.model.order.orderline.length > 0') {{vm.model.dom.data.selected.fieldOtherProducts}}
+							table
+								thead
+									tr
+										th {{vm.model.dom.data.selected.fieldProduct}}
+										th {{vm.model.dom.data.selected.fieldQuantity}}
+								tbody
+									tr(ng-repeat='product in vm.model.order.orderline')
+										td {{product.productName}}
+										td {{product.quantity}}
+										td(class='text-center deleteIcon')
+											i(class="material-icons customIcon" ng-click='vm.ctrl.deleteSelectService(product); $event.preventDefault()') close
+					div(class="column small-6")
+						label {{vm.model.dom.data.selected.fieldAddItems}}
+							select( ng-model="vm.model.other.selectedItem.name" ng-options="val for val in vm.model.other.listOtherProducts")
+					div(class="column small-4 large-5 paddingR0")
+						label {{vm.model.dom.data.selected.fieldQuantity}}
+							input( ng-model="vm.model.other.selectedItem.quantity" string-to-number type="number" min='0')
+					div(class="column small-2 large-1 iconAdd")
+						i(class="material-icons customIcon" ng-click='vm.ctrl.selectService(); $event.preventDefault()') add
+				div(class="row column")
+					input(class="button" type="submit" value="Submit")
+					button(class="button float-right primary" ng-click='vm.ctrl.reload(); event.preventDefault()') Cancel
+	
+	// ORDERED LIST
+	div(class="column" ng-show="vm.model.dom.orderListDiv")
+		div(class="table-scroll newBox")
+			table(class="borderAll")
+				thead
+					tr
+						th {{ vm.model.dom.data.selected.headerNo }}
+						th {{ vm.model.dom.data.selected.headerName }}
+						th {{ vm.model.dom.data.selected.fieldItem }}
+				tbody
+					tr(ng-repeat='order in vm.model.orderList')
+						td {{ $index + 1 }}
+						td {{order.customer.lastname}} {{order.customer.middlename}} {{ order.customer.firstname }} 
+						td(ng-repeat='item in order.orderline')
+							span {{ item.productName}}

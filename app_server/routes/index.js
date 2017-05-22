@@ -41,11 +41,16 @@ router.get('/', OthersCtrl.angularApp);
 router.get('/login', OthersCtrl.login);
 router.get('/register', OthersCtrl.register);
 
-// get template
-router.get('/template/checkin', OthersCtrl.getCheckinTemplate);
-router.get('/template/customers', OthersCtrl.getCustomerTemplate);
-router.get('/template/bookings', OthersCtrl.getBookingTemplate);
-router.get('/template/orders', OthersCtrl.getOrderTemplate);
+// Deprecated
+// router.get('/template/checkin', OthersCtrl.getCheckinTemplate);
+// router.get('/template/orders', OthersCtrl.getOrderTemplate);
+// router.get('/template/customers', OthersCtrl.getCustomerTemplate);
+// router.get('/template/bookings', OthersCtrl.getBookingTemplate);
+
+router.get('/template/newCheckin', OthersCtrl.getNewCheckinTemplate);
+router.get('/template/newOrders', OthersCtrl.getNewOrdersTemplate);
+router.get('/template/newCustomers', OthersCtrl.getNewCustomersTemplate);
+router.get('/template/newBookings', OthersCtrl.getNewBookingTemplate);
 
 // Checkin
 router.get('/checkin', CheckinCtrl.readCheckinList);
@@ -66,9 +71,11 @@ router.post ('/orders/confirm', OrdersCtrl.confirmCheckout);
 router.post ('/orders/checkout', OrdersCtrl.checkout);
 router.get ('/orders/order/:orderId', OrdersCtrl.readAnOrder);
 router.post ('/orders/order/:orderId/edit', OrdersCtrl.updateAnOrder);
+router.get ('/orders/search-customers', OrdersCtrl.searchCustomers);
 
+router.get('/bookings/all', BookingCtrl.readAllBookings);
 router.get('/bookings', BookingCtrl.readSomeBookings);
-router.post('/bookings/:customerId', BookingCtrl.booking);
+router.post('/bookings/create', BookingCtrl.booking);
 router.post('/bookings/:bookingId/edit', BookingCtrl.updateBooking);
 router.get('/bookings/booking/:bookingId', BookingCtrl.readOneBooking);
 
@@ -90,7 +97,6 @@ router.get('/customers', CustomersCtrl.readSomeCustomers);
 router.get('/customers/customer/:cusId', CustomersCtrl.readOneCustomerById);
 router.post('/customers/create', CustomersCtrl.createOneCustomer);
 router.post('/customers/customer/:cusId/edit', CustomersCtrl.updateOneCustomer);
-router.get('/angular/customers', CustomersCtrl.readAngularCustomers);
 
 router.get('/fin/costs', finCtrl.readSomeCosts);
 router.post('/fin/costs/create', finCtrl.createOneCost);

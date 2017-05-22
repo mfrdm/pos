@@ -8,28 +8,44 @@ module.exports = new Others();
 
 function Others() {
 
-	this.getBookingTemplate = function (req, res, next){
-		res.render ('booking');
+	this.getNewBookingTemplate = function (req, res, next){
+		res.render ('newBookings');
 	};
 
-	this.getOrderTemplate = function (req, res, next){
-		res.render ('orders');
+	this.getNewCheckinTemplate = function (req, res, next){
+		res.render ('newCheckin');
 	};
 
-	this.getCustomerTemplate = function (req, res, next){
-		res.render ('customer');
+	this.getNewOrdersTemplate = function (req, res, next){
+		res.render ('newOrders');
 	};
 
-	this.getCheckinTemplate = function (req, res, next){
-		res.render ('checkin');
+	this.getNewCustomersTemplate = function (req, res, next){
+		res.render ('newCustomers');
 	};	
 
+	// this.getBookingTemplate = function (req, res, next){
+	// 	res.render ('booking');
+	// };
+
+	// this.getOrderTemplate = function (req, res, next){
+	// 	res.render ('orders');
+	// };
+
+	// this.getCustomerTemplate = function (req, res, next){
+	// 	res.render ('customer');
+	// };
+
+	// this.getCheckinTemplate = function (req, res, next){
+	// 	res.render ('checkin');
+	// };	
 
 	this.angularApp = function (req, res){
 
-		//var listFile = ['checkin', 'checkout', 'customers', 'assets', 'costs', 'home'];
-		var ctrFileNames = ['layout', 'checkin', 'checkout','products', 'customers', 'assets', 'costs', 'home', 'depts', 'employees', 'login', 'register', 'booking', 'attendance', 'combo', 'order'];
-		var serviceFileNames = ['checkin', 'checkout', 'products','customers', 'assets', 'costs', 'home', 'depts','employees','common', 'authentication', 'socket', 'attendance', 'booking', 'other', 'combo', 'order'];
+		// load company and dept data and sent to client
+
+		var ctrFileNames = ['layout', 'newCheckin', 'checkout','products', 'assets', 'costs', 'home', 'depts', 'employees', 'login', 'register', 'newBooking', 'attendance', 'newOrders', 'newCustomers'];
+		var serviceFileNames = ['common', 'checkin', 'checkout', 'products','customers', 'assets', 'costs', 'home', 'depts','employees','authentication', 'socket', 'attendance', 'booking', 'other', 'combo', 'order'];
 		var directiveFileNames = ['components'];
 		var filterFileNames = ['myFilter'];
 
