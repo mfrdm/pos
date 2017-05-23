@@ -89,13 +89,13 @@ div(class="columns row")
 				div(class='basicBox row column paddingTB15 marginB15')
 					// ADD ITEMS
 					div(class="column row")
-						h3(class="paddingLR15 fontSize20 fontWeight600") Chọn sản phẩm
+						h3(class="paddingLR15 fontSize20 fontWeight600") {{vm.model.dom.data.selected.checkin.product.title}}
 					div(class="column row")
 						div(class="column large-8 small-12")
-							label {{vm.model.dom.data.selected.fieldAddItems}}
+							label {{vm.model.dom.data.selected.checkin.product.productName.label}}
 								select(ng-model="vm.model.temporary.checkin.item.name" ng-options="item.name as item.name for item in vm.model.dom.data.selected.items track by item.name")
 						div(class="column large-3 small-12")
-							label {{vm.model.dom.data.selected.fieldQuantity}}
+							label {{vm.model.dom.data.selected.checkin.product.quantity.label}}
 								input( ng-model="vm.model.temporary.checkin.item.quantity" string-to-number type="number" min='0')
 						div(class="column show-for-large large-1 iconAdd")
 							i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.addItem (); $event.preventDefault()') add
@@ -107,8 +107,8 @@ div(class="columns row")
 							table(ng-if='vm.model.checkingin.order.orderline.length > 0' class="unstriped hover")
 								thead
 									tr
-										th {{ vm.model.dom.data.selected.fieldProduct }}
-										th {{ vm.model.dom.data.selected.fieldQuantity }}
+										th {{ vm.model.dom.data.selected.checkin.product.header.product }}
+										th {{ vm.model.dom.data.selected.checkin.product.header.quantity }}
 
 								tbody 
 									tr(ng-repeat='ord in vm.model.checkingin.order.orderline track by ord._id')

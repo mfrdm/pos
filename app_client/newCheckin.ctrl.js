@@ -177,6 +177,10 @@
 					},
 					quantity:{
 						label:'Số lượng'
+					},
+					header:{
+						product:'Sản phẩm',
+						quantity:'Số lượng'
 					}
 				},
 				promoteCode:{
