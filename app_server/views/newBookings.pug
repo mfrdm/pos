@@ -1,6 +1,6 @@
 div(class="row columns")
 	div(class="column small-12")
-		h2 Booking List
+		h2 {{vm.model.dom.data.selected.title}}
 	
 	// SETTING
 	div(class="row column")
@@ -26,21 +26,21 @@ div(class="row columns")
 			div(class="column row")
 				form(ng-submit="vm.ctrl.booking.searchCustomer()")
 					div(class="row column")
-						label {{ vm.model.dom.data.selected.booking.label.username }}
+						label {{ vm.model.dom.data.selected.booking.search.label.username }}
 							input(type="text" placeholder="{{ vm.model.dom.data.selected.booking.placeholder.username }}" ng-model='vm.model.search.booking.username' required="true")
 					div(ng-show='vm.model.dom.booking.search.message.notFound' class='marginB15')
 						div(class='callout alert')
-							p {{ vm.model.dom.data.selected.search.message.notFound + ' "' + vm.model.search.booking.username + '". ' }}
+							p {{ vm.model.dom.data.selected.booking.search.message.notFound + ' "' + vm.model.search.booking.username + '". ' }}
 								span: a(href='/#!/customers') {{ vm.model.dom.data.selected.createCustomer}}			
 					div(ng-show="vm.model.dom.booking.customerSearchResultDiv" class="marginB15")
 						div(class="table-scroll")
 							table(class="hover unstriped borderAll")
 								thead
 									tr
-										th No
-										th Name
-										th Email
-										th Phone				
+										th {{vm.model.dom.data.selected.booking.search.header.number}}
+										th {{vm.model.dom.data.selected.booking.search.header.fullname}}
+										th {{vm.model.dom.data.selected.booking.search.header.email}}
+										th {{vm.model.dom.data.selected.booking.search.header.phone}}				
 								tbody
 									tr(ng-repeat='result in vm.model.search.booking.customers' ng-click='vm.ctrl.booking.selectCustomer($index)' class="pointerCursor")
 										td {{ $index + 1 }}
@@ -51,32 +51,32 @@ div(class="row columns")
 			// BOOKING FORM
 			form(ng-submit='vm.ctrl.booking.confirm ()')
 				div(class='row column')
-					label Địa Điểm
+					label {{ vm.model.dom.data.selected.booking.location }}
 						select(name="selectedLocation" ng-model="vm.model.booking.location" ng-options="loc as loc.name for loc in vm.model.dom.data.selected.locations track by loc._id")
 				
 				div(class='row column basicBox')
 					div(class='column small-12 large-6')
-						label Dịch vụ
+						label {{ vm.model.dom.data.selected.booking.service }}
 							select(name="selectedService" ng-model="vm.model.booking.service" ng-options="s as s.label for s in vm.model.dom.data.selected.services track by s.name")
 					div(class='column small-12 large-6')
-						label Số lượng thành viên
+						label {{ vm.model.dom.data.selected.booking.quantity }}
 							input(type="number" ng-model="vm.model.booking.quantity" min=1 max=100)
 				div(class='row column basicBox')
 					div(class='column small-12 large-3 large-paddingL15')
-						label Check-in ngày
+						label {{ vm.model.dom.data.selected.booking.checkinDate }}
 							input(type='date' min='1' max='31' ng-model='vm.model.temporary.booking.checkinDate' required ng-change="vm.ctrl.booking.checkinTimehangeHandler ()")
 					div(class='column small-12 large-2')
-						label Giờ
+						label {{ vm.model.dom.data.selected.booking.hour }}
 							input(type='number' min='0' max='23' ng-model='vm.model.temporary.booking.checkinHour' required ng-change="vm.ctrl.booking.checkinTimehangeHandler ()")
 					div(class='column small-12 large-2 large-paddingR15')
-						label Phút
+						label {{ vm.model.dom.data.selected.booking.minute }}
 							input(type='number' min='0' max='60' ng-model='vm.model.temporary.booking.checkinMin' ng-change="vm.ctrl.booking.checkinTimehangeHandler ()")
 					div(class='column small-12 large-3 large-paddingR15')
-						label Số giờ sử dụng
+						label {{ vm.model.dom.data.selected.booking.spendHours }}
 							input(type='number' min='0' max='24' ng-model='vm.model.temporary.booking.checkinDuration' ng-change="vm.ctrl.booking.checkinTimehangeHandler ()")
 
 				div(class='row column')
-					label Yêu cầu khác
+					label {{ vm.model.dom.data.selected.booking.otherRequirements }}
 						textarea(type='text' ng-model='vm.model.booking.note')
 				div(class="row column")
 					input(class="button" type="submit" value="Create")
@@ -141,10 +141,10 @@ div(class="row columns")
 			table(class="hover unstriped borderAll")
 				thead
 					tr
-						th No
-						th Tên
-						th Dịch vụ
-						th Check-in
+						th {{ vm.model.dom.data.selected.bookingList.number }}
+						th {{ vm.model.dom.data.selected.bookingList.fullname }}
+						th {{ vm.model.dom.data.selected.bookingList.service }}
+						th {{ vm.model.dom.data.selected.bookingList.checkin }}
 						th 
 						th
 				tbody
