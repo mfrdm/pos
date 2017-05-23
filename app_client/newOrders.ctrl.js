@@ -55,105 +55,70 @@
 
 		// FIX format
 		vm.model.dom.data.eng = {
+			title:'Order List',
 			order: {
-				label: {
-					username: 'Customer'
+				search:{
+					label:{
+						username:'Customer'
+					},
+					placeholder:{
+						username:'Enter phone, email, or full name to search'
+					}
 				},
-				placeholder: {
-					username: 'Enter phone, email, or full name to search'
+				product:{
+					title:'Choose Products',
+					label:'Product',
+					quantity:'Quantity'				
 				}
 			},
-			title: 'Order List',
-			buttonCheckin: 'Add Order',
-			buttonFilter:'Filter',
-
-			selectFirstnameAZ:'Firstname A-Z',
-			selectFirstnameZA:'Firstname Z-A',
-			selectBookingFarthest: 'Checkin Time Farthest',
-			selectCheckinLastest: 'Checkin Time Lastest',
-
-			selectStatusOptionAll: 'All',
-			selectStatusOptionCheckin: 'Checkin',
-			selectStatusOptionCheckout: 'Checkout',
-
-			fieldSortBy:'Sort By',
-			fieldStatus:'Status',
-			fieldSearchByFirstname:'Search by Firstname',
-			fieldSearchByPhone:'Search by Phone',
-			fieldPhoneEmail: 'Phone/Email',
-			fieldService:'Service',
-			fieldItem: 'Items',
-			fieldQuantity: 'Quantity',
-			fieldOtherProducts: 'Selected Items',
-			fieldProduct:'Product',
-			fieldAddItems:'Add Items',
-
-			headerNo:'No',
-			headerName:'Name',
-			headerService:'Order',
-			itemQuantity: 'Quantity',
-			createdAt: 'Created',
-
-			total:'Total',
-			noResult: 'There is no result',
-			search: {
-				message: {
-					notFound: 'Not Found!'
-				}
-			},			
+			orderList:{
+				header:{
+					number:'No',
+					fullname:'Fullname',
+					product:'Product',
+					quantity:'Quantity',
+					time:'Time'
+				},
+				body: {
+					message: {
+						notFound: 'Not Found!'
+					}
+				},	
+			}
 		};
 
 		// FIX format
 		vm.model.dom.data.vn = {
+			title:'Order List',
 			order: {
-				label: {
-					username: 'Khách hàng'
+				search:{
+					label:{
+						username:'Khách hàng'
+					},
+					placeholder:{
+						username:'Nhập sđt, email, hoặc tên để tìm kiếm khách hàng'
+					}
 				},
-				placeholder: {
-					username: 'Nhập sđt, email, hoặc tên để tìm kiếm khách hàng'
-				},
-			},
-
-			title: 'Order List',
-			buttonCheckin: 'Add Order',
-			buttonFilter:'Filter',
-
-			selectFirstnameAZ:'Tên A-Z',
-			selectFirstnameZA:'Tên Z-A',
-			selectBookingFarthest: 'Checkin Z-A',
-			selectBookingLastest: 'Checkin A-Z',
-
-			selectStatusOptionAll: 'Tất cả',
-			selectStatusOptionCheckin: 'Checkin',
-			selectStatusOptionCheckout: 'Checkout',
-
-			fieldSortBy:'Sắp xếp',
-			fieldStatus:'Trạng thái',
-			fieldSearchByFirstname:'Tên',
-			fieldSearchByPhone:'Số điện thoại',
-			fieldPhoneEmail: 'Phone/Email',
-			fieldService:'Dịch vụ',
-			fieldItem: 'Sản phẩm',
-			fieldQuantity: 'Số lượng',
-			fieldOtherProducts: 'Sản phẩm đã chọn',
-			fieldProduct:'Tên sản phẩm',
-			fieldAddItems:'Thêm sản phẩm',
-
-			headerNo:'No',
-			headerName:'Họ và tên',
-			headerService:'Dịch vụ',
-			itemQuantity: 'Số lượng',
-			createdAt: 'Thời gian',			
-
-			total:'Tổng',
-			noResult: 'Không có kết quả',
-			searchCheckinginCustomerNoResult: 'Không tìm thấy khách hàng ',
-			createCustomer: ' Create an account',
-			search: {
-				message: {
-					notFound: 'Không tìm thấy kết quả!',
+				product:{
+					title:'Chọn sản phẩm',
+					label:'Thêm sản phẩm',
+					quantity:'Số lượng'				
 				}
-			},				
+			},
+			orderList:{
+				header:{
+					number:'No',
+					fullname:'Họ và tên',
+					product:'Sản phẩm',
+					quantity:'Số lượng',
+					time:'Thời gian'
+				},
+				body: {
+					message: {
+						notFound: 'Không có kết quả!'
+					}
+				},	
+			}				
 		};
 		
 		vm.ctrl = {
