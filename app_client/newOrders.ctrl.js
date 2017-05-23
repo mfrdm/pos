@@ -71,6 +71,7 @@
 				product:{
 					title:'Choose Products',
 					label:'Product',
+					product:'Product',
 					quantity:'Quantity'				
 				}
 			},
@@ -116,7 +117,8 @@
 				product:{
 					title:'Chọn sản phẩm',
 					label:'Thêm sản phẩm',
-					quantity:'Số lượng'				
+					product:'Sản phẩm',
+					quantity:'Số lượng'
 				}
 			},
 			orderList:{
