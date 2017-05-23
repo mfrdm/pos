@@ -147,7 +147,7 @@
 		// FIX format
 		// Vietnamese version
 		vm.model.dom.data.vn = {
-			modelLanguage: 'vi',
+			modelLanguage: 'vn',
 			title: 'Check-in List',
 
 			checkin:{
@@ -204,6 +204,7 @@
 		vm.model.dom.data.selected = vm.model.dom.data.vn;
 
 		vm.ctrl.addServiceLabel = function (service){
+			console.log(vm.model.dom.data.selected.modelLanguage)
 			if (service.name.toLowerCase () == 'group common'){
 				if (vm.model.dom.data.selected.modelLanguage == 'vn') service.label = 'Nhóm chung';
 				else service.label = service.name;
@@ -301,7 +302,9 @@
 
 					// push data into dom.data objects
 					vm.model.services.map (function (x, i, arr){
+
 						vm.ctrl.addServiceLabel (x);
+						console.log(x)
 					});
 					
 
