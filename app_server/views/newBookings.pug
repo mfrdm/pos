@@ -201,27 +201,26 @@ div(class="fullBox row column" ng-show='vm.model.dom.booking.confirmDiv')
 			table(class="hover unstriped")
 				tbody
 					tr
-						th(class="text-right") Khách hàng
+						th Khách hàng
 						td {{ vm.model.booking.customer.fullname }}
 					tr
-						th(class="text-right") Địa điểm
+						th Địa điểm
 						td {{ vm.model.booking.location.name }}				
 					tr
-						th(class="text-right") Dịch vụ
+						th Dịch vụ
 						td {{ vm.model.booking.service.label }}				
 					tr(ng-if="vm.model.booking.quantity > 1")
-						th(class="text-right") Số thành viên
+						th Số thành viên
 						td {{ vm.model.booking.quantity }}						
 					tr
-						th(class="text-right") Check-in
+						th Check-in
 						td {{ vm.model.booking.checkinTime | date:'dd/MM/yyyy'}} {{ vm.model.booking.checkinTime | date:'shortTime'}}
 					tr(ng-if="vm.model.booking.checkoutTime")
-						th(class="text-right") Check-out
+						th Check-out
 						td {{ vm.model.booking.checkoutTime | date:'dd/MM/yyyy'}} {{ vm.model.booking.checkoutTime | date:'shortTime'}}	
 					tr(ng-if="vm.model.booking.note")
-						th(class="text-right") Yêu cầu khác
+						th Yêu cầu khác
 						td {{ vm.model.booking.note }}	
-	div(class="row column")
-		div(class="column small-12 large-6 large-push-3")
-			a(class="paddingL15 button primary" ng-click="vm.ctrl.booking.book ()") Check-in
-			a(class="paddingR15 button float-right secondary" ng-click="vm.ctrl.booking.closeConfirm (); $event.preventDefault()") Cancel												
+			div(class="row column")
+				a(class="paddingL15 button primary" ng-click="vm.ctrl.booking.book ()") Confirm
+				a(class="paddingR15 button float-right secondary" ng-click="vm.ctrl.booking.closeConfirm ()") Cancel												
