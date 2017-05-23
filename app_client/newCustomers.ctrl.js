@@ -167,10 +167,6 @@
 			else vm.model.dom.register.registerDiv = false;
 		}
 
-		vm.ctrl.register.closeConfirmDiv = function (){
-			vm.model.dom.register.confirmDiv = false;
-		}
-
 		vm.ctrl.register.getSchoolLabel	= function (){
 			vm.model.dom.data.selected.register.schools.map (function (x, i, arr){
 				if (x.value == vm.model.register.edu.school){
@@ -222,14 +218,15 @@
 		}
 		
 		vm.ctrl.register.confirm = function(){
-			vm.ctrl.register.sanatizeRawData (vm.model.register);
-			// vm.model.dom.register.confirmDiv = true;	
+			vm.ctrl.register.sanatizeRawData (vm.model.register);	
 			vm.ctrl.register.showConfirm ();		
 		}
 
 		vm.ctrl.register.create = function(){
+			vm.ctrl.showLoader ();
 			CustomerService.createOne(vm.model.register)
 				.then(function success(res){
+					vm.ctrl.hideLoader();
 					if(res.status == 200){
 						vm.model.temporary.register.newCustomer = res.data.data;
 						vm.ctrl.register.showSuccessMessage ();
@@ -238,13 +235,15 @@
 					}
 					
 				}, function error(err){
+					vm.ctrl.hideLoader();
 					console.log(err)
 				})
 		}	
 
 		vm.ctrl.register.showSuccessMessage = function (){
-			$('#registerConfirmDiv').foundation ('close');
-			$('#createAccountSuccess').foundation('open')
+			// $('#registerConfirmDiv').foundation ('close');
+			vm.ctrl.register.closeConfirmDiv ();
+			$('#createAccountSuccess').foundation('open');
 		};
 
 		vm.ctrl.register.showFailureMessage = function (){
@@ -252,7 +251,12 @@
 		};	
 
 		vm.ctrl.register.showConfirm = function (){
-			$('#registerConfirmDiv').foundation ('open');
+			// $('#registerConfirmDiv').foundation ('open');
+			vm.model.dom.register.confirmDiv = true;
+		};
+
+		vm.ctrl.register.closeConfirmDiv = function (){
+			vm.model.dom.register.confirmDiv = false;
 		}
 
 		vm.ctrl.checkin = function (){

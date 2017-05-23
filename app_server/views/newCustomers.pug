@@ -62,7 +62,40 @@ div(class="row columns")
 				a(class="button float-right" ng-click="vm.ctrl.reset()") Cancel
 
 // CONFRIM CREATE A CUSTOMER
-div(id='registerConfirmDiv' class='reveal paddingAll0' data-reveal data-animation-in="slide-in-down fast")
+div(class="fullBox row column" ng-show='vm.model.dom.register.confirmDiv')
+	div(class="column small-12 text-center paddingTB20")
+		h2 GREEN SPACE
+		h3 Create account confirmation
+	div(class="column small-12 paddingB20")
+		div(class="column small-12 large-6 large-push-3")
+			table(class="hover unstriped stack")
+				tbody
+					tr
+						th Họ và tên
+						td {{ vm.model.register.fullname }}
+					tr
+						th Giới tính
+						td {{ vm.model.temporary.register.genderLabel }}
+					tr
+						th Ngày sinh
+						td {{ vm.model.register.birthday | date:'dd/MM/yyyy' }}
+					tr(ng-if="vm.model.register.email")
+						th Email
+						td {{ vm.model.register.email }}						
+					tr(ng-if="vm.model.register.phone")
+						th Phone
+						td {{ vm.model.register.phone }}
+					tr(ng-if="vm.model.register.edu.school")
+						th Trường
+						td {{ vm.model.temporary.register.schoolLabel }}
+			
+			div(class="row column")
+				div(class='column small-12 large-paddingLR0')
+					a(class="paddingL15 button primary" ng-click="vm.ctrl.register.create ()") Confirm
+					a(class="paddingR15 button float-right secondary" ng-click="vm.ctrl.register.cancelConfirm") Cancel
+
+// CONFRIM CREATE A CUSTOMER - deprecated
+//div(id='registerConfirmDiv' class='reveal paddingAll0' data-reveal data-animation-in="slide-in-down fast")
 	div(class="column small-12 text-center paddingTB20")
 		h2 GREEN SPACE
 		h3 Create account confirmation

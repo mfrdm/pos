@@ -85,7 +85,7 @@ div(class="columns row")
 					div(class="column small-12" ng-if="vm.model.dom.checkin.privateGroupLeaderDiv && vm.model.temporary.groupPrivateLeaders && vm.model.temporary.groupPrivateLeaders.length > 1")
 						label {{vm.model.dom.data.selected.fieldChooseGroup}}
 							select(name="selectedGroup" ng-model="vm.model.temporary.selectedGroupPrivate" ng-options="leader as leader.groupName for leader in vm.model.temporary.groupPrivateLeaders track by leader._id" ng-change="vm.ctrl.checkin.selectedGroupChangeHandler ()")
-				// ORDER
+				// ORDER FORM
 				div(class='basicBox row column paddingTB15 marginB15')
 					// ADD ITEMS
 					div(class="column row")
@@ -240,20 +240,20 @@ div(class="fullBox row column" ng-show='vm.model.dom.checkin.confirmDiv')
 			table(class="hover unstriped")
 				tbody
 					tr
-						th(class="text-right") Khách hàng
+						th Khách hàng
 						td {{ vm.model.checkingin.occupancy.customer.fullname }}
 					tr
-						th(class="text-right") Dịch vụ
+						th Dịch vụ
 						td {{ vm.model.checkingin.occupancy.service.label }}
 					tr
-						th(class="text-right") Check-in
+						th Check-in
 						td {{ vm.model.checkingin.occupancy.checkinTime | date:'dd/MM/yyyy'}} {{ vm.model.checkingin.occupancy.checkinTime | date:'shortTime'}}
 						
 					tr(ng-show="vm.model.checkingin.occupancy.parent")
-						th(class="text-right") Nhóm
+						th Nhóm
 						td {{ vm.model.temporary.selectedGroupPrivate.leader }}
 					tr(ng-show="vm.model.checkingin.occupancy.promocodes.length" ng-repeat="code in vm.model.checkingin.occupancy.promocodes")
-						th(class="text-right") Code
+						th Code
 						td {{ code.name | uppercase }}
 	div(class="row column")
 		div(class="column small-12 large-6 large-push-3")
@@ -329,8 +329,8 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 
 	div(class="row column")
 		div(class="column small-12 large-6 large-push-3")
-			a(class="paddingL15 button primary" ng-click="vm.ctrl.checkout.confirm ()") Checkout
-			a(class="paddingR15 button float-right secondary" ng-click='vm.ctrl.reset(); $event.preventDefault()') Cancel
+			a(class="paddingL15 button primary" ng-click="vm.ctrl.checkout.checkout()") Checkout
+			a(class="paddingR15 button float-right secondary" ng-click='vm.ctrl.reset()') Cancel
 	
 // Validate Reveal Form ************************************************************************//
 // Validate add same promote code
@@ -340,17 +340,18 @@ div(id='addSameCode' class='reveal text-center small' data-reveal data-animation
 	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
 			span(aria-hidden="true") &times;
 
-// CHECK-OUT CONFIRM MODAL
-div(id='askCheckout' class='reveal small column row' data-reveal data-animation-in="slide-in-down fast")
+
+// CHECK-OUT CONFIRM MODAL - Deprecated
+//div(id='askCheckout' class='reveal small column row' data-reveal data-animation-in="slide-in-down fast")
 	div(class=' text-center paddingTB15 marginB15')
 		h2 Checkout confirmation
 		p Xác nhận checkout khách hàng {{ vm.model.checkingout.occurancy.customer.fullname }}
-	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
+	button(class="close-button" data-close='' aria-label="Close modal" type="button")
 			span(aria-hidden="true") &times;
 	div(class="row column")
 		div(class='column small-12 large-paddingLR0')
-			a(class=" button primary" type="submit" ng-click='vm.ctrl.checkout.checkout()') Confirm
-			a(class="paddingR15 button float-right secondary" ng-click='vm.ctrl.reset(); $event.preventDefault()' data-close='') Cancel			
+			a(class="button primary" ng-click='vm.ctrl.checkout.checkout()') Confirm
+			a(class="paddingR15 button float-right secondary" ng-click='vm.ctrl.reset()' data-close='') Cancel			
 
 // Announce checkout successfull
 div(id='announceCheckoutSuccess' class='reveal small column row' data-reveal data-animation-in="slide-in-down fast")

@@ -42,9 +42,9 @@ var ordersSchema = new mongoose.Schema({
 		subTotal: {type: Number, min: 0, default: 0},	
 	}],
 	customer: {
-		_id: {type: mongoose.Schema.Types.ObjectId, required: true},
+		_id: {type: mongoose.Schema.Types.ObjectId},
 		fullname: {type:String},
-		phone: {type: String, required: true},
+		phone: {type: String},
 		email: {type: String}, // optional. added if exists
 	},
 	location: {

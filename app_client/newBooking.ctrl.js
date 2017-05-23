@@ -249,8 +249,10 @@
 
 
 		vm.ctrl.booking.searchCustomer = function (){
+			vm.ctrl.showLoader ();
 			CustomerService.readCustomers (vm.model.search.booking.username).then(
 				function success (res){
+					vm.ctrl.hideLoader ();
 					if (!res.data){
 						// unexpected result. should never exist
 					}
@@ -267,7 +269,8 @@
 					}
 				}, 
 				function error (err){
-					console.log(err)
+					console.log(err);
+					vm.ctrl.hideLoader ();
 				}
 			);			
 		};
@@ -304,12 +307,15 @@
 		}
 
 		vm.ctrl.booking.book = function (){
+			vm.ctrl.showLoader ();
 			BookingService.book (vm.model.booking).then (
 				function success (res){
+					vm.ctrl.hideLoader ();
 					vm.ctrl.reset ();
 				},
 				function failure (err){
 					console.log (err);
+					vm.ctrl.hideLoader ();
 					// display warining
 				}
 			);
@@ -332,12 +338,15 @@
 				$set: {status: 4}
 			};
 
+			vm.ctrl.showLoader ();
 			BookingService.updateOne (curBooking._id, update).then (
 				function success (res){
+					vm.ctrl.hideLoader ();
 					vm.ctrl.reset ();
 				},
 				function failure (err){
 					console.log (err);
+					vm.ctrl.hideLoader ();
 					// display warning
 				}
 			)

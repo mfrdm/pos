@@ -302,26 +302,31 @@
 		}
 
 		vm.ctrl.order.getInvoice = function (){
+			vm.ctrl.showLoader ();
 			OrderService.getInvoice (vm.model.ordering).then (
 				function success (res){
+					vm.ctrl.hideLoader ();
 					vm.model.ordering = res.data.data;
 					vm.model.dom.order.confirm = true;
 				},
 				function failure (err){
 					console.log (err);
+					vm.ctrl.hideLoader ();
 					// display warning
 				}
 			)			
 		}
 
 		vm.ctrl.order.confirm = function (){
-			console.log (vm.model.ordering)
+			vm.ctrl.showLoader ();
 			OrderService.confirmOrder (vm.model.ordering).then (
 				function success (res){
+					vm.ctrl.hideLoader ();
 					vm.ctrl.reset ();
 				},
-				function failture (){
-
+				function failture (err){
+					console.log (err);
+					vm.ctrl.hideLoader ();
 				}
 			)
 		}		

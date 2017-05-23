@@ -208,7 +208,6 @@
 		vm.model.dom.data.selected = vm.model.dom.data.vn;
 
 		vm.ctrl.addServiceLabel = function (service){
-			console.log(vm.model.dom.data.selected.modelLanguage)
 			if (service.name.toLowerCase () == 'group common'){
 				if (vm.model.dom.data.selected.modelLanguage == 'vn') service.label = 'Nhóm chung';
 				else service.label = service.name;
@@ -255,14 +254,14 @@
 			// 
 		}
 
-		vm.ctrl.toggleFilterDiv = function (){
-			if (!vm.model.dom.filterDiv) {
-				vm.model.dom.filterDiv = true;
-				vm.model.dom.checkInEditDiv = false;
-				vm.model.dom.checkin.checkinDiv = false;
-			}
-			else vm.model.dom.filterDiv = false;
-		};
+		// vm.ctrl.toggleFilterDiv = function (){
+		// 	if (!vm.model.dom.filterDiv) {
+		// 		vm.model.dom.filterDiv = true;
+		// 		vm.model.dom.checkInEditDiv = false;
+		// 		vm.model.dom.checkin.checkinDiv = false;
+		// 	}
+		// 	else vm.model.dom.filterDiv = false;
+		// };
 
 		vm.ctrl.toggleCheckInDiv = function(){
 			if (!vm.model.dom.checkin.checkinDiv){
@@ -280,13 +279,13 @@
 			}
 		};
 
-		vm.ctrl.seeMore = function(){
-			if(vm.model.dom.seeMore == true){
-				vm.model.dom.seeMore = false
-			}else{
-				vm.model.dom.seeMore = true
-			}
-		}
+		// vm.ctrl.seeMore = function(){
+		// 	if(vm.model.dom.seeMore == true){
+		// 		vm.model.dom.seeMore = false
+		// 	}else{
+		// 		vm.model.dom.seeMore = true
+		// 	}
+		// }
 
 		// Get both items and services
 		vm.ctrl.checkin.getItems = function (){
@@ -306,9 +305,7 @@
 
 					// push data into dom.data objects
 					vm.model.services.map (function (x, i, arr){
-
 						vm.ctrl.addServiceLabel (x);
-						console.log(x)
 					});
 					
 
@@ -577,6 +574,7 @@
 			vm.model.dom.checkOutDiv = true;
 			CheckinService.readInvoice(occupancy._id).then(
 				function success(res){
+					console.log (res.data.data)
 					vm.ctrl.hideLoader ();
 					vm.model.checkingout.occupancy = res.data.data;
 					vm.ctrl.addServiceLabel (vm.model.checkingout.occupancy.service);
@@ -591,17 +589,18 @@
 		};
 
 		vm.ctrl.checkout.checkout = function (){
+			console.log (vm.model.checkingout.occupancy)
 			vm.ctrl.showLoader ();
 			CheckinService.checkout(vm.model.checkingout.occupancy)
 				.then(function success(res){
 					vm.ctrl.hideLoader ();
-					$('#askCheckout').foundation('close');
-					$('#announceCheckoutSuccess').foundation('open');
+					// $('#askCheckout').foundation('close');
+					// $('#announceCheckoutSuccess').foundation('open');
 					vm.ctrl.reset();
 				}, function error(err){
 					vm.ctrl.hideLoader ();
+					console.log(err);
 					// show message
-					console.log(err)
 				})
 		};
 
