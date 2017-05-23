@@ -155,12 +155,6 @@
 				service:{
 					title:'Chọn dịch vụ',
 					label:'Dịch vụ',
-					options:{
-						'Group Common':'group common',
-						'Individual Common':'individual common',
-						'Group private for 10-15':'small group private',
-						'Group private for 25-30':'medium group private'
-					}
 				},
 				product:{
 					title:'Chọn sản phẩm',
