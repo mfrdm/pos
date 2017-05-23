@@ -397,6 +397,7 @@
 		};
 
 		vm.ctrl.checkin.searchCustomer =  function (){
+			vm.ctrl.showLoader ();
 			CheckinService.searchCustomers (vm.model.search.checkin.username).then(
 				function success (res){
 					if (!res.data){
@@ -413,9 +414,12 @@
 							vm.model.dom.checkin.customerSearchResultDiv = false;
 						}
 					}
+
+					vm.ctrl.hideLoader ();
 				}, 
 				function error (err){
-					console.log(err)
+					console.log(err);
+					vm.ctrl.hideLoader ();
 				}
 			);
 		};
@@ -492,9 +496,11 @@
 		}
 
 		vm.ctrl.checkin.checkin = function (){
+			vm.ctrl.showLoader ();
 			var customerId = vm.model.checkingin.occupancy.customer._id;
 			CheckinService.createOne (customerId, vm.model.checkingin).then(
 				function success(res){
+					vm.ctrl.hideLoader ();
 					vm.model.temporary.justCheckedin = res.data.data;
 
 					if (vm.model.temporary.justCheckedin.order && vm.model.temporary.justCheckedin.order.orderline && vm.model.temporary.justCheckedin.order.orderline.length){
@@ -504,9 +510,9 @@
 					else{
 						vm.ctrl.reset ();
 					}
-					
 	 			}, 
 				function error(err){
+					vm.ctrl.hideLoader ();
 					console.log(err);
 				}
 			);			
@@ -528,8 +534,11 @@
 					service: vm.model.checkingin.occupancy.service.name,
 				};
 
+				vm.ctrl.showLoader ();
+
 				CheckinService.validatePromoteCode(data).then(
 					function success(res){
+						vm.ctrl.hideLoader ();
 						var foundCodes = res.data.data;
 						vm.model.checkingin.occupancy.promocodes = foundCodes;
 						vm.model.temporary.checkin.codeNames = [];
@@ -540,9 +549,9 @@
 						if (foundCodes.length >= codes.length){
 							vm.ctrl.checkin.confirm ();
 						}
-			
 					},
 					function failure (err){
+						vm.ctrl.hideLoader ();
 						console.log (err);
 						// display warning
 					}
@@ -623,10 +632,16 @@
 				}
 				vm.model.search.checkin.username = vm.ctrl.checkin.createUsername (tempCustomer);			
 				DataPassingService.reset ('customer');
-			}
-
-						
+			}			
 		}
+
+		vm.ctrl.showLoader = function (){
+			LayoutCtrl.ctrl.showTransLoader ();
+		};
+
+		vm.ctrl.hideLoader = function (){
+			LayoutCtrl.ctrl.hideTransLoader ();
+		};		
 
 		vm.ctrl.reset = function (){
 			$route.reload ();

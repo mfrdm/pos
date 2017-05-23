@@ -19,6 +19,8 @@ html(ng-app='posApp')
 				link(rel="stylesheet", href='/css/' + data.look.css[i] + '.css')
 
 	body(ng-controller="LayoutCtrl")
+		<div class="loader"></div>
+		<div class="loader-trans"></div>
 		nav(class="show-for-large top-bar paddingLR0" id="topNavBar")
 			div(class="medium-2 columns")
 				a(href="#!/" class="paddingLR0")

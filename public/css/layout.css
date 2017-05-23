@@ -3,6 +3,29 @@ html, body
     height: 100%;
 }
 
+/*///////////////// Loader //////////////////////*/
+.loader {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	background: url('/img/loading.svg') 50% 50% no-repeat #ffffff;
+}
+
+.loader-trans {
+	display: none;
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	background: url('/img/loading.svg') 50% 50% no-repeat transparent;
+}
+
+
 /*///////////////// Dimension /////////////////*/
 
 .width100percent {

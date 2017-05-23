@@ -89,7 +89,23 @@
 			};
 
 			authentication.logout(beforeAction, afterAction);
+		};
+
+		$scope.layout.ctrl.showLoader = function (){
+			$(".loader").fadeIn("fast");
 		}
+
+		$scope.layout.ctrl.hideLoader = function (){
+			$(".loader").fadeOut("slow");
+		}	
+
+		$scope.layout.ctrl.showTransLoader = function (){
+			$(".loader-trans").fadeIn("fast");
+		}
+
+		$scope.layout.ctrl.hideTransLoader = function (){
+			$(".loader-trans").fadeOut("slow");
+		}				
 
 		// $scope.layout.notiAlert = function(msg){
 		// 	console.log(msg)
@@ -112,6 +128,7 @@
 		//=========================================================
 
 		angular.element(document).ready(function () {
+			$scope.layout.ctrl.hideLoader ();
 			$("body").foundation();
 			if (authentication.isLoggedIn ()){
 				$scope.layout.ctrl.addUser (authentication.getCurUser());
