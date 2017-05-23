@@ -120,12 +120,12 @@ div(class="row columns")
 			form(ng-submit="vm.ctrl.validateOrder ()")
 				div(class='addItemSection row column paddingTB15 marginB15')
 					div(class='column small-12')
-						label(ng-if='vm.model.order.orderline.length > 0') {{vm.model.dom.data.selected.fieldOtherProducts}}
+						label(ng-if='vm.model.order.orderline.length > 0')
 							table
 								thead
 									tr
-										th {{vm.model.dom.data.selected.fieldProduct}}
-										th {{vm.model.dom.data.selected.fieldQuantity}}
+										th {{vm.model.dom.data.selected.order.product.product}}
+										th {{vm.model.dom.data.selected.order.product.quantity}}
 								tbody
 									tr(ng-repeat='product in vm.model.order.orderline')
 										td {{product.productName}}
@@ -133,10 +133,10 @@ div(class="row columns")
 										td(class='text-center deleteIcon')
 											i(class="material-icons customIcon" ng-click='vm.ctrl.deleteSelectService(product); $event.preventDefault()') close
 					div(class="column small-6")
-						label {{vm.model.dom.data.selected.fieldAddItems}}
+						label {{vm.model.dom.data.selected.order.product.product}}
 							select( ng-model="vm.model.other.selectedItem.name" ng-options="val for val in vm.model.other.listOtherProducts")
 					div(class="column small-4 large-5 paddingR0")
-						label {{vm.model.dom.data.selected.fieldQuantity}}
+						label {{vm.model.dom.data.selected.order.product.quantity}}
 							input( ng-model="vm.model.other.selectedItem.quantity" string-to-number type="number" min='0')
 					div(class="column small-2 large-1 iconAdd")
 						i(class="material-icons customIcon" ng-click='vm.ctrl.selectService(); $event.preventDefault()') add

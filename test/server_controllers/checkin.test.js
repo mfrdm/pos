@@ -337,6 +337,9 @@ xdescribe ('Check in', function (){
 
 	});
 
+	it ('should be invalid when a checked-in customer check in again. This could happen when a customers booking more than one time and then check-in')
+
+
 	// DEPRICATED
 	xit ('should create an occupancy and update customer', function (done){
 		checkinData.occupancy.promocodes = [];

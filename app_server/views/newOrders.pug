@@ -82,8 +82,8 @@ div(class="row columns")
 							table(ng-if='vm.model.ordering.orderline.length > 0' class="unstriped hover")
 								thead
 									tr
-										th {{ vm.model.dom.data.selected.fieldProduct }}
-										th {{ vm.model.dom.data.selected.fieldQuantity }}
+										th {{ vm.model.dom.data.selected.order.product.product }}
+										th {{ vm.model.dom.data.selected.order.product.quantity }}
 
 								tbody 
 									tr(ng-repeat='ord in vm.model.ordering.orderline track by ord._id')
