@@ -20,6 +20,7 @@ function OrdersCtrl() {
 	this.confirmCheckout = function (req, res, next){
 		var order = new Orders (req.body.data);
 		order.status = 1;
+
 		order.save (function (err, newOrder){
 			if (err){
 				console.log (err);
@@ -27,21 +28,7 @@ function OrdersCtrl() {
 				return
 			}
 
-			Customers.findByIdAndUpdate (req.body.data.customer._id, {$push: {orders: newOrder._id}}, function (err, updatedCustomer){
-				if (err){
-					console.log (err);
-					next (err);
-					return
-				}
-
-				if (updatedCustomer){			
-					res.json ({data: newOrder});
-				}
-				else{
-					next ();
-				}
-			})
-
+			res.json ({data: newOrder});
 		})		
 	};
 
