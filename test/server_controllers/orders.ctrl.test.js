@@ -95,6 +95,8 @@ xdescribe ('Create an order', function (){
 				done ();
 			});
 	});
+
+	it ('should add occupancyId if the customer is checked-in')
 });
 
 describe ('Pay for an order', function (){

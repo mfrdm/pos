@@ -20,25 +20,34 @@ function CustomersCtrl() {
 	};
 
 	this.readSomeCustomers = function(req, res) {
-		var apiUrl = apiOptions.server + "/api/customers/";
-		var view = 'checkin';
-		var qs = {};
-		var dataFilter = function(dataList){
-			var data = {
-				user: {
-					data:dataList
-				},
-				look:{
-					title:"Return 1 specific Customer by ID",
-					css:['']
-				}
-			};
-			return data;
-		};
-		var send = function(req, res, view, data, cb){
-			requestHelper.sendJsonRes(res, 200, data)
+		var query;
+		var input = req.query.input; // email, phone, fullname
+		if (!input){
+			next (); // 
 		}
-		requestHelper.readApi(req, res, apiUrl, view, qs, dataFilter, send);
+
+		input = validator.trim (input);
+		var projections = {fullname: 1, phone: {$slice: [0,1]}, email: {$slice: [0,1]}, checkinStatus: 1, isStudent: 1, edu: 1, birthday: 1, occupancy: 1};
+
+		if (validator.isEmail (input)){
+			query = Customers.find ({email: input}, projections);
+		}
+
+		else if (validator.isMobilePhone (input, 'vi-VN')){
+			query = Customers.find ({phone: input}, projections);
+		}
+		else { 
+			query = Customers.find ({fullname: {$regex: input.toUpperCase ()}}, projections);
+		}		
+
+		query.exec (function (err, cus){
+			if (err){
+				next (err);
+				return
+			}
+
+			res.json ({data: cus});
+		});
 	};
 
 	this.readOneCustomerById = function(req, res) {

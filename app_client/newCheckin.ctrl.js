@@ -496,8 +496,10 @@
 			CheckinService.createOne (customerId, vm.model.checkingin).then(
 				function success(res){
 					vm.model.temporary.justCheckedin = res.data.data;
+
 					if (vm.model.temporary.justCheckedin.order && vm.model.temporary.justCheckedin.order.orderline && vm.model.temporary.justCheckedin.order.orderline.length){
-						// do nothing. Go on to process order invoice
+						// Go on to process order invoice
+						vm.model.temporary.justCheckedin.order.occupancyId = vm.model.temporary.justCheckedin.occupancy._id;
 					}
 					else{
 						vm.ctrl.reset ();
