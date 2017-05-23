@@ -58,7 +58,8 @@ var ordersSchema = new mongoose.Schema({
 		time: {type: Date},
 		explain: {type: Number},
 		by: {type: mongoose.Schema.Types.ObjectId}, // staff id
-	}]
+	}],
+	note: String,
 });
 
 ordersSchema.methods.getTotal = getTotal;

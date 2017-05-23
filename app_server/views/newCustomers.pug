@@ -46,11 +46,19 @@ div(class="row columns")
 						input(type="date" ng-model='vm.model.register.birthday' required)
 			div(class=" row column")
 				div(class="column small-12 large-6 large-paddingR15 paddingLR0")
+<<<<<<< HEAD
 					label {{vm.model.dom.data.selected.register.customer.email}}
 						input(type="email" ng-model='vm.model.register.email' required)
 				div(class="column small-12 large-6 large-paddingL15 paddingLR0")
 					label {{vm.model.dom.data.selected.register.customer.phone}}
 						input(type="tel" ng-model='vm.model.register.phone' required)
+=======
+					label Email
+						input(type="email" ng-model='vm.model.register.email')
+				div(class="column small-12 large-6 large-paddingL15 paddingLR0")
+					label Phone
+						input(type="tel" ng-model='vm.model.register.phone')
+>>>>>>> e51732a7fc1a7b493374ba67a191ff48f247f81c
 			div(class=" row column")
 				div(class="column small-12 paddingLR0")
 					label {{vm.model.dom.data.selected.register.customer.school}}
@@ -101,7 +109,7 @@ div(id='createAccountSuccess' class='reveal paddingAll0' data-reveal data-animat
 		p Tạo tài khoản khách hàng thành công!
 	div(class="row column")
 		a(class="button" ng-click="vm.ctrl.checkin()") Check-in
-		a(class="button float-right secondary"  data-close='' aria-label="Close modal") close
+		a(class="button float-right secondary" data-close='' aria-label="Close modal" ng-click="vm.ctrl.reset ()") Close
 
 //Announce create fail
 div(id='createAccountFailure' class='reveal text-center paddingAll0' data-reveal data-animation-in="slide-in-down fast")
@@ -109,4 +117,4 @@ div(id='createAccountFailure' class='reveal text-center paddingAll0' data-reveal
 		h2 Failure
 		p Tạo tài khoản khách hàng thất bại!
 	div(class="row column")
-		a(class="button secondary" data-close='') close
+		a(class="button secondary" data-close='' aria-label="Close modal" ng-click="vm.ctrl.reset ()") Close

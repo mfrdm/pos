@@ -41,7 +41,7 @@ describe ('Occupancy Model', function (){
 		});	
 	});
 
-	describe ('Get total', function (){
+	xdescribe ('Get total', function (){
 		var order, val;
 		beforeEach (function (){
 			val = {
@@ -217,6 +217,5 @@ describe ('Occupancy Model', function (){
 
 		it ('should return correct total after redeem usage. Apply new usage as if it was the original')
 	});
-
 
 })

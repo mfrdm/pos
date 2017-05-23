@@ -161,8 +161,8 @@ function Checkin() {
 
 	this.readCheckinList = function (req, res, next) {
 		var today = moment ();
-		var start = req.query.start ? moment(req.query.start) : moment (today.format ('YYYY-MM-DD'));
-		var end = req.query.end ? moment(req.query.end + ' 23:59:59') : moment (today.format ('YYYY-MM-DD') + ' 23:59:59');
+		var start = req.query.start ? new Date (req.query.start) : new Date (today.format ('YYYY-MM-DD'));
+		var end = req.query.end ? new Date (req.query.end + ' 23:59:59') : new Date (today.format ('YYYY-MM-DD') + ' 23:59:59');
 		var checkinStatus = req.query.status ? req.query.status : 1; // get checked-in by default
 
 		var stmt = 	{

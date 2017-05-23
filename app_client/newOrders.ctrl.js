@@ -1,8 +1,8 @@
 (function (){
 	angular.module('posApp')
-		.controller('NewOrdersCtrl', ['OrderService', 'CheckinService', '$scope', '$window','$route', NewOrdersCtrl])
+		.controller('NewOrdersCtrl', ['OrderService', 'CustomerService', '$scope', '$window','$route', NewOrdersCtrl])
 
-	function NewOrdersCtrl (OrderService, CheckinService, $scope, $window, $route){
+	function NewOrdersCtrl (OrderService, CustomerService, $scope, $window, $route){
 		var LayoutCtrl = $scope.$parent.layout;
 		var vm = this;
 
@@ -208,7 +208,7 @@
 		};
 
 		vm.ctrl.order.searchCustomer =  function (){
-			CheckinService.searchCustomers (vm.model.search.order.username).then(
+			CustomerService.readCustomers (vm.model.search.order.username).then(
 				function success (res){
 					if (!res.data){
 						// unexpected result. should never exist
@@ -233,16 +233,18 @@
 
 		vm.ctrl.order.selectCustomer = function (index){
 			vm.model.ordering.customer = {
-				firstname: vm.model.search.order.customers [index].firstname,
-				lastname: vm.model.search.order.customers [index].lastname,
-				middlename: vm.model.search.order.customers [index].middlename,
 				fullname: vm.model.search.order.customers [index].fullname,
 				_id: vm.model.search.order.customers [index]._id,
 				phone: vm.model.search.order.customers [index].phone[0],
 				email: vm.model.search.order.customers [index].email[0]	,
 				isStudent: vm.model.search.order.customers [index].isStudent,
+
 			}
-			
+
+			if (vm.model.search.order.customers [index].checkinStatus){
+				vm.model.ordering.occupancyId = vm.model.search.order.customers [index].occupancy.pop ();
+			}
+
 			vm.model.search.order.username = vm.model.search.order.customers[index].fullname + (vm.model.search.order.customers [index].email[0] ? ' / ' + vm.model.search.order.customers [index].email[0] : '') + (vm.model.search.order.customers [index].phone[0] ? ' / ' + vm.model.search.order.customers [index].phone[0] : '');
 
 			vm.ctrl.order.resetSearchCustomerDiv ();
@@ -315,6 +317,7 @@
 		}
 
 		vm.ctrl.order.confirm = function (){
+			console.log (vm.model.ordering)
 			OrderService.confirmOrder (vm.model.ordering).then (
 				function success (res){
 					vm.ctrl.reset ();

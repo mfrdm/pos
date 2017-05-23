@@ -34,7 +34,6 @@ xdescribe ('Create an order', function (){
 				{_id: '58eb474538671b4224745192', productName: 'Poca', quantity: 2, price: 10000},
 			],
 			customer: {},
-			occupancyId: '58eb474538671b4224745192',
 			storeId: "58eb474538671b4224745192",
 			staffId: "58eb474538671b4224745192",
 
@@ -71,7 +70,7 @@ xdescribe ('Create an order', function (){
 
 	});
 
-	it ('should create an order successully', function (done){
+	it ('should create an order successully when order with check-in', function (done){
 		chai.request (server)
 			.post ('/orders/checkout')
 			.send ({data: order})
@@ -86,7 +85,7 @@ xdescribe ('Create an order', function (){
 				newOrder = res.body.data;
 				res.should.have.status (200);
 				res.body.data.status.should.to.equal (2);
-				res.body.data.occupancyId.should.to.exist;
+				res.body.data.should.to.not.have.property ('occupancyId');
 				res.body.data.total.should.to.equal (expectedTotal);
 				res.body.data.orderline.map (function (x, i, arr){
 					x.subTotal.should.to.equal (expectedSubTotal[i]);
@@ -95,6 +94,8 @@ xdescribe ('Create an order', function (){
 				done ();
 			});
 	});
+
+	it ('should add occupancyId if the customer is checked-in')
 });
 
 describe ('Pay for an order', function (){
@@ -185,7 +186,7 @@ describe ('Pay for an order', function (){
 
 });
 
-describe ('Read orders', function (){
+xdescribe ('Read orders', function (){
 	var query, order, customer, newOrder, newCustomer;
 	beforeEach (function (done){
 		query = {storeId: '58eb474538671b4224745192'};
@@ -327,7 +328,7 @@ describe ('Read orders', function (){
 	});
 });
 
-describe ('Update an order', function (){
+xdescribe ('Update an order', function (){
 	// later
 });
 

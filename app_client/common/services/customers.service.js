@@ -20,7 +20,7 @@ function CustomerService ($http){
 	this.readCustomers = function(input){
 		return $http({
 			method:'GET',
-			url:'/checkin/search-customers',
+			url:'/customers',
 			params: {input: input}
 		});
 	}	
