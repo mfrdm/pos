@@ -243,7 +243,8 @@
 		vm.ctrl.register.showSuccessMessage = function (){
 			// $('#registerConfirmDiv').foundation ('close');
 			vm.ctrl.register.closeConfirmDiv ();
-			$('#createAccountSuccess').foundation('open');
+			vm.model.dom.register.successDiv = true;
+			// $('#createAccountSuccess').foundation('open');
 		};
 
 		vm.ctrl.register.showFailureMessage = function (){
