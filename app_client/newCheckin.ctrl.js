@@ -566,14 +566,17 @@
 		};	
 
 		vm.ctrl.checkout.getInvoice = function (occupancy){
+			vm.ctrl.showLoader ();
 			vm.model.dom.checkOutDiv = true;
 			CheckinService.readInvoice(occupancy._id).then(
 				function success(res){
+					vm.ctrl.hideLoader ();
 					vm.model.checkingout.occupancy = res.data.data;
 					vm.ctrl.addServiceLabel (vm.model.checkingout.occupancy.service);
 					// vm.ctrl.addGroupParent (vm.model.checkingout.occupancy.service) // Build later
 				}, 
 				function error(err){
+					vm.ctrl.hideLoader ();
 					console.log(err)
 				}
 			);
@@ -581,13 +584,16 @@
 		};
 
 		vm.ctrl.checkout.checkout = function (){
+			vm.ctrl.showLoader ();
 			CheckinService.checkout(vm.model.checkingout.occupancy)
 				.then(function success(res){
-					vm.ctrl.reset();
+					vm.ctrl.hideLoader ();
 					$('#askCheckout').foundation('close');
 					$('#announceCheckoutSuccess').foundation('open');
-
+					vm.ctrl.reset();
 				}, function error(err){
+					vm.ctrl.hideLoader ();
+					// show message
 					console.log(err)
 				})
 		};

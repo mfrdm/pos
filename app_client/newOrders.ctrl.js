@@ -334,6 +334,14 @@
 			//
 		}
 
+		vm.ctrl.showLoader = function (){
+			LayoutCtrl.ctrl.showTransLoader ();
+		};
+
+		vm.ctrl.hideLoader = function (){
+			LayoutCtrl.ctrl.hideTransLoader ();
+		};	
+
 		vm.ctrl.reset = function (){
 			$route.reload ();
 		};		
