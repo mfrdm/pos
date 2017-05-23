@@ -15,9 +15,8 @@ var customersSchema = mongoose.Schema({
 	middlename: {type:String},
 	lastname: {type:String, required: true},
 	fullname: {type: String},
-	// gender: {type: Number, required: true},
 	gender: Number,
-	// birthday: {type: Date, required: true},
+	birthday: {type: Date, required: true},
 	phone: [{type: String}],
 	email: [{type: String}], // manuallt required in some cases
 	edu: [eduSchema],

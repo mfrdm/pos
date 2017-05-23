@@ -71,12 +71,12 @@ function CustomersCtrl() {
 		req.body.data.phone = validator.trim (req.body.data.phone);
 		req.body.data.email = validator.trim (req.body.data.email);
 
-		if (!validator.isEmail (req.body.data.email)){
+		if (req.body.data.email && !validator.isEmail (req.body.data.email)){
 			next (new Error ('Invalid email: ' + req.body.data.email));
 			return
 		};
 
-		if (!validator.isMobilePhone (req.body.data.phone, 'vi-VN')){
+		if (req.body.data.phone && !validator.isMobilePhone (req.body.data.phone, 'vi-VN')){
 			next (new Error ('Invalid phone: ' + req.body.data.phone));
 			return
 		};
