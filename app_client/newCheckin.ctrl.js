@@ -98,17 +98,21 @@
 				buttonToogle:'Checkin',
 				search:{
 					label:'Search Customers',
-					placeholder:'Enter phone/email to search customers'
+					placeholder:'Enter phone/email to search customers',
+					message:{
+						notFound:'Not Found Customer: '
+					},
+					list:{
+						number:'No',
+						fullname:'',
+						birthday:'',
+						email:'',
+						phone:''
+					}
 				},
 				service:{
 					title:'Choose Service',
 					label:'Service',
-					options:{
-						'Group Common':'group common',
-						'Individual Common':'individual common',
-						'Group private for 10-15':'small group private',
-						'Group private for 25-30':'medium group private'
-					}
 				},
 				product:{
 					title:'Choose Product',
@@ -150,7 +154,17 @@
 				buttonToogle:'Checkin',
 				search:{
 					label:'Khách hàng',
-					placeholder:'Enter phone/email to search customers'
+					placeholder:'Enter phone/email to search customers',
+					message:{
+						notFound:'Không tìm thấy khách hàng: '
+					},
+					list:{
+						number:'No',
+						fullname:'Họ và tên',
+						birthday:'Sinh nhật',
+						email:'Email',
+						phone:'Điện thoại'
+					}
 				},
 				service:{
 					title:'Chọn dịch vụ',
@@ -173,10 +187,11 @@
 			checkinList:{
 				header:{
 					number:'No',
-					fullname:'Họ và tên	',
+					fullname:'Họ và tên',
 					checkinHour:'Checkin',
 					checkoutHour:'Checkout',
-					service:'Dịch vụ'
+					service:'Dịch vụ',
+					checkout:'Checkout'
 				},
 				body:{
 					message: {
@@ -185,6 +200,8 @@
 				},
 			}
 		};
+
+		vm.model.dom.data.selected = vm.model.dom.data.vn;
 
 		vm.ctrl.addServiceLabel = function (service){
 			if (service.name.toLowerCase () == 'group common'){

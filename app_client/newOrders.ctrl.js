@@ -63,6 +63,9 @@
 					},
 					placeholder:{
 						username:'Enter phone, email, or full name to search'
+					},
+					message:{
+						notFound:'Not found customer: '
 					}
 				},
 				product:{
@@ -87,6 +90,8 @@
 			}
 		};
 
+
+
 		// FIX format
 		vm.model.dom.data.vn = {
 			title:'Order List',
@@ -97,6 +102,15 @@
 					},
 					placeholder:{
 						username:'Nhập sđt, email, hoặc tên để tìm kiếm khách hàng'
+					},
+					message:{
+						notFound:'Không tìm thấy khách hàng: '
+					},
+					list:{
+						number:'No',
+						fullname:'Họ và tên',
+						email:'Email',
+						phone:'Số điện thoại'
 					}
 				},
 				product:{
@@ -121,6 +135,7 @@
 			}				
 		};
 		
+		vm.model.dom.data.selected = vm.model.dom.data.vn
 		vm.ctrl = {
 			order: {},
 			orderedList: {}

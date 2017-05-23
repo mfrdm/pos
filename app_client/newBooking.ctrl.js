@@ -50,6 +50,7 @@
 		};
 
 		vm.model.dom.data.eng = {
+			title:'Booking List',
 			modelLanguage: 'eng',
 			location: [
 				{name: 'Green Space Chua Lang', label: 'Green Space Chua Lang'}
@@ -71,17 +72,44 @@
 		};
 
 		vm.model.dom.data.vn = {
+			title:'Booking List',
 			modelLanguage: 'vn',
 			location: [
 				{name: 'Green Space Chua Lang', label: 'Green Space Chùa Láng'}
 			],
 			booking: {
-				label: {
-					username: 'Khách hàng'
+				search:{
+					label: {
+						username: 'Khách hàng'
+					},
+					placeholder: {
+						username: 'Nhập sđt, email, hoặc tên để tìm kiếm khách hàng'
+					},
+					message:{
+						notFound:'Không tìm thấy kết quả'
+					},
+					header:{
+						number:'No',
+						fullname:'Họ và tên',
+						email:'Email',
+						phone: 'Sdt'
+					}
 				},
-				placeholder: {
-					username: 'Nhập sđt, email, hoặc tên để tìm kiếm khách hàng'
-				},
+				location:'Địa Điểm',
+				service:'Dịch vụ',
+				quantity:'Số lượng thành viên',
+				checkinDate:'Check-in ngày',
+				hour:'Giờ',
+				minute:'Phút',
+				spendHours:'Số giờ sử dụng',
+				otherRequirements:'Yêu cầu khác'
+				
+			},
+			bookingList:{
+				number:'No',
+				fullname:'Tên',
+				service:'Dịch vụ',
+				checkin:'Checkin'
 			},
 			noResult: 'Không tìm thấy kết quả',
 			search: {
@@ -92,6 +120,8 @@
 		};
 
 		vm.model.dom.data.selected = {};
+
+		vm.model.dom.data.selected = vm.model.dom.data.vn
 
 		vm.ctrl.bookingList.fetch = function (){
 			var q = {

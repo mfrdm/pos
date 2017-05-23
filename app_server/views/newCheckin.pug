@@ -1,6 +1,6 @@
 div(class="columns row")
 	div(class="small-12 column")
-		h2 Check-in List
+		h2 {{vm.model.dom.data.selected.title}}
 	
 	// SETTING
 	div(class="row column")
@@ -8,7 +8,7 @@ div(class="columns row")
 			ul(class="menu")
 				li
 					a(class="button primary" ng-click="vm.ctrl.toggleCheckInDiv()") 
-						span(class="show-for-large") Check-in
+						span(class="show-for-large") Checkin
 						i(class="material-icons customIcon hide-for-large") add
 		// FILTER CONTROLLER
 		//div(class="column small-9")
@@ -44,11 +44,11 @@ div(class="columns row")
 			div(class="row column")
 				form(ng-submit="vm.ctrl.checkin.searchCustomer()")
 					div(class="row column")
-						label Khách hàng
+						label {{vm.model.dom.data.selected.checkin.search.label}}
 							input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.model.search.checkin.username' required="true")
 					div(ng-show='vm.model.dom.checkin.search.message.notFound' class='marginB15')
 						div(class='callout alert')
-							p {{ vm.model.dom.data.selected.search.message.notFound + ' "' + vm.model.search.checkin.username + '". ' }}
+							p {{ vm.model.dom.data.selected.checkin.search.message.notFound + ' "' + vm.model.search.checkin.username + '". ' }}
 								span: a(href='/#!/customers') {{ vm.model.dom.data.selected.createCustomer}}			
 					//div(ng-show='vm.model.dom.messageSearchAlreadyCheckin' class='marginB15')
 						div(class='callout alert')
@@ -58,11 +58,11 @@ div(class="columns row")
 							table(class="hover unstriped borderAll")
 								thead
 									tr
-										th No
-										th Full Name
-										th Birthday
-										th Email
-										th Phone				
+										th {{vm.model.dom.data.selected.checkin.search.list.number}}
+										th {{vm.model.dom.data.selected.checkin.search.list.fullname}}
+										th {{vm.model.dom.data.selected.checkin.search.list.birthday}}
+										th {{vm.model.dom.data.selected.checkin.search.list.email}}
+										th {{vm.model.dom.data.selected.checkin.search.list.phone}}				
 								tbody
 									tr(ng-repeat='result in vm.model.search.checkin.customers' ng-click='vm.ctrl.checkin.selectCustomer($index)' class="pointerCursor")
 										td {{ $index + 1 }}
@@ -119,10 +119,10 @@ div(class="columns row")
 				// CODES
 				div(class="row column basicBox")
 					div(class="column row")
-						h3(class="paddingLR15 fontSize20 fontWeight600") Điền code giảm giá
+						h3(class="paddingLR15 fontSize20 fontWeight600") {{vm.model.dom.data.selected.checkin.promoteCode.title}}
 					div(class="column row")
 						div(class='column small-12 large-11')
-							label Code
+							label {{vm.model.dom.data.selected.checkin.promoteCode.label}}
 								input(type='text' ng-model='vm.model.temporary.checkin.codeName')
 						div(class='column large-1 show-for-large iconAdd')
 							i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.addCode()') add
@@ -202,15 +202,15 @@ div(class="columns row")
 			table(class="borderAll")
 				thead
 					tr
-						th {{vm.model.dom.data.selected.headerNo}}
-						th {{vm.model.dom.data.selected.headerName}}
-						//- th {{vm.model.dom.data.selected.headerBirthday}}
-						th(ng-if='vm.model.dom.seeMore == true') {{vm.model.dom.data.selected.headerCheckinDate}}
-						th {{vm.model.dom.data.selected.headerCheckinTime}}
-						th(ng-if='vm.model.dom.seeMore == true')  {{vm.model.dom.data.selected.headerCheckoutDate}}
-						th {{vm.model.dom.data.selected.headerCheckoutTime}}
-						th {{vm.model.dom.data.selected.headerService}}
-						th {{vm.model.dom.data.selected.headerCheckout}}
+						th {{vm.model.dom.data.selected.checkinList.header.number}}
+						th {{vm.model.dom.data.selected.checkinList.header.fullname}}
+						//- th {{vm.model.dom.data.selected.checkinList.header.headerBirthday}}
+						th(ng-if='vm.model.dom.seeMore == true') {{vm.model.dom.data.selected.checkinList.header.checkinHour}}
+						th {{vm.model.dom.data.selected.checkinList.header.checkinHour}}
+						th(ng-if='vm.model.dom.seeMore == true')  {{vm.model.dom.data.selected.checkinList.header.checkoutHour}}
+						th {{vm.model.dom.data.selected.checkinList.header.checkoutHour}}
+						th {{vm.model.dom.data.selected.checkinList.header.service}}
+						th {{vm.model.dom.data.selected.checkinList.header.checkout}}
 						//th {{vm.model.dom.data.selected.headerEdit}}
 				tbody
 					tr(ng-repeat='occupancy in vm.model.checkedinList.data')

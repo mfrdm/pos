@@ -39,21 +39,21 @@ div(class="row columns")
 			div(class="row column")
 				form(ng-submit="vm.ctrl.order.searchCustomer()")
 					div(class="row column")
-						label {{ vm.model.dom.data.selected.order.label.username }}
+						label {{ vm.model.dom.data.selected.order.search.label.username }}
 							input(type="text" placeholder="{{ vm.model.dom.data.selected.order.placeholder.username }}" ng-model='vm.model.search.order.username' required="true")
 					div(ng-show='vm.model.dom.order.search.message.notFound' class='marginB15')
 						div(class='callout alert')
-							p {{ vm.model.dom.data.selected.search.message.notFound + ' "' + vm.model.search.order.username + '". ' }}
+							p {{ vm.model.dom.data.selected.order.search.message.notFound + ' "' + vm.model.search.order.username + '". ' }}
 								span: a(href='/#!/customers') {{ vm.model.dom.data.selected.createCustomer}}			
 					div(ng-show="vm.model.dom.order.customerSearchResult" class="marginB15")
 						div(class="table-scroll")
 							table(class="hover unstriped borderAll")
 								thead
 									tr
-										th No
-										th Full name
-										th Email
-										th Phone				
+										th {{vm.model.dom.data.selected.order.search.list.number}}
+										th {{vm.model.dom.data.selected.order.search.list.fullname}}
+										th {{vm.model.dom.data.selected.order.search.list.email}}
+										th {{vm.model.dom.data.selected.order.search.list.phone}}				
 								tbody
 									tr(ng-repeat='result in vm.model.search.order.customers' ng-click='vm.ctrl.order.selectCustomer($index)' class="pointerCursor")
 										td {{ $index + 1 }}
@@ -66,13 +66,13 @@ div(class="row columns")
 				div(class='basicBox row column paddingTB15 marginB15')
 					// ADD ITEMS
 					div(class="column row")
-						h3(class="paddingLR15 fontSize20 fontWeight600") Chọn sản phẩm
+						h3(class="paddingLR15 fontSize20 fontWeight600") {{vm.model.dom.data.selected.order.product.title}}
 					div(class="column row")
 						div(class="column small-8")
-							label {{vm.model.dom.data.selected.fieldAddItems}}
+							label {{vm.model.dom.data.selected.order.product.label}}
 								select(ng-model="vm.model.temporary.ordering.item.name" ng-options="item.name as item.name for item in vm.model.dom.data.selected.items track by item.name")
 						div(class="column small-3")
-							label {{vm.model.dom.data.selected.fieldQuantity}}
+							label {{vm.model.dom.data.selected.order.product.quantity}}
 								input( ng-model="vm.model.temporary.ordering.item.quantity" string-to-number type="number" min='0')
 						div(class="column small-1 iconAdd")
 							i(class="material-icons customIcon" ng-click='vm.ctrl.order.addItem (); $event.preventDefault()') add
@@ -101,11 +101,11 @@ div(class="row columns")
 			table(class="borderAll")
 				thead
 					tr
-						th {{ vm.model.dom.data.selected.headerNo }}
-						th {{ vm.model.dom.data.selected.headerName }}
-						th {{ vm.model.dom.data.selected.fieldItem }}
-						th {{ vm.model.dom.data.selected.itemQuantity }}
-						th {{ vm.model.dom.data.selected.createdAt }}
+						th {{vm.model.dom.data.selected.orderList.header.number}}
+						th {{vm.model.dom.data.selected.orderList.header.fullname}}
+						th {{vm.model.dom.data.selected.orderList.header.product}}
+						th {{vm.model.dom.data.selected.orderList.header.quantity}}
+						th {{vm.model.dom.data.selected.orderList.header.time}}
 				tbody
 					tr(ng-repeat='order in vm.model.orderedList')
 						td {{ $index + 1 }}
@@ -115,7 +115,7 @@ div(class="row columns")
 						td {{ order.createdAt | date:'dd/MM/yyyy' }} {{ order.createdAt | date:'shortTime' }}
 
 		div(class='emptyResult text-center' ng-if='vm.model.orderedList.length == 0')
-			p {{ vm.model.dom.data.selected.noResult }}
+			p {{vm.model.dom.data.selected.orderList.body.message.notFound}}
 
 // ORDER INVOICE
 div(class="fullBox row column" ng-show='vm.model.dom.order.confirm')
