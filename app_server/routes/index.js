@@ -15,13 +15,14 @@ var hrCtrl = require("../controllers/hr");
 var biCtrl = require("../controllers/bi");
 var assetsCtrl = require("../controllers/assets");
 var CustomersCtrl = require("../controllers/customers");
-var finCtrl = require("../controllers/fin");
+// var finCtrl = require("../controllers/fin");
 var companiesCtrl = require("../controllers/companies");
 var OthersCtrl = require("../controllers/others");
 var deptsCtrl = require("../controllers/depts");
 var productsCtrl = require("../controllers/products");
 var promoCodesCtrl = require ('../controllers/promoCodes.ctrl');
 var OrdersCtrl = require ('../controllers/orders.ctrl'); 
+var TransactionCtrl = require ('../controllers/transactions.ctrl');
 
 router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
 router.get('/auth/google/callback', 
@@ -98,10 +99,12 @@ router.get('/customers/customer/:cusId', CustomersCtrl.readOneCustomerById);
 router.post('/customers/create', CustomersCtrl.createOneCustomer);
 router.post('/customers/customer/:cusId/edit', CustomersCtrl.updateOneCustomer);
 
-router.get('/fin/costs', finCtrl.readSomeCosts);
-router.post('/fin/costs/create', finCtrl.createOneCost);
-router.get('/fin/costs/cost/:costId', finCtrl.readOneCostById);
-router.post('/fin/costs/cost/:costId/edit', finCtrl.updateOneCost);
+// router.get('/fin/costs', finCtrl.readSomeCosts);
+// router.post('/fin/costs/create', finCtrl.createOneCost);
+// router.get('/fin/costs/cost/:costId', finCtrl.readOneCostById);
+// router.post('/fin/costs/cost/:costId/edit', finCtrl.updateOneCost);
+
+router.post ('/transactions/create', TransactionCtrl.createATrans);
 
 router.get('/company', companiesCtrl.readOneCompById);
 router.get('/company/depts', deptsCtrl.readSomeDepts);

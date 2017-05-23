@@ -9,10 +9,11 @@ var companiesCtrl = require("../controllers/companies");
 var deptsCtrl = require("../controllers/depts");
 var productsCtrl = require("../controllers/products");
 var ordersCtrl = require("../controllers/orders");
-var transCtrl = require("../controllers/transactions");
+var transCtrl = require("../controllers/transactions.ctrl");
 var bookingCtrl = require("../controllers/bookings");
 var assetsCtrl = require("../controllers/assets");
 var attendancesCtrl = require("../controllers/attendances");
+var OccupanciesCtrl = require ("../controllers/occupancies.ctrl");
 
 router.post ('/register', authCtrl.register);
 router.post ('/login', authCtrl.login);
@@ -57,6 +58,8 @@ router.get('/transs/', transCtrl.readSomeTrans);
 router.get('/transs/trans/:transId', transCtrl.readOneTransById);
 router.post('/transs/create', transCtrl.createOneTrans);
 router.post('/transs/trans/:transId/edit', transCtrl.updateOneTransById);
+
+router.get ('/occupancies/total', OccupanciesCtrl.readTotal);
 
 router.get('/bookings/', bookingCtrl.readSomeBookings);
 router.get('/bookings/booking/:bookingId', bookingCtrl.readOneBookingById);

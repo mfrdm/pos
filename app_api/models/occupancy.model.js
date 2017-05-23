@@ -108,17 +108,17 @@ var OccupancySchema = new mongoose.Schema({
 	}], // expect only one code applied at a time
 	orders: [mongoose.Schema.Types.ObjectId], // id of occ
 	customer: {
-		_id: {type: mongoose.Schema.Types.ObjectId, required: true},
+		_id: {type: mongoose.Schema.Types.ObjectId},
 		fullname: {type: String},
-		phone: {type: String, required: true},
+		phone: {type: String},
 		email: {type: String}, // optional. added if exists
-		isStudent: {type: Boolean, default: false},
+		isStudent: {type: Boolean},
 	},
 	location: {
 		_id: {type: mongoose.Schema.Types.ObjectId},
 		name: String,
 	},
-	staffId: {type: mongoose.Schema.Types.ObjectId, required: true},	
+	staffId: {type: mongoose.Schema.Types.ObjectId},	
 	status: {type: Number, default: 1}, // 1: checked in, 2: paid and checked out, 3: cancel
 	createdAt: {type: Date, default: Date.now},
 	updateAt: [{
