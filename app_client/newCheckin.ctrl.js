@@ -86,9 +86,6 @@
 
 		};
 
-		vm.model.search.messageNoResult = 'No search result? Or '
-		vm.model.search.messageAlreadyCheckin = 'No User Found! Already Checked in'		
-
 		vm.model.dom.data.selected = {};
 
 		// FIX format
@@ -96,118 +93,97 @@
 		vm.model.dom.data.eng = {
 			modelLanguage: 'en',
 			title: 'Check-in List',
-			buttonCheckin: 'Checkin',
-			buttonFilter:'Filter',
 
-			selectFirstnameAZ:'Firstname A-Z',
-			selectFirstnameZA:'Firstname Z-A',
-			selectBookingFarthest: 'Checkin Time Farthest',
-			selectCheckinLastest: 'Checkin Time Lastest',
-
-			selectStatusOptionAll: 'All',
-			selectStatusOptionCheckin: 'Checkin',
-			selectStatusOptionCheckout: 'Checkout',
-
-			fieldSortBy:'Sort By',
-			fieldStatus:'Status',
-			fieldSearchByFirstname:'Search by Firstname',
-			fieldSearchByPhone:'Search by Phone',
-			fieldPhoneEmail: 'Phone/Email',
-			fieldPromotionCode: 'Promotion Code',
-			fieldService:'Service',
-			fieldItem: 'Items',
-			fieldQuantity: 'Quantity',
-			fieldOtherProducts: 'Selected Items',
-			fieldProduct:'Product',
-			fieldAddItems:'Add Items',
-			fieldChooseGroup:'Choose Group',
-			fieldCheckoutGroup:'Group',
-
-			invoiceFullname: 'Fullname',
-			invoicePhone: 'Phone',
-			invoiceOtherProducts: 'Other Products',
-			invoiceMainService:'Main Service',
-			invoicePromoteCode: 'Promote Code',
-			invoiceTotal: 'Total Money',
-
-
-			headerNo:'No',
-			headerName:'Name',
-			headerBirthday:'Birthday',
-			headerCheckinDate:'Checkin Date',
-			headerCheckinTime:'Check-in',
-			headerCheckoutDate:'Checkout Date',
-			headerCheckoutTime:'Check-out',
-			headerService:'Service',
-			headerCheckout:'Checkout',
-			headerEdit:'Edit',
-			parentGroup:'Group',
-			noResult: 'There is no result',
-			search: {
-				message: {
-					notFound: 'Not Found!'
+			checkin:{
+				buttonToogle:'Checkin',
+				search:{
+					label:'Search Customers',
+					placeholder:'Enter phone/email to search customers'
+				},
+				service:{
+					title:'Choose Service',
+					label:'Service',
+					options:{
+						'Group Common':'group common',
+						'Individual Common':'individual common',
+						'Group private for 10-15':'small group private',
+						'Group private for 25-30':'medium group private'
+					}
+				},
+				product:{
+					title:'Choose Product',
+					productName:{
+						label:'Product'
+					},
+					quantity:{
+						label:'Quantity'
+					}
+				},
+				promoteCode:{
+					title:'Add promote codes',
+					label:'Code'
 				}
 			},
+			checkinList:{
+				headers:{
+					number:'No',
+					fullname:'Fullname',
+					checkinHour:'Checkin',
+					checkoutHour:'Checkout',
+					service:'Service'
+				},
+				body:{
+					message: {
+						notFound: 'Not Found!'
+					}
+				},
+			}
 		};
 
 		// FIX format
 		// Vietnamese version
 		vm.model.dom.data.vn = {
-			modelLanguage: 'vn',
-			title: 'Checkin',
-			buttonCheckin: 'Checkin',
-			buttonFilter:'Filter',
+			modelLanguage: 'vi',
+			title: 'Check-in List',
 
-			selectFirstnameAZ:'Tên A-Z',
-			selectFirstnameZA:'Tên Z-A',
-			selectBookingFarthest: 'Checkin Z-A',
-			selectBookingLastest: 'Checkin A-Z',
-
-			selectStatusOptionAll: 'Tất cả',
-			selectStatusOptionCheckin: 'Checkin',
-			selectStatusOptionCheckout: 'Checkout',
-
-			fieldSortBy:'Sắp xếp',
-			fieldStatus:'Trạng thái',
-			fieldSearchByFirstname:'Tên',
-			fieldSearchByPhone:'Số điện thoại',
-			fieldPhoneEmail: 'Phone/Email',
-			fieldPromotionCode: 'Mã giảm giá',
-			fieldService:'Dịch vụ',
-			fieldItem: 'Sản phẩm',
-			fieldQuantity: 'Số lượng',
-			fieldOtherProducts: 'Sản phẩm đã chọn',
-			fieldProduct:'Sản phẩm',
-			fieldAddItems:'Sản phẩm',
-			fieldChooseGroup:'Chọn nhóm',
-			fieldCheckoutGroup:'Nhóm',
-
-			invoiceFullname: 'Họ và tên',
-			invoicePhone: 'Số điện thoại',
-			invoiceOtherProducts: 'Sản phẩm',
-			invoiceMainService:'Dịch vụ',
-			invoicePromoteCode: 'Mã giảm giá',
-			invoiceTotal: 'Tổng tiền',
-
-			headerNo:'No',
-			headerName:'Họ và tên',
-			headerBirthday:'Ngày sinh',
-			headerCheckinDate:'Ngày Checkin',
-			headerCheckinTime:'Check-in',
-			headerCheckoutDate:'Ngày Checkout',
-			headerCheckoutTime:'Check-out',
-			headerService:'Dịch vụ',
-			headerCheckout:'',
-			headerEdit:'Chỉnh sửa',
-			parentGroup:'Nhóm',
-			noResult: 'Không tìm thấy kết quả',
-			searchCheckinginCustomerNoResult: 'Không tìm thấy khách hàng ',
-			createCustomer: ' Create an account',
-			search: {
-				message: {
-					notFound: 'Không tìm thấy kết quả!',
+			checkin:{
+				buttonToogle:'Checkin',
+				search:{
+					label:'Khách hàng',
+					placeholder:'Enter phone/email to search customers'
+				},
+				service:{
+					title:'Chọn dịch vụ',
+					label:'Dịch vụ',
+				},
+				product:{
+					title:'Chọn sản phẩm',
+					productName:{
+						label:'Sản phẩm'
+					},
+					quantity:{
+						label:'Số lượng'
+					}
+				},
+				promoteCode:{
+					title:'Điền code giảm giá',
+					label:'Code'
 				}
-			},					
+			},
+			checkinList:{
+				header:{
+					number:'No',
+					fullname:'Họ và tên	',
+					checkinHour:'Checkin',
+					checkoutHour:'Checkout',
+					service:'Dịch vụ'
+				},
+				body:{
+					message: {
+						notFound: 'Không tìm thấy kết quả!'
+					}
+				},
+			}
 		};
 
 		vm.ctrl.addServiceLabel = function (service){

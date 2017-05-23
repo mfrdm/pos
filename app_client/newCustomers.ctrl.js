@@ -45,16 +45,28 @@
 		};
 
 		vm.model.dom.data.eng = {
+			title:'Customer List',
 			register: {
 				gender: [
 					{value: 1, label: 'Male'},
 					{value: 2, label: 'Female'},
 					{value: 3, label: 'Other'},
 				]
+			},
+			customer:{
+				lastname:'Lastname',
+				middlename:'Middlename',
+				firstname:'Firstname',
+				gender:'Gender',
+				birthday:'Birthday',
+				email:'Email',
+				phone:'Phone',
+				school:'School'
 			}
 		}
 
 		vm.model.dom.data.vn = {
+			title:'Customer List',
 			register: {
 				genders: [
 					{value: 1, label: 'Nam'},
@@ -95,9 +107,16 @@
 				    {'label':'Đại học kinh doanh công nghệ', 'value':31},
 				    {'label':'Trường khác', 'value': -1},
 				],
-				label:{
-					// 	
-				}				
+				customer:{
+					lastname:'Lastname',
+					middlename:'Middlename',
+					firstname:'Firstname',
+					gender:'Gender',
+					birthday:'Birthday',
+					email:'Email',
+					phone:'Phone',
+					school:'School'
+				}			
 			}
 		}
 
