@@ -51,22 +51,48 @@
 
 		vm.model.dom.data.eng = {
 			title:'Booking List',
-			modelLanguage: 'eng',
+			modelLanguage: 'en',
 			location: [
-				{name: 'Green Space Chua Lang', label: 'Green Space Chua Lang'}
+				{name: 'Green Space Chua Lang', label: 'Green Space Chùa Láng'}
 			],
 			booking: {
-				label: {
-					username: 'Customer'
+				search:{
+					label: {
+						username: 'Customer'
+					},
+					placeholder: {
+						username: 'Enter name/phone to search customers'
+					},
+					message:{
+						notFound:'Not found customer'
+					},
+					header:{
+						number:'No',
+						fullname:'Fullname',
+						email:'Email',
+						phone: 'Phone'
+					}
 				},
-				placeholder: {
-					username: 'Enter phone, email, or full name to search'
-				}
+				location:'Location',
+				service:'Service',
+				quantity:'Number of members',
+				checkinDate:'Checkin Date',
+				hour:'Hour',
+				minute:'Minute',
+				spendHours:'Spent Hours',
+				otherRequirements:'Other requirements'
+				
 			},
-			noResult: 'There is no result',
+			bookingList:{
+				number:'No',
+				fullname:'Fullname',
+				service:'Service',
+				checkin:'Checkin'
+			},
+			noResult: 'Not found result',
 			search: {
 				message: {
-					notFound: 'Not Found!'
+					notFound: 'Not found result',
 				}
 			},						
 		};
