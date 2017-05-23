@@ -108,19 +108,22 @@
 				    {'label':'Trường khác', 'value': -1},
 				],
 				customer:{
-					lastname:'Lastname',
-					middlename:'Middlename',
-					firstname:'Firstname',
-					gender:'Gender',
-					birthday:'Birthday',
+					lastname:'Họ',
+					middlename:'Tên đệm',
+					firstname:'Tên',
+					gender:'Giới tính',
+					birthday:'Ngày sinh',
 					email:'Email',
 					phone:'Phone',
-					school:'School'
+					school:'Trường',
+					selectSchool:'Chọn Trường'
 				}			
 			}
 		}
 
 		vm.model.dom.data.selected = {};
+
+		vm.model.dom.data.selected = vm.model.dom.data.vn
 
 		vm.ctrl.toggleRegisterDiv = function(){
 			if (!vm.model.dom.register.registerDiv) {
