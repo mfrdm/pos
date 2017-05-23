@@ -93,23 +93,33 @@
 		vm.model.dom.data.eng = {
 			modelLanguage: 'en',
 			title: 'Check-in List',
-			buttonCheckin: 'Checkin',
-			buttonFilter:'Filter',
 
-			selectFirstnameAZ:'Firstname A-Z',
-			selectFirstnameZA:'Firstname Z-A',
-			selectBookingFarthest: 'Checkin Time Farthest',
-			selectCheckinLastest: 'Checkin Time Lastest',
+			checkin:{
+				buttonToogle:'Checkin',
+				search:{
+					label:'Phone/Email',
+					placeholder:'Enter phone/email to search customers'
+				},
+				service:{
+					title:'Choose Service',
+					label:'Service',
+				}
+			}
 
-			selectStatusOptionAll: 'All',
-			selectStatusOptionCheckin: 'Checkin',
-			selectStatusOptionCheckout: 'Checkout',
+			// selectFirstnameAZ:'Firstname A-Z',
+			// selectFirstnameZA:'Firstname Z-A',
+			// selectBookingFarthest: 'Checkin Time Farthest',
+			// selectCheckinLastest: 'Checkin Time Lastest',
 
-			fieldSortBy:'Sort By',
-			fieldStatus:'Status',
-			fieldSearchByFirstname:'Search by Firstname',
-			fieldSearchByPhone:'Search by Phone',
-			fieldPhoneEmail: 'Phone/Email',
+			// selectStatusOptionAll: 'All',
+			// selectStatusOptionCheckin: 'Checkin',
+			// selectStatusOptionCheckout: 'Checkout',
+
+			// fieldSortBy:'Sort By',
+			// fieldStatus:'Status',
+			// fieldSearchByFirstname:'Search by Firstname',
+			// fieldSearchByPhone:'Search by Phone',
+			fieldPhoneEmail: '',
 			fieldPromotionCode: 'Promotion Code',
 			fieldService:'Service',
 			fieldItem: 'Items',

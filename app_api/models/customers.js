@@ -17,7 +17,7 @@ var customersSchema = mongoose.Schema({
 	fullname: {type: String},
 	// gender: {type: Number, required: true},
 	gender: Number,
-	// birthday: {type: Date, required: true},
+	birthday: {type: Date},
 	phone: [{type: String}],
 	email: [{type: String}], // manuallt required in some cases
 	edu: [eduSchema],
