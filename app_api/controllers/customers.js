@@ -24,7 +24,6 @@ function CustomerCtrl() {
 		dbHelper.updateOneById(req, res, CustomersModel, 'cusId')
 	};
 
-
 	this.createManyCustomers = function (req, res, next){
 		var input = req.body.data;
 		if (typeof input == 'string'){

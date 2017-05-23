@@ -5,7 +5,6 @@
 
 
 	function BookingCtrl ($scope, $route,bookingService, otherService, $window) {
-
 		var vm = this;
 		vm.tab = 'tab-main';
 		vm.look = {};

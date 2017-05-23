@@ -192,7 +192,7 @@ label {
 
 /* Standard box */
 .stdBox {
-
+	margin-bottom: 45px;
 }
 
 .stdBox > .stdBox {
