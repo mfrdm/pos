@@ -261,3 +261,9 @@ label {
 	}
 
 }
+
+@media print, screen and (max-width: 64rem){
+	.full-width-small{
+		width:100%;
+	}
+}
