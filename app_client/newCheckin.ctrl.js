@@ -620,7 +620,8 @@
 		};
 
 		// FIX: should validate after adding code
-		vm.ctrl.checkin.validateCode = function (del){
+		vm.ctrl.checkin.validateCode = function (del=false){//del == true when click delete promocode button
+
 			if(vm.model.checkingin.occupancy.customer.fullname){
 				var codes = [];
 				if (vm.model.checkingin.occupancy.promocodes && vm.model.checkingin.occupancy.promocodes.length){
