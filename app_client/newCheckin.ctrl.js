@@ -475,7 +475,7 @@
 			if (vm.model.checkingin.occupancy.promocodes){
 				vm.model.checkingin.occupancy.promocodes.splice (index, 1);
 				vm.model.temporary.checkin.codeNames.splice (index, 1);
-				vm.ctrl.checkin.validateCode()
+				vm.ctrl.checkin.validateCode(true)
 			}
 		};
 
@@ -620,7 +620,7 @@
 		};
 
 		// FIX: should validate after adding code
-		vm.ctrl.checkin.validateCode = function (){
+		vm.ctrl.checkin.validateCode = function (del){
 			if(vm.model.checkingin.occupancy.customer.fullname){
 				var codes = [];
 				if (vm.model.checkingin.occupancy.promocodes && vm.model.checkingin.occupancy.promocodes.length){
@@ -650,7 +650,9 @@
 						console.log(codes, foundCodes, vm.model.temporary.checkin.codeNames)
 						if (foundCodes.length >= codes.length){
 							vm.model.dom.checkin.invalidCode = false;
-							vm.ctrl.checkin.confirm ();
+							if(del == false){
+								vm.ctrl.checkin.confirm ();
+							}
 						}else{
 							vm.model.dom.checkin.invalidCode = true
 							vm.model.temporary.checkin.wrongCodes = codes.filter(function(code){
