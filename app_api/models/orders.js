@@ -30,7 +30,7 @@ var ordersSchema = new mongoose.Schema({
 	paymentMethod: Number, // required. card, cash, local account
 	occupancyId: mongoose.Schema.Types.ObjectId,
 	orderline: [{
-		_id: {type: mongoose.Schema.Types.ObjectId, required: true},
+		_id: {type: mongoose.Schema.Types.ObjectId},
 		productName: {type: String, required: true},
 		quantity: {type: String, default: 1, required: true},
 		price: {type: Number, required: true},
