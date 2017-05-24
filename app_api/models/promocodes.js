@@ -43,11 +43,11 @@ var redeemUsage = function (code, usage){
 
 	code = code ? code.toLowerCase () : code;
 
-	if (code === 'free1hourcommon'){ // change name later
+	if (code === 'V01H06'){ // change name later
 		if (usage <= 1) usage = 0;
 		else usage = usage - 1;
 	}
-	else if (code === 'free2hourscommon'){ // change name later
+	else if (code === 'V_02H06'){ // change name later
 		if (usage <= 2) usage = 0;
 		else usage = usage - 2;		
 	}
@@ -72,9 +72,7 @@ var redeemUsage = function (code, usage){
 // involve more than one type of redeem: total, usage, and price.
 // assume codes are checked and can be used concurrecy and in correct order
 var redeemMixed = function (code, usage, price, productName){
-
 	var total;
-
 	productName = productName ? productName.toLowerCase() : productName;
 	code = code ? code.toLowerCase () : code;
 

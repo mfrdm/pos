@@ -53,6 +53,8 @@ router.get('/orders/', ordersCtrl.readSomeOrders);
 router.get('/orders/order/:orderId', ordersCtrl.readOneOrderById);
 router.post('/orders/create', ordersCtrl.createOneOrder);
 router.post('/orders/order/:orderId/edit', ordersCtrl.updateOneOrderById);
+router.get('/orders/total', ordersCtrl.readTotal);
+router.get('/orders/orderline', ordersCtrl.readOrderline);
 
 router.get('/transs/', transCtrl.readSomeTrans);
 router.get('/transs/trans/:transId', transCtrl.readOneTransById);

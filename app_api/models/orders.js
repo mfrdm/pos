@@ -51,7 +51,7 @@ var ordersSchema = new mongoose.Schema({
 		_id: {type: mongoose.Schema.Types.ObjectId},
 		name: String,
 	},
-	staffId: {type: mongoose.Schema.Types.ObjectId, required: true},	
+	staffId: {type: mongoose.Schema.Types.ObjectId},	
 	status: {type: Number, default: 2}, // 1: paid, 2: not paid yet
 	createdAt: {type: Date, default: Date.now},
 	updateAt: [{

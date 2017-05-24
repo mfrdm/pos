@@ -10,11 +10,17 @@ function OccupanciesCtrl (){
 	}
 
 	this.readTotal = function (req, res, next){
-		var today = moment ();
-		var start = req.query.start ? new Date (req.query.start) : new Date (today.format ('YYYY-MM-DD'));
-		var end = req.query.end ? new Date (req.query.end + ' 23:59:59') : new Date (today.format ('YYYY-MM-DD') + ' 23:59:59');
+		var startHasMin = req.query.start ? (req.query.start.split (' ').length > 1 ? true : false) : false;
+		var endHasMin = req.query.end ? (req.query.end.split (' ').length > 1 ? true : false) : false;
 
-		var stmt = 	{
+		var start = req.query.start ? (startHasMin ? moment (req.query.start) : moment (req.query.start).hour(0).minute(0)) : moment().hour(0).minute(0);
+		var end = req.query.end ? (endHasMin ? moment (req.query.end) : moment (req.query.end).hour(23).minute(59)) : moment().hour(23).minute(59);
+
+		// fix timezone problems
+		start = new Date (start);
+		end = new Date (end);
+
+		var conditions = {
 			checkoutTime: {
 				$gte: start, 
 				$lte: end,
@@ -23,17 +29,26 @@ function OccupanciesCtrl (){
 		};
 
 		if (req.query.storeId){
-			stmt['location._id'] = req.query.storeId;
+			conditions['location._id'] = req.query.storeId;
 		}
 
 		if (req.query.service){
-			stmt['service.name'] = {$in: []};
+			conditions['service.name'] = {$in: []};
 			req.query.service.map (function (x, i, arr){
-				stmt['service.name'].$in.push (x.toLowerCase ());
+				conditions['service.name'].$in.push (x.toLowerCase ());
 			})
 		}
 
-		var q = Occupancy.aggregate ([{$match: stmt}, {$group: {_id: '$service.name', total: {$sum: "$total"}}}]);
+		var q = Occupancy.aggregate ([
+			{
+				$match: conditions
+			}, 
+			{
+				$group: {
+					_id: '$service.name', total: {$sum: "$total"}
+				}
+			}
+		]);
 
 		q.exec(function (err, occ){
 				if (err){
