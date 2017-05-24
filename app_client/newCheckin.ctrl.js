@@ -42,6 +42,9 @@
 			checkedinList: {
 				data: [],
 			},
+			checkinListEachPage:{
+				data:[]
+			},
 			checkingCustomer:{
 				
 			},
@@ -59,9 +62,11 @@
 					search: {
 						message: {
 							notFound: false,
+
 						}
 						
 					},
+					invalidCode:false,
 					products: [],
 				},
 				checkedinList: true,
@@ -81,6 +86,32 @@
 					item: {},
 					selectedItems: [],
 					codeNames: [],
+					wrongCodes: []
+				},
+				checkout:{
+					note:''
+				}
+			},
+			filter:{
+				orderBy:'',
+				orderOptions:{
+					'customer.fullname': 'Tên A-Z',
+					'-customer.fullname':'Tên Z-A',
+					'checkinTime': 'Checkin A-Z',
+					'-checkinTime': 'Checkin Z-A'
+				},
+				myfilter:{
+					status:'',
+				},
+				statusOptions:{
+					0:'Tất cả', 
+					1:'Checkin', 
+					2:'Checkout'
+				},
+
+				others:{
+					customer:{
+					}
 				}
 			}
 
@@ -188,21 +219,38 @@
 					label:'Code'
 				}
 			},
+			
 			checkinList:{
 				header:{
 					number:'No',
 					fullname:'Họ và tên',
-					checkinHour:'Checkin',
-					checkoutHour:'Checkout',
+					checkinDate:'Ngày Checkin',
+					checkinHour:'Giờ Checkin',
+					checkoutDate:'Ngày Checkout',
+					checkoutHour:'Giờ Checkout',
 					service:'Dịch vụ',
 					checkout:'Checkout'
 				},
 				body:{
 					message: {
 						notFound: 'Không tìm thấy kết quả!'
-					}
+					},
 				},
-			}
+			},
+			sorting:{
+				label:'Sorting'
+			},
+			filter:{
+				status:'Status',
+				fullname:'Tên',
+				phone:'Số điện thoại'
+			},
+			pagination:{
+				itemsEachPages:5,
+				numberOfPages:''
+			},
+			seeMoreBtn:'Expand',
+			seeMoreBtnIcon : 'swap_horiz'
 		};
 
 		vm.model.dom.data.selected = vm.model.dom.data.vn;
@@ -230,6 +278,52 @@
 			}															
 		}
 
+		//Pagination
+		function pagination(){
+			vm.model.dom.data.selected.pagination.numberOfPages = Math.ceil(
+				vm.model.checkedinList.data.filter(function(ele){
+					if(vm.model.filter.myfilter.status == 0){
+						return ele
+					}else{
+						return ele.status == vm.model.filter.myfilter.status
+					}
+					
+				}).length/vm.model.dom.data.selected.pagination.itemsEachPages)
+			vm.ctrl.getNumberOfPages = function(){
+				var arr = []
+				for(var i = 1; i<vm.model.dom.data.selected.pagination.numberOfPages+1; i++){
+					arr.push(i)
+				}
+				return arr
+			}
+			vm.model.checkinListEachPage.data = vm.model.checkedinList.data.filter(function(ele){
+					if(vm.model.filter.myfilter.status == 0){
+						return ele
+					}else{
+						return ele.status == vm.model.filter.myfilter.status
+					}
+				}).slice(0, vm.model.dom.data.selected.pagination.itemsEachPages)
+			vm.ctrl.sliceCheckinList = function(i){
+				vm.model.checkinListEachPage.data = vm.model.checkedinList.data.filter(function(ele){
+					if(vm.model.filter.myfilter.status == 0){
+						return ele
+					}else{
+						return ele.status == vm.model.filter.myfilter.status
+					}
+				}).slice((i-1)*vm.model.dom.data.selected.pagination.itemsEachPages,i*vm.model.dom.data.selected.pagination.itemsEachPages)
+			}
+			vm.ctrl.showInPage = function(occ){
+				var testArr = vm.model.checkinListEachPage.data.filter(function(ele){
+					return ele.customer.phone == occ.customer.phone && ele.checkinTime == occ.checkinTime
+				})
+				if(testArr.length > 0){
+					return true
+				}else{
+					return false
+				}
+			}
+		}
+
 		vm.ctrl.getCheckedinList = function (){
 			var query = {
 				status: 4, // get both checked out and checked in
@@ -242,6 +336,11 @@
 					vm.model.checkedinList.data.map (function (x, i, arr){
 						vm.ctrl.addServiceLabel (x.service);
 					});
+					pagination()
+					vm.ctrl.changeStatus = function(){
+						pagination()
+					}
+					
 					
 				}, 
 				function error(err){
@@ -254,14 +353,26 @@
 			// 
 		}
 
-		// vm.ctrl.toggleFilterDiv = function (){
-		// 	if (!vm.model.dom.filterDiv) {
-		// 		vm.model.dom.filterDiv = true;
-		// 		vm.model.dom.checkInEditDiv = false;
-		// 		vm.model.dom.checkin.checkinDiv = false;
-		// 	}
-		// 	else vm.model.dom.filterDiv = false;
-		// };
+		vm.ctrl.toggleFilterDiv = function (){
+			if (!vm.model.dom.filterDiv) {
+				vm.model.dom.filterDiv = true;
+				vm.model.dom.checkInEditDiv = false;
+				vm.model.dom.checkin.checkinDiv = false;
+			}
+			else vm.model.dom.filterDiv = false;
+		};
+
+		vm.ctrl.seeMore = function(){
+			if(vm.model.dom.seeMore == true){
+				vm.model.dom.seeMore = false
+				vm.model.dom.data.selected.seeMoreBtn = 'Expand'
+				vm.model.dom.data.selected.seeMoreBtnIcon = 'swap_horiz'
+			}else{
+				vm.model.dom.seeMore = true
+				vm.model.dom.data.selected.seeMoreBtn = 'Shrink'
+				vm.model.dom.data.selected.seeMoreBtnIcon = 'compare_arrows'
+			}
+		}
 
 		vm.ctrl.toggleCheckInDiv = function(){
 			if (!vm.model.dom.checkin.checkinDiv){
@@ -278,14 +389,6 @@
 				vm.ctrl.checkin.resetCheckinDiv ();
 			}
 		};
-
-		// vm.ctrl.seeMore = function(){
-		// 	if(vm.model.dom.seeMore == true){
-		// 		vm.model.dom.seeMore = false
-		// 	}else{
-		// 		vm.model.dom.seeMore = true
-		// 	}
-		// }
 
 		// Get both items and services
 		vm.ctrl.checkin.getItems = function (){
@@ -372,6 +475,7 @@
 			if (vm.model.checkingin.occupancy.promocodes){
 				vm.model.checkingin.occupancy.promocodes.splice (index, 1);
 				vm.model.temporary.checkin.codeNames.splice (index, 1);
+				vm.ctrl.checkin.validateCode()
 			}
 		};
 
@@ -537,20 +641,35 @@
 					function success(res){
 						vm.ctrl.hideLoader ();
 						var foundCodes = res.data.data;
-						vm.model.checkingin.occupancy.promocodes = foundCodes;
+						//vm.model.checkingin.occupancy.promocodes = foundCodes;
 						vm.model.temporary.checkin.codeNames = [];
+
 						foundCodes.map (function (x, i, arr){
 							vm.model.temporary.checkin.codeNames.push (x.name);
 						});
-
+						console.log(codes, foundCodes, vm.model.temporary.checkin.codeNames)
 						if (foundCodes.length >= codes.length){
+							vm.model.dom.checkin.invalidCode = false;
 							vm.ctrl.checkin.confirm ();
+						}else{
+							vm.model.dom.checkin.invalidCode = true
+							vm.model.temporary.checkin.wrongCodes = codes.filter(function(code){
+								var count = 0;
+								vm.model.temporary.checkin.codeNames.map(function(ele){
+									if (ele == code){
+										count += 1
+									}
+								})
+								if(count == 0){
+									return code
+								}
+							})
 						}
 					},
 					function failure (err){
 						vm.ctrl.hideLoader ();
 						console.log (err);
-						// display warning
+						
 					}
 				)
 			}
@@ -591,6 +710,7 @@
 		vm.ctrl.checkout.checkout = function (){
 			console.log (vm.model.checkingout.occupancy)
 			vm.ctrl.showLoader ();
+			vm.model.checkingout.occupancy.note = vm.model.temporary.checkout.note;
 			CheckinService.checkout(vm.model.checkingout.occupancy)
 				.then(function success(res){
 					vm.ctrl.hideLoader ();

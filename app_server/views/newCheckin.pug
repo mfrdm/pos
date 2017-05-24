@@ -11,29 +11,29 @@ div(class="columns row")
 						span(class="show-for-large") Checkin
 						i(class="material-icons customIcon hide-for-large") add
 		// FILTER CONTROLLER
-		//div(class="column small-9")
+		div(class="column small-9")
 			ul(class="menu clearfix")
 				li(class="float-right marginL15")
-					<a class="button primary" ng-click="vm.ctrl.seeMore()"><span class="show-for-large">See More</span><i class="material-icons customIcon hide-for-large">add_box</i></a>
+					<a class="button primary" ng-click="vm.ctrl.seeMore()"><span class="show-for-large">{{vm.model.dom.data.selected.seeMoreBtn}}</span><i class="material-icons customIcon hide-for-large">{{vm.model.dom.data.selected.seeMoreBtnIcon}}</i></a>
 				li(class="float-right marginL15")
 					<a class="button primary" ng-click="vm.ctrl.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
 				li(class="float-right")
 					ul(class="menu")
-						li: label(class="paddingR15 show-for-large") {{ vm.model.dom.data.selected.fieldSortBy}}
-						li: select(ng-model="vm.model.filter.orderBy" ng-options="key as value for (key , value) in vm.model.filter.orderOptions" ng-init='vm.model.filter.orderBy="-checkinTime"')
+						li: label(class="paddingR15 show-for-large") {{ vm.model.dom.data.selected.sorting.label}}
+						li: select(ng-model="vm.model.filter.orderBy" ng-options="key as value for (key , value) in vm.model.filter.orderOptions" ng-init='vm.model.filter.orderBy="checkinTime"')
 	
 	// FILTER 
-	//div(class="column" ng-show="vm.model.dom.filterDiv")
+	div(class="column" ng-show="vm.model.dom.filterDiv")
 		div(class="borderT newBox row column")
 			div(class="marginB15 column small-12 large-4 paddingL0")
-				legend {{ vm.model.dom.data.selected.fieldStatus}}
-				select(ng-model='vm.model.filter.myfilter.status' ng-options='key as value for (key , value) in vm.model.filter.statusOptions' ng-init='vm.model.filter.myfilter.status=1')
+				legend {{ vm.model.dom.data.selected.filter.status}}
+				select(ng-model='vm.model.filter.myfilter.status' ng-options='key as value for (key , value) in vm.model.filter.statusOptions' ng-init='vm.model.filter.myfilter.status=1' ng-change='vm.ctrl.changeStatus()')
 					option
 			div(class='marginB15 column small-12 large-4')
-				legend {{ vm.model.dom.data.selected.fieldSearchByFirstname}}
-				input(type='text' ng-model='vm.model.filter.others.customer.firstname')
+				legend {{ vm.model.dom.data.selected.filter.fullname}}
+				input(type='text' ng-model='vm.model.filter.others.customer.fullname')
 			div(class='marginB15 column small-12 large-4 paddingR0')
-				legend {{ vm.model.dom.data.selected.fieldSearchByPhone}}
+				legend {{ vm.model.dom.data.selected.filter.phone}}
 				input(type='text' ng-model='vm.model.filter.others.customer.phone')
 	
 	// CHECK-IN
@@ -100,7 +100,7 @@ div(class="columns row")
 						div(class="column show-for-large large-1 iconAdd")
 							i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.addItem (); $event.preventDefault()') add
 						div(class="column hide-for-large text-center")
-							a(class="button" ng-click="vm.ctrl.checkin.addItem (); $event.preventDefault()") Add
+							a(class="button full-width-small" ng-click="vm.ctrl.checkin.addItem (); $event.preventDefault()") Add
 					// SELECTED ITEMS
 					div(class="row column")
 						div(class='column small-12')
@@ -127,7 +127,11 @@ div(class="columns row")
 						div(class='column large-1 show-for-large iconAdd')
 							i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.addCode()') add
 						div(class="column hide-for-large text-center")
-							a(class="button" ng-click='vm.ctrl.checkin.addCode()') Add							
+							a(class="button full-width-small" ng-click='vm.ctrl.checkin.addCode()') Add	
+					div(ng-show='vm.model.dom.checkin.invalidCode' class='column row marginTB15 paddingLR15')
+						div(class='callout warning')
+							p Wrong code
+							p(ng-repeat='code in vm.model.temporary.checkin.wrongCodes') {{code}}
 					div(class='column small-12')
 						table(ng-if='vm.model.checkingin.occupancy.promocodes.length > 0')
 							tbody
@@ -205,15 +209,15 @@ div(class="columns row")
 						th {{vm.model.dom.data.selected.checkinList.header.number}}
 						th {{vm.model.dom.data.selected.checkinList.header.fullname}}
 						//- th {{vm.model.dom.data.selected.checkinList.header.headerBirthday}}
-						th(ng-if='vm.model.dom.seeMore == true') {{vm.model.dom.data.selected.checkinList.header.checkinHour}}
+						th(ng-if='vm.model.dom.seeMore == true') {{vm.model.dom.data.selected.checkinList.header.checkinDate}}
 						th {{vm.model.dom.data.selected.checkinList.header.checkinHour}}
-						th(ng-if='vm.model.dom.seeMore == true')  {{vm.model.dom.data.selected.checkinList.header.checkoutHour}}
+						th(ng-if='vm.model.dom.seeMore == true')  {{vm.model.dom.data.selected.checkinList.header.checkoutDate}}
 						th {{vm.model.dom.data.selected.checkinList.header.checkoutHour}}
 						th {{vm.model.dom.data.selected.checkinList.header.service}}
 						th
 						//th {{vm.model.dom.data.selected.headerEdit}}
 				tbody
-					tr(ng-repeat='occupancy in vm.model.checkedinList.data')
+					tr(ng-repeat='occupancy in vm.model.checkedinList.data | myfilter:vm.model.filter.myfilter.status | orderBy: [vm.model.filter.orderBy] | filter:vm.model.filter.others' ng-show='vm.ctrl.showInPage(occupancy)')
 						td {{ $index + 1 }}
 						td {{ occupancy.customer.fullname }}
 						td(ng-if='vm.model.dom.seeMore == true')  {{ occupancy.checkinTime | date:'dd/MM/yyyy' }}
@@ -227,6 +231,20 @@ div(class="columns row")
 						//td
 							button(type="button" ng-if='occupancy.status == 1' class="primary button" ng-click="vm.ctrl.checkin.update (occupancy)") Edit
 							button(type='button' ng-if='occupancy.status == 2' class="disabled button") Edit
+			div(ng-if='vm.model.checkedinList.data.length > 0')
+				ul(class="pagination text-center" role="navigation" aria-label="Pagination")
+					//- li(class="pagination-previous disabled") Previous
+					//- 	span(class="show-for-sr") page
+					//- li(class='current')
+					//- 	span(class="show-for-sr") You're on page
+					//- 	span 1
+					li(ng-repeat="i in vm.ctrl.getNumberOfPages() track by $index")
+						a(ng-click='vm.ctrl.sliceCheckinList(i)' id='page-{{i}}') {{i}}
+					
+					//- li(class="ellipsis" aria-hidden="true")
+					//- li(class="pagination-next")
+					//- 	a(href="#" aria-label="Next page") Next
+					//- 		span(class="show-for-sr") page
 		div(class='emptyResult text-center' ng-if='vm.model.checkedinList.data.length == 0')
 			p {{vm.model.dom.data.selected.checkinList.body.message.notFound}}
 
@@ -288,7 +306,6 @@ div(class="fullBox row column" ng-show='vm.model.temporary.justCheckedin.order.o
 						td(colspan="3") 
 						td {{ vm.model.temporary.justCheckedin.order.total | number }}
 
-
 	div(class="row column")
 		div(class="column small-12 large-6 large-push-3")
 			a(class="paddingL15 button primary" ng-click="vm.ctrl.order.confirm ()") Order
@@ -325,7 +342,12 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 						td {{ vm.model.checkingout.occupancy.service.price | number}} VNĐ
 					tr
 						th Tổng
-						td {{ vm.model.checkingout.occupancy.total | number}} VNĐ							
+						td {{ vm.model.checkingout.occupancy.total | number}} VNĐ	
+					tr
+						th Note
+						td
+							textarea(type='text' ng-model='vm.model.temporary.checkout.note')
+
 
 	div(class="row column")
 		div(class="column small-12 large-6 large-push-3")
@@ -365,17 +387,5 @@ div(id='announceCheckoutSuccess' class='reveal small column row' data-reveal dat
 div(id='announceEditSuccess' class='reveal small column row' data-reveal data-animation-in="slide-in-down fast")
 	div(class=' text-center paddingTB15 marginB15')
 		h5 Bạn đã Edit thành công!
-	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
-			span(aria-hidden="true") &times;
-
-// Announce promote codes are wrong
-div(id='wrongPromoCodes' class='reveal text-center small' data-reveal data-animation-in="slide-in-down fast")
-	div(class='headerModal text-center paddingTB15 marginB15')
-		h5 Mã code không đúng
-	div(ng-repeat='wrongCode in vm.model.customer.promocode.errorCodes track by $index' class='text-center')
-		p {{wrongCode}}
-	div(ng-repeat='conflict in vm.model.customer.promocode.conflictedCode track by $index' class='text-center')
-		p {{conflict.name}} conflict with
-			span(ng-repeat='code in conflict.conflicted track by $index') : {{code.name}}
 	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
 			span(aria-hidden="true") &times;
