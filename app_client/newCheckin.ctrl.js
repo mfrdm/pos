@@ -130,22 +130,15 @@
 				myfilter:{
 					status: "1",
 				},
-				// statusOptions:{
-				// 	0:'All', 
-				// 	1:'Checked-in', 
-				// 	2:'Checked-out'
-				// },
-
 				statusOptions: [
 					{value: 0, label: 'All'},
 					{value: 1, label: 'Checked-in'},
-					{value: 2, label: 'Checked-v'},
+					{value: 2, label: 'Checked-out'},
 				],
 
 				others:{
 					customer:{
-						fullname:'',
-						phone:''
+						username:''
 					}
 				}
 			}
@@ -273,19 +266,26 @@
 				},
 			},
 			sorting:{
-				label:'Sorting'
+				label:'Sắp xếp'
 			},
 			filter:{
-				status:'Status',
-				fullname:'Tên',
-				phone:'Số điện thoại'
+				status:'Trạng thái',
+				username:'Tên / Sđt'
 			},
 			
 			seeMoreBtn:'More',
 			seeMoreBtnIcon : 'swap_horiz'
 		};
 
-		vm.model.dom.data.selected = vm.model.dom.data.vn;
+		//Clear search result when search input is empty
+		vm.ctrl.checkin.validateSearchInput = function(){
+			if(!vm.model.search.checkin.username){
+				vm.model.dom.checkin.customerSearchResultDiv = false;
+				vm.model.checkingin.occupancy.customer = {};
+				vm.model.checkingin.order.customer = {};
+
+			}
+		}
 
 		vm.ctrl.addServiceLabel = function (service){
 			if (service.name.toLowerCase () == 'group common'){
@@ -315,6 +315,9 @@
 			var cleanStr = function(str){
 				return LayoutCtrl.ctrl.removeDiacritics(str).trim().split(' ').join('').toLowerCase()
 			}
+			//Input
+			var input = cleanStr(vm.model.filter.others.customer.username)
+
 			vm.model.temporary.displayedList.data = vm.model.checkedinList.data.filter(function(ele){
 					if(vm.model.filter.myfilter.status == 0){
 						return ele
@@ -322,9 +325,7 @@
 						return ele.status == vm.model.filter.myfilter.status
 					}
 				}).filter(function(item){
-					return cleanStr(item.customer.fullname).includes(cleanStr(vm.model.filter.others.customer.fullname))
-				}).filter(function(item){
-					return (item.customer.phone).includes(vm.model.filter.others.customer.phone);
+					return (cleanStr(item.customer.fullname).includes(input) || cleanStr(item.customer.phone).includes(input))
 				})
 
 			vm.model.checkedinList.pagination.numberOfPages = Math.ceil(
@@ -380,10 +381,6 @@
 				}
 			);
 		};
-
-		vm.ctrl.setCurrentCus = function (){
-			// 
-		}
 
 		vm.ctrl.toggleFilterDiv = function (){
 			if (!vm.model.dom.filterDiv) {
@@ -495,7 +492,7 @@
 		vm.ctrl.checkin.addCode = function (){
 			if (!vm.model.checkingin.occupancy.promocodes) vm.model.checkingin.occupancy.promocodes = [];
 
-			if (vm.model.temporary.checkin.codeNames.indexOf (vm.model.temporary.checkin.codeName) == -1 && vm.model.temporary.checkin.codeName.length > 0){
+			if (vm.model.temporary.checkin.codeNames.indexOf (vm.model.temporary.checkin.codeName) == -1 && vm.model.temporary.checkin.codeName.length > 0 && vm.model.checkingin.occupancy.customer){
 				vm.model.checkingin.occupancy.promocodes.push ({name: vm.model.temporary.checkin.codeName, status:1});
 				vm.model.temporary.checkin.codeNames.push (vm.model.temporary.checkin.codeName);
 				vm.model.temporary.checkin.codeName = null;				

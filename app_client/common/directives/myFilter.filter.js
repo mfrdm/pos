@@ -138,7 +138,7 @@ function filterName(){
 	return function(item, condition){
 		return item.filter(function(ele){
 			if(cleanStr(condition)){
-				return cleanStr(ele.customer.fullname).includes(cleanStr(condition))
+				return ( cleanStr(ele.customer.fullname).includes(cleanStr(condition)) || cleanStr(ele.customer.phone).includes(cleanStr(condition)) )
 			}
 			return ele
 		})

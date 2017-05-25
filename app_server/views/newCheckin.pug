@@ -25,15 +25,12 @@ div(class="columns row")
 	// FILTER 
 	div(class="column" ng-show="vm.model.dom.filterDiv")
 		div(class="borderT newBox row column")
-			div(class="marginB15 column small-12 large-4 paddingL0")
+			div(class='marginB15 column small-12 large-9 paddingL0')
+				legend {{ vm.model.dom.data.selected.filter.username}}
+				input(type='text' ng-model='vm.model.filter.others.customer.username' ng-change='vm.ctrl.pagination()')
+			div(class="marginB15 column small-12 large-3 paddingR0")
 				legend {{ vm.model.dom.data.selected.filter.status}}
 				select(ng-model='vm.model.filter.myfilter.status' ng-options='status.value as status.label for status in vm.model.filter.statusOptions track by status.value' ng-change='vm.ctrl.pagination()')
-			div(class='marginB15 column small-12 large-4')
-				legend {{ vm.model.dom.data.selected.filter.fullname}}
-				input(type='text' ng-model='vm.model.filter.others.customer.fullname' ng-change='vm.ctrl.pagination()')
-			div(class='marginB15 column small-12 large-4 paddingR0')
-				legend {{ vm.model.dom.data.selected.filter.phone}}
-				input(type='text' ng-model='vm.model.filter.others.customer.phone' ng-change='vm.ctrl.pagination()')
 	
 	// CHECK-IN
 	div(class="column")
@@ -44,7 +41,7 @@ div(class="columns row")
 				form(ng-submit="vm.ctrl.checkin.searchCustomer()")
 					div(class="row column")
 						label {{vm.model.dom.data.selected.checkin.search.label}}
-							input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.model.search.checkin.username' required="true")
+							input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.model.search.checkin.username' required="true" ng-change='vm.ctrl.checkin.validateSearchInput()')
 					div(ng-show='vm.model.dom.checkin.search.message.notFound' class='marginB15')
 						div(class='callout alert')
 							p {{ vm.model.dom.data.selected.checkin.search.message.notFound + ' "' + vm.model.search.checkin.username + '". ' }}
@@ -220,7 +217,7 @@ div(class="columns row")
 						th
 						//th {{vm.model.dom.data.selected.headerEdit}}
 				tbody
-					tr(ng-repeat='occupancy in vm.model.checkedinList.data | myfilter:vm.model.filter.myfilter.status | orderBy: [vm.model.filter.orderBy] | filterName:vm.model.filter.others.customer.fullname' ng-show='vm.ctrl.showInPage(occupancy)')
+					tr(ng-repeat='occupancy in vm.model.checkedinList.data | myfilter:vm.model.filter.myfilter.status | orderBy: [vm.model.filter.orderBy] | filterName:vm.model.filter.others.customer.username' ng-show='vm.ctrl.showInPage(occupancy)')
 						td {{ $index + 1 }}
 						td {{ occupancy.customer.fullname }}
 						td(ng-if='vm.model.dom.seeMore == true')  {{ occupancy.checkinTime | date:'dd/MM/yyyy' }}
