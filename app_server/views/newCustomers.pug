@@ -22,6 +22,25 @@ div(class="row columns")
 							option(value="lastname") Lastname
 							option(value="email") Email
 							option(value="phone") Phone
+	
+	//Return existed customer
+	div(class='column paddingT30' ng-show='vm.model.dom.register.existedCustomerDiv')
+		div(class="table-scroll")
+			table(class="hover unstriped borderAll")
+				thead
+					tr
+						th {{vm.model.dom.data.selected.register.existedCustomer.number}}
+						th {{vm.model.dom.data.selected.register.existedCustomer.fullname}}
+						th {{vm.model.dom.data.selected.register.existedCustomer.birthday}}
+						th {{vm.model.dom.data.selected.register.existedCustomer.email}}
+						th {{vm.model.dom.data.selected.register.existedCustomer.phone}}				
+				tbody
+					tr(ng-repeat='result in vm.model.existedCustomer.customers' ng-click='vm.ctrl.checkin.selectCustomer($index)' class="pointerCursor")
+						td {{ $index + 1 }}
+						td {{ result.fullname }}
+						td {{ result.birthday | date:'dd/MM/yyyy' }}
+						td {{ result.email[0] }}
+						td {{ result.phone[0] }}
 
 	// CREATE CUSTOMER FORM						
 	div(class="column" ng-show='vm.model.dom.register.registerDiv')

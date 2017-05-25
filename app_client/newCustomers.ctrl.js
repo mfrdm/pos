@@ -27,6 +27,7 @@
 				register: {
 					confirmDiv: false,
 					registerDiv: true,
+					existedCustomerDiv:false
 				},
 				customerSearchResultDiv: false,
 				data:{},
@@ -37,6 +38,9 @@
 			temporary: {
 				register: {
 				}
+			},
+			existedCustomer:{
+				customers:[]
 			}
 		};
 
@@ -151,7 +155,14 @@
 					phone:'Phone',
 					school:'Trường',
 					selectSchool:'Chọn Trường'
-				}			
+				},
+				existedCustomer:{
+					number:'No',
+					fullname:'Tên',
+					birthday:'Ngày sinh',
+					email:'Email',
+					phone:'Điện thoại'
+				}
 			}
 		}
 
@@ -219,7 +230,17 @@
 		
 		vm.ctrl.register.confirm = function(){
 			vm.ctrl.register.sanatizeRawData (vm.model.register);	
-			vm.ctrl.register.showConfirm ();		
+			vm.ctrl.register.showConfirm ();
+		}
+
+		vm.ctrl.register.showExistedCus = function(cus){//if created customer is existed
+			var customer = {};
+			customer.phone = cus.phone;
+			customer.email = cus.email;
+			customer.fullname = cus.fullname;
+			customer.birthday = cus.birthday;
+			vm.model.existedCustomer.customers.push(customer)
+			vm.model.dom.register.existedCustomerDiv = true;
 		}
 
 		vm.ctrl.register.create = function(){
