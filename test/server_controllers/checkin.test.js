@@ -1,4 +1,4 @@
-process.env.NODE_ENV = 'development';
+process.env.NODE_ENV = 'test';
 var chai = require ('chai');
 var chaiHttp = require ('chai-http');
 var server = require ('../../app');
@@ -612,70 +612,52 @@ describe ('Read check-in list', function (){
 					price: 15000,
 					name: 'group common'
 				},
-				customer: {},
-				storeId: "58eb474538671b4224745192",
-				staffId: "58eb474538671b4224745192",		
-
+				location: {_id: '58eb474538671b4224745192'}
 			},
 			{
 				service: {
 					price: 150000,
 					name: 'small group private'
 				},
-				customer: {},
-				storeId: "58eb474538671b4224745192",
-				staffId: "58eb474538671b4224745192",		
-
+				location: {_id: '58eb474538671b4224745192'}
 			},
 			{
 				service: {
 					price: 220000,
 					name: 'medium group private'
 				},
-				customer: {},
-				storeId: "58eb474538671b4224745192",
-				staffId: "58eb474538671b4224745192",		
-
+				location: {_id: '58eb474538671b4224745192'}
 			},			
 			{
 				service: {
 					price: 15000,
 					name: 'group common'
 				},
-				customer: {},
-				storeId: "58eb474538671b4224745192",
-				staffId: "58eb474538671b4224745192",
+				location: {_id: '58eb474538671b4224745192'},
 				checkinTime: moment ('2017-01-09'),
 				status: 2,							
 			},
 		];
 
-		chai.request (server)
-			.post ('/customers/create')
-			.send ({data: customer})
-			.end (function (err, res){
+		Customers.create (customer, function (err, cus){
+			if (err){
+				console.log (err);
+				return
+			}
+
+			newCustomer = cus;
+			
+			Occupancy.insertMany (occs, function (err, data){
 				if (err){
-					console.log (err);
+					console.log (err)
 					return
 				}
 
-				newCustomer = res.body.data;
-				occs.map (function (x, i, arr){
-					x.customer = newCustomer;
-				});
-				
-				Occupancy.insertMany (occs, function (err, data){
-					if (err){
-						console.log (err)
-						return
-					}
-
-					newOcc = data;
-
-					done ();
-				});
-
+				newOcc = data;
+				done ();
 			});
+
+		})
 
 	});
 
@@ -702,6 +684,8 @@ describe ('Read check-in list', function (){
 	});	
 
 
+	it ('should fix timezone problem')
+
 	xit ('should return checked-in on today given no date range and status provided', function (done){
 		chai.request (server)
 			.get ('/checkin')
@@ -710,11 +694,11 @@ describe ('Read check-in list', function (){
 				if (err){
 					console.log (err);
 				}
-				var todayStart = moment (moment().format ('YYYY-MM-DD'));
-				var todayEnd = moment (moment().format ('YYYY-MM-DD') + ' 23:59:59');
+				var todayStart = moment().hour(0).minute(0);
+				var todayEnd = moment().hour(23).minute(59);
 
 				res.should.to.have.status (200);
-				res.body.data.should.to.have.lengthOf(1);
+				res.body.data.should.to.have.lengthOf(3);
 				res.body.data.map (function (x, i, arr){
 					x.status.should.to.equal (1);
 					x.checkinTime.should.to.exist

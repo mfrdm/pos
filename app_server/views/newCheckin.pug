@@ -103,8 +103,8 @@ div(class="columns row")
 							a(class="button full-width-small" ng-click="vm.ctrl.checkin.addItem (); $event.preventDefault()") Add
 					// SELECTED ITEMS
 					div(class="row column")
-						div(class='column small-12')
-							table(ng-if='vm.model.checkingin.order.orderline.length > 0' class="unstriped hover")
+						div(class='column small-12 large-6')
+							table(ng-if='vm.model.checkingin.order.orderline.length > 0' class="unstriped")
 								thead
 									tr
 										th {{ vm.model.dom.data.selected.checkin.product.header.product }}
@@ -132,13 +132,21 @@ div(class="columns row")
 						div(class='callout warning')
 							p Wrong code
 							p(ng-repeat='code in vm.model.temporary.checkin.wrongCodes') {{code}}
-					div(class='column small-12')
-						table(ng-if='vm.model.checkingin.occupancy.promocodes.length > 0')
-							tbody
-								tr(ng-repeat='code in vm.model.checkingin.occupancy.promocodes track by code.name')
-									td {{ code.name }}
-									td(class='text-center deleteIcon')
-										i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.removeCode ($index)') close
+					div(class="column row")
+						div(class='column small-12 large-6')
+
+							table(ng-if='vm.model.checkingin.occupancy.promocodes.length > 0')
+								thead
+									tr
+										th Code
+										th Status
+										th
+								tbody
+									tr(ng-repeat='code in vm.model.checkingin.occupancy.promocodes track by code.name')
+										td() {{ code.name }}
+										td unchecked
+										td(class='text-center deleteIcon')
+											i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.removeCode ($index)') close
 
 				div(class="row column")
 					input(class="button" type="submit" value="Submit")
