@@ -155,7 +155,6 @@
 					adjusted.push (y);
 				});
 			});
-
 			return adjusted;
 		}
 
@@ -166,7 +165,6 @@
 				function success(res){
 					vm.model.originalOrderedList = res.data.data;
 					vm.model.orderedList = vm.ctrl.createAdjustedOrderList (vm.model.originalOrderedList);
-					
 				}, 
 				function error(err){
 					console.log(err)
@@ -184,7 +182,6 @@
 			}
 		}
 
-
 		vm.ctrl.order.resetSearchCustomerDiv = function (){
 			vm.model.dom.order.customerSearchResult = false;
 			vm.model.search.order.customers = [];
@@ -198,7 +195,6 @@
 							vm.model.items.push(x);
 						}
 					});
-
 					vm.model.dom.data.selected.items = vm.model.items;
 				},
 				function error (err){

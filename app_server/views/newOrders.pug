@@ -1,35 +1,28 @@
 div(class="row columns")
-	div(class="column small-12")
+	div(class="column small-3")
 		h2 {{ vm.model.dom.data.selected.title }}
 	
 	// SETTING
-	div(class="row column")
-		div(class="column small-3")
-			ul(class="menu")
-				li
-					a(class="button primary" ng-click="vm.ctrl.toggleOrderDiv()") 
-						span(class="show-for-large") Make order
-						i(class="material-icons customIcon hide-for-large") add
-		//div(class="column small-9")
-			ul(class="menu clearfix")
-				li(class="float-right marginL15")
-					<a class="button primary" ng-click="vm.ctrl.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
-				li(class="float-right")
-					ul(class="menu")
-						li: label(class="paddingR15 show-for-large") {{ vm.model.dom.data.selected.fieldSortBy}}
-						li: select(ng-model="vm.model.filter.orderBy" ng-options="key as value for (key , value) in vm.model.filter.orderOptions")
+	div(class="column small-9")
+		ul(class="menu clearfix")
+			li(class="float-right marginL15")
+				<a class="button primary" ng-click="vm.ctrl.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
+			li(class="float-right")
+				ul(class="menu")
+					li: label(class="paddingR15 show-for-large") {{ vm.model.dom.data.selected.sorting.label}}
+					li: select(ng-model="vm.model.filter.orderBy" ng-options="key as value for (key , value) in vm.model.filter.orderOptions" ng-init='vm.model.filter.orderBy="createdAt"')
 	// Filter
-	//div(class="column" ng-show="vm.model.dom.filterDiv")
+	div(class="column" ng-show="vm.model.dom.filterDiv")
 		div(class="borderT newBox row column")
-			div(class="marginB15 column small-12 large-4")
-				legend {{ vm.model.dom.data.selected.fieldStatus}}
-				select(ng-model='vm.model.filter.myfilter.status' ng-options='key as value for (key , value) in vm.model.filter.statusOptions' ng-init='vm.model.filter.myfilter.status=1')
+			div(class="marginB15 column small-12 large-4 paddingL0")
+				legend {{ vm.model.dom.data.selected.filter.status}}
+				select(ng-model='vm.model.filter.myfilter.status' ng-options='key as value for (key , value) in vm.model.filter.statusOptions' ng-init='vm.model.filter.myfilter.status=1' ng-change='vm.ctrl.changeStatus()')
 					option
 			div(class='marginB15 column small-12 large-4')
-				legend {{ vm.model.dom.data.selected.fieldSearchByFirstname}}
-				input(type='text' ng-model='vm.model.filter.others.customer.firstname')
-			div(class='marginB15 column small-12 large-4')
-				legend {{ vm.model.dom.data.selected.fieldSearchByPhone}}
+				legend {{ vm.model.dom.data.selected.filter.fullname}}
+				input(type='text' ng-model='vm.model.filter.others.customer.fullname')
+			div(class='marginB15 column small-12 large-4 paddingR0')
+				legend {{ vm.model.dom.data.selected.filter.phone}}
 				input(type='text' ng-model='vm.model.filter.others.customer.phone')
 	
 	// MAKE ORDER

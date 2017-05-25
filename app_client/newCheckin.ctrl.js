@@ -2,6 +2,21 @@
 	angular.module('posApp')
 		.controller('NewCheckinCtrl', ['DataPassingService', 'CheckinService', 'OrderService', '$scope', '$window','$route', NewCheckinCtrl])
 
+	function isInArray(element, array){//Check if an array contain an element, return bool
+		var len = array.filter(function(item){
+			return item == element;
+		})
+		if(len == 0){
+			return false//not contain
+		}else{
+			return true//contain
+		}
+	}
+
+	// Array.prototype.diff = function(a) {//Check different between 2 array, return array
+	//     return this.filter(function(i) {return a.indexOf(i) < 0;});
+	// };//Usage: biggerArr.diff(smallArr)=>different array
+
 	function NewCheckinCtrl (DataPassingService, CheckinService, OrderService, $scope, $window, $route){
 		var LayoutCtrl = $scope.$parent.layout;
 		var vm = this;
@@ -41,6 +56,10 @@
 			},
 			checkedinList: {
 				data: [],
+				pagination:{
+					itemsEachPages:3,
+					numberOfPages:''
+				},
 			},
 			checkinListEachPage:{
 				data:[]
@@ -86,10 +105,18 @@
 					item: {},
 					selectedItems: [],
 					codeNames: [],
-					wrongCodes: []
+					wrongCodes: [],
+					statusCode:{
+						1:'unchecked',
+						2:'invalid',
+						3:'valid'
+					}
 				},
 				checkout:{
 					note:''
+				},
+				displayedList:{
+					data:[]
 				}
 			},
 			filter:{
@@ -245,10 +272,7 @@
 				fullname:'Tên',
 				phone:'Số điện thoại'
 			},
-			pagination:{
-				itemsEachPages:5,
-				numberOfPages:''
-			},
+			
 			seeMoreBtn:'Expand',
 			seeMoreBtnIcon : 'swap_horiz'
 		};
@@ -279,38 +303,28 @@
 		}
 
 		//Pagination
-		function pagination(){
-			vm.model.dom.data.selected.pagination.numberOfPages = Math.ceil(
-				vm.model.checkedinList.data.filter(function(ele){
+		vm.ctrl.pagination = function(){
+			vm.model.temporary.displayedList.data = vm.model.checkedinList.data.filter(function(ele){
 					if(vm.model.filter.myfilter.status == 0){
 						return ele
 					}else{
 						return ele.status == vm.model.filter.myfilter.status
 					}
-					
-				}).length / vm.model.dom.data.selected.pagination.itemsEachPages)
+
+				})
+			vm.model.checkedinList.pagination.numberOfPages = Math.ceil(
+				vm.model.temporary.displayedList.data.length/vm.model.checkedinList.pagination.itemsEachPages)
+
 			vm.ctrl.getNumberOfPages = function(){
 				var arr = []
-				for(var i = 1; i<vm.model.dom.data.selected.pagination.numberOfPages+1; i++){
+				for(var i = 1; i<vm.model.checkedinList.pagination.numberOfPages+1; i++){
 					arr.push(i)
 				}
 				return arr
 			}
-			vm.model.checkinListEachPage.data = vm.model.checkedinList.data.filter(function(ele){
-					if(vm.model.filter.myfilter.status == 0){
-						return ele
-					}else{
-						return ele.status == vm.model.filter.myfilter.status
-					}
-				}).slice(0, vm.model.dom.data.selected.pagination.itemsEachPages)
+			vm.model.checkinListEachPage.data = vm.model.temporary.displayedList.data.slice(0, vm.model.checkedinList.pagination.itemsEachPages)
 			vm.ctrl.sliceCheckinList = function(i){
-				vm.model.checkinListEachPage.data = vm.model.checkedinList.data.filter(function(ele){
-					if(vm.model.filter.myfilter.status == 0){
-						return ele
-					}else{
-						return ele.status == vm.model.filter.myfilter.status
-					}
-				}).slice((i-1)*vm.model.dom.data.selected.pagination.itemsEachPages,i*vm.model.dom.data.selected.pagination.itemsEachPages)
+				vm.model.checkinListEachPage.data = vm.model.temporary.displayedList.data.slice((i-1)*vm.model.checkedinList.pagination.itemsEachPages,i*vm.model.checkedinList.pagination.itemsEachPages)
 			}
 			vm.ctrl.showInPage = function(occ){
 				var testArr = vm.model.checkinListEachPage.data.filter(function(ele){
@@ -339,12 +353,7 @@
 						vm.ctrl.addServiceLabel (x.service);
 					});
 
-					pagination();
-
-					vm.ctrl.changeStatus = function(){
-						pagination();
-					}
-
+					vm.ctrl.pagination();
 					vm.ctrl.checkinBooking ();
 					vm.ctrl.checkinNewCustomer ();
 				}, 
@@ -469,8 +478,8 @@
 		vm.ctrl.checkin.addCode = function (){
 			if (!vm.model.checkingin.occupancy.promocodes) vm.model.checkingin.occupancy.promocodes = [];
 
-			if (vm.model.temporary.checkin.codeNames.indexOf (vm.model.temporary.checkin.codeName) == -1){
-				vm.model.checkingin.occupancy.promocodes.push ({name: vm.model.temporary.checkin.codeName});
+			if (vm.model.temporary.checkin.codeNames.indexOf (vm.model.temporary.checkin.codeName) == -1 && vm.model.temporary.checkin.codeName.length > 0){
+				vm.model.checkingin.occupancy.promocodes.push ({name: vm.model.temporary.checkin.codeName, status:1});
 				vm.model.temporary.checkin.codeNames.push (vm.model.temporary.checkin.codeName);
 				vm.model.temporary.checkin.codeName = null;				
 			}
@@ -481,7 +490,6 @@
 			if (vm.model.checkingin.occupancy.promocodes){
 				vm.model.checkingin.occupancy.promocodes.splice (index, 1);
 				vm.model.temporary.checkin.codeNames.splice (index, 1);
-				vm.ctrl.checkin.validateCode(true)
 			}
 		};
 
@@ -654,25 +662,18 @@
 						foundCodes.map (function (x, i, arr){
 							vm.model.temporary.checkin.codeNames.push (x.name);
 						});
-						console.log(codes, foundCodes, vm.model.temporary.checkin.codeNames)
-						if (foundCodes.length >= codes.length){
-							vm.model.dom.checkin.invalidCode = false;
-							if(del == false){
-								vm.ctrl.checkin.confirm ();
-							}
-						}else{
-							vm.model.dom.checkin.invalidCode = true
-							vm.model.temporary.checkin.wrongCodes = codes.filter(function(code){
-								var count = 0;
-								vm.model.temporary.checkin.codeNames.map(function(ele){
-									if (ele == code){
-										count += 1
-									}
-								})
-								if(count == 0){
-									return code
+						if(vm.model.checkingin.occupancy.promocodes){
+							vm.model.checkingin.occupancy.promocodes.map(function(item){
+								if(isInArray(item.name, vm.model.temporary.checkin.codeNames)){
+									item.status = 3
+								}else{
+									item.status = 2
 								}
 							})
+						}
+						
+						if (foundCodes.length >= codes.length){
+							vm.ctrl.checkin.confirm ();
 						}
 					},
 					function failure (err){
