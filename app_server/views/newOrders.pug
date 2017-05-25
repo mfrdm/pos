@@ -1,29 +1,37 @@
 div(class="row columns")
-	div(class="column small-3")
+	div(class="column small-12")
 		h2 {{ vm.model.dom.data.selected.title }}
 	
 	// SETTING
-	div(class="column small-9")
-		ul(class="menu clearfix")
-			li(class="float-right marginL15")
-				<a class="button primary" ng-click="vm.ctrl.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
-			li(class="float-right")
-				ul(class="menu")
-					li: label(class="paddingR15 show-for-large") {{ vm.model.dom.data.selected.sorting.label}}
-					li: select(ng-model="vm.model.filter.orderBy" ng-options="key as value for (key , value) in vm.model.filter.orderOptions" ng-init='vm.model.filter.orderBy="createdAt"')
+	div(class="row column")
+		div(class="column small-3")
+			ul(class="menu")
+				li
+					a(class="button primary" ng-click="vm.ctrl.toggleOrderDiv()") 
+						span(class="show-for-large") Make Order
+						i(class="material-icons customIcon hide-for-large") add
+		// FILTER CONTROLLER
+		div(class="column small-9")
+			ul(class="menu clearfix")
+				li(class="float-right marginL15")
+					<a class="button primary" ng-click="vm.ctrl.toggleFilterDiv()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
+				li(class="float-right")
+					ul(class="menu")
+						li: label(class="paddingR15 show-for-large") {{ vm.model.dom.data.selected.sorting.label}}
+						li: select(ng-model="vm.model.filter.orderBy" ng-options="key as value for (key , value) in vm.model.filter.orderOptions" ng-change='vm.ctrl.order.pagination()')
 	// Filter
 	div(class="column" ng-show="vm.model.dom.filterDiv")
 		div(class="borderT newBox row column")
-			div(class="marginB15 column small-12 large-4 paddingL0")
-				legend {{ vm.model.dom.data.selected.filter.status}}
-				select(ng-model='vm.model.filter.myfilter.status' ng-options='key as value for (key , value) in vm.model.filter.statusOptions' ng-init='vm.model.filter.myfilter.status=1' ng-change='vm.ctrl.changeStatus()')
-					option
-			div(class='marginB15 column small-12 large-4')
+			//- div(class="marginB15 column small-12 large-4 paddingL0")
+			//- 	legend {{ vm.model.dom.data.selected.filter.status}}
+			//- 	select(ng-model='vm.model.filter.myfilter.status' ng-options='key as value for (key , value) in vm.model.filter.statusOptions' ng-init='vm.model.filter.myfilter.status=1' ng-change='vm.ctrl.changeStatus()')
+			//- 		option
+			div(class='marginB15 column small-12 large-6 paddingL0')
 				legend {{ vm.model.dom.data.selected.filter.fullname}}
-				input(type='text' ng-model='vm.model.filter.others.customer.fullname')
-			div(class='marginB15 column small-12 large-4 paddingR0')
+				input(type='text' ng-model='vm.model.filter.others.customer.fullname' ng-change='vm.ctrl.order.pagination()')
+			div(class='marginB15 column small-12 large-6 paddingR0')
 				legend {{ vm.model.dom.data.selected.filter.phone}}
-				input(type='text' ng-model='vm.model.filter.others.customer.phone')
+				input(type='text' ng-model='vm.model.filter.others.customer.phone' ng-change='vm.ctrl.order.pagination()')
 	
 	// MAKE ORDER
 	div(class="column")
@@ -71,7 +79,7 @@ div(class="row columns")
 							i(class="material-icons customIcon" ng-click='vm.ctrl.order.addItem (); $event.preventDefault()') add
 					// SELECTED ITEMS
 					div(class="row column")
-						div(class='column small-12 large-6')
+						div(class='column small-12')
 							table(ng-if='vm.model.ordering.orderline.length > 0' class="unstriped hover")
 								thead
 									tr
@@ -100,14 +108,27 @@ div(class="row columns")
 						th {{vm.model.dom.data.selected.orderList.header.quantity}}
 						th {{vm.model.dom.data.selected.orderList.header.time}}
 				tbody
-					tr(ng-repeat='order in vm.model.orderedList')
+					tr(ng-repeat='order in vm.model.orderedList | orderBy: [vm.model.filter.orderBy] | filterName:vm.model.filter.others.customer.fullname | filter:vm.model.filter.others.customer.phone' ng-show='vm.ctrl.order.showInPage(order)')
 						td {{ $index + 1 }}
 						td {{ order.customer.fullname }}
 						td {{ order.productName }}
 						td {{ order.quantity }}
 						td {{ order.createdAt | date:'dd/MM/yyyy' }} {{ order.createdAt | date:'shortTime' }}
-
-		div(class='emptyResult text-center' ng-if='vm.model.orderedList.length == 0')
+			div(ng-if='vm.model.temporary.displayedList.data.length > vm.model.pagination.itemsEachPages')
+				ul(class="pagination text-center" role="navigation" aria-label="Pagination")
+					//- li(class="pagination-previous disabled") Previous
+					//- 	span(class="show-for-sr") page
+					//- li(class='current')
+					//- 	span(class="show-for-sr") You're on page
+					//- 	span 1
+					li(ng-repeat="i in vm.ctrl.order.getNumberOfPages() track by $index")
+						a(ng-click='vm.ctrl.order.sliceOrderedList(i)' id='page-{{i}}') {{i}}
+					
+					//- li(class="ellipsis" aria-hidden="true")
+					//- li(class="pagination-next")
+					//- 	a(href="#" aria-label="Next page") Next
+					//- 		span(class="show-for-sr") page
+		div(class='emptyResult text-center' ng-if='vm.model.orderedList.length == 0 || vm.model.checkinListEachPage.data.length == 0 || vm.model.temporary.displayedList.data.length == 0')
 			p {{vm.model.dom.data.selected.orderList.body.message.notFound}}
 
 // ORDER INVOICE
