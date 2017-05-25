@@ -27,14 +27,14 @@ div(class="columns row")
 		div(class="borderT newBox row column")
 			div(class="marginB15 column small-12 large-4 paddingL0")
 				legend {{ vm.model.dom.data.selected.filter.status}}
-				select(ng-model='vm.model.filter.myfilter.status' ng-options='key as value for (key , value) in vm.model.filter.statusOptions' ng-init='vm.model.filter.myfilter.status=1' ng-change='vm.ctrl.changeStatus()')
+				select(ng-model='vm.model.filter.myfilter.status' ng-options='key as value for (key , value) in vm.model.filter.statusOptions' ng-init='vm.model.filter.myfilter.status=1' ng-change='vm.ctrl.pagination()')
 					option
 			div(class='marginB15 column small-12 large-4')
 				legend {{ vm.model.dom.data.selected.filter.fullname}}
-				input(type='text' ng-model='vm.model.filter.others.customer.fullname')
+				input(type='text' ng-model='vm.model.filter.others.customer.fullname' ng-change='vm.ctrl.pagination()')
 			div(class='marginB15 column small-12 large-4 paddingR0')
 				legend {{ vm.model.dom.data.selected.filter.phone}}
-				input(type='text' ng-model='vm.model.filter.others.customer.phone')
+				input(type='text' ng-model='vm.model.filter.others.customer.phone' ng-change='vm.ctrl.pagination()')
 	
 	// CHECK-IN
 	div(class="column")
@@ -128,23 +128,19 @@ div(class="columns row")
 							i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.addCode()') add
 						div(class="column hide-for-large text-center")
 							a(class="button full-width-small" ng-click='vm.ctrl.checkin.addCode()') Add	
-					div(ng-show='vm.model.dom.checkin.invalidCode' class='column row marginTB15 paddingLR15')
-						div(class='callout warning')
-							p Wrong code
-							p(ng-repeat='code in vm.model.temporary.checkin.wrongCodes') {{code}}
 					div(class="column row")
-						div(class='column small-12 large-6')
+						div(class='column small-12')
 
 							table(ng-if='vm.model.checkingin.occupancy.promocodes.length > 0')
 								thead
 									tr
 										th Code
 										th Status
-										th
+										th Delete
 								tbody
 									tr(ng-repeat='code in vm.model.checkingin.occupancy.promocodes track by code.name')
-										td() {{ code.name }}
-										td unchecked
+										td {{ code.name }}
+										td(class='{{vm.model.temporary.checkin.statusCode[code.status]}}') {{ vm.model.temporary.checkin.statusCode[code.status] }}
 										td(class='text-center deleteIcon')
 											i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.removeCode ($index)') close
 
@@ -239,7 +235,7 @@ div(class="columns row")
 						//td
 							button(type="button" ng-if='occupancy.status == 1' class="primary button" ng-click="vm.ctrl.checkin.update (occupancy)") Edit
 							button(type='button' ng-if='occupancy.status == 2' class="disabled button") Edit
-			div(ng-if='vm.model.checkedinList.data.length > 0')
+			div(ng-if='vm.model.temporary.displayedList.data.length > vm.model.checkedinList.pagination.itemsEachPages')
 				ul(class="pagination text-center" role="navigation" aria-label="Pagination")
 					//- li(class="pagination-previous disabled") Previous
 					//- 	span(class="show-for-sr") page
@@ -253,7 +249,7 @@ div(class="columns row")
 					//- li(class="pagination-next")
 					//- 	a(href="#" aria-label="Next page") Next
 					//- 		span(class="show-for-sr") page
-		div(class='emptyResult text-center' ng-if='vm.model.checkedinList.data.length == 0')
+		div(class='emptyResult text-center' ng-if='vm.model.checkinListEachPage.data.length == 0 || vm.model.temporary.displayedList.data.length == 0')
 			p {{vm.model.dom.data.selected.checkinList.body.message.notFound}}
 
 // CHECK-IN CONFIRM

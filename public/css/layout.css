@@ -481,6 +481,11 @@ ul.listOrder li i{
 	margin-bottom: 0;
 }
 
+/*Invalid PromoteCode*/
+.invalid{
+	color:red;
+}
+
 @media print, screen and (max-width: 64em){
 	.menu select{
 		width:49.99px;
