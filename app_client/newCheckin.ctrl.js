@@ -57,7 +57,7 @@
 			checkedinList: {
 				data: [],
 				pagination:{
-					itemsEachPages:3,
+					itemsEachPages:10,
 					numberOfPages:''
 				},
 			},
@@ -91,7 +91,7 @@
 				checkedinList: true,
 				checkInEditDiv: false,
 				
-				filterDiv: false,
+				filterDiv: true,
 				data: {},
 			},
 			search: {
@@ -128,16 +128,24 @@
 					'-checkinTime': 'Checkin Z-A'
 				},
 				myfilter:{
-					status:'',
+					status: "1",
 				},
-				statusOptions:{
-					0:'Tất cả', 
-					1:'Checkin', 
-					2:'Checkout'
-				},
+				// statusOptions:{
+				// 	0:'All', 
+				// 	1:'Checked-in', 
+				// 	2:'Checked-out'
+				// },
+
+				statusOptions: [
+					{value: 0, label: 'All'},
+					{value: 1, label: 'Checked-in'},
+					{value: 2, label: 'Checked-v'},
+				],
 
 				others:{
 					customer:{
+						fullname:'',
+						phone:''
 					}
 				}
 			}
@@ -273,7 +281,7 @@
 				phone:'Số điện thoại'
 			},
 			
-			seeMoreBtn:'Expand',
+			seeMoreBtn:'More',
 			seeMoreBtnIcon : 'swap_horiz'
 		};
 
@@ -304,14 +312,21 @@
 
 		//Pagination
 		vm.ctrl.pagination = function(){
+			var cleanStr = function(str){
+				return LayoutCtrl.ctrl.removeDiacritics(str).trim().split(' ').join('').toLowerCase()
+			}
 			vm.model.temporary.displayedList.data = vm.model.checkedinList.data.filter(function(ele){
 					if(vm.model.filter.myfilter.status == 0){
 						return ele
 					}else{
 						return ele.status == vm.model.filter.myfilter.status
 					}
-
+				}).filter(function(item){
+					return cleanStr(item.customer.fullname).includes(cleanStr(vm.model.filter.others.customer.fullname))
+				}).filter(function(item){
+					return (item.customer.phone).includes(vm.model.filter.others.customer.phone);
 				})
+
 			vm.model.checkedinList.pagination.numberOfPages = Math.ceil(
 				vm.model.temporary.displayedList.data.length/vm.model.checkedinList.pagination.itemsEachPages)
 
@@ -322,10 +337,12 @@
 				}
 				return arr
 			}
+
 			vm.model.checkinListEachPage.data = vm.model.temporary.displayedList.data.slice(0, vm.model.checkedinList.pagination.itemsEachPages)
 			vm.ctrl.sliceCheckinList = function(i){
 				vm.model.checkinListEachPage.data = vm.model.temporary.displayedList.data.slice((i-1)*vm.model.checkedinList.pagination.itemsEachPages,i*vm.model.checkedinList.pagination.itemsEachPages)
 			}
+
 			vm.ctrl.showInPage = function(occ){
 				var testArr = vm.model.checkinListEachPage.data.filter(function(ele){
 					return ele.customer.phone == occ.customer.phone && ele.checkinTime == occ.checkinTime
