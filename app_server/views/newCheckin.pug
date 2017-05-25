@@ -344,7 +344,7 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 						td {{ vm.model.checkingout.occupancy.service.label }}
 					tr(ng-if="vm.model.checkingout.occupancy.parent")
 						th Nhóm
-						td 'THÀNH VIÊN NHÓM RIÊNG'
+						td Thành viên nhóm riêng
 					tr
 						th Giá
 						td {{ vm.model.checkingout.occupancy.service.price | number}} VNĐ
@@ -352,9 +352,9 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 						th Tổng
 						td {{ vm.model.checkingout.occupancy.total | number}} VNĐ	
 					tr
-						th Note
+						th Ghi chú
 						td
-							textarea(type='text' ng-model='vm.model.temporary.checkout.note')
+							textarea(type='text' ng-model='vm.model.checkingout.occupancy.note')
 
 
 	div(class="row column")

@@ -288,7 +288,7 @@
 						return ele.status == vm.model.filter.myfilter.status
 					}
 					
-				}).length/vm.model.dom.data.selected.pagination.itemsEachPages)
+				}).length / vm.model.dom.data.selected.pagination.itemsEachPages)
 			vm.ctrl.getNumberOfPages = function(){
 				var arr = []
 				for(var i = 1; i<vm.model.dom.data.selected.pagination.numberOfPages+1; i++){
@@ -336,11 +336,15 @@
 					vm.model.checkedinList.data.map (function (x, i, arr){
 						vm.ctrl.addServiceLabel (x.service);
 					});
+
 					pagination()
+
 					vm.ctrl.changeStatus = function(){
-						pagination()
+						pagination();
 					}
-					
+
+					vm.ctrl.checkinBooking ();
+					vm.ctrl.checkinNewCustomer ();					
 					
 				}, 
 				function error(err){
@@ -365,11 +369,11 @@
 		vm.ctrl.seeMore = function(){
 			if(vm.model.dom.seeMore == true){
 				vm.model.dom.seeMore = false
-				vm.model.dom.data.selected.seeMoreBtn = 'Expand'
+				vm.model.dom.data.selected.seeMoreBtn = 'More'
 				vm.model.dom.data.selected.seeMoreBtnIcon = 'swap_horiz'
 			}else{
 				vm.model.dom.seeMore = true
-				vm.model.dom.data.selected.seeMoreBtn = 'Shrink'
+				vm.model.dom.data.selected.seeMoreBtn = 'Less'
 				vm.model.dom.data.selected.seeMoreBtnIcon = 'compare_arrows'
 			}
 		}
@@ -574,7 +578,7 @@
 		vm.ctrl.checkin.getGroupPrivateLeader = function (){
 			vm.model.temporary.groupPrivateLeaders = [{_id: '', groupName: '', leader: ''}];
 			vm.model.checkedinList.data.map (function (x, i, arr){
-				if ((x.service.name.toLowerCase () == expectedServiceNames[2] || x.service.name.toLowerCase () == expectedServiceNames[3]) && !x.parent){
+				if ((x.service.name.toLowerCase () == expectedServiceNames[2] || x.service.name.toLowerCase () == expectedServiceNames[3] || x.service.name.toLowerCase () == expectedServiceNames[4]) && !x.parent){
 
 					vm.model.temporary.groupPrivateLeaders.push ({
 						_id: x._id, // occupancy id
@@ -696,7 +700,6 @@
 			vm.model.dom.checkOutDiv = true;
 			CheckinService.readInvoice(occupancy._id).then(
 				function success(res){
-					console.log (res.data.data)
 					vm.ctrl.hideLoader ();
 					vm.model.checkingout.occupancy = res.data.data;
 					vm.ctrl.addServiceLabel (vm.model.checkingout.occupancy.service);
@@ -711,9 +714,7 @@
 		};
 
 		vm.ctrl.checkout.checkout = function (){
-			console.log (vm.model.checkingout.occupancy)
 			vm.ctrl.showLoader ();
-			vm.model.checkingout.occupancy.note = vm.model.temporary.checkout.note;
 			CheckinService.checkout(vm.model.checkingout.occupancy)
 				.then(function success(res){
 					vm.ctrl.hideLoader ();
@@ -779,8 +780,6 @@
 		angular.element(document.getElementById ('mainContentDiv')).ready(function () {
 			vm.model.dom.data.selected = vm.model.dom.data.vn;
 			vm.ctrl.getCheckedinList ();
-			vm.ctrl.checkinBooking ();
-			vm.ctrl.checkinNewCustomer ();
 			$scope.$apply();
 		});	
 
