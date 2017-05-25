@@ -207,7 +207,7 @@ div(class="columns row")
 	// CHECKED-IN LIST 
 	div(class="column" ng-show="vm.model.dom.checkedinList")
 		div(class="table-scroll paddingT15 marginT15")
-			table(class="borderAll")
+			table(class="borderAll unstriped")
 				thead
 					tr
 						th {{vm.model.dom.data.selected.checkinList.header.number}}
@@ -221,7 +221,7 @@ div(class="columns row")
 						th
 						//th {{vm.model.dom.data.selected.headerEdit}}
 				tbody
-					tr(ng-repeat='occupancy in vm.model.checkedinList.data | myfilter:vm.model.filter.myfilter.status | orderBy: [vm.model.filter.orderBy] | filter:vm.model.filter.others' ng-show='vm.ctrl.showInPage(occupancy)')
+					tr(ng-repeat='occupancy in vm.model.checkedinList.data | myfilter:vm.model.filter.myfilter.status | orderBy: [vm.model.filter.orderBy] | filterName:vm.model.filter.others.customer.fullname' ng-show='vm.ctrl.showInPage(occupancy)')
 						td {{ $index + 1 }}
 						td {{ occupancy.customer.fullname }}
 						td(ng-if='vm.model.dom.seeMore == true')  {{ occupancy.checkinTime | date:'dd/MM/yyyy' }}

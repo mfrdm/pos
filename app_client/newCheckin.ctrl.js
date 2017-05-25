@@ -57,7 +57,7 @@
 			checkedinList: {
 				data: [],
 				pagination:{
-					itemsEachPages:3,
+					itemsEachPages:10,
 					numberOfPages:''
 				},
 			},
@@ -91,7 +91,7 @@
 				checkedinList: true,
 				checkInEditDiv: false,
 				
-				filterDiv: false,
+				filterDiv: true,
 				data: {},
 			},
 			search: {
@@ -138,6 +138,8 @@
 
 				others:{
 					customer:{
+						fullname:'',
+						phone:''
 					}
 				}
 			}
@@ -304,12 +306,19 @@
 
 		//Pagination
 		vm.ctrl.pagination = function(){
+			var cleanStr = function(str){
+				return LayoutCtrl.ctrl.removeDiacritics(str).trim().split(' ').join('').toLowerCase()
+			}
 			vm.model.temporary.displayedList.data = vm.model.checkedinList.data.filter(function(ele){
 					if(vm.model.filter.myfilter.status == 0){
 						return ele
 					}else{
 						return ele.status == vm.model.filter.myfilter.status
 					}
+				}).filter(function(item){
+					return cleanStr(item.customer.fullname).includes(cleanStr(vm.model.filter.others.customer.fullname))
+				}).filter(function(item){
+					return (item.customer.phone).includes(vm.model.filter.others.customer.phone)
 				})
 			vm.model.checkedinList.pagination.numberOfPages = Math.ceil(
 				vm.model.temporary.displayedList.data.length/vm.model.checkedinList.pagination.itemsEachPages)
