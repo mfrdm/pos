@@ -330,24 +330,26 @@
 				storeId: LayoutCtrl.model.dept._id,
 			}
 
+			vm.ctrl.showLoader ();
 			CheckinService.getCheckedinList(query).then(
 				function success(res){
+					vm.ctrl.hideLoader ();
 					vm.model.checkedinList.data = res.data.data;
 					vm.model.checkedinList.data.map (function (x, i, arr){
 						vm.ctrl.addServiceLabel (x.service);
 					});
 
-					pagination()
+					pagination();
 
 					vm.ctrl.changeStatus = function(){
 						pagination();
 					}
 
 					vm.ctrl.checkinBooking ();
-					vm.ctrl.checkinNewCustomer ();					
-					
+					vm.ctrl.checkinNewCustomer ();
 				}, 
 				function error(err){
+					vm.ctrl.hideLoader ();
 					console.log(err);
 				}
 			);
@@ -578,7 +580,7 @@
 		vm.ctrl.checkin.getGroupPrivateLeader = function (){
 			vm.model.temporary.groupPrivateLeaders = [{_id: '', groupName: '', leader: ''}];
 			vm.model.checkedinList.data.map (function (x, i, arr){
-				if ((x.service.name.toLowerCase () == expectedServiceNames[2] || x.service.name.toLowerCase () == expectedServiceNames[3] || x.service.name.toLowerCase () == expectedServiceNames[4]) && !x.parent){
+				if ((x.service.name.toLowerCase () == expectedServiceNames[2] || x.service.name.toLowerCase () == expectedServiceNames[3] || x.service.name.toLowerCase () == expectedServiceNames[4]) && !x.parent && x.status == 1){
 
 					vm.model.temporary.groupPrivateLeaders.push ({
 						_id: x._id, // occupancy id
@@ -780,7 +782,7 @@
 		angular.element(document.getElementById ('mainContentDiv')).ready(function () {
 			vm.model.dom.data.selected = vm.model.dom.data.vn;
 			vm.ctrl.getCheckedinList ();
-			$scope.$apply();
+				
 		});	
 
 	};
