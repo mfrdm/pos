@@ -125,7 +125,7 @@
 					'-checkinTime': 'Checkin Z-A'
 				},
 				myfilter:{
-					status: '3',
+					status: '1',
 				},
 				statusOptions: [
 					{value: '1', label: 'Checked-in'},
@@ -317,7 +317,7 @@
 			var input = cleanStr(vm.model.filter.others.customer.username)
 
 			vm.model.temporary.displayedList.data = vm.model.checkedinList.data.filter(function(ele){
-					if(vm.model.filter.myfilter.status == 0){
+					if(vm.model.filter.myfilter.status == 3){
 						return ele
 					}else{
 						return ele.status == vm.model.filter.myfilter.status
