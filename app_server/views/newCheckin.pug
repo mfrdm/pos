@@ -30,7 +30,7 @@ div(class="columns row")
 				input(type='text' ng-model='vm.model.filter.others.customer.username' ng-change='vm.ctrl.pagination()')
 			div(class="marginB15 column small-12 large-3 paddingR0")
 				legend {{ vm.model.dom.data.selected.filter.status}}
-				select(ng-model='vm.model.filter.myfilter.status' ng-options='status.value for status in vm.model.filter.statusOptions' ng-change='vm.ctrl.pagination()' name="filterStatus")
+				select(ng-model='vm.model.filter.myfilter.status' ng-options='status.value as status.label for status in vm.model.filter.statusOptions track by status.value' ng-change='vm.ctrl.pagination()' name="filterStatus")
 	
 	// CHECK-IN
 	div(class="column")

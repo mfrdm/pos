@@ -130,7 +130,7 @@
 				statusOptions: [
 					{value: '1', label: 'Checked-in'},
 					{value: '2', label: 'Checked-out'},
-					{value: '3', label: 'All'},
+					{value: '0', label: 'All'},
 				],
 				others:{
 					customer:{
@@ -317,7 +317,7 @@
 			var input = cleanStr(vm.model.filter.others.customer.username)
 
 			vm.model.temporary.displayedList.data = vm.model.checkedinList.data.filter(function(ele){
-					if(vm.model.filter.myfilter.status == 3){
+					if(vm.model.filter.myfilter.status == "0"){
 						return ele
 					}else{
 						return ele.status == vm.model.filter.myfilter.status
