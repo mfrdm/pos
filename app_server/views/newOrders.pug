@@ -18,7 +18,7 @@ div(class="row columns")
 				li(class="float-right")
 					ul(class="menu")
 						li: label(class="paddingR15 show-for-large") {{ vm.model.dom.data.selected.sorting.label}}
-						li: select(ng-model="vm.model.filter.orderBy" ng-options="key as value for (key , value) in vm.model.filter.orderOptions" ng-change='vm.ctrl.order.pagination()')
+						li: select(ng-model="vm.model.filter.orderBy" ng-options="key as value for (key , value) in vm.model.filter.orderOptions" ng-change='vm.ctrl.order.pagination()' ng-init='vm.model.filter.orderBy="createdAt"')
 	// Filter
 	div(class="column" ng-show="vm.model.dom.filterDiv")
 		div(class="borderT newBox row column")
@@ -41,7 +41,7 @@ div(class="row columns")
 				form(ng-submit="vm.ctrl.order.searchCustomer()")
 					div(class="row column")
 						label {{ vm.model.dom.data.selected.order.search.label.username }}
-							input(type="text" placeholder="{{ vm.model.dom.data.selected.order.placeholder.username }}" ng-model='vm.model.search.order.username' required="true")
+							input(type="text" placeholder="{{ vm.model.dom.data.selected.order.placeholder.username }}" ng-model='vm.model.search.order.username' required="true" ng-change='vm.ctrl.order.clearSearchInput()')
 					div(ng-show='vm.model.dom.order.search.message.notFound' class='marginB15')
 						div(class='callout alert')
 							p {{ vm.model.dom.data.selected.order.search.message.notFound + ' "' + vm.model.search.order.username + '". ' }}
@@ -85,6 +85,7 @@ div(class="row columns")
 									tr
 										th {{ vm.model.dom.data.selected.order.product.product }}
 										th {{ vm.model.dom.data.selected.order.product.quantity }}
+										td Delete
 
 								tbody 
 									tr(ng-repeat='ord in vm.model.ordering.orderline track by ord._id')
@@ -107,6 +108,7 @@ div(class="row columns")
 						th {{vm.model.dom.data.selected.orderList.header.product}}
 						th {{vm.model.dom.data.selected.orderList.header.quantity}}
 						th {{vm.model.dom.data.selected.orderList.header.time}}
+						th {{vm.model.dom.data.selected.orderList.header.note}}
 				tbody
 					tr(ng-repeat='order in vm.model.orderedList | orderBy: [vm.model.filter.orderBy] | filterName:vm.model.filter.others.customer.fullname | filter:vm.model.filter.others.customer.phone' ng-show='vm.ctrl.order.showInPage(order)')
 						td {{ $index + 1 }}
@@ -114,6 +116,7 @@ div(class="row columns")
 						td {{ order.productName }}
 						td {{ order.quantity }}
 						td {{ order.createdAt | date:'dd/MM/yyyy' }} {{ order.createdAt | date:'shortTime' }}
+						td {{ order.note }}
 			div(ng-if='vm.model.temporary.displayedList.data.length > vm.model.pagination.itemsEachPages')
 				ul(class="pagination text-center" role="navigation" aria-label="Pagination")
 					//- li(class="pagination-previous disabled") Previous
@@ -154,13 +157,16 @@ div(class="fullBox row column" ng-show='vm.model.dom.order.confirm')
 						td {{ item.productName }}
 						td {{ item.price | number }}
 						td {{ item.quantity }}
-						td {{ item.subTotal | number }}
+						td {{ item.subTotal | number }}							
 					tr
 						td(colspan="3") 
 						td {{ vm.model.ordering.total | number }}
-
+					tr
+						td Note
+						td(colspan='3')
+							textarea(type='text' ng-model='vm.model.ordering.note')
 
 	div(class="row column")
 		div(class="column small-12 large-6 large-push-3")
 			a(class="paddingL15 button primary" ng-click="vm.ctrl.order.confirm ()") Order
-			a(class="paddingR15 button float-right secondary" ng-click='vm.ctrl.order.closeInvoice (); $event.preventDefault()') Cancel
+			a(class="paddingR15 button float-right secondary" ng-click='vm.ctrl.reset (); $event.preventDefault()') Cancel

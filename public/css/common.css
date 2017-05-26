@@ -266,4 +266,7 @@ label {
 	.full-width-small{
 		width:100%;
 	}
+	.stdBox {
+		margin-top:15px;
+	}
 }

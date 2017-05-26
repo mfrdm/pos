@@ -125,14 +125,13 @@
 					'-checkinTime': 'Checkin Z-A'
 				},
 				myfilter:{
-					status: "1",
+					status: '3',
 				},
 				statusOptions: [
-					{value: 0, label: 'All'},
-					{value: 1, label: 'Checked-in'},
-					{value: 2, label: 'Checked-out'},
+					{value: '1', label: 'Checked-in'},
+					{value: '2', label: 'Checked-out'},
+					{value: '3', label: 'All'},
 				],
-
 				others:{
 					customer:{
 						username:''
@@ -308,12 +307,13 @@
 			}															
 		}
 
-		//Pagination
+		// Pagination
 		vm.ctrl.pagination = function(){
 			var cleanStr = function(str){
 				return LayoutCtrl.ctrl.removeDiacritics(str).trim().split(' ').join('').toLowerCase()
 			}
-			//Input
+
+			// Input
 			var input = cleanStr(vm.model.filter.others.customer.username)
 
 			vm.model.temporary.displayedList.data = vm.model.checkedinList.data.filter(function(ele){
@@ -338,6 +338,7 @@
 			}
 
 			vm.model.checkinListEachPage.data = vm.model.temporary.displayedList.data.slice(0, vm.model.checkedinList.pagination.itemsEachPages)
+			
 			vm.ctrl.sliceCheckinList = function(i){
 				vm.model.checkinListEachPage.data = vm.model.temporary.displayedList.data.slice((i-1)*vm.model.checkedinList.pagination.itemsEachPages,i*vm.model.checkedinList.pagination.itemsEachPages)
 			}
@@ -455,7 +456,7 @@
 		};
 
 		vm.ctrl.checkin.addItem = function (){
-			if (vm.model.temporary.checkin.item.quantity && vm.model.temporary.checkin.item.name){
+			if (vm.model.temporary.checkin.item.quantity && vm.model.temporary.checkin.item.name && vm.model.checkingin.occupancy.customer){
 				vm.model.items.map (function (x, i, arr){
 
 					if (x.name == vm.model.temporary.checkin.item.name && vm.model.temporary.checkin.selectedItems.indexOf (x.name) == -1){

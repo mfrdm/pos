@@ -8,7 +8,7 @@
 
 		vm.ctrl = {
 			order:{
-			}
+			},
 		}
 
 		vm.model = {
@@ -18,7 +18,7 @@
 			items: [],
 			orderedList: [], // adjusted
 			pagination:{
-				itemsEachPages:3,
+				itemsEachPages:10,
 				numberOfPages:''
 			},
 			orderedListEachPage:{
@@ -31,7 +31,8 @@
 				location: {
 					_id: LayoutCtrl.model.dept._id || LayoutCtrl.model.dept.id,
 					name: LayoutCtrl.model.dept.name,
-				},				
+				},
+				note:''				
 			},
 			dom:{
 				messageSearchResult: false,
@@ -166,7 +167,8 @@
 					fullname:'Họ và tên',
 					product:'Sản phẩm',
 					quantity:'Số lượng',
-					time:'Thời gian'
+					time:'Thời gian',
+					note:'Note'
 				},
 				body: {
 					message: {
@@ -199,6 +201,7 @@
 					y.customer = {fullname: x.customer.fullname};
 					y.createdAt = x.createdAt;
 					y.orderIndex = i;
+					y.note = x.note;
 					adjusted.push (y);
 				});
 			});
@@ -216,12 +219,10 @@
 				}).filter(function(item){
 					return (item.customer.phone).includes(vm.model.filter.others.customer.phone)
 				})
-			console.log(vm.model.temporary.displayedList.data, vm.model.pagination.itemsEachPages)
 			
 			//Get number of pages
 			vm.model.pagination.numberOfPages = Math.ceil(
 				vm.model.temporary.displayedList.data.length/vm.model.pagination.itemsEachPages)
-			console.log(vm.model.pagination.numberOfPages)
 
 			vm.ctrl.order.getNumberOfPages = function(){
 				var arr = []
@@ -279,6 +280,7 @@
 
 		vm.ctrl.toggleFilterDiv = function (){
 			if (!vm.model.dom.filterDiv) {
+				vm.ctrl.reset()
 				vm.model.dom.filterDiv = true;
 				vm.model.dom.orderDiv = false;
 			}
@@ -331,6 +333,16 @@
 				}
 			);
 		};
+
+		vm.ctrl.order.clearSearchInput = function(){
+			if(!vm.model.search.order.username){
+				if(vm.model.ordering.customer){
+					vm.model.ordering.customer = {};
+				}
+				vm.ctrl.order.resetSearchCustomerDiv()
+				vm.model.dom.order.search.message.notFound = false
+			}
+		}
 
 		vm.ctrl.order.selectCustomer = function (index){
 			vm.model.ordering.customer = {

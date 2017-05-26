@@ -30,7 +30,7 @@ div(class="columns row")
 				input(type='text' ng-model='vm.model.filter.others.customer.username' ng-change='vm.ctrl.pagination()')
 			div(class="marginB15 column small-12 large-3 paddingR0")
 				legend {{ vm.model.dom.data.selected.filter.status}}
-				select(ng-model='vm.model.filter.myfilter.status' ng-options='status.value as status.label for status in vm.model.filter.statusOptions track by status.value' ng-change='vm.ctrl.pagination()')
+				select(ng-model='vm.model.filter.myfilter.status' ng-options='status.value for status in vm.model.filter.statusOptions' ng-change='vm.ctrl.pagination()' name="filterStatus")
 	
 	// CHECK-IN
 	div(class="column")
@@ -99,12 +99,13 @@ div(class="columns row")
 							a(class="button full-width-small" ng-click="vm.ctrl.checkin.addItem (); $event.preventDefault()") Add
 					// SELECTED ITEMS
 					div(class="row column")
-						div(class='column small-12 large-6')
+						div(class='column small-12')
 							table(ng-if='vm.model.checkingin.order.orderline.length > 0' class="unstriped")
 								thead
 									tr
 										th {{ vm.model.dom.data.selected.checkin.product.header.product }}
 										th {{ vm.model.dom.data.selected.checkin.product.header.quantity }}
+										th Delete
 
 								tbody 
 									tr(ng-repeat='ord in vm.model.checkingin.order.orderline track by ord._id')
@@ -127,7 +128,6 @@ div(class="columns row")
 							a(class="button full-width-small" ng-click='vm.ctrl.checkin.addCode()') Add	
 					div(class="column row")
 						div(class='column small-12 large-6')
-
 							table(ng-if='vm.model.checkingin.occupancy.promocodes.length > 0')
 								thead
 									tr
@@ -306,7 +306,10 @@ div(class="fullBox row column" ng-show='vm.model.temporary.justCheckedin.order.o
 					tr
 						td(colspan="3") 
 						td {{ vm.model.temporary.justCheckedin.order.total | number }}
-
+					tr
+						th Note
+						th(colspan='3')
+							textarea(type='text' ng-model='vm.model.temporary.justCheckedin.order.note')
 	div(class="row column")
 		div(class="column small-12 large-6 large-push-3")
 			a(class="paddingL15 button primary" ng-click="vm.ctrl.order.confirm ()") Order
