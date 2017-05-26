@@ -144,24 +144,26 @@ div(class="fullBox row column" ng-show='vm.model.dom.order.confirm')
 						th Khách hàng
 						td(colspan="3") {{ vm.model.ordering.customer.fullname }}
 					tr
-						td(colspan="4")
-					tr
-						th Sản phẩm
-						th Giá
-						th Số lượng
-						th Tổng (VNĐ)
-					tr(ng-repeat="item in vm.model.ordering.orderline")
-						td {{ item.productName }}
-						td {{ item.price | number }}
-						td {{ item.quantity }}
-						td {{ item.subTotal | number }}							
-					tr
-						td(colspan="3") 
-						td {{ vm.model.ordering.total | number }}
-					tr
-						td Note
+						td Ghi chú
 						td(colspan='3')
 							textarea(type='text' ng-model='vm.model.ordering.note')
+					tr
+						table(class="hover unstriped")
+							thead
+								tr
+									th Sản phẩm
+									th Giá
+									th Số lượng
+									th Tổng (VNĐ)
+							tbody
+								tr(ng-repeat="item in vm.model.ordering.orderline")
+									td {{ item.productName }}
+									td {{ item.price | number }}
+									td {{ item.quantity }}
+									td {{ item.subTotal | number }}							
+								tr
+									td(colspan="3") 
+									td {{ vm.model.ordering.total | number }}
 
 	div(class="row column")
 		div(class="column small-12 large-6 large-push-3")
