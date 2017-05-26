@@ -116,16 +116,16 @@ div(class="row columns")
 						td {{ order.note }}
 			div(ng-if='vm.model.temporary.displayedList.data.length > vm.model.pagination.itemsEachPages')
 				ul(class="pagination text-center" role="navigation" aria-label="Pagination")
-					//- li(class="pagination-previous disabled") Previous
+					li(class="pagination-previous disabled") Previous
 					//- 	span(class="show-for-sr") page
 					//- li(class='current')
 					//- 	span(class="show-for-sr") You're on page
 					//- 	span 1
-					li(ng-repeat="i in vm.ctrl.order.getNumberOfPages() track by $index")
-						a(ng-click='vm.ctrl.order.sliceOrderedList(i)' id='page-{{i}}') {{i}}
+					li(ng-repeat="item in vm.model.temporary.displayedList.number track by $index")(class='{{item.class}}')
+						a(href ='' ng-click='vm.ctrl.order.sliceOrderedList(item.number)') {{item.number}}
 					
 					//- li(class="ellipsis" aria-hidden="true")
-					//- li(class="pagination-next")
+					li(class="pagination-next disabled") Next
 					//- 	a(href="#" aria-label="Next page") Next
 					//- 		span(class="show-for-sr") page
 		div(class='emptyResult text-center' ng-if='vm.model.orderedList.length == 0 || vm.model.checkinListEachPage.data.length == 0 || vm.model.temporary.displayedList.data.length == 0')

@@ -308,7 +308,9 @@
 		}
 
 		vm.ctrl.booking.confirm = function (){
-			vm.model.dom.booking.confirmDiv = true;
+			if(vm.model.booking.customer){
+				vm.model.dom.booking.confirmDiv = true;
+			}
 		}
 
 		vm.ctrl.booking.book = function (){

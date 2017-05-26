@@ -88,7 +88,7 @@
 				},
 				checkedinList: true,
 				checkInEditDiv: false,
-				
+				note:false,
 				filterDiv: true,
 				data: {},
 			},
@@ -114,8 +114,10 @@
 					note:''
 				},
 				displayedList:{
-					data:[]
-				}
+					data:[],
+					number:[]
+				},
+				note:""
 			},
 			filter:{
 				orderBy:'',
@@ -308,11 +310,21 @@
 			}															
 		}
 
+		//Show note column
+		vm.ctrl.showNoteColumn = function (){
+			if(vm.model.filter.myfilter.status == 1){
+				vm.model.dom.note = false
+			}else{
+				vm.model.dom.note = true
+			}
+		}
+
 		// Slice list after filter
 		vm.ctrl.getFilteredCheckinList = function (){
 			var cleanStr = function(str){
 				return LayoutCtrl.ctrl.removeDiacritics(str).trim().split(' ').join('').toLowerCase()
 			}
+			vm.ctrl.showNoteColumn();
 
 			// Input
 			var input = cleanStr(vm.model.filter.others.customer.username)
@@ -331,19 +343,28 @@
 
 		// Paginate
 		vm.ctrl.paginate = function (afterFilterList){
-			
+			vm.model.temporary.displayedList.number = []
 			vm.model.checkedinList.pagination.numberOfPages = Math.ceil(
 				afterFilterList.length/vm.model.checkedinList.pagination.itemsEachPages)
-			vm.ctrl.getNumberOfPages = function(){
-				var arr = []
-				for(var i = 1; i<vm.model.checkedinList.pagination.numberOfPages+1; i++){
-					arr.push(i)
-				}
-				return arr
+			
+			for(var i = 1; i<vm.model.checkedinList.pagination.numberOfPages+1; i++){
+				vm.model.temporary.displayedList.number.push({number:i, class:''})
 			}
+			vm.model.temporary.displayedList.number.map(function(ele, index, array){
+				array[0].class = 'current'
+			})
+
 			vm.model.checkinListEachPage.data = afterFilterList.slice(0, vm.model.checkedinList.pagination.itemsEachPages)
 			vm.ctrl.sliceCheckinList = function(i){
 				vm.model.checkinListEachPage.data = afterFilterList.slice((i-1)*vm.model.checkedinList.pagination.itemsEachPages,i*vm.model.checkedinList.pagination.itemsEachPages)
+				vm.model.temporary.displayedList.number.map(function(ele, index, array){
+					if(index == i-1){
+						array[index].class = 'current'
+					}else{
+						array[index].class = ''
+					}
+					
+				})
 			}
 
 			vm.ctrl.showInPage = function(occ){
@@ -727,6 +748,7 @@
 				function success(res){
 					vm.ctrl.hideLoader ();
 					vm.model.checkingout.occupancy = res.data.data;
+					vm.model.checkingout.occupancy.note = vm.model.temporary.note
 					vm.ctrl.addServiceLabel (vm.model.checkingout.occupancy.service);
 					// vm.ctrl.addGroupParent (vm.model.checkingout.occupancy.service) // Build later
 				}, 
