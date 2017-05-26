@@ -2,26 +2,23 @@
 	angular.module('posApp')
 		.controller('NewCheckinCtrl', ['DataPassingService', 'CheckinService', 'OrderService', '$scope', '$window','$route', NewCheckinCtrl])
 
-	function isInArray(element, array){//Check if an array contain an element, return bool
-		var len = array.filter(function(item){
-			return item == element;
-		})
-		if(len == 0){
-			return false//not contain
-		}else{
-			return true//contain
-		}
-	}
-
-	// Array.prototype.diff = function(a) {//Check different between 2 array, return array
-	//     return this.filter(function(i) {return a.indexOf(i) < 0;});
-	// };//Usage: biggerArr.diff(smallArr)=>different array
-
 	function NewCheckinCtrl (DataPassingService, CheckinService, OrderService, $scope, $window, $route){
 		var LayoutCtrl = $scope.$parent.layout;
 		var vm = this;
 
 		var expectedServiceNames = ['group common', 'individual common', 'small group private', 'medium group private'];
+
+		// FIX: fetch from server
+		var validCodes = [
+			{value: 'MAR05', label: 'MAR05'},
+			{value: 'GS05', label: 'GS05'},
+			{value: 'FREEWED', label: 'FREEWED'},
+			{value: 'V01H06', label: 'V02H06'},
+			{value: 'V02H06', label: 'V02H06'},
+			{value: 'VFSC', label: 'Phòng riêng FSC'},
+			{value: 'VYMCS', label: 'Phòng riêng 15 YMC'},
+			{value: 'VYMCM', label: 'Phòng riêng 30 YMC'},
+		];
 
 		vm.ctrl = {
 			checkin: {},
@@ -184,7 +181,7 @@
 				},
 				promoteCode:{
 					title:'Add promote codes',
-					label:'Code'
+					label:'Code',
 				}
 			},
 			checkinList:{
@@ -244,7 +241,8 @@
 				},
 				promoteCode:{
 					title:'Điền code giảm giá',
-					label:'Code'
+					label:'Code',
+					codes: validCodes,
 				}
 			},
 			
@@ -651,15 +649,15 @@
 		vm.ctrl.checkin.validateCode = function (del=false){//del == true when click delete promocode button
 
 			if(vm.model.checkingin.occupancy.customer.fullname){
-				var codes = [];
+				var addedCodes = [];
 				if (vm.model.checkingin.occupancy.promocodes && vm.model.checkingin.occupancy.promocodes.length){
-					codes = vm.model.checkingin.occupancy.promocodes.map (function(x, i, arr){
+					addedCodes = vm.model.checkingin.occupancy.promocodes.map (function(x, i, arr){
 						return x.name;
 					});
 				}
 
 				var data = {
-					codes: codes,
+					codes: addedCodes,
 					isStudent: vm.model.checkingin.occupancy.customer.isStudent,
 					service: vm.model.checkingin.occupancy.service.name,
 				};
@@ -676,9 +674,10 @@
 						foundCodes.map (function (x, i, arr){
 							vm.model.temporary.checkin.codeNames.push (x.name);
 						});
+
 						if(vm.model.checkingin.occupancy.promocodes){
 							vm.model.checkingin.occupancy.promocodes.map(function(item){
-								if(isInArray(item.name, vm.model.temporary.checkin.codeNames)){
+								if(vm.model.temporary.checkin.codeNames.indexOf(item.name.toLowerCase()) != -1){
 									item.status = 3
 								}else{
 									item.status = 2
@@ -686,7 +685,8 @@
 							})
 						}
 						
-						if (foundCodes.length >= codes.length){
+						// FIX: Not good. Better check if every founded codes are included in added codes
+						if (foundCodes.length >= addedCodes.length){
 							vm.ctrl.checkin.confirm ();
 						}
 					},
