@@ -509,6 +509,32 @@ ul.listOrder li i{
 .pagination a:hover, .pagination button:hover{
 	background: none!important;
 }
+
+.pagination li.current{
+	padding:0;
+}
+
+.pagination li.current a{
+	color:#fff;
+}
+
+/*Menu*/
+#mainMenu{
+	padding: 0;
+}
+
+#mainMenu .menu.vertical>li{
+	border-bottom: 1px solid #8a8a8a
+}
+
+#mainMenu ul{
+	background-color: rgba(103, 111, 117, 0.81);
+}
+
+#mainMenu ul a{
+	color: #fff;
+}
+
 @media print, screen and (max-width: 64em){
 	.menu select{
 		width:49.99px;

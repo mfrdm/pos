@@ -25,10 +25,10 @@ div(class="columns row")
 	// FILTER 
 	div(class="column" ng-show="vm.model.dom.filterDiv")
 		div(class="borderT newBox row column")
-			div(class='marginB15 column small-12 large-9 paddingL0')
+			div(class='marginB15 column small-12 large-9 paddingLR0 large-paddingR15')
 				legend {{ vm.model.dom.data.selected.filter.username}}
 				input(type='text' ng-model='vm.model.filter.others.customer.username' ng-change='vm.ctrl.filterPaginate()')
-			div(class="marginB15 column small-12 large-3 paddingR0")
+			div(class="marginB15 column small-12 large-3 paddingLR0 large-paddingL15")
 				legend {{ vm.model.dom.data.selected.filter.status}}
 				select(ng-model='vm.model.filter.myfilter.status' ng-options='status.value as status.label for status in vm.model.filter.statusOptions' ng-init='vm.model.filter.myfilter.status="1"' ng-change='vm.ctrl.filterPaginate()' name="filterStatus")
 	

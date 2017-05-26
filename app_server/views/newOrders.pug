@@ -69,11 +69,13 @@ div(class="row columns")
 						div(class="column small-8")
 							label {{vm.model.dom.data.selected.order.product.label}}
 								select(ng-model="vm.model.temporary.ordering.item.name" ng-options="item.name as item.name for item in vm.model.dom.data.selected.items track by item.name")
-						div(class="column small-3")
+						div(class="column small-4")
 							label {{vm.model.dom.data.selected.order.product.quantity}}
 								input( ng-model="vm.model.temporary.ordering.item.quantity" string-to-number type="number" min='0')
-						div(class="column small-1 iconAdd")
+						div(class="column show-for-large large-1 iconAdd")
 							i(class="material-icons customIcon" ng-click='vm.ctrl.order.addItem (); $event.preventDefault()') add
+						div(class="column hide-for-large text-center")
+							a(class="button full-width-small" ng-click="vm.ctrl.order.addItem ()") Add
 					// SELECTED ITEMS
 					div(class="row column")
 						div(class='column small-12 large-6')
