@@ -25,12 +25,12 @@ div(class="columns row")
 	// FILTER 
 	div(class="column" ng-show="vm.model.dom.filterDiv")
 		div(class="borderT newBox row column")
-			div(class='marginB15 column small-12 large-9 large-paddingR15 paddingLR0')
-				legend {{ vm.model.dom.data.selected.filter.namePhone}}
-				input(type='text' ng-model='vm.model.filter.others.customer.namePhone' ng-change='vm.ctrl.filterPaginate()')
-			div(class="marginB15 column small-12 large-3 large-paddingL15 paddingLR0")
+			div(class='marginB15 column small-12 large-9 paddingL0')
+				legend {{ vm.model.dom.data.selected.filter.username}}
+				input(type='text' ng-model='vm.model.filter.others.customer.username' ng-change='vm.ctrl.filterPaginate()')
+			div(class="marginB15 column small-12 large-3 paddingR0")
 				legend {{ vm.model.dom.data.selected.filter.status}}
-				select(ng-model='vm.model.filter.myfilter.status' ng-options='item.label as item.value for item in vm.model.filter.statusOptions' ng-init='vm.model.filter.myfilter.status="1"' ng-change='vm.ctrl.filterPaginate()')
+				select(ng-model='vm.model.filter.myfilter.status' ng-options='status.value as status.label for status in vm.model.filter.statusOptions' ng-init='vm.model.filter.myfilter.status="1"' ng-change='vm.ctrl.filterPaginate()' name="filterStatus")
 	
 	// CHECK-IN
 	div(class="column")
@@ -120,19 +120,26 @@ div(class="columns row")
 					div(class="column row")
 						div(class='column small-12 large-11')
 							label {{vm.model.dom.data.selected.checkin.promoteCode.label}}
-								input(type='text' ng-model='vm.model.temporary.checkin.codeName')
-						div(class='column large-1 show-for-large iconAdd')
-							i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.addCode()') add
-						div(class="column hide-for-large text-center")
-							a(class="button full-width-small" ng-click='vm.ctrl.checkin.addCode()') Add	
+								//input(type='text' ng-model='vm.model.temporary.checkin.codeName')
+								select(ng-model="vm.model.temporary.checkin.codeName" ng-options="code.value as code.label for code in vm.model.dom.data.vn.checkin.promoteCode.codes track by code.value")
+									
+						div(class='column large-1 show-for-large iconAdd' ng-if='vm.model.checkingin.occupancy.promocodes.length == 0')
+							i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.addCode()' ) add
+						div(class="column hide-for-large text-center" ng-if='vm.model.checkingin.occupancy.promocodes.length == 0')
+							a(class="button full-width-small" ng-click='vm.ctrl.checkin.addCode()') Add
+
+						div(class='column large-1 show-for-large iconAdd' ng-if='vm.model.checkingin.occupancy.promocodes.length > 0')
+							i(class="material-icons customIcon icon-disabled" ) add
+						div(class="column hide-for-large text-center" ng-if='vm.model.checkingin.occupancy.promocodes.length > 0')
+							a(class="button full-width-small disabled") Add	
 					div(class="column row")
 						div(class='column small-12')
 							table(ng-if='vm.model.checkingin.occupancy.promocodes.length > 0')
 								thead
 									tr
 										th Code
-										th Status
-										th Delete
+										th Trạng thái
+										th 
 								tbody
 									tr(ng-repeat='code in vm.model.checkingin.occupancy.promocodes track by code.name')
 										td {{ code.name }}
@@ -217,7 +224,7 @@ div(class="columns row")
 						th
 						//th {{vm.model.dom.data.selected.headerEdit}}
 				tbody
-					tr(ng-repeat='occupancy in vm.model.checkedinList.data | myfilter:vm.model.filter.myfilter.status | orderBy: [vm.model.filter.orderBy] | filterName:vm.model.filter.others.customer.namePhone' ng-show='vm.ctrl.showInPage(occupancy)')
+					tr(ng-repeat='occupancy in vm.model.checkedinList.data | myfilter:vm.model.filter.myfilter.status | orderBy: [vm.model.filter.orderBy] | filterName:vm.model.filter.others.customer.username' ng-show='vm.ctrl.showInPage(occupancy)')
 						td {{ $index + 1 }}
 						td {{ occupancy.customer.fullname }}
 						td(ng-if='vm.model.dom.seeMore == true')  {{ occupancy.checkinTime | date:'dd/MM/yyyy' }}
@@ -339,7 +346,7 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 						td {{ vm.model.checkingout.occupancy.service.label }}
 					tr(ng-if="vm.model.checkingout.occupancy.parent")
 						th Nhóm
-						td 'THÀNH VIÊN NHÓM RIÊNG'
+						td Thành viên nhóm riêng
 					tr
 						th Giá
 						td {{ vm.model.checkingout.occupancy.service.price | number}} VNĐ
@@ -347,9 +354,9 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 						th Tổng
 						td {{ vm.model.checkingout.occupancy.total | number}} VNĐ	
 					tr
-						th Note
+						th Ghi chú
 						td
-							textarea(type='text' ng-model='vm.model.temporary.checkout.note')
+							textarea(type='text' ng-model='vm.model.checkingout.occupancy.note')
 
 
 	div(class="row column")

@@ -19,7 +19,7 @@ function Checkin() {
 		// remove excluded code
 		codes.map (function (x, i, arr){
 			if (excludedCodes.indexOf (x.toLowerCase ()) == -1){
-				tempCodes.push (x);
+				tempCodes.push (x.toLowerCase ());
 			}
 		});
 

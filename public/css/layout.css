@@ -363,6 +363,11 @@ ul.listOrder li i{
 	cursor: pointer;
 }
 
+.icon-disabled{
+	color: rgb(134, 141, 150)!important;
+	cursor: not-allowed!important;
+}
+
 .deleteIcon i{
 	font-size: 31px;
 	color: #ee5f5b;

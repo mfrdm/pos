@@ -2,26 +2,23 @@
 	angular.module('posApp')
 		.controller('NewCheckinCtrl', ['DataPassingService', 'CheckinService', 'OrderService', '$scope', '$window','$route', NewCheckinCtrl])
 
-	function isInArray(element, array){//Check if an array contain an element, return bool
-		var len = array.filter(function(item){
-			return item == element;
-		})
-		if(len == 0){
-			return false//not contain
-		}else{
-			return true//contain
-		}
-	}
-
-	// Array.prototype.diff = function(a) {//Check different between 2 array, return array
-	//     return this.filter(function(i) {return a.indexOf(i) < 0;});
-	// };//Usage: biggerArr.diff(smallArr)=>different array
-
 	function NewCheckinCtrl (DataPassingService, CheckinService, OrderService, $scope, $window, $route){
 		var LayoutCtrl = $scope.$parent.layout;
 		var vm = this;
 
 		var expectedServiceNames = ['group common', 'individual common', 'small group private', 'medium group private'];
+
+		// FIX: fetch from server
+		var validCodes = [
+			{value: 'MAR05', label: 'MAR05'},
+			{value: 'GS05', label: 'GS05'},
+			{value: 'FREEWED', label: 'FREEWED'},
+			{value: 'V01H06', label: 'V02H06'},
+			{value: 'V02H06', label: 'V02H06'},
+			{value: 'VFSC', label: 'Phòng riêng FSC'},
+			{value: 'VYMCS', label: 'Phòng riêng 15 YMC'},
+			{value: 'VYMCM', label: 'Phòng riêng 30 YMC'},
+		];
 
 		vm.ctrl = {
 			checkin: {},
@@ -44,6 +41,7 @@
 						_id: LayoutCtrl.model.dept._id,
 						name: LayoutCtrl.model.dept.name,
 					},
+					promocodes:[]
 				},
 				order: {
 					orderline: [],
@@ -128,17 +126,16 @@
 					'-checkinTime': 'Checkin Z-A'
 				},
 				myfilter:{
-					status:'',
+					status: '1',
 				},
-				statusOptions:[
-					{'label':'1','value':'Checkin'}, 
-					{'label':'2','value':'Checkout'},
-					{'label':'3','value':'Tất cả'}
+				statusOptions: [
+					{value: '1', label: 'Checked-in'},
+					{value: '2', label: 'Checked-out'},
+					{value: '3', label: 'All'},
 				],
-
 				others:{
 					customer:{
-						namePhone:''
+						username:''
 					}
 				}
 			}
@@ -184,7 +181,7 @@
 				},
 				promoteCode:{
 					title:'Add promote codes',
-					label:'Code'
+					label:'Code',
 				}
 			},
 			checkinList:{
@@ -244,7 +241,8 @@
 				},
 				promoteCode:{
 					title:'Điền code giảm giá',
-					label:'Code'
+					label:'Code',
+					codes: validCodes,
 				}
 			},
 			
@@ -266,14 +264,14 @@
 				},
 			},
 			sorting:{
-				label:'Sorting'
+				label:'Sắp xếp'
 			},
 			filter:{
-				status:'Status',
-				namePhone:'Tên/Số điện thoại'
+				status:'Trạng thái',
+				username:'Tên / Sđt'
 			},
 			
-			seeMoreBtn:'Expand',
+			seeMoreBtn:'More',
 			seeMoreBtnIcon : 'swap_horiz'
 		};
 
@@ -315,8 +313,9 @@
 			var cleanStr = function(str){
 				return LayoutCtrl.ctrl.removeDiacritics(str).trim().split(' ').join('').toLowerCase()
 			}
-			//Input
-			var input = cleanStr(vm.model.filter.others.customer.namePhone)
+
+			// Input
+			var input = cleanStr(vm.model.filter.others.customer.username)
 
 			vm.model.temporary.displayedList.data = vm.model.checkedinList.data.filter(function(ele){
 					if(vm.model.filter.myfilter.status == 3){
@@ -325,7 +324,7 @@
 						return ele.status == vm.model.filter.myfilter.status
 					}
 				}).filter(function(item){
-					return (cleanStr(item.customer.fullname).includes(input) || cleanStr(item.customer.phone).includes(input) )
+					return (cleanStr(item.customer.fullname).includes(input) || cleanStr(item.customer.phone).includes(input))
 				})
 			return vm.model.temporary.displayedList.data
 		}
@@ -346,6 +345,7 @@
 			vm.ctrl.sliceCheckinList = function(i){
 				vm.model.checkinListEachPage.data = afterFilterList.slice((i-1)*vm.model.checkedinList.pagination.itemsEachPages,i*vm.model.checkedinList.pagination.itemsEachPages)
 			}
+
 			vm.ctrl.showInPage = function(occ){
 				var testArr = vm.model.checkinListEachPage.data.filter(function(ele){
 					return ele.customer.phone == occ.customer.phone && ele.checkinTime == occ.checkinTime
@@ -370,15 +370,20 @@
 				storeId: LayoutCtrl.model.dept._id,
 			}
 
+			vm.ctrl.showLoader ();
 			CheckinService.getCheckedinList(query).then(
 				function success(res){
+					vm.ctrl.hideLoader ();
 					vm.model.checkedinList.data = res.data.data;
 					vm.model.checkedinList.data.map (function (x, i, arr){
 						vm.ctrl.addServiceLabel (x.service);
 					});
-					vm.ctrl.filterPaginate()					
+					vm.ctrl.filterPaginate()	
+					vm.ctrl.checkinBooking ();
+					vm.ctrl.checkinNewCustomer ();
 				}, 
 				function error(err){
+					vm.ctrl.hideLoader ();
 					console.log(err);
 				}
 			);
@@ -396,11 +401,11 @@
 		vm.ctrl.seeMore = function(){
 			if(vm.model.dom.seeMore == true){
 				vm.model.dom.seeMore = false
-				vm.model.dom.data.selected.seeMoreBtn = 'Expand'
+				vm.model.dom.data.selected.seeMoreBtn = 'More'
 				vm.model.dom.data.selected.seeMoreBtnIcon = 'swap_horiz'
 			}else{
 				vm.model.dom.seeMore = true
-				vm.model.dom.data.selected.seeMoreBtn = 'Shrink'
+				vm.model.dom.data.selected.seeMoreBtn = 'Less'
 				vm.model.dom.data.selected.seeMoreBtnIcon = 'compare_arrows'
 			}
 		}
@@ -483,7 +488,6 @@
 				});
 			}
 		};
-
 		vm.ctrl.checkin.removeItem = function (index){
 			if (vm.model.checkingin.order.orderline && vm.model.checkingin.order.orderline.length){
 				vm.model.checkingin.order.orderline.splice (index, 1);
@@ -604,7 +608,7 @@
 		vm.ctrl.checkin.getGroupPrivateLeader = function (){
 			vm.model.temporary.groupPrivateLeaders = [{_id: '', groupName: '', leader: ''}];
 			vm.model.checkedinList.data.map (function (x, i, arr){
-				if ((x.service.name.toLowerCase () == expectedServiceNames[2] || x.service.name.toLowerCase () == expectedServiceNames[3]) && !x.parent){
+				if ((x.service.name.toLowerCase () == expectedServiceNames[2] || x.service.name.toLowerCase () == expectedServiceNames[3] || x.service.name.toLowerCase () == expectedServiceNames[4]) && !x.parent && x.status == 1){
 
 					vm.model.temporary.groupPrivateLeaders.push ({
 						_id: x._id, // occupancy id
@@ -653,15 +657,15 @@
 		vm.ctrl.checkin.validateCode = function (del=false){//del == true when click delete promocode button
 
 			if(vm.model.checkingin.occupancy.customer.fullname){
-				var codes = [];
+				var addedCodes = [];
 				if (vm.model.checkingin.occupancy.promocodes && vm.model.checkingin.occupancy.promocodes.length){
-					codes = vm.model.checkingin.occupancy.promocodes.map (function(x, i, arr){
+					addedCodes = vm.model.checkingin.occupancy.promocodes.map (function(x, i, arr){
 						return x.name;
 					});
 				}
 
 				var data = {
-					codes: codes,
+					codes: addedCodes,
 					isStudent: vm.model.checkingin.occupancy.customer.isStudent,
 					service: vm.model.checkingin.occupancy.service.name,
 				};
@@ -678,9 +682,10 @@
 						foundCodes.map (function (x, i, arr){
 							vm.model.temporary.checkin.codeNames.push (x.name);
 						});
+
 						if(vm.model.checkingin.occupancy.promocodes){
 							vm.model.checkingin.occupancy.promocodes.map(function(item){
-								if(isInArray(item.name, vm.model.temporary.checkin.codeNames)){
+								if(vm.model.temporary.checkin.codeNames.indexOf(item.name.toLowerCase()) != -1){
 									item.status = 3
 								}else{
 									item.status = 2
@@ -688,7 +693,8 @@
 							})
 						}
 						
-						if (foundCodes.length >= codes.length){
+						// FIX: Not good. Better check if every founded codes are included in added codes
+						if (foundCodes.length >= addedCodes.length){
 							vm.ctrl.checkin.confirm ();
 						}
 					},
@@ -719,7 +725,6 @@
 			vm.model.dom.checkOutDiv = true;
 			CheckinService.readInvoice(occupancy._id).then(
 				function success(res){
-					console.log (res.data.data)
 					vm.ctrl.hideLoader ();
 					vm.model.checkingout.occupancy = res.data.data;
 					vm.ctrl.addServiceLabel (vm.model.checkingout.occupancy.service);
@@ -734,9 +739,7 @@
 		};
 
 		vm.ctrl.checkout.checkout = function (){
-			console.log (vm.model.checkingout.occupancy)
 			vm.ctrl.showLoader ();
-			vm.model.checkingout.occupancy.note = vm.model.temporary.checkout.note;
 			CheckinService.checkout(vm.model.checkingout.occupancy)
 				.then(function success(res){
 					vm.ctrl.hideLoader ();
@@ -802,9 +805,7 @@
 		angular.element(document.getElementById ('mainContentDiv')).ready(function () {
 			vm.model.dom.data.selected = vm.model.dom.data.vn;
 			vm.ctrl.getCheckedinList ();
-			vm.ctrl.checkinBooking ();
-			vm.ctrl.checkinNewCustomer ();
-			$scope.$apply();
+				
 		});	
 
 	};
