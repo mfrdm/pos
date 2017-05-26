@@ -146,6 +146,7 @@
 			sideBarMenu: false,
 			topMenu:false,
 			returnPage: '/checkin', // default
+			profileList:false
 		};
 
 		$scope.layout.ctrl.addCompany = function (data){
@@ -224,6 +225,13 @@
 		    });
 		}
 
+		$scope.layout.ctrl.toggleProfile = function(){
+			if($scope.layout.model.dom.profileList){
+				$scope.layout.model.dom.profileList = false
+			}else{
+				$scope.layout.model.dom.profileList = true
+			}
+		}
 		// $scope.layout.notiAlert = function(msg){
 		// 	console.log(msg)
 		// 	$scope.layout.notifications.push(msg)

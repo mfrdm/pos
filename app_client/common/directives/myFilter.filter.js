@@ -123,14 +123,11 @@ function isInArray(element, array){//Check if an array contain an element, retur
 
 function myfilter(){
 	return function(item, condition){
-		if(!item){
+		if(condition == 3){
 			return item
 		}else{
-			if(condition != 0){
-				return item.filter(function(ele){return ele.status == condition})
-			}
-			return item
-		}
+            return item.filter(function(ele){return ele.status == condition})
+        }
 	}
 }
 

@@ -363,6 +363,11 @@ ul.listOrder li i{
 	cursor: pointer;
 }
 
+.icon-disabled{
+	color: rgb(134, 141, 150)!important;
+	cursor: not-allowed!important;
+}
+
 .deleteIcon i{
 	font-size: 31px;
 	color: #ee5f5b;
@@ -484,6 +489,20 @@ ul.listOrder li i{
 /*Invalid PromoteCode*/
 .invalid{
 	color:red;
+}
+
+/*Dropdown menu*/
+.is-submenu-item{
+	padding-bottom:10px;
+}
+
+.is-submenu-item:hover{
+	background-color: rgba(103, 111, 117, 0.81);
+	
+}
+
+.is-submenu-item:hover a{
+	color: #fff!important;
 }
 
 @media print, screen and (max-width: 64em){

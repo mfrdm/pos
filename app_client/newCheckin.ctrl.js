@@ -41,6 +41,7 @@
 						_id: LayoutCtrl.model.dept._id,
 						name: LayoutCtrl.model.dept.name,
 					},
+					promocodes:[]
 				},
 				order: {
 					orderline: [],
@@ -130,7 +131,7 @@
 				statusOptions: [
 					{value: '1', label: 'Checked-in'},
 					{value: '2', label: 'Checked-out'},
-					{value: '0', label: 'All'},
+					{value: '3', label: 'All'},
 				],
 				others:{
 					customer:{
@@ -307,8 +308,8 @@
 			}															
 		}
 
-		// Pagination
-		vm.ctrl.pagination = function(){
+		// Slice list after filter
+		vm.ctrl.getFilteredCheckinList = function (){
 			var cleanStr = function(str){
 				return LayoutCtrl.ctrl.removeDiacritics(str).trim().split(' ').join('').toLowerCase()
 			}
@@ -317,7 +318,7 @@
 			var input = cleanStr(vm.model.filter.others.customer.username)
 
 			vm.model.temporary.displayedList.data = vm.model.checkedinList.data.filter(function(ele){
-					if(vm.model.filter.myfilter.status == "0"){
+					if(vm.model.filter.myfilter.status == 3){
 						return ele
 					}else{
 						return ele.status == vm.model.filter.myfilter.status
@@ -325,10 +326,14 @@
 				}).filter(function(item){
 					return (cleanStr(item.customer.fullname).includes(input) || cleanStr(item.customer.phone).includes(input))
 				})
+			return vm.model.temporary.displayedList.data
+		}
 
+		// Paginate
+		vm.ctrl.paginate = function (afterFilterList){
+			
 			vm.model.checkedinList.pagination.numberOfPages = Math.ceil(
-				vm.model.temporary.displayedList.data.length/vm.model.checkedinList.pagination.itemsEachPages)
-
+				afterFilterList.length/vm.model.checkedinList.pagination.itemsEachPages)
 			vm.ctrl.getNumberOfPages = function(){
 				var arr = []
 				for(var i = 1; i<vm.model.checkedinList.pagination.numberOfPages+1; i++){
@@ -336,11 +341,9 @@
 				}
 				return arr
 			}
-
-			vm.model.checkinListEachPage.data = vm.model.temporary.displayedList.data.slice(0, vm.model.checkedinList.pagination.itemsEachPages)
-			
+			vm.model.checkinListEachPage.data = afterFilterList.slice(0, vm.model.checkedinList.pagination.itemsEachPages)
 			vm.ctrl.sliceCheckinList = function(i){
-				vm.model.checkinListEachPage.data = vm.model.temporary.displayedList.data.slice((i-1)*vm.model.checkedinList.pagination.itemsEachPages,i*vm.model.checkedinList.pagination.itemsEachPages)
+				vm.model.checkinListEachPage.data = afterFilterList.slice((i-1)*vm.model.checkedinList.pagination.itemsEachPages,i*vm.model.checkedinList.pagination.itemsEachPages)
 			}
 
 			vm.ctrl.showInPage = function(occ){
@@ -353,6 +356,12 @@
 					return false
 				}
 			}
+		}
+
+		// Paginate after filter
+		vm.ctrl.filterPaginate = function (){
+			var afterFilterList = vm.ctrl.getFilteredCheckinList();
+			vm.ctrl.paginate(afterFilterList)
 		}
 
 		vm.ctrl.getCheckedinList = function (){
@@ -369,8 +378,7 @@
 					vm.model.checkedinList.data.map (function (x, i, arr){
 						vm.ctrl.addServiceLabel (x.service);
 					});
-
-					vm.ctrl.pagination();
+					vm.ctrl.filterPaginate()	
 					vm.ctrl.checkinBooking ();
 					vm.ctrl.checkinNewCustomer ();
 				}, 
@@ -480,7 +488,6 @@
 				});
 			}
 		};
-
 		vm.ctrl.checkin.removeItem = function (index){
 			if (vm.model.checkingin.order.orderline && vm.model.checkingin.order.orderline.length){
 				vm.model.checkingin.order.orderline.splice (index, 1);
