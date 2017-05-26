@@ -131,9 +131,9 @@
 					status:'',
 				},
 				statusOptions:{
-					0:'Tất cả', 
-					1:'Checkin', 
-					2:'Checkout'
+					'0':'Tất cả', 
+					'1':'Checkin', 
+					'2':'Checkout'
 				},
 
 				others:{

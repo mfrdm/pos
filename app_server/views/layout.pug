@@ -45,10 +45,18 @@ html(ng-app='posApp')
 							li(ng-click='layout.ctrl.logout()'): a Logout
 
 
-		div(class="title-bar" data-responsive-toggle="mainMenu" data-hide-for="large")
-			button(class="menu-icon" type="button" data-toggle id="top-menu-btn")
+		div(class="title-bar" data-hide-for="large")
+			button(class="menu-icon" type="button" id="top-menu-btn" ng-click='layout.ctrl.toggleTopMenu()')
 			div(class="title-bar-title paddingLR10")
 				a(href="#!/" class="title-bar-title title") GS POS
+		div(class='top-bar hide-for-large' id='mainMenu' ng-show='layout.model.dom.topMenu')
+			div(class="top-bar-left")
+				ul(class="menu vertical")
+					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/checkin') Checkin
+					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/orders') Order
+					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/booking') Booking
+					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/customers') Customer
+
 		div(class="row marginLR0 relative")
 			div(class="large-2 columns show-for-large" id="alternativeMenu" ng-show="layout.model.dom.sideBarMenu")
 				ul(class="menu vertical")

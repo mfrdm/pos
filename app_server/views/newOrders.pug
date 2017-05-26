@@ -18,7 +18,7 @@ div(class="row columns")
 				li(class="float-right")
 					ul(class="menu")
 						li: label(class="paddingR15 show-for-large") {{ vm.model.dom.data.selected.sorting.label}}
-						li: select(ng-model="vm.model.filter.orderBy" ng-options="key as value for (key , value) in vm.model.filter.orderOptions" ng-change='vm.ctrl.order.pagination()')
+						li: select(ng-model="vm.model.filter.orderBy" ng-options="key as value for (key , value) in vm.model.filter.orderOptions" ng-change='vm.ctrl.order.pagination()' ng-init='vm.model.filter.orderBy="createdAt"')
 	// Filter
 	div(class="column" ng-show="vm.model.dom.filterDiv")
 		div(class="borderT newBox row column")
@@ -41,7 +41,7 @@ div(class="row columns")
 				form(ng-submit="vm.ctrl.order.searchCustomer()")
 					div(class="row column")
 						label {{ vm.model.dom.data.selected.order.search.label.username }}
-							input(type="text" placeholder="{{ vm.model.dom.data.selected.order.placeholder.username }}" ng-model='vm.model.search.order.username' required="true")
+							input(type="text" placeholder="{{ vm.model.dom.data.selected.order.placeholder.username }}" ng-model='vm.model.search.order.username' required="true" ng-change='vm.ctrl.order.clearSearchInput()')
 					div(ng-show='vm.model.dom.order.search.message.notFound' class='marginB15')
 						div(class='callout alert')
 							p {{ vm.model.dom.data.selected.order.search.message.notFound + ' "' + vm.model.search.order.username + '". ' }}

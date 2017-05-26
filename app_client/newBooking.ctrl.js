@@ -31,7 +31,9 @@
 							notFound: false,
 						}
 						
-					},					
+					},
+					bookingSuccessDiv:false,
+					cancelSuccessDiv:false		
 				},
 				bookingList: {
 					cancelConfirmDiv: false,
@@ -311,7 +313,7 @@
 			BookingService.book (vm.model.booking).then (
 				function success (res){
 					vm.ctrl.hideLoader ();
-					vm.ctrl.reset ();
+					vm.model.dom.booking.bookingSuccessDiv = true;
 				},
 				function failure (err){
 					console.log (err);
@@ -342,7 +344,7 @@
 			BookingService.updateOne (curBooking._id, update).then (
 				function success (res){
 					vm.ctrl.hideLoader ();
-					vm.ctrl.reset ();
+					vm.model.dom.booking.cancelSuccessDiv = true;
 				},
 				function failure (err){
 					console.log (err);

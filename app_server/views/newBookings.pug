@@ -223,4 +223,25 @@ div(class="fullBox row column" ng-show='vm.model.dom.booking.confirmDiv')
 						td {{ vm.model.booking.note }}	
 			div(class="row column")
 				a(class="paddingL15 button primary" ng-click="vm.ctrl.booking.book ()") Confirm
-				a(class="paddingR15 button float-right secondary" ng-click="vm.ctrl.booking.closeConfirm ()") Cancel												
+				a(class="paddingR15 button float-right secondary" ng-click="vm.ctrl.booking.closeConfirm ()") Cancel
+
+// Booking SUCCESS MESSAGE 
+div(class="fullBox row column" ng-show='vm.model.dom.booking.bookingSuccessDiv')
+	div(class="column small-12 text-center paddingTB20")
+		h2 GREEN SPACE
+		h3 Booking thành công!
+	div(class="column small-12 paddingB20")
+		div(class="column small-12 large-2 large-offset-5 text-center")
+			//- a(class="button" ng-click="vm.ctrl.checkin()") Check-in
+			a(class="button float-center secondary" ng-click="vm.ctrl.reset ()") Close
+
+
+// Cancel SUCCESS MESSAGE 
+div(class="fullBox row column" ng-show='vm.model.dom.booking.cancelSuccessDiv')
+	div(class="column small-12 text-center paddingTB20")
+		h2 GREEN SPACE
+		h3 Cancel Booking thành công!
+	div(class="column small-12 paddingB20")
+		div(class="column small-12 large-2 large-offset-5 text-center")
+			//- a(class="button" ng-click="vm.ctrl.checkin()") Check-in
+			a(class="button float-center secondary" ng-click="vm.ctrl.reset ()") Close	

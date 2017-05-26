@@ -27,8 +27,7 @@ div(class="columns row")
 		div(class="borderT newBox row column")
 			div(class="marginB15 column small-12 large-6 paddingL0")
 				legend {{ vm.model.dom.data.selected.filter.status}}
-				select(ng-model='vm.model.filter.myfilter.status' ng-options='key as value for (key , value) in vm.model.filter.statusOptions' ng-init='vm.model.filter.myfilter.status=1' ng-change='vm.ctrl.pagination()')
-					option
+				select(ng-model='vm.model.filter.myfilter.status' ng-options='key as value for (key , value) in vm.model.filter.statusOptions' ng-init='vm.model.filter.myfilter.status="1"' ng-change='vm.ctrl.pagination()')
 			div(class='marginB15 column small-12 large-6 paddingR0')
 				legend {{ vm.model.dom.data.selected.filter.namePhone}}
 				input(type='text' ng-model='vm.model.filter.others.customer.namePhone' ng-change='vm.ctrl.pagination()')
