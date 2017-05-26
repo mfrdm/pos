@@ -66,10 +66,10 @@ div(class="row columns")
 					div(class="column row")
 						h3(class="paddingLR15 fontSize20 fontWeight600") {{vm.model.dom.data.selected.order.product.title}}
 					div(class="column row")
-						div(class="column small-8")
+						div(class="column small-8 large-8")
 							label {{vm.model.dom.data.selected.order.product.label}}
 								select(ng-model="vm.model.temporary.ordering.item.name" ng-options="item.name as item.name for item in vm.model.dom.data.selected.items track by item.name")
-						div(class="column small-4")
+						div(class="column small-4 large-3")
 							label {{vm.model.dom.data.selected.order.product.quantity}}
 								input( ng-model="vm.model.temporary.ordering.item.quantity" string-to-number type="number" min='0')
 						div(class="column show-for-large large-1 iconAdd")
