@@ -221,23 +221,32 @@
 
 		// Paginate
 		vm.ctrl.order.paginate = function (filteredList){
+			vm.model.temporary.displayedList.number = []
 			//Get number of pages
 			vm.model.pagination.numberOfPages = Math.ceil(
 				filteredList.length/vm.model.pagination.itemsEachPages)
 
-			vm.ctrl.order.getNumberOfPages = function(){
-				var arr = []
-				for(var i = 1; i<vm.model.pagination.numberOfPages+1; i++){
-					arr.push(i)
-				}
-				return arr
+			for(var i = 1; i<vm.model.pagination.numberOfPages+1; i++){
+				vm.model.temporary.displayedList.number.push({number:i, class:''})
 			}
+
+			vm.model.temporary.displayedList.number.map(function(ele, index, array){
+				array[0].class = 'current'
+			})
 
 			vm.model.orderedListEachPage.data = filteredList.slice(0, vm.model.pagination.itemsEachPages)
 
 			//slice array to pages
 			vm.ctrl.order.sliceOrderedList = function(i){
 				vm.model.orderedListEachPage.data = filteredList.slice((i-1)*vm.model.pagination.itemsEachPages,i*vm.model.pagination.itemsEachPages)
+				vm.model.temporary.displayedList.number.map(function(ele, index, array){
+					if(index == i-1){
+						array[index].class = 'current'
+					}else{
+						array[index].class = ''
+					}
+					
+				})
 			}
 
 			//show correct orders in each slice in each page

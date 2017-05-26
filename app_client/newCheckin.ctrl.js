@@ -114,7 +114,8 @@
 					note:''
 				},
 				displayedList:{
-					data:[]
+					data:[],
+					number:[]
 				},
 				note:""
 			},
@@ -342,19 +343,28 @@
 
 		// Paginate
 		vm.ctrl.paginate = function (afterFilterList){
-			
+			vm.model.temporary.displayedList.number = []
 			vm.model.checkedinList.pagination.numberOfPages = Math.ceil(
 				afterFilterList.length/vm.model.checkedinList.pagination.itemsEachPages)
-			vm.ctrl.getNumberOfPages = function(){
-				var arr = []
-				for(var i = 1; i<vm.model.checkedinList.pagination.numberOfPages+1; i++){
-					arr.push(i)
-				}
-				return arr
+			
+			for(var i = 1; i<vm.model.checkedinList.pagination.numberOfPages+1; i++){
+				vm.model.temporary.displayedList.number.push({number:i, class:''})
 			}
+			vm.model.temporary.displayedList.number.map(function(ele, index, array){
+				array[0].class = 'current'
+			})
+
 			vm.model.checkinListEachPage.data = afterFilterList.slice(0, vm.model.checkedinList.pagination.itemsEachPages)
 			vm.ctrl.sliceCheckinList = function(i){
 				vm.model.checkinListEachPage.data = afterFilterList.slice((i-1)*vm.model.checkedinList.pagination.itemsEachPages,i*vm.model.checkedinList.pagination.itemsEachPages)
+				vm.model.temporary.displayedList.number.map(function(ele, index, array){
+					if(index == i-1){
+						array[index].class = 'current'
+					}else{
+						array[index].class = ''
+					}
+					
+				})
 			}
 
 			vm.ctrl.showInPage = function(occ){

@@ -505,6 +505,10 @@ ul.listOrder li i{
 	color: #fff!important;
 }
 
+/*Hover pagination*/
+.pagination a:hover, .pagination button:hover{
+	background: none!important;
+}
 @media print, screen and (max-width: 64em){
 	.menu select{
 		width:49.99px;
