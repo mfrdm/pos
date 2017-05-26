@@ -130,11 +130,11 @@
 				myfilter:{
 					status:'',
 				},
-				statusOptions:{
-					'0':'Tất cả', 
-					'1':'Checkin', 
-					'2':'Checkout'
-				},
+				statusOptions:[
+					{'label':'1','value':'Checkin'}, 
+					{'label':'2','value':'Checkout'},
+					{'label':'3','value':'Tất cả'}
+				],
 
 				others:{
 					customer:{
@@ -310,8 +310,8 @@
 			}															
 		}
 
-		//Pagination
-		vm.ctrl.pagination = function(){
+		// Slice list after filter
+		vm.ctrl.getFilteredCheckinList = function (){
 			var cleanStr = function(str){
 				return LayoutCtrl.ctrl.removeDiacritics(str).trim().split(' ').join('').toLowerCase()
 			}
@@ -319,7 +319,7 @@
 			var input = cleanStr(vm.model.filter.others.customer.namePhone)
 
 			vm.model.temporary.displayedList.data = vm.model.checkedinList.data.filter(function(ele){
-					if(vm.model.filter.myfilter.status == 0){
+					if(vm.model.filter.myfilter.status == 3){
 						return ele
 					}else{
 						return ele.status == vm.model.filter.myfilter.status
@@ -327,8 +327,14 @@
 				}).filter(function(item){
 					return (cleanStr(item.customer.fullname).includes(input) || cleanStr(item.customer.phone).includes(input) )
 				})
+			return vm.model.temporary.displayedList.data
+		}
+
+		// Paginate
+		vm.ctrl.paginate = function (afterFilterList){
+			
 			vm.model.checkedinList.pagination.numberOfPages = Math.ceil(
-				vm.model.temporary.displayedList.data.length/vm.model.checkedinList.pagination.itemsEachPages)
+				afterFilterList.length/vm.model.checkedinList.pagination.itemsEachPages)
 			vm.ctrl.getNumberOfPages = function(){
 				var arr = []
 				for(var i = 1; i<vm.model.checkedinList.pagination.numberOfPages+1; i++){
@@ -336,9 +342,9 @@
 				}
 				return arr
 			}
-			vm.model.checkinListEachPage.data = vm.model.temporary.displayedList.data.slice(0, vm.model.checkedinList.pagination.itemsEachPages)
+			vm.model.checkinListEachPage.data = afterFilterList.slice(0, vm.model.checkedinList.pagination.itemsEachPages)
 			vm.ctrl.sliceCheckinList = function(i){
-				vm.model.checkinListEachPage.data = vm.model.temporary.displayedList.data.slice((i-1)*vm.model.checkedinList.pagination.itemsEachPages,i*vm.model.checkedinList.pagination.itemsEachPages)
+				vm.model.checkinListEachPage.data = afterFilterList.slice((i-1)*vm.model.checkedinList.pagination.itemsEachPages,i*vm.model.checkedinList.pagination.itemsEachPages)
 			}
 			vm.ctrl.showInPage = function(occ){
 				var testArr = vm.model.checkinListEachPage.data.filter(function(ele){
@@ -350,6 +356,12 @@
 					return false
 				}
 			}
+		}
+
+		// Paginate after filter
+		vm.ctrl.filterPaginate = function (){
+			var afterFilterList = vm.ctrl.getFilteredCheckinList();
+			vm.ctrl.paginate(afterFilterList)
 		}
 
 		vm.ctrl.getCheckedinList = function (){
@@ -364,8 +376,7 @@
 					vm.model.checkedinList.data.map (function (x, i, arr){
 						vm.ctrl.addServiceLabel (x.service);
 					});
-					console.log(vm.model.checkedinList.data)
-					vm.ctrl.pagination()					
+					vm.ctrl.filterPaginate()					
 				}, 
 				function error(err){
 					console.log(err);

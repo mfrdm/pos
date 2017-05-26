@@ -84,8 +84,7 @@
 
 				others:{
 					customer:{
-						fullname:'',
-						phone:''
+						username:''
 					}
 				}
 			}
@@ -181,8 +180,7 @@
 			},
 			filter:{
 				status:'Status',
-				fullname:'Tên',
-				phone:'Số điện thoại'
+				username:'Tên/Số điện thoại'
 			}
 		};
 		
@@ -198,7 +196,8 @@
 			var adjusted = [];
 			orderList.map (function (x, i, arr){
 				x.orderline.map (function (y, t, z){
-					y.customer = {fullname: x.customer.fullname};
+					y.customer = {fullname: x.customer.fullname, phone:x.customer.phone};
+
 					y.createdAt = x.createdAt;
 					y.orderIndex = i;
 					y.note = x.note;
@@ -208,21 +207,23 @@
 			return adjusted;
 		}
 
-		//Pagination
-		vm.ctrl.order.pagination = function(){
+		// Slice list after filter
+		vm.ctrl.order.getFilteredCheckinList = function(){
 			var cleanStr = function(str){
 				return LayoutCtrl.ctrl.removeDiacritics(str).trim().split(' ').join('').toLowerCase()
 			}
 			//data actually show after filter
-			vm.model.temporary.displayedList.data = vm.model.originalOrderedList.filter(function(item){
-					return cleanStr(item.customer.fullname).includes(cleanStr(vm.model.filter.others.customer.fullname))
-				}).filter(function(item){
-					return (item.customer.phone).includes(vm.model.filter.others.customer.phone)
-				})
-			
+			vm.model.temporary.displayedList.data = vm.model.orderedList.filter(function(item){
+				return cleanStr(item.customer.fullname).includes(cleanStr(vm.model.filter.others.customer.username)) || cleanStr(item.customer.phone).includes(cleanStr(vm.model.filter.others.customer.username))
+			})
+			return vm.model.temporary.displayedList.data
+		}
+
+		// Paginate
+		vm.ctrl.order.paginate = function (filteredList){
 			//Get number of pages
 			vm.model.pagination.numberOfPages = Math.ceil(
-				vm.model.temporary.displayedList.data.length/vm.model.pagination.itemsEachPages)
+				filteredList.length/vm.model.pagination.itemsEachPages)
 
 			vm.ctrl.order.getNumberOfPages = function(){
 				var arr = []
@@ -232,17 +233,17 @@
 				return arr
 			}
 
-			vm.model.orderedListEachPage.data = vm.model.temporary.displayedList.data.slice(0, vm.model.pagination.itemsEachPages)
+			vm.model.orderedListEachPage.data = filteredList.slice(0, vm.model.pagination.itemsEachPages)
 
 			//slice array to pages
 			vm.ctrl.order.sliceOrderedList = function(i){
-				vm.model.orderedListEachPage.data = vm.model.temporary.displayedList.data.slice((i-1)*vm.model.pagination.itemsEachPages,i*vm.model.pagination.itemsEachPages)
+				vm.model.orderedListEachPage.data = filteredList.slice((i-1)*vm.model.pagination.itemsEachPages,i*vm.model.pagination.itemsEachPages)
 			}
 
 			//show correct orders in each slice in each page
 			vm.ctrl.order.showInPage = function(occ){
 				var testArr = vm.model.orderedListEachPage.data.filter(function(ele){
-					return ele.createdAt == occ.createdAt
+					return ele.createdAt == occ.createdAt && ele.productName == occ.productName
 				})
 				if(testArr.length > 0){
 					return true
@@ -252,6 +253,12 @@
 			}
 		}
 
+		// Paginate after filter
+		vm.ctrl.order.filterPaginate = function (){
+			var listAfterFiltering = vm.ctrl.order.getFilteredCheckinList();
+			vm.ctrl.order.paginate(listAfterFiltering)
+		}
+
 		// FIX: only get orders from the store
 		vm.ctrl.getOrderedList = function (){
 			var query = {storeId: LayoutCtrl.model.dept._id};
@@ -259,7 +266,7 @@
 				function success(res){
 					vm.model.originalOrderedList = res.data.data;
 					vm.model.orderedList = vm.ctrl.createAdjustedOrderList (vm.model.originalOrderedList);
-					vm.ctrl.order.pagination();
+					vm.ctrl.order.filterPaginate();
 				}, 
 				function error(err){
 					console.log(err)
