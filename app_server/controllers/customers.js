@@ -90,6 +90,10 @@ function CustomersCtrl() {
 			return
 		};
 
+		// Check if email and phone registerd before
+		// if so next ()
+		// find and update with option upsert could be a solution
+
 		var newCustomer = new Customers (req.body.data);
 
 		newCustomer.save (function (err, cus){

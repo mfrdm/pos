@@ -16,17 +16,20 @@ describe ('Promotion Code', function (){
 		});		
 	})
 
+	// Later
 	xdescribe ('Read promotion codes', function (){
 
 	});
 
+	// Later
 	xdescribe ('Validate promotion code', function (){
 		it ('should be invalid when redeem non-exist promotion code');
 		it ('should be invalid when redeem expired promotion code');
 	});
 
+	// Later
 	xdescribe ('Check code', function (){
-		// FIX
+
 	});
 
 	xdescribe ('Redeem mixed', function (){
@@ -125,7 +128,7 @@ describe ('Promotion Code', function (){
 
 	});
 
-	xdescribe ('Redeem usage', function (){
+	describe ('Redeem usage', function (){
 		var usage, total;
 
 		beforeEach (function (){
@@ -139,28 +142,28 @@ describe ('Promotion Code', function (){
 			redeemedUsage.should.to.equal (usage);
 		});
 
-		it ('should return correct usage when redeem FREE1HOURCOMMON', function (){
-			var code = 'FREE1HOURCOMMON';
+		it ('should return correct usage when redeem V01H06', function (){
+			var code = 'V01H06';
 			var redeemedUsage = Promocodes.redeemUsage (code, usage);
 			redeemedUsage.should.to.equal (usage - 1);
 		});
 
-		it ('should return correct usage when redeem FREE2HOURSCOMMON', function (){
-			var code = 'FREE2HOURSCOMMON';
+		it ('should return correct usage when redeem V02H06', function (){
+			var code = 'V02H06';
 			usage = 3.5;
 			var redeemedUsage = Promocodes.redeemUsage (code, usage);
 			redeemedUsage.should.to.equal (usage - 2);
 		});
 
-		it ('should return correct usage when redeem FREE1HOURCOMMON and usage is less than 1 hour', function (){
-			var code = 'FREE1HOURCOMMON';
+		it ('should return correct usage when redeem V01H06 and usage is less than 1 hour', function (){
+			var code = 'V01H06';
 			usage = 0.2;
 			var redeemedUsage = Promocodes.redeemUsage (code, usage);
 			redeemedUsage.should.to.equal (0);		
 		})
 
-		it ('should return correct usage when redeem FREE2HOURSCOMMON and usage is less than 1 hour', function (){
-			var code = 'FREE2HOURSCOMMON';
+		it ('should return correct usage when redeem V02H06 and usage is less than 1 hour', function (){
+			var code = 'V02H06';
 			usage = 0.1;
 			var redeemedUsage = Promocodes.redeemUsage (code, usage);
 			redeemedUsage.should.to.equal (0);
@@ -168,7 +171,7 @@ describe ('Promotion Code', function (){
 
 	});
 
-	describe ('Add default codes', function (){
+	xdescribe ('Add default codes', function (){
 		var occ;
 		beforeEach (function (){
 			occ = {

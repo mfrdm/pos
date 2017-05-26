@@ -13,7 +13,7 @@
 			{value: 'MAR05', label: 'MAR05'},
 			{value: 'GS05', label: 'GS05'},
 			{value: 'FREEWED', label: 'FREEWED'},
-			{value: 'V01H06', label: 'V02H06'},
+			{value: 'V01H06', label: 'V01H06'},
 			{value: 'V02H06', label: 'V02H06'},
 			{value: 'VFSC', label: 'Phòng riêng FSC'},
 			{value: 'VYMCS', label: 'Phòng riêng 15 YMC'},

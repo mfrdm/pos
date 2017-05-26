@@ -43,11 +43,11 @@ var redeemUsage = function (code, usage){
 
 	code = code ? code.toLowerCase () : code;
 
-	if (code === 'V01H06'){ // change name later
+	if (code === 'v01h06'){ // change name later
 		if (usage <= 1) usage = 0;
 		else usage = usage - 1;
 	}
-	else if (code === 'V_02H06'){ // change name later
+	else if (code === 'v02h06'){ // change name later
 		if (usage <= 2) usage = 0;
 		else usage = usage - 2;		
 	}

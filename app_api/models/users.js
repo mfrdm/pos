@@ -79,12 +79,6 @@ var usersSchema = mongoose.Schema({
 });
 
 
-// TESTING static method
-// usersSchema.statics.findAdmin = function (){
-// 	var adminName = 'Hiep';
-// 	return this.find ({'firstname': adminName})
-// }
-
 usersSchema.methods.setPassword = function (passwd){
 	console.log (passwd)
 	this.salt = crypto.randomBytes(16).toString('hex');

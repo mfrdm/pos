@@ -203,6 +203,7 @@ describe ('Checkout', function (){
 				});
 		});
 
+		it ('should add note successfully')
 		it ('should compare and realize the submitted data and original data are the same')
 		it ('should compare and realize the submitted data and original data are NOT the same')
 	});
