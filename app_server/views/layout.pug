@@ -38,7 +38,7 @@ html(ng-app='posApp')
 								p {{noti.msg}}
 
 					li(ng-show="layout.model.dom.accountBtn" class="paddingT0")
-						a(class="dropDownNoIcon paddingAll0"): i(class="material-icons paddingT5") account_circle
+						a(class="dropDownNoIcon paddingAll0" ng-click='layout.ctrl.toggleProfile()'): i(class="material-icons paddingT5") account_circle
 						ul(class="menu")
 							li: a Profile
 							li: a Setting
