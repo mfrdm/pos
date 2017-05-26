@@ -88,7 +88,7 @@
 				},
 				checkedinList: true,
 				checkInEditDiv: false,
-				
+				note:false,
 				filterDiv: true,
 				data: {},
 			},
@@ -115,7 +115,8 @@
 				},
 				displayedList:{
 					data:[]
-				}
+				},
+				note:""
 			},
 			filter:{
 				orderBy:'',
@@ -308,11 +309,21 @@
 			}															
 		}
 
+		//Show note column
+		vm.ctrl.showNoteColumn = function (){
+			if(vm.model.filter.myfilter.status == 1){
+				vm.model.dom.note = false
+			}else{
+				vm.model.dom.note = true
+			}
+		}
+
 		// Slice list after filter
 		vm.ctrl.getFilteredCheckinList = function (){
 			var cleanStr = function(str){
 				return LayoutCtrl.ctrl.removeDiacritics(str).trim().split(' ').join('').toLowerCase()
 			}
+			vm.ctrl.showNoteColumn();
 
 			// Input
 			var input = cleanStr(vm.model.filter.others.customer.username)
@@ -727,6 +738,7 @@
 				function success(res){
 					vm.ctrl.hideLoader ();
 					vm.model.checkingout.occupancy = res.data.data;
+					vm.model.checkingout.occupancy.note = vm.model.temporary.note
 					vm.ctrl.addServiceLabel (vm.model.checkingout.occupancy.service);
 					// vm.ctrl.addGroupParent (vm.model.checkingout.occupancy.service) // Build later
 				}, 
