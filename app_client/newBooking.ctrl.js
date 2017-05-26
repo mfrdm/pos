@@ -157,8 +157,10 @@
 				storeId: LayoutCtrl.model.dept._id,
 			};
 
+			vm.ctrl.showLoader ();
 			BookingService.readAll (q).then (
 				function success (res){
+					vm.ctrl.hideLoader ();
 					vm.model.bookingList.data = res.data.data;
 					vm.model.bookingList.data.map (function (x,i,arr){
 						vm.ctrl.addServiceLabel (x.service);
@@ -166,6 +168,7 @@
 					
 				},
 				function failure (err){
+					vm.ctrl.hideLoader ();
 					console.log (err);
 					// display warning
 				}
@@ -396,7 +399,6 @@
 			vm.ctrl.booking.getLocations ();
 			vm.ctrl.booking.getItems ();
 			vm.ctrl.bookingList.fetch ();
-			$scope.$apply();
 		});			
 
 	}

@@ -315,7 +315,6 @@
 		////////////////////////////// INITIALIZE /////////////////////////////////////		
 		angular.element(document.getElementById ('mainContentDiv')).ready(function () {
 			vm.model.dom.data.selected = vm.model.dom.data.vn;
-			$scope.$apply();
 		});	
 
 	}

@@ -255,14 +255,17 @@
 		// FIX: only get orders from the store
 		vm.ctrl.getOrderedList = function (){
 			var query = {storeId: LayoutCtrl.model.dept._id};
+			vm.ctrl.showLoader ();
 			OrderService.getOrderList(query).then(
 				function success(res){
+					vm.ctrl.hideLoader ();
 					vm.model.originalOrderedList = res.data.data;
 					vm.model.orderedList = vm.ctrl.createAdjustedOrderList (vm.model.originalOrderedList);
 					vm.ctrl.order.pagination();
 				}, 
 				function error(err){
-					console.log(err)
+					vm.ctrl.hideLoader ();
+					console.log(err);
 				}
 			);			
 		}
@@ -310,8 +313,10 @@
 
 
 		vm.ctrl.order.searchCustomer =  function (){
+			vm.ctrl.showLoader ();
 			CustomerService.readCustomers (vm.model.search.order.username).then(
 				function success (res){
+					vm.ctrl.hideLoader ();
 					if (!res.data){
 						// unexpected result. should never exist
 					}
@@ -329,6 +334,7 @@
 					}
 				}, 
 				function error (err){
+					vm.ctrl.hideLoader ();
 					console.log(err)
 				}
 			);
@@ -470,7 +476,6 @@
 			vm.model.dom.data.selected = vm.model.dom.data.vn;
 			vm.ctrl.order.getItems ();
 			vm.ctrl.getOrderedList ();
-			$scope.$apply();
 		});	
 
 	};
