@@ -50,7 +50,7 @@ html(ng-app='posApp')
 			div(class="title-bar-title paddingLR10")
 				a(href="#!/" class="title-bar-title title") GS POS
 		div(class='top-bar hide-for-large' id='mainMenu' ng-show='layout.model.dom.topMenu')
-			div(class="top-bar-left")
+			div
 				ul(class="menu vertical")
 					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/checkin') Checkin
 					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/orders') Order
