@@ -18,7 +18,7 @@
 			items: [],
 			orderedList: [], // adjusted
 			pagination:{
-				itemsEachPages:3,
+				itemsEachPages:10,
 				numberOfPages:''
 			},
 			orderedListEachPage:{
