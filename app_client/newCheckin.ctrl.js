@@ -448,7 +448,7 @@
 		};
 
 		vm.ctrl.checkin.addItem = function (){
-			if (vm.model.temporary.checkin.item.quantity && vm.model.temporary.checkin.item.name){
+			if (vm.model.temporary.checkin.item.quantity && vm.model.temporary.checkin.item.name && vm.model.checkingin.occupancy.customer){
 				vm.model.items.map (function (x, i, arr){
 
 					if (x.name == vm.model.temporary.checkin.item.name && vm.model.temporary.checkin.selectedItems.indexOf (x.name) == -1){

@@ -99,12 +99,13 @@ div(class="columns row")
 							a(class="button full-width-small" ng-click="vm.ctrl.checkin.addItem (); $event.preventDefault()") Add
 					// SELECTED ITEMS
 					div(class="row column")
-						div(class='column small-12 large-6')
+						div(class='column small-12')
 							table(ng-if='vm.model.checkingin.order.orderline.length > 0' class="unstriped")
 								thead
 									tr
 										th {{ vm.model.dom.data.selected.checkin.product.header.product }}
 										th {{ vm.model.dom.data.selected.checkin.product.header.quantity }}
+										th Delete
 
 								tbody 
 									tr(ng-repeat='ord in vm.model.checkingin.order.orderline track by ord._id')
@@ -126,7 +127,6 @@ div(class="columns row")
 							a(class="button full-width-small" ng-click='vm.ctrl.checkin.addCode()') Add	
 					div(class="column row")
 						div(class='column small-12')
-
 							table(ng-if='vm.model.checkingin.occupancy.promocodes.length > 0')
 								thead
 									tr

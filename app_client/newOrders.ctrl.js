@@ -31,7 +31,8 @@
 				location: {
 					_id: LayoutCtrl.model.dept._id || LayoutCtrl.model.dept.id,
 					name: LayoutCtrl.model.dept.name,
-				},				
+				},
+				note:''				
 			},
 			dom:{
 				messageSearchResult: false,
@@ -166,7 +167,8 @@
 					fullname:'Họ và tên',
 					product:'Sản phẩm',
 					quantity:'Số lượng',
-					time:'Thời gian'
+					time:'Thời gian',
+					note:'Note'
 				},
 				body: {
 					message: {
@@ -199,6 +201,7 @@
 					y.customer = {fullname: x.customer.fullname};
 					y.createdAt = x.createdAt;
 					y.orderIndex = i;
+					y.note = x.note;
 					adjusted.push (y);
 				});
 			});
