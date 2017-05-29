@@ -59,9 +59,15 @@ function CustomersCtrl() {
 		var query = {
 			$or: [
 				{fullname: searchedFullname},
-				{phone: searchedPhone},
-				{email: searchedEmail},
 			]
+		}
+
+		if (searchedEmail){
+			query.$or.push ({email: searchedEmail});
+		}
+
+		if (searchedPhone){
+			query.$or.push ({phone: searchedPhone});
 		}
 
 		Customers.find (query, {email: 1, phone: 1, fullname: 1, birthday: 1}, function (err, foundCustomers){
