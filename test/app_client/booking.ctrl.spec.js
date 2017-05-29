@@ -1,4 +1,4 @@
-describe ('Controller: booking', function (){
+xdescribe ('Controller: booking', function (){
 	describe ('Get booking list', function (){
 
 	});

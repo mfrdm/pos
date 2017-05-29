@@ -1,4 +1,4 @@
-describe ('Controller: Orders', function (){
+xdescribe ('Controller: Orders', function (){
 	describe ('Make an order', function (){
 		xit ('should return customer data after a user types input and taps enter');
 		it ('should return customer data after a user types input and click search button'); 

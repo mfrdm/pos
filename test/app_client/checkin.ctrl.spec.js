@@ -1,5 +1,5 @@
-xdescribe ('Controller: CheckinCtrl', function (){
-	var CheckinService, $scope, createController, $rootScope, $httpBackend, dataPassingService, $window, $route;
+describe ('Controller: NewCheckinCtrl', function (){
+	var CheckinService, $scope, createController, $rootScope, $httpBackend, dataPassingService, $window, $route, checkinHandler;
 
 	beforeEach (module('posApp'));
 	beforeEach (inject (
@@ -8,23 +8,24 @@ xdescribe ('Controller: CheckinCtrl', function (){
 			$rootScope = $injector.get ('$rootScope');
 			$scope = $rootScope.$new ();
 			$window = $injector.get ('$window');
-			$route = $injector.get ($route)
+			$route = $injector.get ('$route')
 			CheckinService = $injector.get ('CheckinService');
+			OrderService = $injector.get ('OrderService');
 
 			var $controller = $injector.get ('$controller');
 
-			// checkinHandler = $httpBackend.when ('GET', /\/checkin\/.*/).respond ({data: []});
+			// checkinHandler = $httpBackend.when ('GET', /\/checkin\/.*/).respond ({data: [1,2,3]});
 
 			createController = function () {
-				return 	$controller ('CheckinCtrl', {
+				return 	$controller ('NewCheckinCtrl', {
 					dataPassingService: dataPassingService, 
-					$scope: $scope, 
+					CheckinService: CheckinService,
+					OrderService: OrderService,
+					$scope: $scope,
 					$window: $window, 
-					$route: $route, 
-					CheckinService: CheckinService
+					$route: $route					
 				});
 			}
-
 		}
 	));
 
@@ -33,8 +34,15 @@ xdescribe ('Controller: CheckinCtrl', function (){
 		$httpBackend.verifyNoOutstandingRequest();
 	}));
 
-	xdescribe ('Get checked-in list', function (){
-		it ('should success fetch check-in list')
+	describe ('Get checked-in list', function (){
+		it ('should success fetch check-in list', function(){
+			// $httpBackend.expectGET('/checkin');
+			$httpBackend.when ('GET', /\/checkin\/.*/).respond ({data: [1,2,3]});
+			var vm = createController();
+			// vm.ctrl.getCheckedinList();
+			$httpBackend.flush();
+			
+		})
 		it ('should display message when not found check-in');
 	});
 
