@@ -55,7 +55,7 @@
 			checkedinList: {
 				data: [],
 				pagination:{
-					itemsEachPages:10,
+					itemsEachPages:5,
 					numberOfPages:''
 				},
 			},
@@ -212,7 +212,7 @@
 				buttonToogle:'Checkin',
 				search:{
 					label:'Khách hàng',
-					placeholder:'Enter phone/email to search customers',
+					placeholder:'Điền tên, sđt, hoặc email để tìm kiếm khách hàng',
 					message:{
 						notFound:'Không tìm thấy khách hàng: '
 					},

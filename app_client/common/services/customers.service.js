@@ -26,9 +26,17 @@ function CustomerService ($http){
 	}	
 	this.readOne = function(id){
 		return $http({
-		method:'GET',
+			method:'GET',
 			url:'api/customers/customer/'+id
 		})
 	}
+
+	this.checkExist = function (query){
+		return $http ({
+			method: 'GET',
+			url: '/customers/exist',
+			params: query,
+		});
+	};
 }
 

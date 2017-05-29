@@ -50,6 +50,53 @@ function CustomersCtrl() {
 		});
 	};
 
+	// Assume one phone or email cannot be registered more than once
+	this.checkExist = function (req, res, next){
+		var searchedPhone = req.query.phone;
+		var searchedEmail = req.query.email;
+		var searchedFullname = req.query.fullname.toUpperCase (); 
+
+		var query = {
+			$or: [
+				{fullname: searchedFullname},
+				{phone: searchedPhone},
+				{email: searchedEmail},
+			]
+		}
+
+		Customers.find (query, {email: 1, phone: 1, fullname: 1, birthday: 1}, function (err, foundCustomers){
+			if (err){
+				console.log (err);
+				next (err);
+				return;
+			}
+
+			if (foundCustomers.length){
+				var filteredCustomers = [];
+
+				// prioritize phone and email
+				foundCustomers.map (function (x, i, arr){
+					if (x.fullname != searchedFullname) {
+						filteredCustomers.push (x);
+					}
+					else if (x.fullname == searchedFullname && (x.phone == searchedPhone || x.email == searchedEmail)){
+						filteredCustomers.push (x);
+					}
+				});
+
+				if (!filteredCustomers.length){
+					filteredCustomers = foundCustomers;
+				}
+
+				res.json ({data: filteredCustomers});	
+			}
+			else{
+				res.json ({data: []});
+			}
+
+		});
+	};
+
 	this.readOneCustomerById = function(req, res) {
 		var apiUrl = apiOptions.server + "/api/customers/customer/" + req.params.cusId;
 		var view = null;
@@ -77,22 +124,23 @@ function CustomersCtrl() {
 		req.body.data.firstname = validator.trim (req.body.data.firstname);
 		req.body.data.middlename = validator.trim (req.body.data.middlename);
 		req.body.data.lastname = validator.trim (req.body.data.lastname);
-		req.body.data.phone = validator.trim (req.body.data.phone);
-		req.body.data.email = validator.trim (req.body.data.email);
+		req.body.data.phone = req.body.data.phone ? validator.trim (req.body.data.phone) : req.body.data.phone;
+		req.body.data.email = req.body.data.email ? validator.trim (req.body.data.email) : req.body.data.email;
+
+		if (!req.body.data.email && !req.body.data.phone){
+			res.status (500).json ({error: {message: 'phone and email are not provided', code: 1}});
+			return;
+		}
 
 		if (req.body.data.email && !validator.isEmail (req.body.data.email)){
-			next (new Error ('Invalid email: ' + req.body.data.email));
-			return
+			res.status (500).json ({error: {message: 'invalid email', code: 2}});
+			return;
 		};
 
 		if (req.body.data.phone && !validator.isMobilePhone (req.body.data.phone, 'vi-VN')){
-			next (new Error ('Invalid phone: ' + req.body.data.phone));
-			return
+			res.status (500).json ({error: {message:'invalid phone', code: 3}});
+			return;
 		};
-
-		// Check if email and phone registerd before
-		// if so next ()
-		// find and update with option upsert could be a solution
 
 		var newCustomer = new Customers (req.body.data);
 

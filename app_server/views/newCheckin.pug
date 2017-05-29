@@ -41,7 +41,7 @@ div(class="columns row")
 				form(ng-submit="vm.ctrl.checkin.searchCustomer()")
 					div(class="row column")
 						label {{vm.model.dom.data.selected.checkin.search.label}}
-							input(type="text" placeholder="Enter phone or email to search customer" ng-model='vm.model.search.checkin.username' required="true" ng-change='vm.ctrl.checkin.validateSearchInput()')
+							input(type="text" placeholder="{{ vm.model.dom.data.selected.checkin.search.placeholder }}" ng-model='vm.model.search.checkin.username' required="true" ng-change='vm.ctrl.checkin.validateSearchInput()')
 					div(ng-show='vm.model.dom.checkin.search.message.notFound' class='marginB15')
 						div(class='callout alert')
 							p {{ vm.model.dom.data.selected.checkin.search.message.notFound + ' "' + vm.model.search.checkin.username + '". ' }}

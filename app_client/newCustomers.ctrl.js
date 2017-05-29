@@ -27,13 +27,16 @@
 				register: {
 					confirmDiv: false,
 					registerDiv: true,
-					existedCustomerDiv:false
+					existedCustomerDiv:false,
+					customerExistResultDiv: false,
 				},
 				customerSearchResultDiv: false,
 				data:{},
 			},
 			search: {
-
+				register: {
+					customers: [],
+				}
 			},
 			temporary: {
 				register: {
@@ -51,6 +54,15 @@
 		vm.model.dom.data.eng = {
 			title:'Customer List',
 			register: {
+				search:{
+					list:{
+						number:'No',
+						fullname:'Họ và tên',
+						birthday:'Sinh nhật',
+						email:'Email',
+						phone:'Điện thoại'
+					}
+				},				
 				gender: [
 					{value: 1, label: 'Male'},
 					{value: 2, label: 'Female'},
@@ -106,6 +118,15 @@
 		vm.model.dom.data.vn = {
 			title:'Customer List',
 			register: {
+				search:{
+					list:{
+						number:'No',
+						fullname:'Họ và tên',
+						birthday:'Sinh nhật',
+						email:'Email',
+						phone:'Điện thoại'
+					}
+				},				
 				genders: [
 					{value: 1, label: 'Nam'},
 					{value: 2, label: 'Nữ'},
@@ -212,7 +233,7 @@
 
 			vm.model.register.firstname = upperCaseFirstLetter (vm.model.register.firstname);
 			vm.model.register.lastname = upperCaseFirstLetter (vm.model.register.lastname);
-			vm.model.register.middlename = upperCaseFirstLetter (vm.model.register.middlename);
+			vm.model.register.middlename = vm.model.register.middlename ? upperCaseFirstLetter (vm.model.register.middlename) : '';
 		
 			vm.model.register.email = vm.model.register.email ? vm.model.register.email.toLowerCase () : vm.model.register.email;
 
@@ -227,10 +248,48 @@
 			// set student status
 			vm.model.register.isStudent = vm.model.register.edu.school ? true : false;
 		}
+
 		
 		vm.ctrl.register.confirm = function(){
-			vm.ctrl.register.sanatizeRawData (vm.model.register);	
+			// vm.ctrl.register.sanatizeRawData (vm.model.register);	
 			vm.ctrl.register.showConfirm ();
+		};
+
+		vm.ctrl.register.checkExist = function (){
+			// when display registered customers with similar info but forgo all of them and want to register
+			if (vm.model.dom.register.customerExistResultDiv){
+				vm.ctrl.register.confirm ();
+			}
+
+			vm.ctrl.showLoader ();
+			vm.ctrl.register.sanatizeRawData (vm.model.register);
+
+			CustomerService.checkExist (vm.model.register).then(
+				function success (res){
+					vm.ctrl.hideLoader ();
+					if (res.data.data.length){
+						// show list of potential customer accounts
+						vm.model.search.register.customers = res.data.data;
+						vm.model.dom.register.customerExistResultDiv = true;
+
+					}
+					else {
+						console.log ('found none')
+						vm.ctrl.register.confirm ();
+					}
+
+				},
+				function error (err){
+					vm.ctrl.hideLoader ();
+					console.log (err);
+
+				}
+			);
+		};
+
+		vm.ctrl.register.checkinExistCustomer = function (index){
+			vm.model.temporary.register.newCustomer = vm.model.search.register.customers [index];
+			vm.ctrl.checkin ();
 		}
 
 		vm.ctrl.register.showExistedCus = function(cus){//if created customer is existed
@@ -282,7 +341,6 @@
 		}
 
 		vm.ctrl.checkin = function (){
-			$('#createAccountSuccess').foundation('close');
 			var newCustomer = vm.model.temporary.register.newCustomer;
 			var data = {
 				fullname: newCustomer.fullname,

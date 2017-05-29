@@ -1,4 +1,4 @@
-process.env.NODE_ENV = 'development';
+process.env.NODE_ENV = 'test';
 var chai = require ('chai');
 var chaiHttp = require ('chai-http');
 var server = require ('../../app');
@@ -9,7 +9,7 @@ var should = chai.should ();
 chai.use (chaiHttp);
 
 describe ('Customer', function (){
-	describe ('Create a customer', function (){
+	xdescribe ('Create a customer', function (){
 		var customer;
 		beforeEach (function (){
 			customer = {
@@ -18,9 +18,10 @@ describe ('Customer', function (){
 				lastname: 'Customer_Lastname',
 				gender: 1,
 				birthday: new Date ('1989-09-25'),
-				phone: ['0965999999', '0972999999'],
+				phone: '0965999999',
 				edu: {},
-				email: ['lastmiddlefirst@gmail.com', 'otheremail@gmail.com'], // manuallt required in some cases
+				isStudent: false,
+				email: 'lastmiddlefirst@gmail.com', // manuallt required in some cases
 			};
 		})
 
@@ -45,7 +46,7 @@ describe ('Customer', function (){
 		it ('should realizes and record customer is refered by Offical website');
 		it ('should realizes and record customer is refered by Staff at store');
 
-		it ('should successfully create an customer account locally', function (done){
+		xit ('should successfully create an customer account locally', function (done){
 			chai.request (server)
 				.post ('/customers/create')
 				.send ({data: customer})
@@ -67,26 +68,163 @@ describe ('Customer', function (){
 				});
 		});
 
-		it ('should validate and insert student status', function (done){
-			customer.edu = {
-				title: 1,
-				school: 'Kinh Te Quoc Dan'
-			}
-
+		it ('should be invalid when both phone and email are not provided', function (done){
+			customer.email = undefined;
+			customer.phone = undefined;
 			chai.request (server)
 				.post ('/customers/create')
 				.send ({data: customer})
 				.end (function (err, res){
 					if (err){
-						console.log (err);
+						// console.log (err);
 					}
 
-					res.should.have.status (200);
-					res.body.data.should.to.be.an ('object');
-					res.body.data.isStudent.should.to.be.true;
+					res.should.have.status (500);
+					res.body.error.code.should.to.equal (1);
+					
 					done ();
 				});
 		});
+
+		it ('should be invalid when phone is not valid', function (done){
+			customer.phone = '0933213232322';
+			chai.request (server)
+				.post ('/customers/create')
+				.send ({data: customer})
+				.end (function (err, res){
+					if (err){
+						// console.log (err);
+					}
+
+					res.should.have.status (500);
+					res.body.error.code.should.to.equal (3);
+					
+					done ();
+				});
+		})
+
+		it ('should be invalid when email is not valid', function (done){
+			customer.email = 'xxx';
+			chai.request (server)
+				.post ('/customers/create')
+				.send ({data: customer})
+				.end (function (err, res){
+					if (err){
+						// console.log (err);
+					}
+
+					res.should.have.status (500);
+					res.body.error.code.should.to.equal (2);
+					
+					done ();
+				});
+		});
+
+	});
+
+	describe ('Check exist customers', function (){
+		var customers, newCustomers, query;
+		beforeEach (function (done){
+			query = {fullname: 'james hugos'}
+			customers = [
+				{firstname: 'James', lastname: 'Hugos', fullname: 'JAMES HUGOS', birthday: '1998-01-01', email: 'hugojames@gmail.com', phone: '0972321321'},
+				{firstname: 'James', lastname: 'Hugos', fullname: 'JAMES HUGOS', birthday: '1998-01-01', email: 'hugojames123@gmail.com', phone: '0972321322'},
+				{firstname: 'James', lastname: 'Hugos', fullname: 'JAMES HUGOS', birthday: '1998-01-01', email: 'hugojames321@gmail.com', phone: '0972321323'}
+			];
+
+			Customers.insertMany (customers, function (err, docs){
+				if (err){
+					console.log (err);
+					return
+				}
+
+				newCustomers = docs;
+				done ();
+			});
+		});
+
+		afterEach (function (done){
+			var ids = newCustomers.map (function (x, i, arr){
+				return x._id;
+			});
+
+			Customers.remove ({_id: {$in: ids}}, function (err, result){
+				if (err){
+					console.log (err);
+					return
+				}
+
+				done ();
+			});
+		});
+
+		xit ('should return only one customer with same phone when searched fullname and returned fullnames are different', function (done){
+			query.phone = '0972321321';
+			query.fullname = 'hugo jane';
+			chai.request (server)
+				.get ('/customers/exist')
+				.query (query)
+				.end (function (err, res){
+					if (err){
+						console.log (err);
+					}
+
+					var expectedPhone = '0972321321';
+					var expectedEmail = 'hugojames@gmail.com';
+
+					res.should.to.have.status (200);
+					res.body.data.should.to.have.lengthOf (1);
+					res.body.data[0].phone[0].should.to.equal (expectedPhone);
+					res.body.data[0].email[0].should.to.equal (expectedEmail);
+					
+					done ();
+				});
+
+		});
+
+		xit ('should return ony one customer with same email when searched fullname and returned fullnames are different', function (done){
+			query.email = 'hugojames123@gmail.com';
+			query.fullname = 'hugo ford';
+			chai.request (server)
+				.get ('/customers/exist')
+				.query (query)
+				.end (function (err, res){
+					if (err){
+						console.log (err);
+					}
+
+					var expectedPhone = '0972321322';
+					var expectedEmail = 'hugojames123@gmail.com';
+					res.should.to.have.status (200);
+					res.body.data.should.to.have.lengthOf (1);
+					res.body.data[0].phone[0].should.to.equal (expectedPhone);
+					res.body.data[0].email[0].should.to.equal (expectedEmail);
+					
+					done ();
+				});
+		});
+
+
+		it ('should return some customers with same fullname when having different phone and email', function (done){
+			query.email = 'hugojames123xxx@gmail.com';
+			query.phone = '0923213256';
+
+			chai.request (server)
+				.get ('/customers/exist')
+				.query (query)
+				.end (function (err, res){
+					if (err){
+						console.log (err);
+					}
+
+					res.should.to.have.status (200);
+					res.body.data.should.to.have.lengthOf (3);
+					
+					done ();
+				});			
+		});
+
+		it ('should not return any customer with the same birthday and similar fullname, but different email and phone')
 
 	});
 
