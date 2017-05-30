@@ -299,6 +299,7 @@
 			seeMoreBtn:'More',
 			seeMoreBtnIcon : 'swap_horiz'
 		};
+		console.log('am reloading')
 
 		//Clear search result when search input is empty
 		vm.ctrl.checkin.validateSearchInput = function(){
@@ -425,8 +426,8 @@
 						vm.ctrl.addServiceLabel (x.service);
 					});
 					// vm.ctrl.filterPaginate()	
-					// vm.ctrl.checkinBooking ();
-					// vm.ctrl.checkinNewCustomer ();
+					vm.ctrl.checkinBooking ();
+					vm.ctrl.checkinNewCustomer ();
 				}, 
 				function error(err){
 					// vm.ctrl.hideLoader ();
@@ -462,7 +463,7 @@
 				vm.model.dom.filterDiv = false; // turn off				
 				vm.ctrl.checkin.initCheckinDiv ();
 
-				if (!vm.model.dom.checkin.products.length){
+				if (!vm.model.dom.data.selected.services && !vm.model.dom.data.selected.items){
 					vm.ctrl.checkin.getItems ();
 				}
 				 
@@ -566,6 +567,8 @@
 
 		// FIX: should not reset the route. only the checkin div
 		vm.ctrl.checkin.resetCheckinDiv = function (){
+			console.log($route)
+			$window.location.reload();
 			$route.reload (); 
 		}
 
