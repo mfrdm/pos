@@ -122,7 +122,7 @@ router.get('/angular/products', productsCtrl.readAngularProducts);
 
 router.get('/angular/attendances', OthersCtrl.readAngularAttendance);
 
-router.get ('/promo-codes', promoCodesCtrl.readSomeCodes);
+router.get ('/promocodes', promoCodesCtrl.readSomeCodes);
 router.get ('/promo-codes/code/:codeId', promoCodesCtrl.readOneCodeById);
 router.post ('/promo-codes/create', promoCodesCtrl.createOneCode);
 router.post ('/promo-codes/code/:codeId', promoCodesCtrl.updateOneCode);

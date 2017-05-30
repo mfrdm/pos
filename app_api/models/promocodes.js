@@ -120,6 +120,7 @@ var PromocodesSchema = mongoose.Schema ({
 	desc: {type: String}, // describe what is the promotion about and how to apply
 	codeType: Number, // 1, 2, 3, 4 = 'usage', 'price', 'total', 'mix'
 	createdAt: {type: Date, default: Date.now},
+	excluded: {type: Boolean, default: false}, // not being fetched by client
 	updatedAt: [{ 
 		time: {type: Date},
 		explain: String,

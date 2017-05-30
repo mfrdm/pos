@@ -1,5 +1,6 @@
 var mongoose = require ('mongoose');
 var PromoCodes = mongoose.model ('promocodes');
+var moment = require ('moment');
 
 module.exports = new PromoCodesCtrl();
 
@@ -40,7 +41,21 @@ function PromoCodesCtrl() {
 	};
 
 	this.readSomeCodes = function (req, res, next){
+		var today = new Date ();
+		var conditions = {
+			start: {$lte: today}, 
+			end: {$gte: today},
+			excluded: false,
+		};
 
+		PromoCodes.find (conditions, {name: 1, codeType: 1, conflict: 1, override: 1}, function (err, foundCodes){
+			if (err){
+				next (err);
+				return
+			}
+
+			res.json ({data: foundCodes});
+		});
 	}
 
 }
