@@ -23,6 +23,8 @@ describe ('Controller: NewCheckinCtrl', function (){
 	{ "_id" : "59195bd8c3737906af8d083b", "name" : "7up", "price" : 8000, "category" : 2, "updatedAt" : [ ], "createdAt" : "2017-05-15T07:42:16.611Z", "__v" : 0 },
 	]
 
+	var mockOrderline = [ { "_id" : "59195bd8c3737906af8d083b", "productName" : "7up", "price" : 8000, "subTotal" : 8000, "promocodes" : [ ], "quantity" : "1" } ]
+
 	beforeEach (module('posApp'));
 	beforeEach (inject (
 		function ($injector) {
@@ -149,7 +151,14 @@ describe ('Controller: NewCheckinCtrl', function (){
 				// After click, should close form
 				expect(vm.model.dom.checkin.checkinDiv).toBeFalsy();
 			});
-			xit ('should reset order when toogle checkin div')
+			it ('should reset order when toogle checkin div', function(){
+				var vm = createController();
+				vm.model.checkingin.order.orderline  = mockOrderline;
+				vm.model.temporary.checkin.item.name = 'test'
+				vm.model.temporary.checkin.item.quantity = 10
+				vm.ctrl.toggleCheckInDiv();
+				expect(vm.model.checkingin.order.orderline).toBeNull()
+			})
 		});
 
 		describe ('Select service', function (){

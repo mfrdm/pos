@@ -300,7 +300,6 @@
 			seeMoreBtn:'More',
 			seeMoreBtnIcon : 'swap_horiz'
 		};
-		console.log('am reloading')
 
 		vm.ctrl.checkin.addCodeLabels = function (code){
 			if (code.name == 'mar05'){
@@ -329,17 +328,18 @@
 			}			
 
 		}
+		vm.model.dom.data.selected = vm.model.dom.data.vn
 
 		vm.ctrl.checkin.getPromocodes = function (){
 			if (vm.model.dom.data.selected.checkin.promoteCode.codes.length){
 				return;
 			}
 
-			vm.ctrl.showLoader ();
+			// vm.ctrl.showLoader ();
 			CheckinService.getPromocodes ().then (
 				function success (res){
 					console.log (res.data.data)
-					vm.ctrl.hideLoader ();
+					// vm.ctrl.hideLoader ();
 					var codes = res.data.data;
 					if (codes.length){
 						codes.map (function (x, i, arr){
@@ -353,7 +353,7 @@
 					}
 				},
 				function error (err){
-					vm.ctrl.hideLoader ();
+					// vm.ctrl.hideLoader ();
 					console.log (err);
 				}
 			)
@@ -626,8 +626,6 @@
 
 		// FIX: should not reset the route. only the checkin div
 		vm.ctrl.checkin.resetCheckinDiv = function (){
-			console.log($route)
-			$window.location.reload();
 			$route.reload (); 
 		}
 
