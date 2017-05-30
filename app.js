@@ -76,24 +76,26 @@ app.use(function(err, req, res, next) {
     // render the error page
     res.status(err.status || 500);
 
-    if (res.status == 404){
-        return res.render('error', {
-            error: err,
-            data: {
-                user:{
+    res.json ({error: err})
 
-                },
-                look: {
-                    title: "Error",
-                    css: [''], // FIX: add name         
-                },
-            }
-        });       
-    }
+    // if (res.status == 404){
+    //     return res.render('error', {
+    //         error: err,
+    //         data: {
+    //             user:{
 
-    else {
-        return res.json ({error: err});
-    }
+    //             },
+    //             look: {
+    //                 title: "Error",
+    //                 css: [''], // FIX: add name         
+    //             },
+    //         }
+    //     });       
+    // }
+
+    // else {
+    //     return res.json ({error: err});
+    // }
 });
 
 module.exports = app;
