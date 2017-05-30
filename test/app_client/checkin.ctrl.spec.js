@@ -64,7 +64,18 @@ describe ('Controller: NewCheckinCtrl', function (){
 		$httpBackend.verifyNoOutstandingRequest();
 	}));
 
-	describe ('Get checked-in list', function (){
+	describe ('testing', function (){
+		it ('should reset change after reload', function (){
+			var vm = createController ();
+			console.info (vm.model.testChange)
+			expect(vm.model.testChange).toEqual ('1234');
+			vm.ctrl.reset ();
+			expect(vm.model.testChange).toEqual ('xxxx');			
+		})
+
+	})
+
+	xdescribe ('Get checked-in list', function (){
 		it ('should success fetch check-in list', function(){
 			// Get checkin list
 			$httpBackend.when ('GET', /\/checkin.*/).respond ({
@@ -100,7 +111,7 @@ describe ('Controller: NewCheckinCtrl', function (){
 
 	});
 
-	describe ('Check-in', function (){
+	xdescribe ('Check-in', function (){
 
 		describe ('Open check-in form', function (){
 			it ('should show check-in form when click check-in button 1st time', function(){
@@ -216,13 +227,13 @@ describe ('Controller: NewCheckinCtrl', function (){
 	});
 
 
-	describe ('Edit checked-in', function (){
+	xdescribe ('Edit checked-in', function (){
 		it ('should get checked-in of selected customer')
 		it ('should display confirm when submit edit')
 		it ('should update ')
 	})
 
-	describe ('Check-out', function (){
+	xdescribe ('Check-out', function (){
 		xit ('should select correctly checking out customer')
 		xit ('should display confirm when click checkout button')
 		it ('should return success message')

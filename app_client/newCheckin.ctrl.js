@@ -8,18 +8,6 @@
 
 		var expectedServiceNames = ['group common', 'individual common', 'small group private', 'medium group private'];
 
-		// FIX: fetch from server
-		var validCodes = [
-			{value: 'MAR05', label: 'MAR05'},
-			{value: 'GS05', label: 'GS05'},
-			{value: 'FREEWED', label: 'FREEWED'},
-			{value: 'V01H06', label: 'V01H06'},
-			{value: 'V02H06', label: 'V02H06'},
-			{value: 'VFSC', label: 'Phòng riêng FSC'},
-			{value: 'VYMCS', label: 'Phòng riêng 15 YMC'},
-			{value: 'VYMCM', label: 'Phòng riêng 30 YMC'},
-		];
-
 		vm.ctrl = {
 			checkin: {},
 			checkout: {},
@@ -29,49 +17,26 @@
 		};
 
 		vm.model = {
-			// staff: LayoutCtrl.user,
-			// company: LayoutCtrl.company,
-			// dept: LayoutCtrl.dept,
-			// services: [],
-			// items: [],
-			// checkingin: {
-			// 	occupancy: {
-			// 		staffId: LayoutCtrl.model.user._id,
-			// 		location: {
-			// 			_id: LayoutCtrl.model.dept._id,
-			// 			name: LayoutCtrl.model.dept.name,
-			// 		},
-			// 		promocodes:[]
-			// 	},
-			// 	order: {
-			// 		orderline: [],
-			// 		staffId: LayoutCtrl.model.user._id,
-			// 		location: {
-			// 			_id: LayoutCtrl.model.dept._id,
-			// 			name: LayoutCtrl.model.dept.name,
-			// 		},									
-			// 	},
-			// },
-			staff: 'cuong',
-			company: 'gs',
-			dept: 'gs',
+			staff: LayoutCtrl.user,
+			company: LayoutCtrl.company,
+			dept: LayoutCtrl.dept,
 			services: [],
 			items: [],
 			checkingin: {
 				occupancy: {
-					staffId: '5924168b164cb9030cee9308',
+					staffId: LayoutCtrl.model.user._id,
 					location: {
-						_id: '5924168b164cb9030cee9308',
-						name: '5924168b164cb9030cee9308',
+						_id: LayoutCtrl.model.dept._id,
+						name: LayoutCtrl.model.dept.name,
 					},
 					promocodes:[]
 				},
 				order: {
 					orderline: [],
-					staffId: '5924168b164cb9030cee9308',
+					staffId: LayoutCtrl.model.user._id,
 					location: {
-						_id: '5924168b164cb9030cee9308',
-						name: 'gs',
+						_id: LayoutCtrl.model.dept._id,
+						name: LayoutCtrl.model.dept.name,
 					},									
 				},
 			},
@@ -326,9 +291,9 @@
 			else if (code.name == 'vymcm'){
 				code.label = 'Phòng riêng 30 YMC';
 			}			
-
 		}
-		vm.model.dom.data.selected = vm.model.dom.data.vn
+
+		vm.model.dom.data.selected = vm.model.dom.data.vn;
 
 		vm.ctrl.checkin.getPromocodes = function (){
 			if (vm.model.dom.data.selected.checkin.promoteCode.codes.length){
@@ -468,11 +433,10 @@
 		}
 		
 
-
 		vm.ctrl.getCheckedinList = function (){
 			var query = {
 				status: 4, // get both checked out and checked in
-				storeId: '5924168b164cb9030cee9308',
+				storeId: LayoutCtrl.model.dept._id,
 			}
 
 			// vm.ctrl.showLoader ();
@@ -593,6 +557,7 @@
 				});
 			}
 		};
+
 		vm.ctrl.checkin.removeItem = function (index){
 			if (vm.model.checkingin.order.orderline && vm.model.checkingin.order.orderline.length){
 				vm.model.checkingin.order.orderline.splice (index, 1);
@@ -792,9 +757,9 @@
 						if(vm.model.checkingin.occupancy.promocodes){
 							vm.model.checkingin.occupancy.promocodes.map(function(item){
 								if(vm.model.temporary.checkin.codeNames.indexOf(item.name.toLowerCase()) != -1){
-									item.status = 3
+									item.status = 3;
 								}else{
-									item.status = 2
+									item.status = 2;
 								}
 							})
 						}
@@ -860,9 +825,9 @@
 				})
 		};
 
-		vm.ctrl.checkout.confirm = function (){
-			$('#askCheckout').foundation('open');
-		};
+		// vm.ctrl.checkout.confirm = function (){
+		// 	$('#askCheckout').foundation('open');
+		// };
 
 		vm.ctrl.checkinBooking = function (){
 			var b = DataPassingService.get ('booking');
