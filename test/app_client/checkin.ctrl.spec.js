@@ -1,5 +1,10 @@
 describe ('Controller: NewCheckinCtrl', function (){
-	var CheckinService, $scope, createController, $rootScope, $httpBackend, dataPassingService, $window, $route, checkinHandler;
+	var CheckinService, $scope, createController, $rootScope, $httpBackend, dataPassingService, $window, $route;
+
+	var occupancyList = [
+	{ "_id" : "59253a1d466e685c1733834d", "staffId" : "591ab5b1a77c813f4afd644a", "updateAt" : [ ], "status" : 1, "location" : { "_id" : "59203df203b00119ac8d77ff", "name" : "Green Space Chùa Láng" }, "customer" : { "fullname" : "BÙI QUANG SƠN", "_id" : "5924168b164cb9030cee9386", "phone" : "0968099369", "email" : "quangson98.fsc@gmail.com", "isStudent" : true }, "orders" : [ ], "promocodes" : [ ], "service" : { "name" : "individual common", "price" : 15000 }, "checkinTime" : "2017-05-24T07:45:29.971Z", "total" : 0, "__v" : 0 },
+	{ "_id" : "59263d72a74493116b6fe1ab", "staffId" : "591ab5b1a77c813f4afd644a", "updateAt" : [ ], "status" : 1, "location" : { "_id" : "59203df203b00119ac8d77ff", "name" : "Green Space Chùa Láng" }, "customer" : { "fullname" : "LÊ DUY KHÁNH", "_id" : "5924168b164cb9030cee9368", "phone" : "0968180934", "email" : "khanh.leduy.bav@gmail.com", "isStudent" : false }, "orders" : [ ], "promocodes" : [ ], "service" : { "name" : "individual common", "price" : 15000 }, "checkinTime" : "2017-05-25T02:12:01.420Z", "total" : 0, "__v" : 0 }
+	]
 
 	beforeEach (module('posApp'));
 	beforeEach (inject (
@@ -11,10 +16,7 @@ describe ('Controller: NewCheckinCtrl', function (){
 			$route = $injector.get ('$route')
 			CheckinService = $injector.get ('CheckinService');
 			OrderService = $injector.get ('OrderService');
-
 			var $controller = $injector.get ('$controller');
-
-			// checkinHandler = $httpBackend.when ('GET', /\/checkin\/.*/).respond ({data: [1,2,3]});
 
 			createController = function () {
 				return 	$controller ('NewCheckinCtrl', {
@@ -36,12 +38,19 @@ describe ('Controller: NewCheckinCtrl', function (){
 
 	describe ('Get checked-in list', function (){
 		it ('should success fetch check-in list', function(){
-			// $httpBackend.expectGET('/checkin');
-			$httpBackend.when ('GET', /\/checkin\/.*/).respond ({data: [1,2,3]});
+			//Get checkin list
+			$httpBackend.when ('GET', /\/checkin.*/).respond ({
+				data: occupancyList
+			});
 			var vm = createController();
-			// vm.ctrl.getCheckedinList();
+
+			// Before get checked in List
+			expect(vm.model.checkedinList.data).toEqual([])
+			vm.ctrl.getCheckedinList();
 			$httpBackend.flush();
-			
+
+			//After get checked in List
+			expect(vm.model.checkedinList.data).toBeArray();
 		})
 		it ('should display message when not found check-in');
 	});
