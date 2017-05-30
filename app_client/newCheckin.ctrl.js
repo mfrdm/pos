@@ -207,6 +207,7 @@
 				promoteCode:{
 					title:'Add promote codes',
 					label:'Code',
+					codes: [],
 				}
 			},
 			checkinList:{
@@ -267,7 +268,7 @@
 				promoteCode:{
 					title:'Điền code giảm giá',
 					label:'Code',
-					codes: validCodes,
+					codes: [],
 				}
 			},
 			
@@ -300,6 +301,63 @@
 			seeMoreBtnIcon : 'swap_horiz'
 		};
 		console.log('am reloading')
+
+		vm.ctrl.checkin.addCodeLabels = function (code){
+			if (code.name == 'mar05'){
+				code.label = 'MAR05';
+			}
+			else if (code.name == 'gs05'){
+				code.label = 'GS05';
+			}
+			else if (code.name == 'freewed'){
+				code.label = 'FREEWED';
+			}
+			else if (code.name == 'v01h06'){
+				code.label = 'Voucher free 1h cá nhân / nhóm chung tháng 6';
+			}
+			else if (code.name == 'v02h06'){
+				code.label = 'Voucher free 2h cá nhân / nhóm chung tháng 6';
+			}
+			else if (code.name == 'vfsc'){
+				code.label = 'Phòng riêng FSC';
+			}
+			else if (code.name == 'vymcs'){
+				code.label = 'Phòng riêng 15 YMC';
+			}
+			else if (code.name == 'vymcm'){
+				code.label = 'Phòng riêng 30 YMC';
+			}			
+
+		}
+
+		vm.ctrl.checkin.getPromocodes = function (){
+			if (vm.model.dom.data.selected.checkin.promoteCode.codes.length){
+				return;
+			}
+
+			vm.ctrl.showLoader ();
+			CheckinService.getPromocodes ().then (
+				function success (res){
+					console.log (res.data.data)
+					vm.ctrl.hideLoader ();
+					var codes = res.data.data;
+					if (codes.length){
+						codes.map (function (x, i, arr){
+							vm.ctrl.checkin.addCodeLabels (x);
+						});
+
+						vm.model.dom.data.selected.checkin.promoteCode.codes = codes;
+					}
+					else {
+						// do nothing
+					}
+				},
+				function error (err){
+					vm.ctrl.hideLoader ();
+					console.log (err);
+				}
+			)
+		}
 
 		//Clear search result when search input is empty
 		vm.ctrl.checkin.validateSearchInput = function(){
@@ -563,6 +621,7 @@
 		vm.ctrl.checkin.initCheckinDiv = function (){
 			vm.model.dom.checkin.checkinDiv = true;
 			vm.ctrl.checkin.getGroupPrivateLeader ();
+			vm.ctrl.checkin.getPromocodes ();
 		}
 
 		// FIX: should not reset the route. only the checkin div

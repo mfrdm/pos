@@ -19,6 +19,13 @@ function CheckinService ($http, $q){
 		})
 	}
 
+	this.getPromocodes = function (){
+		return $http({
+			method: 'GET',
+			url: '/promocodes/'
+		});
+	}
+
 	this.getCheckedinList = function(query){
 		query.status = query.status ? query.status : 4; // get all by default
 

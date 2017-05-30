@@ -121,7 +121,7 @@ div(class="columns row")
 						div(class='column small-12 large-11')
 							label {{vm.model.dom.data.selected.checkin.promoteCode.label}}
 								//input(type='text' ng-model='vm.model.temporary.checkin.codeName')
-								select(ng-model="vm.model.temporary.checkin.codeName" ng-options="code.value as code.label for code in vm.model.dom.data.vn.checkin.promoteCode.codes track by code.value")
+								select(ng-model="vm.model.temporary.checkin.codeName" ng-options="code.name as code.label for code in vm.model.dom.data.selected.checkin.promoteCode.codes track by code.name")
 						div(class='column large-1 show-for-large iconAdd' ng-if='vm.model.checkingin.occupancy.promocodes.length == 0')
 							i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.addCode()' ) add
 						div(class="column hide-for-large text-center" ng-if='vm.model.checkingin.occupancy.promocodes.length == 0')
