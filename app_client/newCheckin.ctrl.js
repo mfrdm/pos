@@ -1,8 +1,8 @@
 (function (){
 	angular.module('posApp')
-		.controller('NewCheckinCtrl', ['DataPassingService', 'CheckinService', 'OrderService', '$scope', '$window','$route', NewCheckinCtrl])
+		.controller('NewCheckinCtrl', ['$http','DataPassingService', 'CheckinService', 'OrderService', '$scope', '$window','$route', NewCheckinCtrl])
 
-	function NewCheckinCtrl (DataPassingService, CheckinService, OrderService, $scope, $window, $route){
+	function NewCheckinCtrl ($http,DataPassingService, CheckinService, OrderService, $scope, $window, $route){
 		var LayoutCtrl = $scope.$parent.layout;
 		var vm = this;
 
@@ -29,26 +29,49 @@
 		};
 
 		vm.model = {
-			staff: LayoutCtrl.user,
-			company: LayoutCtrl.company,
-			dept: LayoutCtrl.dept,
+			// staff: LayoutCtrl.user,
+			// company: LayoutCtrl.company,
+			// dept: LayoutCtrl.dept,
+			// services: [],
+			// items: [],
+			// checkingin: {
+			// 	occupancy: {
+			// 		staffId: LayoutCtrl.model.user._id,
+			// 		location: {
+			// 			_id: LayoutCtrl.model.dept._id,
+			// 			name: LayoutCtrl.model.dept.name,
+			// 		},
+			// 		promocodes:[]
+			// 	},
+			// 	order: {
+			// 		orderline: [],
+			// 		staffId: LayoutCtrl.model.user._id,
+			// 		location: {
+			// 			_id: LayoutCtrl.model.dept._id,
+			// 			name: LayoutCtrl.model.dept.name,
+			// 		},									
+			// 	},
+			// },
+			staff: 'cuong',
+			company: 'gs',
+			dept: 'gs',
 			services: [],
 			items: [],
 			checkingin: {
 				occupancy: {
-					staffId: LayoutCtrl.model.user._id,
+					staffId: '5924168b164cb9030cee9308',
 					location: {
-						_id: LayoutCtrl.model.dept._id,
-						name: LayoutCtrl.model.dept.name,
+						_id: '5924168b164cb9030cee9308',
+						name: '5924168b164cb9030cee9308',
 					},
 					promocodes:[]
 				},
 				order: {
 					orderline: [],
-					staffId: LayoutCtrl.model.user._id,
+					staffId: '5924168b164cb9030cee9308',
 					location: {
-						_id: LayoutCtrl.model.dept._id,
-						name: LayoutCtrl.model.dept.name,
+						_id: '5924168b164cb9030cee9308',
+						name: 'gs',
 					},									
 				},
 			},
@@ -305,17 +328,18 @@
 			}			
 
 		}
+		vm.model.dom.data.selected = vm.model.dom.data.vn
 
 		vm.ctrl.checkin.getPromocodes = function (){
 			if (vm.model.dom.data.selected.checkin.promoteCode.codes.length){
 				return;
 			}
 
-			vm.ctrl.showLoader ();
+			// vm.ctrl.showLoader ();
 			CheckinService.getPromocodes ().then (
 				function success (res){
 					console.log (res.data.data)
-					vm.ctrl.hideLoader ();
+					// vm.ctrl.hideLoader ();
 					var codes = res.data.data;
 					if (codes.length){
 						codes.map (function (x, i, arr){
@@ -329,7 +353,7 @@
 					}
 				},
 				function error (err){
-					vm.ctrl.hideLoader ();
+					// vm.ctrl.hideLoader ();
 					console.log (err);
 				}
 			)
@@ -442,27 +466,29 @@
 			var afterFilterList = vm.ctrl.getFilteredCheckinList();
 			vm.ctrl.paginate(afterFilterList)
 		}
+		
+
 
 		vm.ctrl.getCheckedinList = function (){
 			var query = {
 				status: 4, // get both checked out and checked in
-				storeId: LayoutCtrl.model.dept._id,
+				storeId: '5924168b164cb9030cee9308',
 			}
 
-			vm.ctrl.showLoader ();
+			// vm.ctrl.showLoader ();
 			CheckinService.getCheckedinList(query).then(
 				function success(res){
-					vm.ctrl.hideLoader ();
+					// vm.ctrl.hideLoader ();
 					vm.model.checkedinList.data = res.data.data;
 					vm.model.checkedinList.data.map (function (x, i, arr){
 						vm.ctrl.addServiceLabel (x.service);
 					});
-					vm.ctrl.filterPaginate()	
+					// vm.ctrl.filterPaginate()	
 					vm.ctrl.checkinBooking ();
 					vm.ctrl.checkinNewCustomer ();
 				}, 
 				function error(err){
-					vm.ctrl.hideLoader ();
+					// vm.ctrl.hideLoader ();
 					console.log(err);
 				}
 			);
@@ -495,7 +521,7 @@
 				vm.model.dom.filterDiv = false; // turn off				
 				vm.ctrl.checkin.initCheckinDiv ();
 
-				if (!vm.model.dom.checkin.products.length){
+				if (!vm.model.dom.data.selected.services && !vm.model.dom.data.selected.items){
 					vm.ctrl.checkin.getItems ();
 				}
 				 
