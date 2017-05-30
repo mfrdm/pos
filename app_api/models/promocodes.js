@@ -79,23 +79,44 @@ var redeemMixed = function (code, usage, price, productName){
 	if (code == "privatediscountprice" && usage > 1 && (productName == productNames[2] || productName == productNames[3] || productName == productNames[4])){
 		total = price * 1 + rewardUsagePrice[productName] * (usage - 1);
 	}
-
-	else if (code == 'freecommon1day' && (productName == productNames[0] || productName == productNames[1])){
-
+	else if (code == 'free1daycommon' && (productName == productNames[0] || productName == productNames[1])){
+		total = 0;
 	}
+	else if (code == 'privatehalftotal' && (productName == productNames[2] || productName == productNames[3] || productName == productNames[4])){
+		total = price * usage * 0.5;
+	}
+
 	return total;	
 }
 
-
+// FIX:
+// Pretty coupling with occ. Fix: accept argmments which are service name, usage, and codes
+// Also. this code does not do correct function of promocodes. It know to much about other objects
 var addDefaultCodes = function (occ){
 	var service = occ.service.name.toLowerCase ();
 	var usage = occ.usage;
+	occ.promocodes = occ.promocodes ? occ.promocodes : [];
+	
+	// check if codes added
+	var codeNum = occ.promocodes.length;
+
+	for (var i = 0; i < codeNum; i++){
+		var currCodeName = occ.promocodes[i].name.toLowerCase ();
+		if (currCodeName == 'studentprice'){
+			return
+		}
+		else if (currCodeName == 'privatediscountprice'){
+			return;
+		}
+		else if (currCodeName == 'privatehalftotal'){
+			return;
+		}
+	}
+
 	if (occ.customer.isStudent && (service == productNames[0] || service == productNames[1])){
-		occ.promocodes = occ.promocodes ? occ.promocodes : [];
-		occ.promocodes.push ({name: 'studentprice', codeType: 2})
+		occ.promocodes.push ({name: 'studentprice', codeType: 2});
 	}
 	if (usage > 1 && (service == productNames[2] || service == productNames[3])){
-		occ.promocodes = occ.promocodes ? occ.promocodes : [];
 		occ.promocodes.push ({name: 'privatediscountprice', codeType: 4});
 	}
 }

@@ -48,6 +48,7 @@ function Checkout() {
 						next (err)
 						return
 					}
+
 					if (occ && Object.keys (occ).length){
 						res.json ({data: occ});
 					}

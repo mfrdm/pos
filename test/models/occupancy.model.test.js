@@ -3,6 +3,8 @@ var should = chai.should ();
 var mongoose = require ('mongoose');
 var Promocodes = require ('../../app_api/models/promocodes');
 var Occupancy = require ('../../app_api/models/occupancy.model');
+var moment = require ('moment');
+
 
 describe ('Occupancy Model', function (){
 	xdescribe ('Get usage in hour', function (){
@@ -41,12 +43,12 @@ describe ('Occupancy Model', function (){
 		});	
 	});
 
-	xdescribe ('Get total', function (){
+	describe ('Get total', function (){
 		var order, val;
 		beforeEach (function (){
 			val = {
-				checkinTime: '2017-05-10 6:00:00',
-				checkoutTime: '2017-05-10 7:00:00',
+				checkinTime: moment().add (-3.5, 'hour'),
+				checkoutTime: moment(),
 				service: {
 					name: 'Group Common',
 					price: 15000
@@ -186,7 +188,7 @@ describe ('Occupancy Model', function (){
 		});
 
 
-		it ('should return correct subtotal given code PRIVATEDISCOUNTPRICE and product is Small Group Private regardless customer has code STUDENTPRICE or not', function (){
+		xit ('should return correct subtotal given code PRIVATEDISCOUNTPRICE and product is Small Group Private regardless customer has code STUDENTPRICE or not', function (){
 			val.promocodes = [
 				{
 					codeType: 4, 
@@ -204,6 +206,7 @@ describe ('Occupancy Model', function (){
 				name: 'Small Group Private',
 				price: 150000,
 			}
+
 			val.checkinTime = '2017-05-10 7:03:00'
 			val.checkoutTime = '2017-05-10 14:55:00',
 
@@ -211,11 +214,52 @@ describe ('Occupancy Model', function (){
 
 			var occ = new Occupancy (val);
 			occ.getTotal ();
-			console.log (occ)
 			occ.total.should.to.equal (expectedTotal);
 		});
 
-		it ('should return correct total after redeem usage. Apply new usage as if it was the original')
+		xit ('should return correct total given code FREE1DAYCOMMON', function (){
+			val.promocodes = [
+				{
+					codeType: 4, 
+					_id: '58eb474538671b4224745192',
+					name: 'FREE1DAYCOMMON'
+				},
+				{
+					codeType: 2, 
+					_id: '58eb474538671b4224745192',
+					name: 'STUDENTPRICE'
+				},										
+			];
+
+			var expectedTotal = 0;
+
+			var occ = new Occupancy (val);
+			occ.getTotal ();
+			occ.total.should.to.equal (expectedTotal);
+		})
+
+		it ('should return correct total given code PRIVATEHALFTOTAL and ignore PRIVATEDISCOUNTPRICE', function (){
+			val.promocodes = [
+				{
+					codeType: 4, 
+					_id: '58eb474538671b4224745192',
+					name: 'PRIVATEHALFTOTAL'
+				},										
+			];
+
+			val.service = {
+				name: 'Small group private',
+				price: 150000,
+			}
+
+			var expectedUsage = 3.5;
+			var expectedTotal = 263000;
+
+			var occ = new Occupancy (val);
+			occ.getTotal ();
+			occ.total.should.to.equal (expectedTotal);
+		});
+
 	});
 
 })

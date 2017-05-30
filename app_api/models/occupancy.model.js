@@ -47,10 +47,9 @@ function getTotal (){
 		occ.total = 0;
 	}
 	else{
-
 		// add default codes
 		Promocodes.addDefaultCodes (occ);
-
+		
 		if (occ.promocodes && occ.promocodes.length){
 			
 			// sort to prioritize codes applied

@@ -33,7 +33,7 @@ describe ('Promotion Code', function (){
 	});
 
 	describe ('Redeem mixed', function (){
-		it ('should return discount price when usage is more than 1 hour for group private service', function (){
+		xit ('should return discount price when usage is more than 1 hour for group private service', function (){
 			var prices = [220000, 150000];
 			var code = 'PRIVATEDISCOUNTPRICE';
 			var usage = 3.5;
@@ -47,7 +47,7 @@ describe ('Promotion Code', function (){
 			
 		});
 
-		it ('should return discount price when usage is more than 1 hour for group private service', function (){
+		xit ('should return discount price when usage is more than 1 hour for group private service', function (){
 			var prices = [220000, 150000];
 			var usage = 3.5;
 			var code = 'PRIVATEDISCOUNTPRICE';
@@ -61,8 +61,31 @@ describe ('Promotion Code', function (){
 			
 		});
 
-		it ('should return 0 total with code FREE1DAY')
-		it ('should return 50% total with PRIVATEHAFTTOTAL and ignore any other promocodes');
+		it ('should return 0 total with code FREE1DAYCOMMON', function (){
+			var prices = [10000, 10000];
+			var usage = 3.5;
+			var code = 'FREE1DAYCOMMON';
+			var expectedTotal = [0,0];
+			var productNames = ['Individual common', 'Group common'];
+			productNames.map (function (x, i, arr){
+				var price = prices[i];
+				var total = Promocodes.redeemMixed (code, usage, price, x);
+				total.should.to.equal (expectedTotal[i]);
+			});
+		});
+
+		it ('should return 50% total with PRIVATEHAFTTOTAL', function (){
+			var prices = [150000, 220000, 500000];
+			var usage = 3.5;
+			var code = 'PRIVATEHALFTOTAL';
+			var expectedTotal = [prices[0] * usage * 0.5, prices[1] * usage * 0.5, prices[2] * usage * 0.5];
+			var productNames = ['Small group private', 'Medium group private', 'Large group private'];
+			productNames.map (function (x, i, arr){
+				var price = prices[i];
+				var total = Promocodes.redeemMixed (code, usage, price, x);
+				total.should.to.equal (expectedTotal[i]);
+			});
+		});
 
 	});
 
