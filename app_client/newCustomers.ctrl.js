@@ -259,6 +259,7 @@
 			// when display registered customers with similar info but forgo all of them and want to register
 			if (vm.model.dom.register.customerExistResultDiv){
 				vm.ctrl.register.confirm ();
+				return
 			}
 
 			vm.ctrl.showLoader ();
@@ -274,7 +275,6 @@
 
 					}
 					else {
-						console.log ('found none')
 						vm.ctrl.register.confirm ();
 					}
 
