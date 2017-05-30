@@ -686,7 +686,7 @@ describe ('Read check-in list', function (){
 
 	it ('should fix timezone problem')
 
-	xit ('should return checked-in on today given no date range and status provided', function (done){
+	it ('should return checked-in on today given no date range and status provided', function (done){
 		chai.request (server)
 			.get ('/checkin')
 			.query (query)

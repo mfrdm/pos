@@ -300,11 +300,11 @@
 				return;
 			}
 
-			// vm.ctrl.showLoader ();
+			vm.ctrl.showLoader ();
 			CheckinService.getPromocodes ().then (
 				function success (res){
 					console.log (res.data.data)
-					// vm.ctrl.hideLoader ();
+					vm.ctrl.hideLoader ();
 					var codes = res.data.data;
 					if (codes.length){
 						codes.map (function (x, i, arr){
@@ -318,7 +318,7 @@
 					}
 				},
 				function error (err){
-					// vm.ctrl.hideLoader ();
+					vm.ctrl.hideLoader ();
 					console.log (err);
 				}
 			)
@@ -439,20 +439,21 @@
 				storeId: LayoutCtrl.model.dept._id,
 			}
 
-			// vm.ctrl.showLoader ();
+			vm.ctrl.showLoader ();
 			CheckinService.getCheckedinList(query).then(
 				function success(res){
-					// vm.ctrl.hideLoader ();
+					vm.ctrl.hideLoader ();
 					vm.model.checkedinList.data = res.data.data;
 					vm.model.checkedinList.data.map (function (x, i, arr){
 						vm.ctrl.addServiceLabel (x.service);
 					});
-					// vm.ctrl.filterPaginate()	
+
+					vm.ctrl.filterPaginate();
 					vm.ctrl.checkinBooking ();
 					vm.ctrl.checkinNewCustomer ();
 				}, 
 				function error(err){
-					// vm.ctrl.hideLoader ();
+					vm.ctrl.hideLoader ();
 					console.log(err);
 				}
 			);
@@ -747,7 +748,7 @@
 					function success(res){
 						vm.ctrl.hideLoader ();
 						var foundCodes = res.data.data;
-						//vm.model.checkingin.occupancy.promocodes = foundCodes;
+						vm.model.checkingin.occupancy.promocodes = foundCodes;
 						vm.model.temporary.checkin.codeNames = [];
 
 						foundCodes.map (function (x, i, arr){
