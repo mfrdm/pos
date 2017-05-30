@@ -80,6 +80,9 @@ var redeemMixed = function (code, usage, price, productName){
 		total = price * 1 + rewardUsagePrice[productName] * (usage - 1);
 	}
 
+	else if (code == 'freecommon1day' && (productName == productNames[0] || productName == productNames[1])){
+
+	}
 	return total;	
 }
 

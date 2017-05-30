@@ -32,7 +32,7 @@ describe ('Promotion Code', function (){
 
 	});
 
-	xdescribe ('Redeem mixed', function (){
+	describe ('Redeem mixed', function (){
 		it ('should return discount price when usage is more than 1 hour for group private service', function (){
 			var prices = [220000, 150000];
 			var code = 'PRIVATEDISCOUNTPRICE';
@@ -60,6 +60,9 @@ describe ('Promotion Code', function (){
 			});
 			
 		});
+
+		it ('should return 0 total with code FREE1DAY')
+		it ('should return 50% total with PRIVATEHAFTTOTAL and ignore any other promocodes');
 
 	});
 
@@ -128,7 +131,7 @@ describe ('Promotion Code', function (){
 
 	});
 
-	describe ('Redeem usage', function (){
+	xdescribe ('Redeem usage', function (){
 		var usage, total;
 
 		beforeEach (function (){
