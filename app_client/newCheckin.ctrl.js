@@ -2,8 +2,10 @@
 	angular.module('posApp')
 		.controller('NewCheckinCtrl', ['$http','DataPassingService', 'CheckinService', 'OrderService', '$scope', '$window','$route', NewCheckinCtrl])
 
-	function NewCheckinCtrl ($http,DataPassingService, CheckinService, OrderService, $scope, $window, $route){
-		var LayoutCtrl = $scope.$parent.layout;
+	function NewCheckinCtrl ($http, DataPassingService, CheckinService, OrderService, $scope, $window, $route){
+
+		var LayoutCtrl = DataPassingService.get ('layout');
+
 		var vm = this;
 
 		// FIX: no hardcode

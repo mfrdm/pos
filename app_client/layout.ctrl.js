@@ -1,7 +1,7 @@
 (function (){
-	app.controller ('LayoutCtrl', ['$rootScope','$scope','$window', '$location','authentication', LayoutCtrl]);
+	app.controller ('LayoutCtrl', ['$rootScope','$scope','$window', '$location','authentication', 'DataPassingService', LayoutCtrl]);
 
-	function LayoutCtrl ($rootScope, $scope, $window,$location, authentication) {
+	function LayoutCtrl ($rootScope, $scope, $window, $location, authentication, DataPassingService) {
 		$scope.layout = {
 			model: {
 				dom: {},
@@ -177,6 +177,8 @@
 				$scope.layout.ctrl.addUser (authentication.getCurUser());
 				$scope.layout.ctrl.updateAfterLogin ();
 			}
+
+			DataPassingService.set ('layout', $scope.layout)
 
 			$scope.$apply();
 		});		

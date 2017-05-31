@@ -6,6 +6,7 @@ function DataPassingService (){
 	this.passedData = {
 		customer: '', // default value
 		booking: '',
+		layout: ''
 	};
 
 	this.set = function (name, data){
