@@ -119,6 +119,8 @@ var addDefaultCodes = function (occ){
 	if (usage > 1 && (service == productNames[2] || service == productNames[3])){
 		occ.promocodes.push ({name: 'privatediscountprice', codeType: 4});
 	}
+
+	
 }
 
 // FIX: Build actual test. This is just an placeholder, and assume no conflict and no override

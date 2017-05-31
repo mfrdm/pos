@@ -25,7 +25,9 @@ MGDB.prototype = new function(){
 	this.close = function (msg, callback){
 		mongoose.connection.close(function () {
 			console.log('Mongoose disconnected through ' + msg);
-			callback();
+			if (typeof callback == 'function'){
+				callback();
+			}
 		});
 	};
 

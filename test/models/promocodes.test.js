@@ -47,7 +47,7 @@ describe ('Promotion Code', function (){
 			
 		});
 
-		xit ('should return discount price when usage is more than 1 hour for group private service', function (){
+		it ('should return discount price when usage is more than 1 hour for group private service', function (){
 			var prices = [220000, 150000];
 			var usage = 3.5;
 			var code = 'PRIVATEDISCOUNTPRICE';
@@ -154,7 +154,7 @@ describe ('Promotion Code', function (){
 
 	});
 
-	xdescribe ('Redeem usage', function (){
+	describe ('Redeem usage', function (){
 		var usage, total;
 
 		beforeEach (function (){
