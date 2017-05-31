@@ -3,7 +3,7 @@
 		.controller('NewCheckinCtrl', ['$http','DataPassingService', 'CheckinService', 'OrderService', '$scope', '$window','$route', NewCheckinCtrl])
 
 	function NewCheckinCtrl ($http,DataPassingService, CheckinService, OrderService, $scope, $window, $route){
-		var LayoutCtrl = $scope.$parent.layout;
+		var LayoutCtrl = DataPassingService.Layout.layout;
 		var vm = this;
 
 		var expectedServiceNames = ['group common', 'individual common', 'small group private', 'medium group private'];
@@ -29,7 +29,8 @@
 						_id: LayoutCtrl.model.dept._id,
 						name: LayoutCtrl.model.dept.name,
 					},
-					promocodes:[]
+					promocodes:[],
+					service:{}
 				},
 				order: {
 					orderline: [],
@@ -303,7 +304,6 @@
 			vm.ctrl.showLoader ();
 			CheckinService.getPromocodes ().then (
 				function success (res){
-					console.log (res.data.data)
 					vm.ctrl.hideLoader ();
 					var codes = res.data.data;
 					if (codes.length){
@@ -534,6 +534,7 @@
 		};
 
 		vm.ctrl.checkin.addItem = function (){
+			console.log(vm.model.checkingin.occupancy.customer)
 			if (vm.model.temporary.checkin.item.quantity && vm.model.temporary.checkin.item.name && vm.model.checkingin.occupancy.customer){
 				vm.model.items.map (function (x, i, arr){
 
@@ -592,7 +593,22 @@
 
 		// FIX: should not reset the route. only the checkin div
 		vm.ctrl.checkin.resetCheckinDiv = function (){
-			$route.reload (); 
+			// Clear model related to checkin data
+			vm.model.checkingin.occupancy.checkinTime = {};
+			vm.model.checkingin.occupancy.customer = {};
+			vm.model.checkingin.occupancy.promocodes = [];
+			vm.model.checkingin.occupancy.service = {};
+
+			vm.model.checkingin.order.customer = {};
+			vm.model.checkingin.order.orderline = [];
+			vm.model.temporary.checkin.selectedItems = [];
+
+			// Search div
+			vm.model.dom.checkin.customerSearchResultDiv = false;
+			vm.model.search.checkin.customers = []
+
+			vm.model.dom.checkin.checkinDiv = false;
+			vm.model.search.checkin.username = '';
 		}
 
 		vm.ctrl.checkin.cancel = function (){
@@ -612,6 +628,7 @@
 					}
 					else{
 						if (res.data.data.length){
+
 							vm.model.search.checkin.customers = res.data.data;
 							vm.model.dom.checkin.search.message.notFound = false;
 							vm.model.dom.checkin.customerSearchResultDiv = true;
