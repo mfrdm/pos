@@ -6,7 +6,8 @@
 		var LayoutCtrl = $scope.$parent.layout;
 		var vm = this;
 
-		var expectedServiceNames = ['group common', 'individual common', 'small group private', 'medium group private'];
+		// FIX: no hardcode
+		var expectedServiceNames = ['group common', 'individual common', 'small group private', 'medium group private', 'large group private'];
 
 		vm.ctrl = {
 			checkin: {},
@@ -96,7 +97,8 @@
 						1:'unchecked',
 						2:'invalid',
 						3:'valid'
-					}
+					},
+					promocodes: [],
 				},
 				checkout:{
 					note:''
@@ -266,34 +268,18 @@
 			seeMoreBtnIcon : 'swap_horiz'
 		};
 
-		vm.ctrl.checkin.addCodeLabels = function (code){
-			if (code.name == 'mar05'){
-				code.label = 'MAR05';
+		vm.ctrl.checkin.addCodeLabels = function (codes){
+			if (vm.model.dom.data.selected.modelLanguage == 'vn'){
+				codes.map (function (x, i, arr){
+					x.selectedLabel = x.label.vn;
+				});				
 			}
-			else if (code.name == 'gs05'){
-				code.label = 'GS05';
-			}
-			else if (code.name == 'freewed'){
-				code.label = 'FREEWED';
-			}
-			else if (code.name == 'v01h06'){
-				code.label = 'Voucher free 1h cá nhân / nhóm chung tháng 6';
-			}
-			else if (code.name == 'v02h06'){
-				code.label = 'Voucher free 2h cá nhân / nhóm chung tháng 6';
-			}
-			else if (code.name == 'vfsc'){
-				code.label = 'Phòng riêng FSC';
-			}
-			else if (code.name == 'vymcs'){
-				code.label = 'Phòng riêng 15 YMC';
-			}
-			else if (code.name == 'vymcm'){
-				code.label = 'Phòng riêng 30 YMC';
-			}			
+			else if (vm.model.dom.data.selected.modelLanguage == 'en'){
+				codes.map (function (x, i, arr){
+					x.selectedLabel = x.label.en;
+				});	
+			}		
 		}
-
-		vm.model.dom.data.selected = vm.model.dom.data.vn;
 
 		vm.ctrl.checkin.getPromocodes = function (){
 			if (vm.model.dom.data.selected.checkin.promoteCode.codes.length){
@@ -303,15 +289,14 @@
 			vm.ctrl.showLoader ();
 			CheckinService.getPromocodes ().then (
 				function success (res){
-					console.log (res.data.data)
 					vm.ctrl.hideLoader ();
 					var codes = res.data.data;
 					if (codes.length){
-						codes.map (function (x, i, arr){
-							vm.ctrl.checkin.addCodeLabels (x);
-						});
-
-						vm.model.dom.data.selected.checkin.promoteCode.codes = codes;
+						vm.ctrl.checkin.addCodeLabels (codes);
+						vm.model.dom.data.selected.checkin.promoteCode.codes = codes.sort (function (a, b){
+								return a.selectedLabel > b.selectedLabel
+							}
+						);
 					}
 					else {
 						// do nothing
@@ -654,15 +639,18 @@
 			vm.model.services.map (function (x, i, arr){
 				if (x.name.toLowerCase() == vm.model.checkingin.occupancy.service.name.toLowerCase()){
 					vm.model.checkingin.occupancy.service.price = x.price;
-
+					var service = vm.model.checkingin.occupancy.service.name.toLowerCase();
 					// Do sth when customer does uses private group service
-					if (vm.model.checkingin.occupancy.service.name.toLowerCase() != expectedServiceNames[2] && vm.model.checkingin.occupancy.service.name.toLowerCase() != expectedServiceNames[3]){
-
+					if (service != expectedServiceNames[2] && service != expectedServiceNames[3] && service != expectedServiceNames[4]){
 						vm.model.dom.checkin.privateGroupLeaderDiv = false;
+
+
 					}	
 					else{
 						vm.model.dom.checkin.privateGroupLeaderDiv = true;
 					}
+
+					// update code depends on services
 
 					return
 				}
