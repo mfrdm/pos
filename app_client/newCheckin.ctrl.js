@@ -2,11 +2,13 @@
 	angular.module('posApp')
 		.controller('NewCheckinCtrl', ['$http','DataPassingService', 'CheckinService', 'OrderService', '$scope', '$window','$route', NewCheckinCtrl])
 
-	function NewCheckinCtrl ($http,DataPassingService, CheckinService, OrderService, $scope, $window, $route){
-		var LayoutCtrl = DataPassingService.Layout.layout;
+	function NewCheckinCtrl ($http, DataPassingService, CheckinService, OrderService, $scope, $window, $route){
+
+		var LayoutCtrl = DataPassingService.get ('layout');
 		var vm = this;
 
-		var expectedServiceNames = ['group common', 'individual common', 'small group private', 'medium group private'];
+		// FIX: no hardcode
+		var expectedServiceNames = ['group common', 'individual common', 'small group private', 'medium group private', 'large group private'];
 
 		vm.ctrl = {
 			checkin: {},
@@ -97,7 +99,8 @@
 						1:'unchecked',
 						2:'invalid',
 						3:'valid'
-					}
+					},
+					promocodes: [],
 				},
 				checkout:{
 					note:''
@@ -267,34 +270,18 @@
 			seeMoreBtnIcon : 'swap_horiz'
 		};
 
-		vm.ctrl.checkin.addCodeLabels = function (code){
-			if (code.name == 'mar05'){
-				code.label = 'MAR05';
+		vm.ctrl.checkin.addCodeLabels = function (codes){
+			if (vm.model.dom.data.selected.modelLanguage == 'vn'){
+				codes.map (function (x, i, arr){
+					x.selectedLabel = x.label.vn;
+				});				
 			}
-			else if (code.name == 'gs05'){
-				code.label = 'GS05';
-			}
-			else if (code.name == 'freewed'){
-				code.label = 'FREEWED';
-			}
-			else if (code.name == 'v01h06'){
-				code.label = 'Voucher free 1h cá nhân / nhóm chung tháng 6';
-			}
-			else if (code.name == 'v02h06'){
-				code.label = 'Voucher free 2h cá nhân / nhóm chung tháng 6';
-			}
-			else if (code.name == 'vfsc'){
-				code.label = 'Phòng riêng FSC';
-			}
-			else if (code.name == 'vymcs'){
-				code.label = 'Phòng riêng 15 YMC';
-			}
-			else if (code.name == 'vymcm'){
-				code.label = 'Phòng riêng 30 YMC';
-			}			
+			else if (vm.model.dom.data.selected.modelLanguage == 'en'){
+				codes.map (function (x, i, arr){
+					x.selectedLabel = x.label.en;
+				});	
+			}		
 		}
-
-		vm.model.dom.data.selected = vm.model.dom.data.vn;
 
 		vm.ctrl.checkin.getPromocodes = function (){
 			if (vm.model.dom.data.selected.checkin.promoteCode.codes.length){
@@ -306,12 +293,13 @@
 				function success (res){
 					vm.ctrl.hideLoader ();
 					var codes = res.data.data;
+					console.log(vm.model.dom.data.selected.modelLanguage)
 					if (codes.length){
-						codes.map (function (x, i, arr){
-							vm.ctrl.checkin.addCodeLabels (x);
-						});
-
-						vm.model.dom.data.selected.checkin.promoteCode.codes = codes;
+						vm.ctrl.checkin.addCodeLabels (codes);
+						vm.model.dom.data.selected.checkin.promoteCode.codes = codes.sort (function (a, b){
+								return a.selectedLabel > b.selectedLabel
+							}
+						);
 					}
 					else {
 						// do nothing
@@ -534,7 +522,6 @@
 		};
 
 		vm.ctrl.checkin.addItem = function (){
-			console.log(vm.model.checkingin.occupancy.customer)
 			if (vm.model.temporary.checkin.item.quantity && vm.model.temporary.checkin.item.name && vm.model.checkingin.occupancy.customer){
 				vm.model.items.map (function (x, i, arr){
 
@@ -654,7 +641,7 @@
 
 		vm.ctrl.checkin.selectCustomer = function (index){
 			var selectedCustomer = vm.model.search.checkin.customers [index];
-
+			console.log(vm.model.search.checkin.customers)
 			vm.model.checkingin.occupancy.customer = vm.model.checkingin.order.customer = {
 				fullname: selectedCustomer.fullname,
 				_id: selectedCustomer._id,
@@ -668,18 +655,23 @@
 		}
 
 		vm.ctrl.checkin.serviceChangeHandler = function (){
+			console.log(vm.model.services)
 			vm.model.services.map (function (x, i, arr){
 				if (x.name.toLowerCase() == vm.model.checkingin.occupancy.service.name.toLowerCase()){
 					vm.model.checkingin.occupancy.service.price = x.price;
-
+					
+					var service = vm.model.checkingin.occupancy.service.name.toLowerCase();
 					// Do sth when customer does uses private group service
-					if (vm.model.checkingin.occupancy.service.name.toLowerCase() != expectedServiceNames[2] && vm.model.checkingin.occupancy.service.name.toLowerCase() != expectedServiceNames[3]){
-
+					if (service != expectedServiceNames[2] && service != expectedServiceNames[3] && service != expectedServiceNames[4]){
 						vm.model.dom.checkin.privateGroupLeaderDiv = false;
+
+
 					}	
 					else{
 						vm.model.dom.checkin.privateGroupLeaderDiv = true;
 					}
+
+					// update code depends on services
 
 					return
 				}
@@ -725,6 +717,7 @@
 			CheckinService.createOne (customerId, vm.model.checkingin).then(
 				function success(res){
 					vm.ctrl.hideLoader ();
+					console.log(res.data.data)
 					vm.model.temporary.justCheckedin = res.data.data;
 
 					if (vm.model.temporary.justCheckedin.order && vm.model.temporary.justCheckedin.order.orderline && vm.model.temporary.justCheckedin.order.orderline.length){
@@ -833,6 +826,7 @@
 			CheckinService.checkout(vm.model.checkingout.occupancy)
 				.then(function success(res){
 					vm.ctrl.hideLoader ();
+					console.log(res.data.data)
 					// $('#askCheckout').foundation('close');
 					// $('#announceCheckoutSuccess').foundation('open');
 					vm.ctrl.reset();
@@ -892,8 +886,9 @@
 		};
 
 		////////////////////////////// INITIALIZE ///////////////////////////////		
+		vm.model.dom.data.selected = vm.model.dom.data.vn;
 		angular.element(document.getElementById ('mainContentDiv')).ready(function () {
-			vm.model.dom.data.selected = vm.model.dom.data.vn;
+			
 			vm.ctrl.getCheckedinList ();
 				
 		});	

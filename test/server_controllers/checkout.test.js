@@ -14,7 +14,7 @@ chai.use (chaiHttp);
 
 describe ('Checkout', function (){
 	this.timeout(3000);
-	xdescribe ('Create invoice', function (){
+	describe ('Create invoice', function (){
 		var occupancy, customer;
 		var newOcc, newCustomer;
 		
@@ -216,7 +216,7 @@ describe ('Checkout', function (){
 
 		});
 
-		xit ('should update chekcout data successfully', function (done){
+		it ('should update chekcout data successfully', function (done){
 			chai.request (server)
 				.post ('/checkout/')
 				.send ({data: newOcc[0]})
@@ -237,7 +237,7 @@ describe ('Checkout', function (){
 				});
 		});
 
-		xit ('should checkout success, return correct total and usage, and ignore discount for small group private service when using code PRIVATEHALFTOTAL', function (done){
+		it ('should checkout success, return correct total and usage, and ignore discount for small group private service when using code PRIVATEHALFTOTAL', function (done){
 			chai.request (server)
 				.post ('/checkout/')
 				.send ({data: newOcc[2]})

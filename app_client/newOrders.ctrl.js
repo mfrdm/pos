@@ -1,9 +1,9 @@
 (function (){
 	angular.module('posApp')
-		.controller('NewOrdersCtrl', ['OrderService', 'CustomerService', '$scope', '$window','$route', NewOrdersCtrl])
+		.controller('NewOrdersCtrl', ['DataPassingService', 'OrderService', 'CustomerService', '$scope', '$window','$route', NewOrdersCtrl])
 
-	function NewOrdersCtrl (OrderService, CustomerService, $scope, $window, $route){
-		var LayoutCtrl = $scope.$parent.layout;
+	function NewOrdersCtrl (DataPassingService, OrderService, CustomerService, $scope, $window, $route){
+		var LayoutCtrl = DataPassingService.get ('layout');
 		var vm = this;
 
 		vm.ctrl = {

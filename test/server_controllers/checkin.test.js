@@ -586,7 +586,7 @@ xdescribe ('Update checked-in', function (){
 
 });
 
-describe ('Read check-in list', function (){
+xdescribe ('Read check-in list', function (){
 	var query, occ, customer, newCustomer, newOcc;
 	beforeEach (function (done){
 		query = {

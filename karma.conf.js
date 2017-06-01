@@ -24,6 +24,8 @@ module.exports = function(config) {
       'app_client/*.ctrl.js',
       'test/app_client/common/services/*.service.spec.js',
       'test/app_client/*.ctrl.spec.js',
+      'public/vendor/js/jquery-2.1.0.min.js',
+      'public/vendor/js/foundation.min.js'
     ],
 
 

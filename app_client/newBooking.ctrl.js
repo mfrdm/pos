@@ -4,7 +4,7 @@
 		.controller ('NewBookingCtrl', ['DataPassingService', 'CustomerService', 'BookingService', 'ProductService', '$scope','$route', '$location', '$window', NewBookingCtrl])
 
 	function NewBookingCtrl (DataPassingService, CustomerService, BookingService, ProductService, $scope, $route, $location, $window) {
-		var LayoutCtrl = $scope.$parent.layout;
+		var LayoutCtrl = DataPassingService.get ('layout');
 		var vm = this;
 
 		vm.ctrl = {

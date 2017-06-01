@@ -3,7 +3,7 @@
 		.controller('NewCustomersCtrl', ['DataPassingService', 'CustomerService', '$scope', '$window','$route', '$location', NewCustomersCtrl])
 
 	function NewCustomersCtrl (DataPassingService, CustomerService, $scope, $window, $route, $location){
-		var LayoutCtrl = $scope.$parent.layout;
+		var LayoutCtrl = DataPassingService.get ('layout');
 		var vm = this;
 
 		vm.model = {
