@@ -14,6 +14,7 @@ function getUsageTime (){
 	var checkoutTime = moment (this.checkoutTime);
 	var checkinTime = moment(this.checkinTime);
 	var diff = checkoutTime.diff (checkinTime, 'minutes');
+
 	return normalizeUsage (diff);
 }
 
@@ -49,7 +50,10 @@ function getTotal (){
 	else{
 		// add default codes
 		occ.addDefaultCodes ();
-		
+		// Promocodes.resolveConflict (occ.promocodes);
+
+		console.log (occ);
+
 		if (occ.promocodes && occ.promocodes.length){
 			
 			// sort to prioritize codes applied
@@ -88,16 +92,34 @@ function getTotal (){
 }
 
 // Auto add codes when meet conditions
+// FIX
 var addDefaultCodes = function (){
 	var productNames = ['group common', 'individual common', 'medium group private', 'small group private', 'large group private'];	
 	var occ = this;
 	var service = occ.service.name.toLowerCase ();
 	var usage = occ.usage;
 	occ.promocodes = occ.promocodes ? occ.promocodes : [];
-	
+
+	var codeNum = occ.promocodes.length;
+
+	// FIX: move this to resolve conflict in promocodes
+	for (var i = 0; i < codeNum; i++){
+		var currCodeName = occ.promocodes[i].name.toLowerCase ();
+		if (currCodeName == 'studentprice'){
+			return
+		}
+		else if (currCodeName == 'privatediscountprice'){
+			return;
+		}
+		else if (currCodeName == 'privatehalftotal'){
+			return;
+		}
+	}
+
 	if (occ.customer.isStudent && (service == productNames[0] || service == productNames[1])){
 		occ.promocodes.push ({name: 'studentprice', codeType: 2});
 	}
+
 	if (usage > 1 && (service == productNames[2] || service == productNames[3])){
 		occ.promocodes.push ({name: 'privatediscountprice', codeType: 4});
 	}

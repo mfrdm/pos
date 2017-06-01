@@ -1,6 +1,6 @@
 process.env.NODE_ENV = 'test';	
 var chai = require ('chai');
-var should = chai.should ()
+var should = chai.should ();
 var mongoose = require ('mongoose');
 var Promocodes = require ('../../app_api/models/promocodes');
 
@@ -185,9 +185,59 @@ describe ('Promotion Code', function (){
 
 	});
 
-	xdescribe ('Resolve code conflict', function (){
-		it ('should remove codes of the same type but lower priority')
-		it ('should keep all codes with the same priority')
+	describe ('Resolve code conflict', function (){
+		var codes;
+		beforeEach (function (){
+			codes = [
+				{name: 'code 1', codeType: 1, priority: 1},
+				{name: 'code 2', codeType: 1, priority: 2},
+				{name: 'code 3', codeType: 2, priority: 1},
+				{name: 'code 4', codeType: 2, priority: 2},
+
+			];
+		})
+
+		it ('should has no more than one code of the same type', function (){
+			Promocodes.resolveConflict (codes);
+			codes.should.have.lengthOf (2);
+			codes[0].codeType.should.to.not.equal (codes[1].codeType);			
+		})
+
+		it ('should remove codes of the same type but lower priority', function (){
+			Promocodes.resolveConflict (codes);
+			codes.should.have.lengthOf (2);
+			codes.map (function (x, i, arr){
+				['code 2', 'code 4'].should.include (x.name)
+			});
+		})
+
+		it ('should do anything with codes of different types', function (){
+			codes = [
+				{name: 'code 1', codeType: 1, priority: 1},
+				{name: 'code 2', codeType: 2, priority: 2},
+			];
+
+			Promocodes.resolveConflict (codes);
+			codes.should.have.lengthOf (2);
+
+		});
+
+		it ('should return error when dealing with code of the same types and same priority', function (){
+			codes = [
+				{name: 'code 1', codeType: 1, priority: 2},
+				{name: 'code 2', codeType: 1, priority: 2},
+			];
+			
+			try{
+				Promocodes.resolveConflict (codes);
+				false.should.equal (true);
+			}	
+			catch (err){
+				false.should.equal (false);
+
+			}
+			
+		})
 	});
 
 });
