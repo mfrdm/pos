@@ -137,7 +137,8 @@
 				number:'No',
 				fullname:'Tên',
 				service:'Dịch vụ',
-				checkin:'Checkin'
+				checkin:'Checkin',
+				note: 'Ghi chú'
 			},
 			noResult: 'Không tìm thấy kết quả',
 			search: {

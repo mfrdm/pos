@@ -144,13 +144,15 @@ div(class="row columns")
 						th {{ vm.model.dom.data.selected.bookingList.number }}
 						th {{ vm.model.dom.data.selected.bookingList.fullname }}
 						th {{ vm.model.dom.data.selected.bookingList.service }}
-						th(colspan=3) {{ vm.model.dom.data.selected.bookingList.checkin }}
+						th(colspan=1) {{ vm.model.dom.data.selected.bookingList.checkin }}
+						th(colspan=3) {{ vm.model.dom.data.selected.bookingList.note }}
 				tbody
 					tr(ng-repeat='booking in vm.model.bookingList.data')
 						td {{ $index + 1 }}
 						td {{ booking.customer.fullname }}
 						td {{ booking.service.label }}
 						td {{ booking.checkinTime | date:'dd/MM/yyyy'}} {{ booking.checkinTime | date:'shortTime'}}
+						td {{ booking.note }}
 						//td(ng-if='booking.status == 3') Waiting
 						//td(ng-if='booking.status == 1') Accepted
 						//td(ng-if='booking.status == 2') Refused
