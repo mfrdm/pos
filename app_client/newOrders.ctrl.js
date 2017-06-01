@@ -56,6 +56,7 @@
 			},
 			temporary: {
 				ordering: {
+					item:{},
 					addedItem: [],
 				},
 				displayedList:{
@@ -289,7 +290,8 @@
 		// FIX: should reset only order div
 		vm.ctrl.toggleOrderDiv = function (){
 			if (vm.model.dom.orderDiv){
-				vm.ctrl.reset ();
+				// vm.ctrl.reset ();
+				vm.ctrl.order.resetMakeOrderDiv() // reset only order div
 			}
 			else{
 				vm.model.dom.orderDiv = true;
@@ -305,6 +307,15 @@
 			}
 			else vm.model.dom.filterDiv = false;
 		};
+
+		vm.ctrl.order.resetMakeOrderDiv = function(){
+			vm.model.dom.orderDiv = false
+			vm.model.search.order.username = ''
+			vm.model.dom.order.search.message.notFound = false
+			vm.model.temporary.ordering.item.name = ''
+			vm.model.temporary.ordering.item.quantity = null
+			vm.model.ordering.orderline = []
+		}
 
 		vm.ctrl.order.resetSearchCustomerDiv = function (){
 			vm.model.dom.order.customerSearchResult = false;

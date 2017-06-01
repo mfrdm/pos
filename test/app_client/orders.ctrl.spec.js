@@ -50,8 +50,29 @@ describe ('Controller: NewOrdersCtrl', function (){
 		$httpBackend.verifyNoOutstandingRequest();
 	}));
 
-	xdescribe ('should ...', function(){
+	describe ('Toggle make order form', function(){
 
+		it ('should hide order form by default', function(){
+			var layout = createLayout();
+			var vm = createController();
+			expect(vm.model.dom.orderDiv).toBeFalsy()
+		})
+
+		it ('should open order form if hidden', function(){
+			var layout = createLayout();
+			var vm = createController();
+			vm.model.dom.orderDiv = false;
+			vm.ctrl.toggleOrderDiv();
+			expect(vm.model.dom.orderDiv).toBeTruthy()
+		})
+
+		it ('should close order form if shown', function(){
+			var layout = createLayout();
+			var vm = createController();
+			vm.model.dom.orderDiv = true;
+			vm.ctrl.toggleOrderDiv();
+			expect(vm.model.dom.orderDiv).toBeFalsy()
+		})
 	})
 
 })

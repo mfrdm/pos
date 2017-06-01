@@ -166,7 +166,7 @@ describe ('Controller: NewCheckinCtrl', function (){
 
 	});
 
-	describe ('Check-in', function (){
+	xdescribe ('Check-in', function (){
 
 		describe ('Open check-in form', function (){
 			it ('should show check-in form when click check-in button 1st time', function(){
@@ -797,7 +797,7 @@ describe ('Controller: NewCheckinCtrl', function (){
 		it ('should update ')
 	})
 
-	describe ('Check-out', function (){
+	xdescribe ('Check-out', function (){
 		it ('should select correctly checking out customer', function(){
 			// Get checkin list
 			var layout = createLayout();
