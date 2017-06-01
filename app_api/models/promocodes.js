@@ -1,5 +1,13 @@
-var mongoose = require('mongoose');
+/*
+	Purpose: 
+		+ define codes
+		+ define controller to manupulate usage, price, total, or mixed
+	requirement:
+		+ less coupling as much as possible
 
+*/
+
+var mongoose = require('mongoose');
 var productNames = ['group common', 'individual common', 'medium group private', 'small group private', 'large group private'];
 
 var rewardUsagePrice = {
