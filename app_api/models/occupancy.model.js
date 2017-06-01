@@ -32,7 +32,7 @@ function normalizeUsage (diff){
 	else if (quotient == 0 && tenths < minMin) {
 		usage = 0;
 	}
-	else {
+	else if (quotient == 0 && tenths >= minMin){
 		usage = 1;
 	}
 
@@ -48,7 +48,7 @@ function getTotal (){
 	}
 	else{
 		// add default codes
-		Promocodes.addDefaultCodes (occ);
+		occ.addDefaultCodes ();
 		
 		if (occ.promocodes && occ.promocodes.length){
 			
@@ -87,10 +87,28 @@ function getTotal (){
 	}	
 }
 
+// Auto add codes when meet conditions
+var addDefaultCodes = function (){
+	var productNames = ['group common', 'individual common', 'medium group private', 'small group private', 'large group private'];	
+	var occ = this;
+	var service = occ.service.name.toLowerCase ();
+	var usage = occ.usage;
+	occ.promocodes = occ.promocodes ? occ.promocodes : [];
+	
+	if (occ.customer.isStudent && (service == productNames[0] || service == productNames[1])){
+		occ.promocodes.push ({name: 'studentprice', codeType: 2});
+	}
+	if (usage > 1 && (service == productNames[2] || service == productNames[3])){
+		occ.promocodes.push ({name: 'privatediscountprice', codeType: 4});
+	}
+}
+
 var OccupancySchema = new mongoose.Schema({
 	_id: {type: mongoose.Schema.Types.ObjectId, default: mongoose.Types.ObjectId},
 	total: {type: Number, min: 0, default: 0},
+	// discountedTotal: {type: Number, min: 0},
 	usage: {type: Number, min: 0}, // in hour
+	// discountedUsage: {type: Number, min: 0}, // in hour
 	paymentMethod: Number, // required. card, cash, account
 	parent: mongoose.Schema.Types.ObjectId, // id of parent occ. used for group private
 	checkinTime: {type: Date, default: Date.now},
@@ -131,5 +149,6 @@ var OccupancySchema = new mongoose.Schema({
 
 OccupancySchema.methods.getUsageTime = getUsageTime;
 OccupancySchema.methods.getTotal = getTotal;
+OccupancySchema.methods.addDefaultCodes = addDefaultCodes;
 
 module.exports = mongoose.model ('occupancy', OccupancySchema);
