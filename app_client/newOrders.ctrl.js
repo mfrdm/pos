@@ -276,6 +276,7 @@
 			OrderService.getOrderList(query).then(
 				function success(res){
 					vm.ctrl.hideLoader ();
+					console.log(LayoutCtrl.model.dept._id )
 					vm.model.originalOrderedList = res.data.data;
 					vm.model.orderedList = vm.ctrl.createAdjustedOrderList (vm.model.originalOrderedList);
 					vm.ctrl.order.filterPaginate();
@@ -315,6 +316,8 @@
 			vm.model.temporary.ordering.item.name = ''
 			vm.model.temporary.ordering.item.quantity = null
 			vm.model.ordering.orderline = []
+			vm.model.ordering.customer = {}
+			vm.model.temporary.ordering.addedItem = []
 		}
 
 		vm.ctrl.order.resetSearchCustomerDiv = function (){
