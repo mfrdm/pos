@@ -1,3 +1,4 @@
+process.env.NODE_ENV = 'test';	
 var chai = require ('chai');
 var should = chai.should ()
 var mongoose = require ('mongoose');
@@ -32,22 +33,9 @@ describe ('Promotion Code', function (){
 
 	});
 
-	describe ('Redeem mixed', function (){
-		xit ('should return discount price when usage is more than 1 hour for group private service', function (){
-			var prices = [220000, 150000];
-			var code = 'PRIVATEDISCOUNTPRICE';
-			var usage = 3.5;
-			var expectedTotal = [220000 + 200000 * 2.5, 150000 + 120000 * 2.5];
-			var productNames = ['Medium Group Private', 'Small Group Private'];
-			productNames.map (function (x, i, arr){
-				var price = prices[i];
-				var total = Promocodes.redeemMixed (code, usage, price, x);
-				total.should.to.equal (expectedTotal[i]);
-			});
-			
-		});
+	xdescribe ('Redeem mixed', function (){
 
-		xit ('should return discount price when usage is more than 1 hour for group private service', function (){
+		it ('should return discount price when usage is more than 1 hour for group private service', function (){
 			var prices = [220000, 150000];
 			var usage = 3.5;
 			var code = 'PRIVATEDISCOUNTPRICE';
@@ -108,11 +96,11 @@ describe ('Promotion Code', function (){
 			});		
 		});
 
-		it ('should return original price for student using private services', function (){
+		it ('should return original price for student using private services regardless having code STUDENTPRICE', function (){
 			var prices = [220000, 150000];
 			var expectedPrice = prices;
 			var productNames = ['Medium Group Private', 'Small Group Private'];
-			var code = "NONSTUDENT";
+			var code = "STUDENTPRICE";
 			productNames.map (function (x,i,arr){
 				var p = Promocodes.redeemPrice (code, prices[i], x, usage);
 				p.should.to.equal (expectedPrice[i]);
@@ -121,12 +109,12 @@ describe ('Promotion Code', function (){
 
 		it ('should return original price for non-student', function (){
 			var price = 15000;
-			var expectedPrice = [10000, 10000];
+			var unExpectedPrice = [10000, 10000];
 			var productNames = ['Group Common', 'Individual Common'];
-			var code = "NONSTUDENT";
+			var code = "INVALIDCODE";
 			productNames.map (function (x,i,arr){
 				var p = Promocodes.redeemPrice (code, price, x, usage);
-				p.should.to.not.equal (expectedPrice[i]);
+				p.should.to.not.equal (unExpectedPrice[i]);
 			});		
 		});
 
@@ -197,56 +185,9 @@ describe ('Promotion Code', function (){
 
 	});
 
-	xdescribe ('Add default codes', function (){
-		var occ;
-		beforeEach (function (){
-			occ = {
-				service: {
-					name: 'Group Common'
-				},
-				customer: {
-					isStudent: true,
-				},
-				usage: 3.2,
-			}
-		})
-
-		it ('should add code STUDENTPRICE if user is a student', function (){
-			var pdp = 0;
-			var sp = 0;
-			Promocodes.addDefaultCodes (occ);
-			occ.promocodes.should.to.have.property ('length');
-			occ.promocodes.map (function (x, i, arr){
-				if (x.name == 'privatediscountprice' && x.codeType == 4){
-					pdp ++;
-				}
-				if (x.name == 'studentprice' && x.codeType == 2){
-					sp ++;
-				}
-			});
-
-			pdp.should.to.equal (0);
-			sp.should.to.equal (1);	
-		});
-
-		it ('should add code PRIVATEDISCOUNTPRICE if using group private service and usage is more than 1 hour', function (){
-			var pdp = 0;
-			var sp = 0;
-			occ.service.name = 'Medium group private';
-			Promocodes.addDefaultCodes (occ);
-			occ.promocodes.should.to.have.property ('length');
-			occ.promocodes.map (function (x, i, arr){
-				if (x.name == 'privatediscountprice' && x.codeType == 4){
-					pdp ++;
-				}
-				if (x.name == 'studentprice' && x.codeType == 2){
-					sp ++;
-				}				
-			});
-
-			pdp.should.to.equal (1);
-			sp.should.to.equal (0);		
-		})
+	xdescribe ('Resolve code conflict', function (){
+		it ('should remove codes of the same type but lower priority')
+		it ('should keep all codes with the same priority')
 	});
 
 });

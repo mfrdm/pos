@@ -1,5 +1,13 @@
-var mongoose = require('mongoose');
+/*
+	Purpose: 
+		+ define codes
+		+ define controller to manupulate usage, price, total, or mixed
+	requirement:
+		+ less coupling as much as possible
 
+*/
+
+var mongoose = require('mongoose');
 var productNames = ['group common', 'individual common', 'medium group private', 'small group private', 'large group private'];
 
 var rewardUsagePrice = {
@@ -89,37 +97,44 @@ var redeemMixed = function (code, usage, price, productName){
 	return total;	
 }
 
+// Some codes cannot be used together. The function select code with higher priority in its type
+var resolveConflict = function (){
+
+};
+
 // FIX:
 // Pretty coupling with occ. Fix: accept argmments which are service name, usage, and codes
 // Also. this code does not do correct function of promocodes. It know to much about other objects
-var addDefaultCodes = function (occ){
-	var service = occ.service.name.toLowerCase ();
-	var usage = occ.usage;
-	occ.promocodes = occ.promocodes ? occ.promocodes : [];
+// var addDefaultCodes = function (occ){
+// 	var service = occ.service.name.toLowerCase ();
+// 	var usage = occ.usage;
+// 	occ.promocodes = occ.promocodes ? occ.promocodes : [];
 	
-	// check if codes added
-	var codeNum = occ.promocodes.length;
+// 	// check if codes added
+// 	var codeNum = occ.promocodes.length;
 
-	for (var i = 0; i < codeNum; i++){
-		var currCodeName = occ.promocodes[i].name.toLowerCase ();
-		if (currCodeName == 'studentprice'){
-			return
-		}
-		else if (currCodeName == 'privatediscountprice'){
-			return;
-		}
-		else if (currCodeName == 'privatehalftotal'){
-			return;
-		}
-	}
+// 	for (var i = 0; i < codeNum; i++){
+// 		var currCodeName = occ.promocodes[i].name.toLowerCase ();
+// 		if (currCodeName == 'studentprice'){
+// 			return
+// 		}
+// 		else if (currCodeName == 'privatediscountprice'){
+// 			return;
+// 		}
+// 		else if (currCodeName == 'privatehalftotal'){
+// 			return;
+// 		}
+// 	}
 
-	if (occ.customer.isStudent && (service == productNames[0] || service == productNames[1])){
-		occ.promocodes.push ({name: 'studentprice', codeType: 2});
-	}
-	if (usage > 1 && (service == productNames[2] || service == productNames[3])){
-		occ.promocodes.push ({name: 'privatediscountprice', codeType: 4});
-	}
-}
+// 	if (occ.customer.isStudent && (service == productNames[0] || service == productNames[1])){
+// 		occ.promocodes.push ({name: 'studentprice', codeType: 2});
+// 	}
+// 	if (usage > 1 && (service == productNames[2] || service == productNames[3])){
+// 		occ.promocodes.push ({name: 'privatediscountprice', codeType: 4});
+// 	}
+
+	
+// }
 
 // FIX: Build actual test. This is just an placeholder, and assume no conflict and no override
 // Some codes cannot be used with another. The function checks and return list of conflicts if any.
@@ -163,6 +178,6 @@ PromocodesSchema.statics.redeemUsage = redeemUsage;
 PromocodesSchema.statics.redeemTotal = redeemTotal;
 PromocodesSchema.statics.redeemMixed = redeemMixed;
 PromocodesSchema.statics.validateCodes = validateCodes;
-PromocodesSchema.statics.addDefaultCodes = addDefaultCodes;
+PromocodesSchema.statics.resolveConflict = resolveConflict;
 
 module.exports = mongoose.model ('promocodes', PromocodesSchema);
