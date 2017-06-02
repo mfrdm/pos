@@ -162,7 +162,6 @@
 			BookingService.readAll (q).then (
 				function success (res){
 					vm.ctrl.hideLoader ();
-					console.log(res.data.data)
 					vm.model.bookingList.data = res.data.data;
 					vm.model.bookingList.data.map (function (x,i,arr){
 						vm.ctrl.addServiceLabel (x.service);

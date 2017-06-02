@@ -146,7 +146,7 @@ describe('Controller: BookingCtrl', function() {
         $httpBackend.verifyNoOutstandingRequest();
     }));
 
-    describe('Toggle booking form', function() {
+    xdescribe('Toggle booking form', function() {
 
         it('should hide booking form by default', function() {
             var layout = createLayout();
@@ -173,7 +173,7 @@ describe('Controller: BookingCtrl', function() {
 
     })
 
-    describe('Search customer', function() {
+    xdescribe('Search customer', function() {
 
         it('should show all customer found', function() {
             var layout = createLayout();
@@ -234,7 +234,7 @@ describe('Controller: BookingCtrl', function() {
 
     })
 
-    describe('Booking Form', function() {
+    xdescribe('Booking Form', function() {
 
         it('should not submit if no customer selected', function() {
             // Search customer
@@ -338,7 +338,7 @@ describe('Controller: BookingCtrl', function() {
 
     })
 
-    describe('Booking List', function() {
+    xdescribe('Booking List', function() {
 
         it('should return booking list', function() {
             var layout = createLayout();

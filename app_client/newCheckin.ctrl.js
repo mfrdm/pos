@@ -293,7 +293,7 @@
 				function success (res){
 					vm.ctrl.hideLoader ();
 					var codes = res.data.data;
-					console.log(vm.model.dom.data.selected.modelLanguage)
+					console.log(codes)
 					if (codes.length){
 						vm.ctrl.checkin.addCodeLabels (codes);
 						vm.model.dom.data.selected.checkin.promoteCode.codes = codes.sort (function (a, b){
@@ -555,20 +555,9 @@
 		};
 
 		vm.ctrl.checkin.addCode = function (){
-			if (!vm.model.checkingin.occupancy.promocodes) vm.model.checkingin.occupancy.promocodes = [];
-
-			if (vm.model.temporary.checkin.codeNames.indexOf (vm.model.temporary.checkin.codeName) == -1 && vm.model.temporary.checkin.codeName.length > 0 && vm.model.checkingin.occupancy.customer){
-				vm.model.checkingin.occupancy.promocodes.push ({name: vm.model.temporary.checkin.codeName, status:1});
-				vm.model.temporary.checkin.codeNames.push (vm.model.temporary.checkin.codeName);
-				vm.model.temporary.checkin.codeName = null;				
-			}
-
-		};
-
-		vm.ctrl.checkin.removeCode = function (index){
-			if (vm.model.checkingin.occupancy.promocodes){
-				vm.model.checkingin.occupancy.promocodes.splice (index, 1);
-				vm.model.temporary.checkin.codeNames.splice (index, 1);
+			if(vm.model.checkingin.occupancy.customer){
+				vm.model.checkingin.occupancy.promocodes = [{name: vm.model.temporary.checkin.codeName, status:1}];
+				vm.model.temporary.checkin.codeNames = [vm.model.temporary.checkin.codeName];
 			}
 		};
 
@@ -641,7 +630,6 @@
 
 		vm.ctrl.checkin.selectCustomer = function (index){
 			var selectedCustomer = vm.model.search.checkin.customers [index];
-			console.log(vm.model.search.checkin.customers)
 			vm.model.checkingin.occupancy.customer = vm.model.checkingin.order.customer = {
 				fullname: selectedCustomer.fullname,
 				_id: selectedCustomer._id,
@@ -655,7 +643,6 @@
 		}
 
 		vm.ctrl.checkin.serviceChangeHandler = function (){
-			console.log(vm.model.services)
 			vm.model.services.map (function (x, i, arr){
 				if (x.name.toLowerCase() == vm.model.checkingin.occupancy.service.name.toLowerCase()){
 					vm.model.checkingin.occupancy.service.price = x.price;
@@ -717,7 +704,6 @@
 			CheckinService.createOne (customerId, vm.model.checkingin).then(
 				function success(res){
 					vm.ctrl.hideLoader ();
-					console.log(res.data.data)
 					vm.model.temporary.justCheckedin = res.data.data;
 
 					if (vm.model.temporary.justCheckedin.order && vm.model.temporary.justCheckedin.order.orderline && vm.model.temporary.justCheckedin.order.orderline.length){
@@ -826,7 +812,6 @@
 			CheckinService.checkout(vm.model.checkingout.occupancy)
 				.then(function success(res){
 					vm.ctrl.hideLoader ();
-					console.log(res.data.data)
 					// $('#askCheckout').foundation('close');
 					// $('#announceCheckoutSuccess').foundation('open');
 					vm.ctrl.reset();

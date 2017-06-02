@@ -28,9 +28,9 @@ describe ('Controller: NewCheckinCtrl', function (){
 	var mockCustomer = [{ "_id" : "5924168b164cb9030cee9308", "__v" : 0, "fullname" : "NGUYỄN LAN HƯƠNG", "firstname" : "HƯƠNG", "lastname" : "NGUYỄN", "middlename" : "LAN", "gender" : 2, "birthday" : "1996-11-28T00:00:00Z", "checkinStatus" : false, "bookings" : [ ], "occupancy" : [ ], "updatedAt" : [ ], "createdAt" : "2017-05-23T11:01:31.411Z", "isStudent" : true, "edu" : [ { "title" : "Sinh viên", "_id" : "5924168b164cb9030cee930a" }, { "school" : "-1", "_id" : "5924168b164cb9030cee9309" } ], "email" : [ "Huong.ftuk53gmail.com" ], "phone" : [ "0915645396" ] }]
 
 	var mockPromoteCodes = [
-		{ "_id" : "5919e00d8942202eb15aefec", "name" : "free2hourscommon", "start" : "2017-01-01T00:00:00Z", "end" : "2017-12-31T00:00:00Z", "codeType" : 1 },
-		{ "_id" : "5919e00d8942202eb15aefed", "name" : "studentprice", "start" : "2017-01-01T00:00:00Z", "end" : "2017-12-31T00:00:00Z", "codeType" : 2 },
-		{ "_id" : "5919e00d8942202eb15aefee", "name" : "yeugreenspace", "start" : "2017-01-01T00:00:00Z", "end" : "2017-12-31T00:00:00Z", "codeType" : 3 }
+		{ "_id" : "592e3e1b4eb93492334f27df", "name" : "free1daycommon", "start" : "2017-05-31T17:00:00Z", "end" : "2017-06-01T17:00:00Z", "desc" : "1 day free for only signed up members", "codeType" : 4, "createdAt" : "2017-05-31T03:52:59.874Z", "conflict" : [ ], "override" : [ ], "excluded" : false, "label" : {vn:"Ngày VÀNG - Common - Free 1 ngày"}, "priority" : 3 },
+		{ "_id" : "592e3e0b4eb93492334f27da", "name" : "v01h06", "start" : "2017-05-06T17:00:00Z", "end" : "2017-06-30T17:00:00Z", "desc" : "1 free hour for group or individual common", "codeType" : 1, "createdAt" : "2017-05-31T03:52:43.392Z", "conflict" : [ ], "override" : [ ], "excluded" : false, "label" : { "vn" : "Common - Free 1 giờ" }, "priority" : 2 },
+		{ "_id" : "592e3e0b4eb93492334f27db", "name" : "v02h06", "start" : "2017-05-06T17:00:00Z", "end" : "2017-06-30T17:00:00Z", "desc" : "2 free hours for group or individual common", "codeType" : 1, "createdAt" : "2017-05-31T03:52:43.392Z", "conflict" : [ ], "override" : [ ], "excluded" : false, "label" : { "vn" : "Common - Free 2 giờ" }, "priority" : 2 }
 	]
 
 	var mockSuccessfulCheckin = {
@@ -166,9 +166,9 @@ describe ('Controller: NewCheckinCtrl', function (){
 
 	});
 
-	xdescribe ('Check-in', function (){
+	describe ('Check-in', function (){
 
-		describe ('Open check-in form', function (){
+		xdescribe ('Open check-in form', function (){
 			it ('should show check-in form when click check-in button 1st time', function(){
 				var layout = createLayout();
 				var vm = createController();
@@ -210,7 +210,7 @@ describe ('Controller: NewCheckinCtrl', function (){
 			});			
 		});
 
-		describe ('Close check-in form', function (){
+		xdescribe ('Close check-in form', function (){
 			it ('should hide check-in form when click check-in button 2nd time', function(){
 				var layout = createLayout();
 				var vm = createController();
@@ -233,7 +233,7 @@ describe ('Controller: NewCheckinCtrl', function (){
 			})
 		});
 
-		describe ('Select service', function (){
+		xdescribe ('Select service', function (){
 			it ('should fetch list of checked-in leader of a group when customer using group private service', function(){
 				
 				$httpBackend.when ('GET', /\/checkin.*/).respond ({
@@ -268,7 +268,7 @@ describe ('Controller: NewCheckinCtrl', function (){
 			});		
 		})
 
-		describe ('Search a checking-in customer', function (){
+		xdescribe ('Search a checking-in customer', function (){
 			it ('should show customer search result div when having customer data after searching', function(){
 				$httpBackend.when ('GET', /\/checkin\/search-customers.*/).respond ({
 					data: mockCustomer
@@ -420,7 +420,7 @@ describe ('Controller: NewCheckinCtrl', function (){
 			})
 		})
 
-		describe ('Order', function (){
+		xdescribe ('Order', function (){
 			it ('should add a item when click "add item"', function(){
 				// Get list items
 				$httpBackend.when ('GET', '/api/products').respond ({
@@ -580,20 +580,21 @@ describe ('Controller: NewCheckinCtrl', function (){
 			})			
 		})
 
-		xdescribe ('Promocodes', function (){
+		describe ('Promocodes', function (){
 			it ('should add code and display it in added code section when select code. No longer use plus button to add code.', function(){
 				// Load page
-				$httpBackend.when ('GET', /\/checkin.*/).respond ({
-					data: occupancyList
-				});
+				// $httpBackend.when ('GET', /\/checkin.*/).respond ({
+				// 	data: occupancyList
+				// });
 				$httpBackend.when ('GET', '/promocodes/').respond ({
 					data: mockPromoteCodes
 				});
 				var layout = createLayout();
 				var vm = createController();
-				vm.ctrl.getCheckedinList();
+				// vm.ctrl.getCheckedinList();
 				vm.model.dom.checkin.checkinDiv = false;
 				vm.ctrl.toggleCheckInDiv()
+				$httpBackend.flush();
 				// Select customer
 				$httpBackend.when ('GET', /\/checkin\/search-customers.*/).respond ({
 					data: mockCustomer
@@ -603,13 +604,27 @@ describe ('Controller: NewCheckinCtrl', function (){
 				
 				$httpBackend.flush();
 				vm.ctrl.checkin.selectCustomer(0);
+
 				// Get promotecodes from server
 				console.info(vm.model.dom.data.selected.checkin.promoteCode.codes)
 
-				// vm.model.temporary.checkin.codeName = 'testCode';
-				// vm.ctrl.checkin.addCode();
+				// should show all codes in selections
+				expect(vm.model.dom.data.selected.checkin.promoteCode.codes[0].selectedLabel).toEqual('Common - Free 1 giờ')
+				expect(vm.model.dom.data.selected.checkin.promoteCode.codes[1].selectedLabel).toEqual('Common - Free 2 giờ')
+				expect(vm.model.dom.data.selected.checkin.promoteCode.codes[2].selectedLabel).toEqual('Ngày VÀNG - Common - Free 1 ngày')
+
+				// Before select
+				expect(vm.model.checkingin.occupancy.promocodes).toEqual([])
+				expect(vm.model.temporary.checkin.codeNames).toEqual([])
+
+				vm.model.temporary.checkin.codeName = vm.model.dom.data.selected.checkin.promoteCode.codes[0].name
+				vm.ctrl.checkin.addCode();
+				// Code should be add right after select
+				expect(vm.model.checkingin.occupancy.promocodes).toEqual([{name: vm.model.temporary.checkin.codeName, status:1}])
+				expect(vm.model.temporary.checkin.codeNames).toEqual([vm.model.temporary.checkin.codeName])
 			})
-			it ('should remove code when cick "remove code"', function(){
+
+			xit ('should remove code when cick "remove code"', function(){
 
 			})
 			it ('should validate and show invalid status when codes are invalid')
@@ -617,7 +632,7 @@ describe ('Controller: NewCheckinCtrl', function (){
 			it ('should allow to add only one code at a check-in time')			
 		})
 
-		describe ('Confirm checkin', function (){
+		xdescribe ('Confirm checkin', function (){
 			it ('should display confirm modal when user click submit in check-in form and code, if exist, is valid', function(){
 				// Load page
 				// $httpBackend.when ('GET', /\/checkin.*/).respond ({
@@ -685,7 +700,7 @@ describe ('Controller: NewCheckinCtrl', function (){
 			})
 		});
 
-		describe ('Submit checkin', function (){
+		xdescribe ('Submit checkin', function (){
 			it ('should checkin success', function(){
 				$httpBackend.when ('GET', '/api/products').respond ({
 					data: productsList
@@ -749,7 +764,7 @@ describe ('Controller: NewCheckinCtrl', function (){
 			})
 		});
 
-		describe ('Order invoice', function (){
+		xdescribe ('Order invoice', function (){
 			it ('should display order invoice when checked in and customer makes an order', function(){
 				$httpBackend.when ('GET', '/api/products').respond ({
 					data: productsList
