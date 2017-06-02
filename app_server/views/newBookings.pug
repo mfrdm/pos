@@ -27,7 +27,7 @@ div(class="row columns")
 				form(ng-submit="vm.ctrl.booking.searchCustomer()")
 					div(class="row column")
 						label {{ vm.model.dom.data.selected.booking.search.label.username }}
-							input(type="text" placeholder="{{ vm.model.dom.data.selected.booking.placeholder.username }}" ng-model='vm.model.search.booking.username' required="true")
+							input(type="text" placeholder="{{ vm.model.dom.data.selected.booking.placeholder.username }}" ng-model='vm.model.search.booking.username' required="true" ng-change='vm.ctrl.booking.clearSearchInput')
 					div(ng-show='vm.model.dom.booking.search.message.notFound' class='marginB15')
 						div(class='callout alert')
 							p {{ vm.model.dom.data.selected.booking.search.message.notFound + ' "' + vm.model.search.booking.username + '". ' }}

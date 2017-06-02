@@ -162,6 +162,7 @@
 			BookingService.readAll (q).then (
 				function success (res){
 					vm.ctrl.hideLoader ();
+					console.log(res.data.data)
 					vm.model.bookingList.data = res.data.data;
 					vm.model.bookingList.data.map (function (x,i,arr){
 						vm.ctrl.addServiceLabel (x.service);
@@ -238,7 +239,8 @@
 				vm.model.dom.booking.bookingDiv = true;
 			}
 			else{
-				vm.ctrl.reset ();
+				// vm.ctrl.reset ();
+				vm.ctrl.booking.resetBookingForm()// Reset only booking form not reload
 			}
 			
 		};
@@ -298,24 +300,41 @@
 			vm.ctrl.booking.resetSearchCustomerDiv ();			
 		};
 
+		vm.ctrl.booking.resetBookingForm = function(){
+			vm.model.dom.booking.customerSearchResultDiv = false;
+			vm.model.search.booking.customers = [];
+			vm.model.dom.booking.bookingDiv = false;
+			vm.model.search.booking.username = ''
+		}
 
 		vm.ctrl.booking.resetSearchCustomerDiv = function (){
 			vm.model.dom.booking.customerSearchResultDiv = false;
-			vm.model.search.booking.customers = [];			
+			vm.model.search.booking.customers = [];
 		};
+
+		vm.ctrl.booking.clearSearchInput = function(){
+			if(!vm.model.search.booking.username){
+				if(vm.model.booking.customer){
+					vm.model.booking.customer = {};
+				}
+				vm.ctrl.booking.resetSearchCustomerDiv();
+				vm.model.dom.booking.search.message.notFound = false;
+			}
+		}
 
 		vm.ctrl.booking.closeConfirm = function (){
 			vm.model.dom.booking.confirmDiv = false;
 		}
 
 		vm.ctrl.booking.confirm = function (){
-			if(vm.model.booking.customer){
+			if(vm.model.booking.customer && vm.model.booking.checkinTime && vm.model.booking.service){
 				vm.model.dom.booking.confirmDiv = true;
 			}
 		}
 
 		vm.ctrl.booking.book = function (){
 			vm.ctrl.showLoader ();
+			console.log(vm.model.booking)
 			BookingService.book (vm.model.booking).then (
 				function success (res){
 					vm.ctrl.hideLoader ();
@@ -363,7 +382,6 @@
 		vm.ctrl.bookingList.confirmCancel = function (index){
 			vm.model.dom.bookingList.cancelConfirmDiv = true;
 			vm.model.temporary.canceledBooking = vm.model.bookingList.data [index];
-			console.log (vm.model.temporary.canceledBooking)
 		}
 
 		vm.ctrl.bookingList.closeCancel = function (){
