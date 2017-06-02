@@ -97,21 +97,6 @@ var addDefaultCodes = function (){
 	var usage = occ.usage;
 	occ.promocodes = occ.promocodes ? occ.promocodes : [];
 
-	// // FIX: move this to resolve conflict in promocodes
-	// var codeNum = occ.promocodes.length;
-	// for (var i = 0; i < codeNum; i++){
-	// 	var currCodeName = occ.promocodes[i].name.toLowerCase ();
-	// 	if (currCodeName == 'studentprice'){
-	// 		return
-	// 	}
-	// 	else if (currCodeName == 'privatediscountprice'){
-	// 		return;
-	// 	}
-	// 	else if (currCodeName == 'privatehalftotal'){
-	// 		return;
-	// 	}
-	// }
-
 	if (occ.customer.isStudent && (service == productNames[0] || service == productNames[1])){
 		occ.promocodes.push ({name: 'studentprice', codeType: 2, priority: 1});
 	}
