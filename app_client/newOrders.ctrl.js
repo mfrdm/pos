@@ -276,7 +276,6 @@
 			OrderService.getOrderList(query).then(
 				function success(res){
 					vm.ctrl.hideLoader ();
-					console.log(LayoutCtrl.model.dept._id )
 					vm.model.originalOrderedList = res.data.data;
 					vm.model.orderedList = vm.ctrl.createAdjustedOrderList (vm.model.originalOrderedList);
 					vm.ctrl.order.filterPaginate();
@@ -453,18 +452,21 @@
 
 		vm.ctrl.order.getInvoice = function (){
 			vm.ctrl.showLoader ();
-			OrderService.getInvoice (vm.model.ordering).then (
-				function success (res){
-					vm.ctrl.hideLoader ();
-					vm.model.ordering = res.data.data;
-					vm.model.dom.order.confirm = true;
-				},
-				function failure (err){
-					console.log (err);
-					vm.ctrl.hideLoader ();
-					// display warning
-				}
-			)			
+			if(vm.model.ordering.orderline.length > 0 && vm.model.ordering.customer){
+				OrderService.getInvoice (vm.model.ordering).then (
+					function success (res){
+						vm.ctrl.hideLoader ();
+						vm.model.ordering = res.data.data;
+						vm.model.dom.order.confirm = true;
+					},
+					function failure (err){
+						console.log (err);
+						vm.ctrl.hideLoader ();
+						// display warning
+					}
+				)		
+			}
+				
 		}
 
 		vm.ctrl.order.confirm = function (){

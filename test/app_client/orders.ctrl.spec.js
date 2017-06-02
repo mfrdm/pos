@@ -51,6 +51,35 @@ describe('Controller: NewOrdersCtrl', function() {
         "total": 13000
     }
 
+    var mockConfirm = {
+        "__v": 0,
+        "staffId": "591ab5b1a77c813f4afd644a",
+        "note": "",
+        "_id": "5930aa7d90e40215f1309c75",
+        "updateAt": [],
+        "createdAt": "2017-06-01T23:59:57.507Z",
+        "status": 1,
+        "location": {
+            "_id": "59203df203b00119ac8d77ff",
+            "name": "Green Space Chùa Láng"
+        },
+        "customer": {
+            "fullname": "NGUYỄN LINH CHI",
+            "_id": "5924168b164cb9030cee92fc",
+            "phone": "01653846666",
+            "email": "mcc.f5.chinl@gmail.com"
+        },
+        "orderline": [{
+            "_id": "59195bd8c3737906af8d083b",
+            "productName": "7up",
+            "price": 8000,
+            "subTotal": 8000,
+            "promocodes": [],
+            "quantity": "1"
+        }],
+        "total": 8000
+    }
+
     beforeEach(module('posApp'));
     beforeEach(inject(
         function($injector) {
@@ -358,13 +387,84 @@ describe('Controller: NewOrdersCtrl', function() {
             expect(vm.model.ordering.orderline.length).toEqual(0)
 
             // Get invoice
+            // $httpBackend.when('POST', '/orders/checkout').respond({
+            //     data: mockInvoice
+            // });
+            vm.ctrl.order.getInvoice()
+                // $httpBackend.flush();
+            expect(vm.model.dom.order.confirm).toBeFalsy()
+                // TODO: improve this test
+        })
+
+        it('should submit and display confirm div if success', function() {
+            var layout = createLayout();
+            var vm = createController();
+            vm.model.search.order.username = 'test'
+            $httpBackend.when('GET', /\/customers.*/).respond({
+                data: mockSearchCustomers
+            });
+            vm.ctrl.order.searchCustomer();
+            $httpBackend.flush();
+
+            // Select customers
+            vm.ctrl.order.selectCustomer(1);
+
+            // Get products from server => vm.model.dom.data.selected.items = mockProducts
+            $httpBackend.when('GET', '/api/products').respond({
+                data: mockProducts
+            });
+            vm.ctrl.order.getItems()
+            $httpBackend.flush();
+
+            // Select item 1
+            vm.model.temporary.ordering.item.name = '7up';
+            vm.model.temporary.ordering.item.quantity = 1;
+
+            // Add item 1
+            vm.ctrl.order.addItem();
+            // Get invoice
             $httpBackend.when('POST', '/orders/checkout').respond({
                 data: mockInvoice
             });
             vm.ctrl.order.getInvoice()
             $httpBackend.flush();
-            expect(vm.model.dom.order.confirm).toBeFalsy()
-            
+            expect(vm.model.dom.order.confirm).toBeTruthy()
+        })
+
+        it('should enough info in invoice', function() {
+            var layout = createLayout();
+            var vm = createController();
+            vm.model.search.order.username = 'test'
+            $httpBackend.when('GET', /\/customers.*/).respond({
+                data: mockSearchCustomers
+            });
+            vm.ctrl.order.searchCustomer();
+            $httpBackend.flush();
+
+            // Select customers
+            vm.ctrl.order.selectCustomer(1);
+
+            // Get products from server => vm.model.dom.data.selected.items = mockProducts
+            $httpBackend.when('GET', '/api/products').respond({
+                data: mockProducts
+            });
+            vm.ctrl.order.getItems()
+            $httpBackend.flush();
+
+            // Select item 1
+            vm.model.temporary.ordering.item.name = '7up';
+            vm.model.temporary.ordering.item.quantity = 1;
+
+            // Add item 1
+            vm.ctrl.order.addItem();
+            // Get invoice
+            $httpBackend.when('POST', '/orders/checkout').respond({
+                data: mockInvoice
+            });
+            vm.ctrl.order.getInvoice()
+            $httpBackend.flush();
+            expect(vm.model.ordering.customer.fullname).toEqual('LÊ NGUYỄN THÁI HÀ')
+            expect(vm.model.ordering.orderline.length).toEqual(2)
         })
     })
 
