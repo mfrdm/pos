@@ -555,7 +555,7 @@
 		};
 
 		vm.ctrl.checkin.addCode = function (){
-			if(vm.model.checkingin.occupancy.customer){
+			if(vm.model.checkingin.occupancy.customer.fullname){
 				vm.model.checkingin.occupancy.promocodes = [{name: vm.model.temporary.checkin.codeName, status:1}];
 				vm.model.temporary.checkin.codeNames = [vm.model.temporary.checkin.codeName];
 			}
@@ -750,6 +750,7 @@
 						foundCodes.map (function (x, i, arr){
 							vm.model.temporary.checkin.codeNames.push (x.name);
 						});
+						console.log(foundCodes)
 
 						if(vm.model.checkingin.occupancy.promocodes){
 							vm.model.checkingin.occupancy.promocodes.map(function(item){

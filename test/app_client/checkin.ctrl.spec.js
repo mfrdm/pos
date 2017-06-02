@@ -582,16 +582,11 @@ describe ('Controller: NewCheckinCtrl', function (){
 
 		describe ('Promocodes', function (){
 			it ('should add code and display it in added code section when select code. No longer use plus button to add code.', function(){
-				// Load page
-				// $httpBackend.when ('GET', /\/checkin.*/).respond ({
-				// 	data: occupancyList
-				// });
 				$httpBackend.when ('GET', '/promocodes/').respond ({
 					data: mockPromoteCodes
 				});
 				var layout = createLayout();
 				var vm = createController();
-				// vm.ctrl.getCheckedinList();
 				vm.model.dom.checkin.checkinDiv = false;
 				vm.ctrl.toggleCheckInDiv()
 				$httpBackend.flush();
@@ -624,10 +619,36 @@ describe ('Controller: NewCheckinCtrl', function (){
 				expect(vm.model.temporary.checkin.codeNames).toEqual([vm.model.temporary.checkin.codeName])
 			})
 
-			xit ('should remove code when cick "remove code"', function(){
+			it ('should validate and show invalid status when codes are invalid', function(){
+				$httpBackend.when ('GET', '/promocodes/').respond ({
+					data: mockPromoteCodes
+				});
+				var layout = createLayout();
+				var vm = createController();
+				vm.model.dom.checkin.checkinDiv = false;
+				vm.ctrl.toggleCheckInDiv()
+				$httpBackend.flush();
+				// Select customer
+				$httpBackend.when ('GET', /\/checkin\/search-customers.*/).respond ({
+					data: mockCustomer
+				});
+				vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
+				vm.ctrl.checkin.searchCustomer();
+				
+				$httpBackend.flush();
+				vm.ctrl.checkin.selectCustomer(0);
 
+				// Get promotecodes from server
+				console.info(vm.model.dom.data.selected.checkin.promoteCode.codes)
+
+				// should show all codes in selections
+				expect(vm.model.dom.data.selected.checkin.promoteCode.codes[0].selectedLabel).toEqual('Common - Free 1 giờ')
+				expect(vm.model.dom.data.selected.checkin.promoteCode.codes[1].selectedLabel).toEqual('Common - Free 2 giờ')
+				expect(vm.model.dom.data.selected.checkin.promoteCode.codes[2].selectedLabel).toEqual('Ngày VÀNG - Common - Free 1 ngày')
+
+				vm.model.temporary.checkin.codeName = vm.model.dom.data.selected.checkin.promoteCode.codes[0].name
+				vm.ctrl.checkin.addCode();
 			})
-			it ('should validate and show invalid status when codes are invalid')
 			it ('should go to confirm check-in when the code is valid')
 			it ('should allow to add only one code at a check-in time')			
 		})
