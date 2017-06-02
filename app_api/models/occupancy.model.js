@@ -48,11 +48,8 @@ function getTotal (){
 		occ.total = 0;
 	}
 	else{
-		// add default codes
 		occ.addDefaultCodes ();
-		// Promocodes.resolveConflict (occ.promocodes);
-
-		console.log (occ);
+		Promocodes.resolveConflict (occ.promocodes);
 
 		if (occ.promocodes && occ.promocodes.length){
 			
@@ -100,28 +97,27 @@ var addDefaultCodes = function (){
 	var usage = occ.usage;
 	occ.promocodes = occ.promocodes ? occ.promocodes : [];
 
-	var codeNum = occ.promocodes.length;
-
-	// FIX: move this to resolve conflict in promocodes
-	for (var i = 0; i < codeNum; i++){
-		var currCodeName = occ.promocodes[i].name.toLowerCase ();
-		if (currCodeName == 'studentprice'){
-			return
-		}
-		else if (currCodeName == 'privatediscountprice'){
-			return;
-		}
-		else if (currCodeName == 'privatehalftotal'){
-			return;
-		}
-	}
+	// // FIX: move this to resolve conflict in promocodes
+	// var codeNum = occ.promocodes.length;
+	// for (var i = 0; i < codeNum; i++){
+	// 	var currCodeName = occ.promocodes[i].name.toLowerCase ();
+	// 	if (currCodeName == 'studentprice'){
+	// 		return
+	// 	}
+	// 	else if (currCodeName == 'privatediscountprice'){
+	// 		return;
+	// 	}
+	// 	else if (currCodeName == 'privatehalftotal'){
+	// 		return;
+	// 	}
+	// }
 
 	if (occ.customer.isStudent && (service == productNames[0] || service == productNames[1])){
-		occ.promocodes.push ({name: 'studentprice', codeType: 2});
+		occ.promocodes.push ({name: 'studentprice', codeType: 2, priority: 1});
 	}
 
 	if (usage > 1 && (service == productNames[2] || service == productNames[3])){
-		occ.promocodes.push ({name: 'privatediscountprice', codeType: 4});
+		occ.promocodes.push ({name: 'privatediscountprice', codeType: 4, priority: 1});
 	}
 }
 
@@ -144,6 +140,7 @@ var OccupancySchema = new mongoose.Schema({
 		_id: mongoose.Schema.Types.ObjectId,
 		name: String,
 		codeType: Number,
+		priority: Number,
 	}], // expect only one code applied at a time
 	orders: [mongoose.Schema.Types.ObjectId], // id of occ
 	customer: {

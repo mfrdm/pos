@@ -60,7 +60,7 @@ describe ('Occupancy Model', function (){
 			}
 		});		
 
-		xit ('should return total of service as 0 for members, not leader, using group private room', function (){
+		it ('should return total of service as 0 for members, not leader, using group private room', function (){
 			val.parent = '58eb474538671b4224745192';
 			var occ = new Occupancy (val);
 			occ.getTotal ();
@@ -68,11 +68,12 @@ describe ('Occupancy Model', function (){
 
 		});
 
-		xit ('should return correct total given codes YEUGREENSPACE when using common service', function (){
+		it ('should return correct total given codes YEUGREENSPACE when using common service', function (){
 			val.promocodes = [{
 				codeType: 3, 
 				_id: '58eb474538671b4224745192',
-				name: 'YEUGREENSPACE'
+				name: 'YEUGREENSPACE',
+				priority: 2,
 			}];
 
 			expectedTotal = 26000;
@@ -83,11 +84,12 @@ describe ('Occupancy Model', function (){
 
 		});
 
-		xit ('should return correct total given codes YEUGREENSPACE when using common service and customer is student', function (){
+		it ('should return correct total given codes YEUGREENSPACE when using common service and customer is student', function (){
 			val.promocodes = [{
 				codeType: 3, 
 				_id: '58eb474538671b4224745192',
-				name: 'YEUGREENSPACE'
+				name: 'YEUGREENSPACE',
+				priority: 2,
 			}];
 
 			val.customer.isStudent = true;
@@ -104,7 +106,8 @@ describe ('Occupancy Model', function (){
 			val.promocodes = [{
 				codeType: 3, 
 				_id: '58eb474538671b4224745192',
-				name: 'YEUGREENSPACE'
+				name: 'YEUGREENSPACE',
+				priority: 2,
 			}];
 
 			val.service = {
@@ -120,11 +123,12 @@ describe ('Occupancy Model', function (){
 
 		});
 
-		xit ('should return correct total given codes YEUGREENSPACE when using private service and customer is a student', function (){
+		it ('should return correct total given codes YEUGREENSPACE when using private service and customer is a student', function (){
 			val.promocodes = [{
 				codeType: 3, 
 				_id: '58eb474538671b4224745192',
-				name: 'YEUGREENSPACE'
+				name: 'YEUGREENSPACE',
+				priority: 2,
 			}];
 
 			val.customer.isStudent = true;
@@ -142,69 +146,47 @@ describe ('Occupancy Model', function (){
 
 		});		
 
-		xit ('should return correct subtotal given code STUDENTPRICE', function (){
-			val.promocodes = [
-				{
-					codeType: 2, 
-					_id: '58eb474538671b4224745192',
-					name: 'STUDENTPRICE'
-				},				
-			];
+		it ('should return correct subtotal given code STUDENTPRICE', function (){
+			val.customer.isStudent = true;
 
-			expectedTotal = 10000;
+			expectedTotal = 35000;
 
 			var occ = new Occupancy (val);
 			occ.getTotal ();
 			occ.total.should.to.equal (expectedTotal);
 		});
 
-		xit ('should return correct subtotal given code STUDENTPRICE and YEUGREENSPACE', function (){
+		it ('should return correct subtotal given code v01h06 and STUDENTPRICE', function (){
+			val.customer.isStudent = true;
 			val.promocodes = [
 				{
-					codeType: 3, 
+					codeType: 1, 
 					_id: '58eb474538671b4224745192',
-					name: 'YEUGREENSPACE'
-				},					
-				{
-					codeType: 2, 
-					_id: '58eb474538671b4224745192',
-					name: 'STUDENTPRICE'
-				},						
+					name: 'v01h06',
+					priority: 2,
+				},										
 			];
+
+			val.checkoutTime = moment ();
+			val.checkinTime = moment ().add (-1.5, 'hour');
 
 			expectedTotal = 5000;
 
 			var occ = new Occupancy (val);
-			occ.getTotal ();
-			occ.total.should.to.equal (expectedTotal);
-		});
-
-		xit ('should return correct subtotal given code v01h06 and STUDENTPRICE', function (){
-			val.promocodes = [
-				{
-					codeType: 1, 
-					_id: '58eb474538671b4224745192',
-					name: 'v01h06'
-				},										
-			];
-
-			val.checkoutTime = moment ().add (-1.5, 'hour');
-
-			expectedTotal = 10000;
-
-			var occ = new Occupancy (val);
 
 			occ.getTotal ();
-			occ.promocodes.should.to.have.length.of.at.least (1);
+			occ.promocodes.should.to.have.length.of.at.least (2);
 			occ.total.should.to.equal (expectedTotal);		
 		});
 
-		xit ('should return correct subtotal given code v02h06 and STUDENTPRICE', function (){
+		it ('should return correct subtotal given code v02h06 and STUDENTPRICE', function (){
+			val.customer.isStudent = true;
 			val.promocodes = [
 				{
 					codeType: 1, 
 					_id: '58eb474538671b4224745192',
-					name: 'v02h06'
+					name: 'v02h06',
+					priority: 2,
 				},										
 			];
 
@@ -215,90 +197,79 @@ describe ('Occupancy Model', function (){
 
 			var occ = new Occupancy (val);
 			occ.getTotal ();
+			occ.promocodes.should.to.have.length.of.at.least (2);
 			occ.total.should.to.equal (expectedTotal);
 		})
 
-		xit ('should return correct subtotal given code PRIVATEDISCOUNTPRICE and product is Medium Group Private', function (){
-			val.promocodes = [
-				{
-					codeType: 4, 
-					_id: '58eb474538671b4224745192',
-					name: 'PRIVATEDISCOUNTPRICE'
-				},					
-			];
+		it ('should return correct subtotal given code PRIVATEDISCOUNTPRICE and product is Medium Group Private', function (){
 
 			val.service = {
 				name: 'Medium Group Private',
 				price: 220000,
 			}
+			val.checkinTime = moment ().add (-3.2, 'hour');
+			val.checkoutTime = moment ();
 
-			val.checkoutTime = '2017-05-10 9:00:00',
-
-			expectedTotal = 620000;
+			expectedTotal = 660000;
 
 			var occ = new Occupancy (val);
 			occ.getTotal ();
+			occ.promocodes.should.to.have.length.of.at.least (1);
 			occ.total.should.to.equal (expectedTotal);
 
 		});
 
+		it ('should return correct subtotal given code PRIVATEDISCOUNTPRICE and product is Small Group Private, regardless customer is a student', function (){
 
-		xit ('should return correct subtotal given code PRIVATEDISCOUNTPRICE and product is Small Group Private regardless customer has code STUDENTPRICE or not', function (){
-			val.promocodes = [
-				{
-					codeType: 4, 
-					_id: '58eb474538671b4224745192',
-					name: 'PRIVATEDISCOUNTPRICE'
-				},
-				{
-					codeType: 2, 
-					_id: '58eb474538671b4224745192',
-					name: 'STUDENTPRICE'
-				},										
-			];
-
+			val.customer.isStudent = true;
 			val.service = {
 				name: 'Small Group Private',
 				price: 150000,
 			}
 
-			val.checkinTime = '2017-05-10 7:03:00'
-			val.checkoutTime = '2017-05-10 14:55:00',
+			val.checkinTime = moment ().add (-3.2, 'hour');
+			val.checkoutTime = moment ();
 
-			expectedTotal = 978000;
+			expectedTotal = 414000;
 
 			var occ = new Occupancy (val);
 			occ.getTotal ();
+			occ.promocodes.should.to.have.length.of.at.least (1);
+			occ.promocodes.map (function (x, i, arr){
+				x.name.should.to.not.equal ('studentprice');
+			})
+
 			occ.total.should.to.equal (expectedTotal);
 		});
 
-		xit ('should return correct total given code FREE1DAYCOMMON', function (){
+		it ('should return correct total given code FREE1DAYCOMMON when using common service and customer is a student', function (){
 			val.promocodes = [
 				{
 					codeType: 4, 
 					_id: '58eb474538671b4224745192',
-					name: 'FREE1DAYCOMMON'
-				},
-				{
-					codeType: 2, 
-					_id: '58eb474538671b4224745192',
-					name: 'STUDENTPRICE'
-				},										
+					name: 'FREE1DAYCOMMON',
+					priority: 3
+				},									
 			];
 
 			var expectedTotal = 0;
 
 			var occ = new Occupancy (val);
 			occ.getTotal ();
+			occ.promocodes.should.to.have.length.of.at.least (1);
+			occ.promocodes.map (function (x, i, arr){
+				x.name.should.to.not.equal ('studentprice');
+			})	
 			occ.total.should.to.equal (expectedTotal);
 		})
 
-		xit ('should return correct total given code PRIVATEHALFTOTAL and ignore PRIVATEDISCOUNTPRICE', function (){
+		it ('should return correct total given code PRIVATEHALFTOTAL and ignore PRIVATEDISCOUNTPRICE', function (){
 			val.promocodes = [
 				{
 					codeType: 4, 
 					_id: '58eb474538671b4224745192',
-					name: 'PRIVATEHALFTOTAL'
+					name: 'PRIVATEHALFTOTAL',
+					priority: 3
 				},										
 			];
 

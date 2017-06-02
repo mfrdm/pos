@@ -227,7 +227,7 @@ describe ('Promotion Code', function (){
 				{name: 'code 1', codeType: 1, priority: 2},
 				{name: 'code 2', codeType: 1, priority: 2},
 			];
-			
+
 			try{
 				Promocodes.resolveConflict (codes);
 				false.should.equal (true);
@@ -237,7 +237,33 @@ describe ('Promotion Code', function (){
 
 			}
 			
-		})
+		});
+
+		it ('should keep code of type 4 when its priority is higher than other type and remove the other codes', function (){
+			codes = [
+				{name: 'code 1', codeType: 1, priority: 2},
+				{name: 'code 2', codeType: 2, priority: 2},
+				{name: 'code 3', codeType: 4, priority: 3},
+			];
+
+			Promocodes.resolveConflict (codes);
+			codes.should.have.lengthOf (1);
+			codes[0].name.should.to.equal ('code 3');	
+		});
+
+		it ('should keep other codes of different types and remove code of type 4 when any of the codes having priority that is higher than that of the code of type 4', function (){
+			codes = [
+				{name: 'code 1', codeType: 1, priority: 2},
+				{name: 'code 2', codeType: 2, priority: 1},
+				{name: 'code 3', codeType: 4, priority: 1},
+			];
+
+			Promocodes.resolveConflict (codes);
+			codes.should.have.lengthOf (2);
+			codes.map (function (x, i, arr){
+				['code 1', 'code 2'].should.include (x.name);
+			});					
+		});
 	});
 
 });
