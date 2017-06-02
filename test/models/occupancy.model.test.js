@@ -1,3 +1,4 @@
+process.env.NODE_ENV = 'test';
 var chai = require ('chai');
 var should = chai.should ();
 var mongoose = require ('mongoose');
@@ -7,18 +8,16 @@ var moment = require ('moment');
 
 
 describe ('Occupancy Model', function (){
-	describe ('Get usage in hour', function (){
+	xdescribe ('Get usage in hour', function (){
 		var order, val;
 		beforeEach (function (){
-			val = {
-				// checkinTime: '2017-05-10 6:00:00',
-				// checkoutTime: '2017-05-10 7:00:00',		
+			val = {		
 				checkinTime: moment ().add (-1, 'hour'),
 				checkoutTime: moment (),					
 			}
 		});
 
-		xit ('should return correct usage time when it is below 6 mins', function (){
+		it ('should return correct usage time when it is below 6 mins', function (){
 			val.checkinTime = moment ().add (-3, 'minute');
 			val.checkoutTime = moment ();
 
@@ -27,7 +26,7 @@ describe ('Occupancy Model', function (){
 			usage.should.to.equal (0);
 		});
 
-		xit ('should return correct usage hour as 1 when it is greater than or equal 6 mins but less than 60 mins', function (){
+		it ('should return correct usage hour as 1 when it is greater than or equal 6 mins but less than 60 mins', function (){
 			val.checkinTime = moment ().add (-20, 'minute');
 			val.checkoutTime = moment ();
 
@@ -36,8 +35,8 @@ describe ('Occupancy Model', function (){
 			usage.should.to.equal (1);
 		});
 
-		xit ('should return correct usage time when it is greater than or equal 60 mins', function (){
-			val.checkinTime = moment ().add (-6, 'minute');
+		it ('should return correct usage time when it is greater than or equal 60 mins', function (){
+			val.checkinTime = moment ().add (-66, 'minute');
 			val.checkoutTime = moment ();		
 			var occ = new Occupancy (val);
 			var usage = occ.getUsageTime ();
@@ -84,7 +83,24 @@ describe ('Occupancy Model', function (){
 
 		});
 
-		xit ('should return correct total given codes YEUGREENSPACE when using private service', function (){
+		xit ('should return correct total given codes YEUGREENSPACE when using common service and customer is student', function (){
+			val.promocodes = [{
+				codeType: 3, 
+				_id: '58eb474538671b4224745192',
+				name: 'YEUGREENSPACE'
+			}];
+
+			val.customer.isStudent = true;
+
+			expectedTotal = 18000;
+
+			var occ = new Occupancy (val);
+			occ.getTotal ();
+			occ.total.should.to.equal (expectedTotal);
+
+		})
+
+		it ('should return correct total given codes YEUGREENSPACE when using private service', function (){
 			val.promocodes = [{
 				codeType: 3, 
 				_id: '58eb474538671b4224745192',
@@ -103,6 +119,28 @@ describe ('Occupancy Model', function (){
 			occ.total.should.to.equal (expectedTotal);
 
 		});
+
+		xit ('should return correct total given codes YEUGREENSPACE when using private service and customer is a student', function (){
+			val.promocodes = [{
+				codeType: 3, 
+				_id: '58eb474538671b4224745192',
+				name: 'YEUGREENSPACE'
+			}];
+
+			val.customer.isStudent = true;
+
+			val.service = {
+				name: 'Small group private',
+				price: 150000
+			}
+
+			expectedTotal = 263000;
+
+			var occ = new Occupancy (val);
+			occ.getTotal ();
+			occ.total.should.to.equal (expectedTotal);
+
+		});		
 
 		xit ('should return correct subtotal given code STUDENTPRICE', function (){
 			val.promocodes = [

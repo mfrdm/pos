@@ -33,9 +33,15 @@ function OrdersCtrl() {
 	};
 
 	this.readOrders = function (req, res, next){
-		var today = moment ();
-		var start = req.query.start ? new Date (req.query.start) : new Date (today.format ('YYYY-MM-DD'));
-		var end = req.query.end ? new Date(req.query.end + ' 23:59:59') : new Date (today.format ('YYYY-MM-DD') + ' 23:59:59');
+		var startHasMin = req.query.start ? (req.query.start.split (' ').length > 1 ? true : false) : false;
+		var endHasMin = req.query.end ? (req.query.end.split (' ').length > 1 ? true : false) : false;
+
+		var start = req.query.start ? (startHasMin ? moment (req.query.start) : moment (req.query.start).hour(0).minute(0)) : moment().hour(0).minute(0);
+		var end = req.query.end ? (endHasMin ? moment (req.query.end) : moment (req.query.end).hour(23).minute(59)) : moment().hour(23).minute(59);
+
+		// fix timezone problems
+		start = new Date (start);
+		end = new Date (end);
 
 		var q = Orders.find (
 			{
