@@ -89,8 +89,12 @@ var redeemMixed = function (code, usage, price, productName){
 }
 
 // Some codes cannot be used together. The function select code with higher priority in its type
+// default code should have lowest priority, which is 1
+// codeType of 4 should be conflict with the rest.
+
 var resolveConflict = function (codes){
 	var max = {};
+	// get max of each type
 	codes.map (function (x, i, arr){
 		if (!max[x.codeType]){
 			max[x.codeType] = x;
@@ -108,11 +112,34 @@ var resolveConflict = function (codes){
 		}
 	});
 
+	// keep only max of each type
 	codes.map (function (x, i, arr){
 		if (x.priority < max[x.codeType].priority){
 			arr.splice (i, 1);
 		}
 	});
+
+	// resolve type 4 conflict
+	if (max['4']){
+		var removeType4 = false;
+		codes.map (function (x, i, arr){
+			if (x.codeType != '4' && x.priority > max['4'].priority){
+				removeType4 = true;
+			}
+		});	
+
+		if (removeType4){
+			codes.map (function (x, i, arr){
+				if (x.codeType == '4'){
+					codes.splice (i, 1);
+				}
+			});
+		}
+		else{
+			codes.splice (0, codes.length);
+			codes.push (max['4'])	
+		}
+	}
 
 };
 

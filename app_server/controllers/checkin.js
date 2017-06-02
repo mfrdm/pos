@@ -25,7 +25,7 @@ function Checkin() {
 
 		codes = tempCodes;
 
-		Promocodes.find ({name: {$in: codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1, conflicted: 1, codeType: 1, override: 1}, function (err, pc){
+		Promocodes.find ({name: {$in: codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1, conflicted: 1, codeType: 1, override: 1, priority: 1}, function (err, pc){
 			if (err){
 				console.log (err);
 				next (err);
@@ -43,7 +43,6 @@ function Checkin() {
 
 	// assume promocode are validated
 	this.checkin = function(req, res, next) {
-		console.log (req.body.data.occupancy)
 		var occ = new Occupancy (req.body.data.occupancy);
 
 		if (req.body.data.order && req.body.data.order.orderline && req.body.data.order.orderline.length){
