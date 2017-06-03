@@ -118,18 +118,10 @@ div(class="columns row")
 					div(class="column row")
 						h3(class="paddingLR15 fontSize20 fontWeight600") {{vm.model.dom.data.selected.checkin.promoteCode.title}}
 					div(class="column row")
-						div(class='column small-12 large-11')
+						div(class='column small-12')
 							label {{vm.model.dom.data.selected.checkin.promoteCode.label}}
-								select(ng-model="vm.model.temporary.checkin.codeName" ng-options="code.name as code.selectedLabel for code in vm.model.dom.data.selected.checkin.promoteCode.codes track by code.name")
-						div(class='column large-1 show-for-large iconAdd' ng-if='vm.model.checkingin.occupancy.promocodes.length == 0')
-							i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.addCode()' ) add
-						div(class="column hide-for-large text-center" ng-if='vm.model.checkingin.occupancy.promocodes.length == 0')
-							a(class="button full-width-small" ng-click='vm.ctrl.checkin.addCode()') Add
+								select(ng-model="vm.model.temporary.checkin.codeName" ng-options="code.name as code.selectedLabel for code in vm.model.dom.data.selected.checkin.promoteCode.codes track by code.name" ng-change='vm.ctrl.checkin.addCode()')
 
-						div(class='column large-1 show-for-large iconAdd' ng-if='vm.model.checkingin.occupancy.promocodes.length > 0')
-							i(class="material-icons customIcon icon-disabled" ) add
-						div(class="column hide-for-large text-center" ng-if='vm.model.checkingin.occupancy.promocodes.length > 0')
-							a(class="button full-width-small disabled") Add	
 					div(class="column row")
 						div(class='column small-12 large-6')
 							table(ng-if='vm.model.checkingin.occupancy.promocodes.length > 0')

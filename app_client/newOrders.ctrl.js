@@ -56,6 +56,7 @@
 			},
 			temporary: {
 				ordering: {
+					item:{},
 					addedItem: [],
 				},
 				displayedList:{
@@ -289,7 +290,8 @@
 		// FIX: should reset only order div
 		vm.ctrl.toggleOrderDiv = function (){
 			if (vm.model.dom.orderDiv){
-				vm.ctrl.reset ();
+				// vm.ctrl.reset ();
+				vm.ctrl.order.resetMakeOrderDiv() // reset only order div
 			}
 			else{
 				vm.model.dom.orderDiv = true;
@@ -305,6 +307,17 @@
 			}
 			else vm.model.dom.filterDiv = false;
 		};
+
+		vm.ctrl.order.resetMakeOrderDiv = function(){
+			vm.model.dom.orderDiv = false
+			vm.model.search.order.username = ''
+			vm.model.dom.order.search.message.notFound = false
+			vm.model.temporary.ordering.item.name = ''
+			vm.model.temporary.ordering.item.quantity = null
+			vm.model.ordering.orderline = []
+			vm.model.ordering.customer = {}
+			vm.model.temporary.ordering.addedItem = []
+		}
 
 		vm.ctrl.order.resetSearchCustomerDiv = function (){
 			vm.model.dom.order.customerSearchResult = false;
@@ -439,18 +452,21 @@
 
 		vm.ctrl.order.getInvoice = function (){
 			vm.ctrl.showLoader ();
-			OrderService.getInvoice (vm.model.ordering).then (
-				function success (res){
-					vm.ctrl.hideLoader ();
-					vm.model.ordering = res.data.data;
-					vm.model.dom.order.confirm = true;
-				},
-				function failure (err){
-					console.log (err);
-					vm.ctrl.hideLoader ();
-					// display warning
-				}
-			)			
+			if(vm.model.ordering.orderline.length > 0 && vm.model.ordering.customer){
+				OrderService.getInvoice (vm.model.ordering).then (
+					function success (res){
+						vm.ctrl.hideLoader ();
+						vm.model.ordering = res.data.data;
+						vm.model.dom.order.confirm = true;
+					},
+					function failure (err){
+						console.log (err);
+						vm.ctrl.hideLoader ();
+						// display warning
+					}
+				)		
+			}
+				
 		}
 
 		vm.ctrl.order.confirm = function (){

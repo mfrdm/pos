@@ -5,7 +5,6 @@
 	function NewCheckinCtrl ($http, DataPassingService, CheckinService, OrderService, $scope, $window, $route){
 
 		var LayoutCtrl = DataPassingService.get ('layout');
-
 		var vm = this;
 
 		// FIX: no hardcode
@@ -32,7 +31,8 @@
 						_id: LayoutCtrl.model.dept._id,
 						name: LayoutCtrl.model.dept.name,
 					},
-					promocodes:[]
+					promocodes:[],
+					service:{}
 				},
 				order: {
 					orderline: [],
@@ -293,6 +293,7 @@
 				function success (res){
 					vm.ctrl.hideLoader ();
 					var codes = res.data.data;
+					console.log(codes)
 					if (codes.length){
 						vm.ctrl.checkin.addCodeLabels (codes);
 						vm.model.dom.data.selected.checkin.promoteCode.codes = codes.sort (function (a, b){
@@ -554,20 +555,9 @@
 		};
 
 		vm.ctrl.checkin.addCode = function (){
-			if (!vm.model.checkingin.occupancy.promocodes) vm.model.checkingin.occupancy.promocodes = [];
-
-			if (vm.model.temporary.checkin.codeNames.indexOf (vm.model.temporary.checkin.codeName) == -1 && vm.model.temporary.checkin.codeName.length > 0 && vm.model.checkingin.occupancy.customer){
-				vm.model.checkingin.occupancy.promocodes.push ({name: vm.model.temporary.checkin.codeName, status:1});
-				vm.model.temporary.checkin.codeNames.push (vm.model.temporary.checkin.codeName);
-				vm.model.temporary.checkin.codeName = null;				
-			}
-
-		};
-
-		vm.ctrl.checkin.removeCode = function (index){
-			if (vm.model.checkingin.occupancy.promocodes){
-				vm.model.checkingin.occupancy.promocodes.splice (index, 1);
-				vm.model.temporary.checkin.codeNames.splice (index, 1);
+			if(vm.model.checkingin.occupancy.customer){
+				vm.model.checkingin.occupancy.promocodes = [{name: vm.model.temporary.checkin.codeName, status:1}];
+				vm.model.temporary.checkin.codeNames = [vm.model.temporary.checkin.codeName];
 			}
 		};
 
@@ -579,7 +569,22 @@
 
 		// FIX: should not reset the route. only the checkin div
 		vm.ctrl.checkin.resetCheckinDiv = function (){
-			$route.reload (); 
+			// Clear model related to checkin data
+			vm.model.checkingin.occupancy.checkinTime = {};
+			vm.model.checkingin.occupancy.customer = {};
+			vm.model.checkingin.occupancy.promocodes = [];
+			vm.model.checkingin.occupancy.service = {};
+
+			vm.model.checkingin.order.customer = {};
+			vm.model.checkingin.order.orderline = [];
+			vm.model.temporary.checkin.selectedItems = [];
+
+			// Search div
+			vm.model.dom.checkin.customerSearchResultDiv = false;
+			vm.model.search.checkin.customers = []
+
+			vm.model.dom.checkin.checkinDiv = false;
+			vm.model.search.checkin.username = '';
 		}
 
 		vm.ctrl.checkin.cancel = function (){
@@ -599,6 +604,7 @@
 					}
 					else{
 						if (res.data.data.length){
+
 							vm.model.search.checkin.customers = res.data.data;
 							vm.model.dom.checkin.search.message.notFound = false;
 							vm.model.dom.checkin.customerSearchResultDiv = true;
@@ -624,7 +630,6 @@
 
 		vm.ctrl.checkin.selectCustomer = function (index){
 			var selectedCustomer = vm.model.search.checkin.customers [index];
-
 			vm.model.checkingin.occupancy.customer = vm.model.checkingin.order.customer = {
 				fullname: selectedCustomer.fullname,
 				_id: selectedCustomer._id,
@@ -641,6 +646,7 @@
 			vm.model.services.map (function (x, i, arr){
 				if (x.name.toLowerCase() == vm.model.checkingin.occupancy.service.name.toLowerCase()){
 					vm.model.checkingin.occupancy.service.price = x.price;
+					
 					var service = vm.model.checkingin.occupancy.service.name.toLowerCase();
 					// Do sth when customer does uses private group service
 					if (service != expectedServiceNames[2] && service != expectedServiceNames[3] && service != expectedServiceNames[4]){
@@ -865,8 +871,9 @@
 		};
 
 		////////////////////////////// INITIALIZE ///////////////////////////////		
+		vm.model.dom.data.selected = vm.model.dom.data.vn;
 		angular.element(document.getElementById ('mainContentDiv')).ready(function () {
-			vm.model.dom.data.selected = vm.model.dom.data.vn;
+			
 			vm.ctrl.getCheckedinList ();
 				
 		});	

@@ -19,6 +19,6 @@ function DataPassingService (){
 
 	this.reset = function (name){
 		this.passedData[name] = '';
-	}
+	};
 };
 

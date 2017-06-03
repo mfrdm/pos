@@ -178,10 +178,9 @@
 				$scope.layout.ctrl.updateAfterLogin ();
 			}
 
-			DataPassingService.set ('layout', $scope.layout)
-
 			$scope.$apply();
-		});		
+		});
+		DataPassingService.set ('layout', $scope.layout)
 	}
 
 })();
