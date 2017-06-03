@@ -44,6 +44,10 @@ describe ('Occupancy Model', function (){
 		});	
 	});
 
+	describe ('Get after pre paid total', function (){
+		it ('should return ')
+	});
+
 	describe ('Get total', function (){
 		var order, val;
 		beforeEach (function (){

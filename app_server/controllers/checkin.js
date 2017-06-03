@@ -10,22 +10,16 @@ var moment = require ('moment');
 module.exports = new Checkin();
 
 function Checkin() {
+
+	// only validate one code at a time
 	this.validatePromocodes = function (req, res, next){
-		var q = JSON.parse(req.query.data);
-		var excludedCodes = ['studentprice', 'privatediscountprice']; // default code cannot be insert manually
-		var codes = q.codes;
-		var tempCodes = [];
+		var q = req.query;
 
-		// remove excluded code
-		codes.map (function (x, i, arr){
-			if (excludedCodes.indexOf (x.toLowerCase ()) == -1){
-				tempCodes.push (x.toLowerCase ());
-			}
-		});
+		var query = Promocodes.find ({name: {$in: q.codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}, excluded: false}, {name: 1, conflicted: 1, codeType: 1, override: 1, priority: 1, services: 1});
 
-		codes = tempCodes;
+		query.$where ('this.services.indexOf ("' + q.service.toLowerCase () + '") != -1 || this.services.indexOf ("all") != -1');
 
-		Promocodes.find ({name: {$in: codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}}, {name: 1, conflicted: 1, codeType: 1, override: 1, priority: 1}, function (err, pc){
+		query.exec(function (err, pc){
 			if (err){
 				console.log (err);
 				next (err);
@@ -36,7 +30,6 @@ function Checkin() {
 				pc = Promocodes.validateCodes (pc);
 			}
 
-			// important to return pc regardless empty or not
 			res.json ({data: pc});
 		});
 	};

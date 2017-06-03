@@ -57,7 +57,19 @@ describe ('Accounts Model', function (){
 
 			total.should.to.equal (100000);
 			acc.amount.should.to.equal (10);				
-		})
+		});
+
+
+		it ('should be valid when being a `all` account', function (){
+			account.service = 'all';
+			var acc = new Accounts (account);
+			checkout.total = 100000;
+			checkout.unit = 'cash';
+			var total = acc.withdraw (checkout.total, checkout.unit, checkout.service);
+
+			total.should.to.equal (100000);
+			acc.amount.should.to.equal (10);				
+		});
 
 
 	});
