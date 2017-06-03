@@ -42,9 +42,11 @@ function normalizeUsage (diff){
 
 function getTotal (){
 	var occ = this;
-	occ.usage = occ.usage ? occ.usage : occ.getUsageTime ();
+	occ.usage = occ.usage || occ.usage == 0 ? occ.usage : occ.getUsageTime ();
+	// occ.originalUsage = occ.usage;
 
 	if (occ.parent){
+		// occ.originalTotal = 0;
 		occ.total = 0;
 	}
 	else{
@@ -109,9 +111,10 @@ var addDefaultCodes = function (){
 var OccupancySchema = new mongoose.Schema({
 	_id: {type: mongoose.Schema.Types.ObjectId, default: mongoose.Types.ObjectId},
 	originalTotal: {type: Number, min: 0, default: 0},
+	// discounted: {type: Number, min: 0, default: 0},
+	prepaid: {type: Number, min: 0, default: 0},
 	total: {type: Number, min: 0, default: 0},
-	discounted: {type: Number, min: 0},
-	prepaid: {type: Number, min: 0},
+	// originalUsage: {type: Number, min: 0}, // in hour
 	usage: {type: Number, min: 0}, // in hour
 	// discountedUsage: {type: Number, min: 0}, // in hour
 	paymentMethod: [{

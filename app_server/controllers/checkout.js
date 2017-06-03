@@ -6,12 +6,6 @@ var Customers = mongoose.model ('customers');
 var Occupancy = mongoose.model ('occupancy');
 var Accounts = mongoose.model ('accounts');
 
-var helper = require('../../libs/node/helper')
-var dbHelper = require('../../libs/node/dbHelper')
-var requestHelper = require('../../libs/node/requestHelper')
-var request = require('request')
-var apiOptions = helper.getAPIOption();
-
 module.exports = new Checkout();
 
 function Checkout() {
@@ -50,8 +44,36 @@ function Checkout() {
 	
 	};
 
-	this.payWithPrePaid = function (req, res, next){
+	// assume call createInvoice beforehand
+	// at this moment only allow paid by one account at a checkout time
+	// Apply only usage account, whose unit is hour
+	this.usePrePaid = function (req, res, next){
+		var accountId = req.query.accountId;
+		var occId = req.query.occId;
 
+		Accounts.findOne ({_id: accountId}, function (err, acc){
+			if (err) {
+				console.log (err);
+				next (err);
+			}
+
+			Occupancy.findOne ({_id: occId}, {location: 0, staffId: 0, updateAt: 0}, function (err, foundOcc){
+				if (err){
+					// console.log (err);
+					next (err);
+					return
+				}
+
+				console.log (foundOcc)
+
+				foundOcc.usage = foundOcc.getUsageTime ();	
+				foundOcc.usage = acc.withdraw (foundOcc.usage, 'hour', foundOcc.service.name.toLowerCase ());
+
+				foundOcc.getTotal ();
+				res.json ({data: foundOcc});
+
+			});		
+		});
 
 	};
 
@@ -59,6 +81,7 @@ function Checkout() {
 		var total = req.body.data.total;
 		var usage = req.body.data.usage;
 		var checkoutTime = req.body.data.checkoutTime;
+		
 		var note = req.body.data.note ? req.body.data.note : ''; // optional
 		var status = 2;
 

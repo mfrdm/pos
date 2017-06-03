@@ -7,10 +7,7 @@ var withdraw = function (amount, unit, serviceName){
 			total = amount - this.amount;
 			this.amount = 0;
 		}
-		else if (amount == this.amount){
-			total = 0;
-		}
-		else{
+		else if (amount <= this.amount){
 			total = 0;
 			this.amount = this.amount - amount;
 		}

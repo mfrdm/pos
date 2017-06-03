@@ -199,7 +199,7 @@ describe ('Checkout', function (){
 
 	});
 
-	describe ('Withdraw from account', function (){
+	describe ('Pay using pre paid account', function (){
 		var occupancy, customer;
 		var newOcc, newCustomer;
 		var newAcc;
@@ -211,9 +211,9 @@ describe ('Checkout', function (){
 				lastname: 'Customer_Lastname',
 				gender: 1,
 				birthday: new Date ('1989-09-25'),
-				phone: ['0965999999', '0972999999'],
+				phone: '0965999999',
 				edu: {},
-				email: ['lastmiddlefirst@gmail.com', 'otheremail@gmail.com'], // manuallt required in some cases
+				email: 'lastmiddlefirst@gmail.com', 
 				isStudent: false,
 				checkinStatus: false,
 			};
@@ -223,13 +223,11 @@ describe ('Checkout', function (){
 					price: 15000,
 					name: 'Group Common'
 				},
-				promocodes: [
-					{id: '58ff58e6e53ef40f4dd664cd', name: 'YEUGREENSPACE', codeType: 3, priority: 2}
-				],
 				customer: {},
 				storeId: "58eb474538671b4224745192",
-				staffId: "58eb474538671b4224745192",	
-				checkoutTime: moment ().add (0.3, 'hours'),	
+				staffId: "58eb474538671b4224745192",
+				checkinTime: moment ().add (-3, 'hour'),		
+				checkoutTime: moment ()	
 			};
 
 			accounts = [
@@ -240,6 +238,13 @@ describe ('Checkout', function (){
 					end: moment().add (5, 'day'),
 					services: ['group common', 'individual common']
 				},
+				{
+					amount: 2,
+					unit: 'hour',
+					start: moment (),
+					end: moment().add (5, 'day'),
+					services: ['group common', 'individual common']
+				},				
 				{
 					amount: 100000,
 					unit: 'cash',
@@ -268,7 +273,7 @@ describe ('Checkout', function (){
 
 				Occupancy.create (occupancy, function (err, occ){
 					if (err){
-						console.log (err)
+						// console.log (err)
 						return
 					}
 
@@ -280,7 +285,7 @@ describe ('Checkout', function (){
 
 					Accounts.insertMany (accounts, function (err, acc){
 						if (err){
-							console.log (err)
+							// console.log (err)
 							return
 						}
 
@@ -291,7 +296,7 @@ describe ('Checkout', function (){
 
 						Customers.update ({_id: newCustomer._id}, {$set: {accounts: newAccIds}}, function (err, cus){
 							if (err){
-								console.log (err)
+								// console.log (err)
 								return
 							}
 
@@ -339,28 +344,42 @@ describe ('Checkout', function (){
 		});
 		
 
-		it ('should return correct usage when pay with account, whose amount is X hours', function (){
-			// chai.request (server)
-			// 	.post ('/checkout/')
-			// 	.send ({data: newOcc[0]})
-			// 	.end (function (err, res){
-			// 		if (err) {
-			// 			console.log (err)
-			// 		}
+		it ('should return usage of 0 and total of 0 when pre paid hours is greater than service usage hours', function (done){
 
-			// 		res.body.data.should.to.exist;
-			// 		res.body.data.checkoutTime.should.to.exist;
-			// 		res.body.data.checkinTime.should.to.exist;
-			// 		res.body.data.usage.should.to.exist;
-			// 		res.body.data.total.should.to.exist;
-			// 		res.body.data.customer.should.to.exist;
-			// 		res.body.data.usage.should.to.equal (2);
-			// 		res.body.data.total.should.to.equal (10000 * 2);
-			// 		done ();
-			// 	});
+			chai.request (server)
+				.get ('/checkout/payment-method/prepaid')
+				.query ({accountId: newAcc[0]._id.toString (), occId: newOcc._id.toString ()})
+				.end (function (err, res){
+					if (err) {
+						// console.log (err)
+					}
+
+					res.should.to.have.status (200);
+					res.body.data.should.to.exist;
+					res.body.data.total.should.equal (0);
+					res.body.data.usage.should.equal (0);
+
+					done ();
+				});
 		});
 
-		it ('should return correct total when pay with account, whose amount is X VNĐ');
+		it ('should return correct total when pre paid hours is less than or equal service usage hours', function (done){
+			chai.request (server)
+				.get ('/checkout/payment-method/prepaid')
+				.query ({accountId: newAcc[1]._id.toString (), occId: newOcc._id.toString ()})
+				.end (function (err, res){
+					if (err) {
+						// console.log (err)
+					}
+
+					res.should.to.have.status (200);
+					res.body.data.should.to.exist;
+					res.body.data.usage.should.equal (1);
+					res.body.data.total.should.equal (15000);
+					
+					done ();
+				});			
+		});
 	})
 
 	xdescribe ('Confirm checkout', function (){

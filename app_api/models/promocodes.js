@@ -12,9 +12,7 @@ var studentPrice = {
 	'individual common': 10000,
 };
 
-// method to convert a value according to a promotion code
-// assume code is an array
-// assume code values are validated before redeemed
+// change total only. Assume total is calculated using current price and usage
 var redeemTotal = function (code, total){
 	var newTotal = total;
 	code = code ? code.toLowerCase () : code;
@@ -26,6 +24,7 @@ var redeemTotal = function (code, total){
 	return newTotal;
 };
 
+// change the price only
 var redeemPrice = function (code, price, productName){
 	var newPrice = price;
 	productName = productName ? productName.toLowerCase () : productName;
@@ -38,6 +37,7 @@ var redeemPrice = function (code, price, productName){
 	return newPrice;
 }
 
+// change usage only
 var redeemUsage = function (code, usage){
 
 	code = code ? code.toLowerCase () : code;
