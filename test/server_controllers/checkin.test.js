@@ -6,7 +6,8 @@ var mongoose = require ('mongoose');
 var Orders = mongoose.model ('orders');
 var Occupancy = mongoose.model ('occupancy');
 var Customers = mongoose.model ('customers');
-var Promocodes = mongoose.model ('promocodes')
+var Promocodes = mongoose.model ('promocodes');
+var Accounts = mongoose.model ('accounts');
 var should = chai.should ();
 var moment = require ('moment');
 
@@ -14,60 +15,124 @@ chai.use (chaiHttp);
 
 xdescribe ('Search checking-in customers', function (){
 	this.timeout (3000);
+	var newCustomer, customer, newAcc;
 
-	var newCustomer, customer;
 	beforeEach (function (done){
 		customer = {
-			firstname: 'Customer_Firstname',
-			middlename: 'Customer_Middlename',
-			lastname: 'Customer_Lastname',
+			firstname: 'A',
+			middlename: 'B',
+			lastname: 'C',
+			fullname: 'C B A',
 			gender: 1,
 			birthday: new Date ('1989-09-25'),
-			phone: ['0965999999', '0972999999'],
+			phone: '0965999999',
 			edu: {},
-			email: ['lastmiddlefirst@gmail.com', 'otheremail@gmail.com'], // manuallt required in some cases
+			email: 'lastmiddlefirst@gmail.com', // manuallt required in some cases
 			isStudent: false,
 			checkinStatus: false,
 		};
 
-		chai.request (server)
-			.post ('/customers/create')
-			.send ({data: customer})
-			.end (function (err, res){
-				if (err) {
-					console.log (err);
+		accounts = [
+			{
+				amount: 10,
+				unit: 'hour',
+				start: moment (),
+				end: moment().add (5, 'day'),
+				services: ['group common', 'individual common']
+			},
+			{
+				amount: 100000,
+				unit: 'cash',
+				start: moment (),
+				end: moment().add (5, 'day'),
+				services: ['all']
+			},
+			{
+				amount: 20000,
+				unit: 'cash',
+				start: moment ().add (-5, 'day'),
+				end: moment().add (-2, 'day'),
+				services: ['all']
+			},
+			{
+				amount: 200000,
+				unit: 'cash',
+				start: moment ().add (2, 'day'),
+				end: moment().add (12, 'day'),
+				services: ['all']
+			},										
+		]
+
+		Customers.create (customer, function (err, cus){
+			if (err){
+				console.log (err)
+				return
+			}
+
+			newCustomer = cus;
+
+			accounts.map (function (x, i, arr){
+				x.customer = newCustomer._id;
+			});
+
+			Accounts.insertMany (accounts, function (err, acc){
+				if (err){
+					console.log (err)
 					return
 				}
 
-				newCustomer = res.body.data;
-				done ();
+				newAcc = acc;
+				var newAccIds = newAcc.map (function (x, i, arr){
+					return x._id;
+				})
+
+				Customers.update ({_id: newCustomer._id}, {$set: {accounts: newAccIds}}, function (err, cus){
+					if (err){
+						console.log (err)
+						return
+					}
+
+					done ();						
+				});
+
+				
 			});
+		});
+
 	});
 
 	afterEach (function (done){
+		var accIds = newAcc.map (function (x, i, arr){
+			return x._id;
+		});		
 		Customers.remove ({_id: newCustomer._id}, function (err, data){
 			if (err){
 				console.log (err);
 				return
 			}
 
-			done ();
+			Accounts.remove ({_id: accIds}, function (err, result){
+				if (err) {
+					// console.log (err)
+					return
+				}
+
+				done ();					
+			});
 		});
 	});
 
 	it ('should successfully return non-checked-in customers given customer fullname', function (done){
 		chai.request (server)
 			.get ('/checkin/search-customers')
-			.query ({input: 'Customer_Lastname Customer_Middlename Customer_Firstname'})
+			.query ({input: 'C B A'})
 			.end (function (err, res){
 				if (err) console.log (err);
-				res.should.have.status (200);
-				res.body.data.should.to.have.length.of.at.least (1);
-				res.body.data[0].firstname.should.to.equal (customer.firstname);
-				res.body.data[0].middlename.should.to.equal (customer.middlename);
-				res.body.data[0].lastname.should.to.equal (customer.lastname);
-				res.body.data[0].phone[0].should.to.equal (customer.phone[0]);
-				res.body.data[0].email[0].should.to.equal (customer.email[0]);
+
+				res.body.data.should.to.have.lengthOf (1);
+				res.body.data[0].fullname.should.to.equal (customer.fullname);
+				res.body.data[0].phone[0].should.to.equal (customer.phone);
+				res.body.data[0].email[0].should.to.equal (customer.email);
 				res.body.data[0].checkinStatus.should.to.be.false;
 				res.body.data[0].isStudent.should.to.be.false;
 				done ();
@@ -77,16 +142,15 @@ xdescribe ('Search checking-in customers', function (){
 	it ('should successfully return non-checked-in customers given customer email', function (done){
 		chai.request (server)
 			.get ('/checkin/search-customers')
-			.query ({input: customer.email[0]})
+			.query ({input: customer.email})
 			.end (function (err, res){
 				if (err) console.log (err);
+
 				res.should.have.status (200);
-				res.body.data.should.to.have.length.of.at.least (1);
-				res.body.data[0].firstname.should.to.equal (customer.firstname);
-				res.body.data[0].middlename.should.to.equal (customer.middlename);
-				res.body.data[0].lastname.should.to.equal (customer.lastname);
-				res.body.data[0].phone[0].should.to.equal (customer.phone[0]);
-				res.body.data[0].email[0].should.to.equal (customer.email[0]);
+				res.body.data.should.to.have.lengthOf (1);
+				res.body.data[0].fullname.should.to.equal (customer.fullname);
+				res.body.data[0].phone[0].should.to.equal (customer.phone);
+				res.body.data[0].email[0].should.to.equal (customer.email);
 				res.body.data[0].checkinStatus.should.to.be.false;
 				res.body.data[0].isStudent.should.to.be.false;
 				done ();
@@ -97,21 +161,47 @@ xdescribe ('Search checking-in customers', function (){
 	it ('should successfully return non-checked-in customers given customer phone', function (done){
 		chai.request (server)
 			.get ('/checkin/search-customers')
-			.query ({input: customer.phone[0]})
+			.query ({input: customer.phone})
 			.end (function (err, res){
 				if (err) console.log (err);
+
 				res.should.have.status (200);
-				res.body.data.should.to.have.length.of.at.least (1);
-				res.body.data[0].firstname.should.to.equal (customer.firstname);
-				res.body.data[0].middlename.should.to.equal (customer.middlename);
-				res.body.data[0].lastname.should.to.equal (customer.lastname);
-				res.body.data[0].phone[0].should.to.equal (customer.phone[0]);
-				res.body.data[0].email[0].should.to.equal (customer.email[0]);
+				res.body.data.should.to.have.lengthOf (1);
+				res.body.data[0].fullname.should.to.equal (customer.fullname);
+				res.body.data[0].phone[0].should.to.equal (customer.phone);
+				res.body.data[0].email[0].should.to.equal (customer.email);
 				res.body.data[0].checkinStatus.should.to.be.false;
 				res.body.data[0].isStudent.should.to.be.false;
 				done ();
 			});
 	});	
+
+	it ('should return a list of pre paid usages of the customer, which are not expired and can be used today', function (){
+		chai.request (server)
+			.get ('/checkin/search-customers')
+			.query ({input: customer.email})
+			.end (function (err, res){
+				if (err) console.log (err);
+
+				var data = res.body.data;
+
+				res.should.have.status (200);
+				data.should.to.have.lengthOf (1);
+				data[0].fullname.should.to.equal (customer.fullname);
+				data[0].phone[0].should.to.equal (customer.phone);
+				data[0].email[0].should.to.equal (customer.email);
+				data[0].checkinStatus.should.to.be.false;
+				data[0].isStudent.should.to.be.false;
+
+				data[0].accounts.should.to.have.lengthOf (2);
+				data[0].accounts.map (function (x, i, arr){
+					[10, 100000].should.to.include (x.amount);
+				});
+
+				done ();
+			});		
+
+	});
 
 	it ('should return active customers')
 	it ('should be invalid when required input not found')
@@ -336,6 +426,8 @@ xdescribe ('Check in', function (){
 
 
 	});
+
+	it ('should add code of pre paid usage into promocodes')
 
 	it ('should be invalid when a checked-in customer check in again. This could happen when a customers booking more than one time and then check-in')
 

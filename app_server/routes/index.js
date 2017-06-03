@@ -63,6 +63,7 @@ router.get ('/checkin/validate-promotion-code', CheckinCtrl.validatePromocodes);
 
 router.get('/checkout/invoice/:occId', checkoutCtrl.createInvoice);
 router.post('/checkout', checkoutCtrl.confirmCheckout);
+router.post('/checkout/payWithPrePaid', checkoutCtrl.payWithPrePaid);
 
 router.get ('/occupancies/', CheckinCtrl.readOccupancies);
 // router.get ('/occupancies/occupancy/:occId', CheckinCtrl.readOneOccupancy);

@@ -8,15 +8,17 @@ var mongoose = require ('mongoose');
 var Customers = mongoose.model ('customers');
 var Promocodes = mongoose.model ('promocodes');
 var Occupancy = mongoose.model ('occupancy');
+var Accounts = mongoose.model ('accounts');
 var should = chai.should ();
 
 chai.use (chaiHttp);
 
 describe ('Checkout', function (){
 	this.timeout(3000);
-	describe ('Create invoice', function (){
+	xdescribe ('Create invoice', function (){
 		var occupancy, customer;
 		var newOcc, newCustomer;
+		var newAcc;
 		
 		beforeEach (function (done){
 			customer = {
@@ -38,13 +40,38 @@ describe ('Checkout', function (){
 					name: 'Group Common'
 				},
 				promocodes: [
-					{id: '58ff58e6e53ef40f4dd664cd', name: 'YEUGREENSPACE'}
+					{id: '58ff58e6e53ef40f4dd664cd', name: 'YEUGREENSPACE', codeType: 3, priority: 2}
 				],
 				customer: {},
 				storeId: "58eb474538671b4224745192",
 				staffId: "58eb474538671b4224745192",	
 				checkoutTime: moment ().add (0.3, 'hours'),	
 			};
+
+			accounts = [
+				{
+					amount: 10,
+					unit: 'hour',
+					start: moment (),
+					end: moment().add (5, 'day'),
+					services: ['group common', 'individual common']
+				},
+				{
+					amount: 100000,
+					unit: 'cash',
+					start: moment (),
+					end: moment().add (5, 'day'),
+					services: ['all']
+				},
+				{
+					amount: 20000,
+					unit: 'cash',
+					start: moment ().add (-5, 'day'),
+					end: moment().add (-2, 'day'),
+					services: ['all']
+				},								
+			]
+
 
 			Customers.create (customer, function (err, cus){
 				if (err){
@@ -62,13 +89,43 @@ describe ('Checkout', function (){
 					}
 
 					newOcc = occ;
-					done ();
+
+					accounts.map (function (x, i, arr){
+						x.customer = newCustomer._id;
+					});
+
+					Accounts.insertMany (accounts, function (err, acc){
+						if (err){
+							console.log (err)
+							return
+						}
+
+						newAcc = acc;
+						var newAccIds = newAcc.map (function (x, i, arr){
+							return x._id;
+						})
+
+						Customers.update ({_id: newCustomer._id}, {$set: {accounts: newAccIds}}, function (err, cus){
+							if (err){
+								console.log (err)
+								return
+							}
+
+							done ();						
+						});
+
+					});
+
+					
 				});
 			});
 
 		});
 
 		afterEach (function (done){
+			var accIds = newAcc.map (function (x, i, arr){
+				return x._id;
+			})
 			Occupancy.remove ({_id: newOcc._id}, function (err, data){
 				if (err) {
 					// console.log (err)
@@ -78,24 +135,31 @@ describe ('Checkout', function (){
 					if (err) {
 						// console.log (err)
 						return
-					}				
-					done ();
+					}
+
+					Accounts.remove ({_id: accIds}, function (err, result){
+						if (err) {
+							// console.log (err)
+							return
+						}
+
+						done ();					
+					});
+
+					
 				});
 
 			});
 
 		});
 
-
-		it ('should return invoice successfully', function (done){
+		xit ('should return invoice successfully', function (done){
 			chai.request (server)
 				.get ('/checkout/invoice/' + newOcc._id)
 				.end (function (err, res){
 					if (err){
 						console.log (err)
 					}
-
-					console.log (res.body.data)
 
 					res.should.have.status (200);
 					res.body.data.should.to.exist;
@@ -107,11 +171,199 @@ describe ('Checkout', function (){
 				});
 		});
 
+		it ('should return non-expired account if existed', function (done){
+			chai.request (server)
+				.get ('/checkout/invoice/' + newOcc._id)
+				.end (function (err, res){
+					if (err){
+						console.log (err)
+					}
+
+					res.should.have.status (200);
+					res.body.data.should.to.exist;
+					res.body.data.total.should.to.exist;
+					res.body.data.usage.should.to.exist;
+					res.body.data.checkoutTime.should.to.exist;
+
+					res.body.data.accounts.should.to.have.length.of (2);
+					res.body.data.accounts.map (function (x, i, arr){
+						[10, 100000].should.to.include (x.amount);
+					});
+
+					done ();
+				});			
+		});
+
+
 		it ('should be invalid when not found required input')
 
 	});
 
-	describe ('Confirm checkout', function (){
+	describe ('Withdraw from account', function (){
+		var occupancy, customer;
+		var newOcc, newCustomer;
+		var newAcc;
+		
+		beforeEach (function (done){
+			customer = {
+				firstname: 'Customer_Firstname',
+				middlename: 'Customer_Middlename',
+				lastname: 'Customer_Lastname',
+				gender: 1,
+				birthday: new Date ('1989-09-25'),
+				phone: ['0965999999', '0972999999'],
+				edu: {},
+				email: ['lastmiddlefirst@gmail.com', 'otheremail@gmail.com'], // manuallt required in some cases
+				isStudent: false,
+				checkinStatus: false,
+			};
+
+			occupancy = {
+				service: {
+					price: 15000,
+					name: 'Group Common'
+				},
+				promocodes: [
+					{id: '58ff58e6e53ef40f4dd664cd', name: 'YEUGREENSPACE', codeType: 3, priority: 2}
+				],
+				customer: {},
+				storeId: "58eb474538671b4224745192",
+				staffId: "58eb474538671b4224745192",	
+				checkoutTime: moment ().add (0.3, 'hours'),	
+			};
+
+			accounts = [
+				{
+					amount: 10,
+					unit: 'hour',
+					start: moment (),
+					end: moment().add (5, 'day'),
+					services: ['group common', 'individual common']
+				},
+				{
+					amount: 100000,
+					unit: 'cash',
+					start: moment (),
+					end: moment().add (5, 'day'),
+					services: ['all']
+				},
+				{
+					amount: 20000,
+					unit: 'cash',
+					start: moment ().add (-5, 'day'),
+					end: moment().add (-2, 'day'),
+					services: ['all']
+				},								
+			]
+
+
+			Customers.create (customer, function (err, cus){
+				if (err){
+					console.log (err)
+					return
+				}
+
+				newCustomer = cus.getPublicFields();
+				occupancy.customer = newCustomer;
+
+				Occupancy.create (occupancy, function (err, occ){
+					if (err){
+						console.log (err)
+						return
+					}
+
+					newOcc = occ;
+
+					accounts.map (function (x, i, arr){
+						x.customer = newCustomer._id;
+					});
+
+					Accounts.insertMany (accounts, function (err, acc){
+						if (err){
+							console.log (err)
+							return
+						}
+
+						newAcc = acc;
+						var newAccIds = newAcc.map (function (x, i, arr){
+							return x._id;
+						})
+
+						Customers.update ({_id: newCustomer._id}, {$set: {accounts: newAccIds}}, function (err, cus){
+							if (err){
+								console.log (err)
+								return
+							}
+
+							done ();						
+						});
+
+					});
+
+					
+				});
+			});
+
+		});
+
+		afterEach (function (done){
+			var accIds = newAcc.map (function (x, i, arr){
+				return x._id;
+			});
+
+			Occupancy.remove ({_id: newOcc._id}, function (err, data){
+				if (err) {
+					// console.log (err)
+					return
+				}
+				Customers.remove ({_id: newCustomer._id}, function (err, data){
+					if (err) {
+						// console.log (err)
+						return
+					}
+
+					Accounts.remove ({_id: accIds}, function (err, result){
+						if (err) {
+							// console.log (err)
+							return
+						}
+
+						done ();					
+					});
+
+					
+				});
+
+			});
+
+		});
+		
+
+		it ('should return correct usage when pay with account, whose amount is X hours', function (){
+			// chai.request (server)
+			// 	.post ('/checkout/')
+			// 	.send ({data: newOcc[0]})
+			// 	.end (function (err, res){
+			// 		if (err) {
+			// 			console.log (err)
+			// 		}
+
+			// 		res.body.data.should.to.exist;
+			// 		res.body.data.checkoutTime.should.to.exist;
+			// 		res.body.data.checkinTime.should.to.exist;
+			// 		res.body.data.usage.should.to.exist;
+			// 		res.body.data.total.should.to.exist;
+			// 		res.body.data.customer.should.to.exist;
+			// 		res.body.data.usage.should.to.equal (2);
+			// 		res.body.data.total.should.to.equal (10000 * 2);
+			// 		done ();
+			// 	});
+		});
+
+		it ('should return correct total when pay with account, whose amount is X VNĐ');
+	})
+
+	xdescribe ('Confirm checkout', function (){
 		var occupancy, customer;
 		var newOcc, newCustomer;
 		
@@ -146,7 +398,7 @@ describe ('Checkout', function (){
 						name: 'Group Common'
 					},
 					promocodes: [
-						{name: 'FREE1DAYCOMMON', codeType: 4},
+						{name: 'FREE1DAYCOMMON', codeType: 4, priority: 3},
 					],
 					customer: {},	
 					checkinTime: moment (),
@@ -158,7 +410,7 @@ describe ('Checkout', function (){
 						name: 'Small group private'
 					},
 					promocodes: [
-						{name: 'PRIVATEHALFTOTAL', codeType: 4}
+						{name: 'PRIVATEHALFTOTAL', codeType: 4, priority: 3}
 					],
 					customer: {},	
 					checkinTime: moment (),
@@ -216,7 +468,7 @@ describe ('Checkout', function (){
 
 		});
 
-		it ('should update chekcout data successfully', function (done){
+		xit ('should update checkout data successfully', function (done){
 			chai.request (server)
 				.post ('/checkout/')
 				.send ({data: newOcc[0]})
@@ -237,7 +489,7 @@ describe ('Checkout', function (){
 				});
 		});
 
-		it ('should checkout success, return correct total and usage, and ignore discount for small group private service when using code PRIVATEHALFTOTAL', function (done){
+		xit ('should checkout success, return correct total and usage, and ignore discount for small group private service when using code PRIVATEHALFTOTAL', function (done){
 			chai.request (server)
 				.post ('/checkout/')
 				.send ({data: newOcc[2]})
@@ -260,7 +512,7 @@ describe ('Checkout', function (){
 
 		it ('should checkout success, return correct total and usage, and ignore discount for medium group private service when using code PRIVATEHALFTOTAL')
 		it ('should checkout success, return correct total and usage, and ignore discount for large group private service when using code PRIVATEHALFTOTAL')
-		it ('should checkout success, return 0 total and usage for group common service when using code FREE1DAYCOMMON', function (done){
+		xit ('should checkout success, return 0 total and usage for group common service when using code FREE1DAYCOMMON', function (done){
 			chai.request (server)
 				.post ('/checkout/')
 				.send ({data: newOcc[1]})
@@ -284,8 +536,7 @@ describe ('Checkout', function (){
 		it ('should checkout success, return 0 total and usage for individual common service when using code FREE1DAYCOMMON')
 
 		it ('should add note successfully')
-		it ('should compare and realize the submitted data and original data are the same')
-		it ('should compare and realize the submitted data and original data are NOT the same')
+
 	});
 })
 

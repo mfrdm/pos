@@ -108,11 +108,16 @@ var addDefaultCodes = function (){
 
 var OccupancySchema = new mongoose.Schema({
 	_id: {type: mongoose.Schema.Types.ObjectId, default: mongoose.Types.ObjectId},
+	originalTotal: {type: Number, min: 0, default: 0},
 	total: {type: Number, min: 0, default: 0},
-	// discountedTotal: {type: Number, min: 0},
+	discounted: {type: Number, min: 0},
+	prepaid: {type: Number, min: 0},
 	usage: {type: Number, min: 0}, // in hour
 	// discountedUsage: {type: Number, min: 0}, // in hour
-	paymentMethod: Number, // required. card, cash, account
+	paymentMethod: [{
+		methodId: mongoose.Schema.Types.ObjectId, // for account and other methods. Not cash
+		name: {type: String, default: 'cash'},
+	}], // required. card, cash, account
 	parent: mongoose.Schema.Types.ObjectId, // id of parent occ. used for group private
 	checkinTime: {type: Date, default: Date.now},
 	checkoutTime: {type: Date},	

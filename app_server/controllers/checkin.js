@@ -132,7 +132,6 @@ function Checkin() {
 		if (validator.isEmail (input)){
 			query = Customers.find ({email: input, checkinStatus: false}, projections);
 		}
-
 		else if (validator.isMobilePhone (input, 'vi-VN')){
 			query = Customers.find ({phone: input, checkinStatus: false}, projections);
 		}
@@ -140,6 +139,16 @@ function Checkin() {
 			query = Customers.find ({fullname: {$regex: input.toUpperCase ()}, checkinStatus: false}, projections);
 		}		
 
+		// get non-expired accounts
+		query.populate ({
+			path: 'accounts',
+			match: {
+				start: {$lte: new Date ()},
+				end: {$gte: new Date ()},
+				amount: {$gt: 0}				
+			},
+			select: 'amount service unit',
+		})
 
 		query.exec (function (err, cus){
 			if (err){
