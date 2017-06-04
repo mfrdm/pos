@@ -39,7 +39,6 @@ var redeemPrice = function (code, price, productName){
 
 // change usage only
 var redeemUsage = function (code, usage, productName){
-
 	code = code ? code.toLowerCase () : code;
 	productName = productName ? productName.toLowerCase () : '';
 

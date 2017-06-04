@@ -1,26 +1,46 @@
 var validator = require ('validator');
 var mongoose = require ('mongoose');
-var Accounts = require ('accounts');
-var Orders = mongoose.model ('orders');
-var Occupancy = mongoose.model ('occupancy')
+var Accounts = mongoose.model ('accounts');
 var Customers = mongoose.model ('customers');
-var Promocodes = mongoose.model ('promocodes');
-var Bookings = mongoose.model ('bookings');
 var moment = require ('moment');
 
 module.exports = new AccountCtrl();
 
 function AccountCtrl (){
 	this.createOneAccount = function (req, res, next){
+		var acc = new Accounts (req.body.data);
 
-	}
+		acc.save (function (err, newAcc){
+			if (err){
+				console.log (err);
+				next (err);
+				return
+			}
 
-	this.readAccountsByCustomerId = function (req, res, next){
-		
+			Customers.findOneAndUpdate ({_id: newAcc.customer._id}, {$push: {accounts: newAcc._id}}, function (err, updatedCus){
+				if (err){
+					console.log (err);
+					next (err);
+					return
+				}
+				
+				if (updatedCus){
+					res.json ({data: newAcc});
+				}	
+				else{
+					next ();
+				}
+			});
+
+		});
 	}
 
 	this.updateOneAccount = function (req, res, next){
 
+	}
+
+	this.readAccountsByCustomerId = function (req, res, next){
+		// later
 	}
 
 }

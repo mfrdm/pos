@@ -27,6 +27,9 @@ var deposite = function (){
 
 var accountsSchema = new mongoose.Schema({
 	active: {type: Boolean, default: false}, // once active, auto add to occupancies as long as not expired
+	recursive: {type: Boolean, default: false},
+	recursiveTime: {type: Boolean, default: false},
+	baseAmount: Number,
 	amount: {type: Number, get: to1Decimal},
 	unit: String,
 	services: [String], // name of service applied

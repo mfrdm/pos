@@ -22,8 +22,6 @@ function Checkout() {
 			foundOcc.checkoutTime = foundOcc.checkoutTime ? foundOcc.checkoutTime : moment ();
 			foundOcc.getTotal ();
 
-			console.log (foundOcc)
-
 			// Be aware that the cus is plain javascript object
 			Customers.findOne ({_id: foundOcc.customer._id})
 				.populate ({
@@ -36,6 +34,11 @@ function Checkout() {
 					select: 'amount service unit label'
 				}) 
 				.exec (function (err, cus){
+					if (err){
+						console.log (err);
+						next (err);
+					}
+
 					foundOcc = foundOcc.toObject ();
 					foundOcc.accounts = cus.accounts ? cus.accounts : [];
 					res.json ({data: foundOcc});
@@ -68,6 +71,9 @@ function Checkout() {
 				occ.promocodes = Promocodes.removeDefaultCode (occ.promocodes);
 				occ.usage = acc.withdraw (occ.usage, unit, occ.service.name);
 				occ.getTotal ();
+
+				console.log (occ.total, beforeWithdrawUsage - occ.usage, acc.amount)
+
 				res.json ({data: {
 					total: occ.total,
 					withdrawnUsage: Number((beforeWithdrawUsage - occ.usage).toFixed(1)),
@@ -86,12 +92,17 @@ function Checkout() {
 		var total = req.body.data.total;
 		var usage = req.body.data.usage;
 		var checkoutTime = req.body.data.checkoutTime;
+		var promocodes = req.body.data.promocodes;
 		var paymentMethods = req.body.data.paymentMethod ? req.body.data.paymentMethod : [];
 		var note = req.body.data.note ? req.body.data.note : ''; // optional
 		var status = 2;
 
 		if (req.body.data.paymentMethod && req.body.data.paymentMethod.length){
-			// check if having all required attributes
+			req.body.data.paymentMethod.map (function (x, i, arr){
+				if (x.name == 'account'){
+					total -= x.paid;
+				}
+			});
 		}
 
 		Customers.findOneAndUpdate({_id:req.body.data.customer._id}, {$set:{checkinStatus:false}}, function(err, cus){
@@ -105,8 +116,8 @@ function Checkout() {
 					status: status, 
 					total: total, 
 					usage: usage, 
-					checkoutTime: 
-					checkoutTime, 
+					promocodes: promocodes,
+					checkoutTime: checkoutTime, 
 					note: note
 				}
 
@@ -116,7 +127,6 @@ function Checkout() {
 						updateOcc.paymentMethod = req.body.data.paymentMethod;
 					}
 				});	
-
 
 				Occupancy.findOneAndUpdate ({_id: req.body.data._id}, {$set: updateOcc}, {new: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function (err, occ){
 					if (err){

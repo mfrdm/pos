@@ -888,7 +888,6 @@
 		}
 
 		vm.ctrl.checkout.checkout = function (){
-			// not good enough. better model in server. need to record all this.
 			
 			// assume if the object exist, account is used to pay
 			// at this moment, only one account is used at one checkout time
@@ -896,7 +895,8 @@
 				vm.model.checkingout.occupancy.paymentMethod = [{
 					methodId: vm.model.temporary.checkout.selectedAccount._id, 
 					name: 'account', 
-					amount: vm.model.temporary.checkout.withdrawnUsage
+					amount: vm.model.temporary.checkout.withdrawnUsage,
+					paid: vm.model.checkingout.occupancy.total - vm.model.temporary.checkout.reaminTotal,
 				}]
 			}
 

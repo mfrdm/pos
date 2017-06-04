@@ -27,9 +27,9 @@ describe ('Checkout', function (){
 				lastname: 'Customer_Lastname',
 				gender: 1,
 				birthday: new Date ('1989-09-25'),
-				phone: ['0965999999', '0972999999'],
+				phone: '0965999999',
 				edu: {},
-				email: ['lastmiddlefirst@gmail.com', 'otheremail@gmail.com'], // manuallt required in some cases
+				email: 'lastmiddlefirst@gmail.com', // manuallt required in some cases
 				isStudent: false,
 				checkinStatus: false,
 			};
@@ -39,13 +39,12 @@ describe ('Checkout', function (){
 					price: 15000,
 					name: 'Group Common'
 				},
-				promocodes: [
-					{id: '58ff58e6e53ef40f4dd664cd', name: 'YEUGREENSPACE', codeType: 3, priority: 2}
-				],
+				promocodes: [],
 				customer: {},
 				storeId: "58eb474538671b4224745192",
-				staffId: "58eb474538671b4224745192",	
-				checkoutTime: moment ().add (0.3, 'hours'),	
+				staffId: "58eb474538671b4224745192",
+				checkinTime: moment ().add (-0.3, 'hours'),	
+				checkoutTime: moment (),	
 			};
 
 			accounts = [
@@ -161,7 +160,7 @@ describe ('Checkout', function (){
 
 		});
 
-		xit ('should return invoice successfully', function (done){
+		it ('should return invoice successfully', function (done){
 			chai.request (server)
 				.get ('/checkout/invoice/' + newOcc._id)
 				.end (function (err, res){
@@ -174,12 +173,14 @@ describe ('Checkout', function (){
 					res.body.data.total.should.to.exist;
 					res.body.data.usage.should.to.exist;
 					res.body.data.checkoutTime.should.to.exist;
+					res.body.data.usage.should.to.equal (1);
+					res.body.data.total.should.to.equal (15000);
 
 					done ();
 				});
 		});
 
-		it ('should return non-expired account if existed', function (done){
+		xit ('should return non-expired account if existed', function (done){
 			chai.request (server)
 				.get ('/checkout/invoice/' + newOcc._id)
 				.end (function (err, res){
@@ -193,11 +194,7 @@ describe ('Checkout', function (){
 					res.body.data.usage.should.to.exist;
 					res.body.data.checkoutTime.should.to.exist;
 
-					res.body.data.accounts.should.to.have.length.of (2);
-					res.body.data.accounts.map (function (x, i, arr){
-						[10, 100000].should.to.include (x.amount);
-					});
-
+					res.body.data.accounts.should.to.have.length.of (accounts.length - 1);
 					done ();
 				});			
 		});
@@ -558,7 +555,7 @@ describe ('Checkout', function (){
 
 		it ('should checkout success, return correct total and usage, and ignore discount for medium group private service when using code PRIVATEHALFTOTAL')
 		it ('should checkout success, return correct total and usage, and ignore discount for large group private service when using code PRIVATEHALFTOTAL')
-		xit ('should checkout success, return 0 total and usage for group common service when using code FREE1DAYCOMMON', function (done){
+		it ('should checkout success, return 0 total and usage for group common service when using code FREE1DAYCOMMON', function (done){
 			chai.request (server)
 				.post ('/checkout/')
 				.send ({data: newOcc[1]})
@@ -659,7 +656,7 @@ describe ('Checkout', function (){
 
 						// indicate the service is pay part by account
 						newOcc.paymentMethod = [
-							{methodId: newAcc[0]._id, name: 'account', amount: 2}
+							{methodId: newAcc[0]._id, name: 'account', amount: 2, paid: 30000}
 						];
 
 						var newAccIds = newAcc.map (function (x, i, arr){
@@ -728,6 +725,9 @@ describe ('Checkout', function (){
 					res.body.data.usage.should.to.exist;
 					res.body.data.total.should.to.exist;
 					res.body.data.customer.should.to.exist;
+					res.body.data.total.should.to.equal (15000);
+					res.body.data.paymentMethod[0].paid.should.to.equal (30000);
+					res.body.data.paymentMethod[0].amount.should.to.equal (2);
 
 					Accounts.findOne ({_id: newAcc[0]._id}, function (err, acc){
 						if (err){
@@ -735,7 +735,8 @@ describe ('Checkout', function (){
 						}
 
 						acc.should.to.exist;
-						acc.amount.should.to.equal (0)
+						acc.amount.should.to.equal (0);
+						
 
 						done ();
 					});

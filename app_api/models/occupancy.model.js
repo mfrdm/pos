@@ -86,7 +86,7 @@ function getTotal (){
 		}
 
 		occ.total = normalizeTotal (occ.total);	
-		occ.actualTotal = occ.total;			
+
 	}	
 }
 
@@ -110,13 +110,14 @@ var addDefaultCodes = function (){
 
 var OccupancySchema = new mongoose.Schema({
 	_id: {type: mongoose.Schema.Types.ObjectId, default: mongoose.Types.ObjectId},
-	total: {type: Number, min: 0, default: 0}, // after applied promocode
+	total: {type: Number, min: 0}, // after applied promocode
 	usage: {type: Number, min: 0}, // after applied promocode
 	paymentMethod: [{
 		methodId: mongoose.Schema.Types.ObjectId, // for account and other methods. Not cash
-		name: {type: String},
-		amount: Number, // may exist or not depending on the type of account
-	}], // card, cash, account
+		name: {type: String}, // cash, card, account, ...
+		amount: Number, // may exist or not depending on the type of method
+		paid: Number, // amount paid using the account
+	}],
 	parent: mongoose.Schema.Types.ObjectId, // id of parent occ. used for group private
 	checkinTime: {type: Date, default: Date.now},
 	checkoutTime: {type: Date},	
