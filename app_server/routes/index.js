@@ -23,6 +23,7 @@ var productsCtrl = require("../controllers/products");
 var promoCodesCtrl = require ('../controllers/promoCodes.ctrl');
 var OrdersCtrl = require ('../controllers/orders.ctrl'); 
 var TransactionCtrl = require ('../controllers/transactions.ctrl');
+var AccountsCtrl = require ('../controllers/accounts.ctrl');
 
 router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
 router.get('/auth/google/callback', 
@@ -63,6 +64,7 @@ router.get ('/checkin/validate-promotion-code', CheckinCtrl.validatePromocodes);
 
 router.get('/checkout/invoice/:occId', checkoutCtrl.createInvoice);
 router.post('/checkout', checkoutCtrl.confirmCheckout);
+router.get('/checkout/account/withdraw', checkoutCtrl.withdrawOneUsageHourAccount);
 
 router.get ('/occupancies/', CheckinCtrl.readOccupancies);
 // router.get ('/occupancies/occupancy/:occId', CheckinCtrl.readOneOccupancy);
@@ -126,6 +128,9 @@ router.get ('/promocodes', promoCodesCtrl.readSomeCodes);
 router.get ('/promo-codes/code/:codeId', promoCodesCtrl.readOneCodeById);
 router.post ('/promo-codes/create', promoCodesCtrl.createOneCode);
 router.post ('/promo-codes/code/:codeId', promoCodesCtrl.updateOneCode);
+
+router.post ('/accounts/create', AccountsCtrl.createOneAccount);
+router.post ('/accounts/account/:accId/edit', AccountsCtrl.updateOneAccount);
 
 // Others
 router.get ('/components/template/message', OthersCtrl.getMessageTemplate);

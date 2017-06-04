@@ -8,7 +8,7 @@ var moment = require ('moment');
 
 
 describe ('Occupancy Model', function (){
-	xdescribe ('Get usage in hour', function (){
+	describe ('Get usage in hour', function (){
 		var order, val;
 		beforeEach (function (){
 			val = {		
@@ -27,7 +27,7 @@ describe ('Occupancy Model', function (){
 		});
 
 		it ('should return correct usage hour as 1 when it is greater than or equal 6 mins but less than 60 mins', function (){
-			val.checkinTime = moment ().add (-20, 'minute');
+			val.checkinTime = moment ().add (-30, 'minute');
 			val.checkoutTime = moment ();
 
 			var occ = new Occupancy (val);
@@ -44,7 +44,11 @@ describe ('Occupancy Model', function (){
 		});	
 	});
 
-	describe ('Get total', function (){
+	describe ('Get after pre paid total', function (){
+		it ('should return ')
+	});
+
+	xdescribe ('Get total', function (){
 		var order, val;
 		beforeEach (function (){
 			val = {

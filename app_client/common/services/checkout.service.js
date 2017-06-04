@@ -29,6 +29,20 @@ var checkoutService = function($http){
 			}
 		})
 	}
+
+	this.withdrawOneAccount = function (occ, accId){
+		var query = {
+			occ: JSON.stringify (occ),
+			accId: accId,
+		}
+		
+		return $http({
+			method:'GET',
+			url:'/checkout/account/withdraw',
+			params: query,
+		});	
+	}
+
 }
 
 app.service('checkoutService', ['$http',checkoutService])

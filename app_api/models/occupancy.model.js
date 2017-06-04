@@ -40,9 +40,10 @@ function normalizeUsage (diff){
 	return usage;
 }
 
+// get usage and total after applied codes
 function getTotal (){
 	var occ = this;
-	occ.usage = occ.usage ? occ.usage : occ.getUsageTime ();
+	occ.usage = occ.usage || occ.usage == 0 ? occ.usage : occ.getUsageTime ();
 
 	if (occ.parent){
 		occ.total = 0;
@@ -61,7 +62,7 @@ function getTotal (){
 			occ.promocodes.map (function (code, k, t){
 				
 				if (code.codeType == 1){
-					occ.usage = Promocodes.redeemUsage (code.name, occ.usage);
+					occ.usage = Promocodes.redeemUsage (code.name, occ.usage, occ.service.name);
 				}
 
 				if (code.codeType == 2){
@@ -84,7 +85,8 @@ function getTotal (){
 			occ.total = occ.service.price * occ.usage;
 		}
 
-		occ.total = normalizeTotal (occ.total);					
+		occ.total = normalizeTotal (occ.total);	
+
 	}	
 }
 
@@ -108,11 +110,14 @@ var addDefaultCodes = function (){
 
 var OccupancySchema = new mongoose.Schema({
 	_id: {type: mongoose.Schema.Types.ObjectId, default: mongoose.Types.ObjectId},
-	total: {type: Number, min: 0, default: 0},
-	// discountedTotal: {type: Number, min: 0},
-	usage: {type: Number, min: 0}, // in hour
-	// discountedUsage: {type: Number, min: 0}, // in hour
-	paymentMethod: Number, // required. card, cash, account
+	total: {type: Number, min: 0}, // after applied promocode
+	usage: {type: Number, min: 0}, // after applied promocode
+	paymentMethod: [{
+		methodId: mongoose.Schema.Types.ObjectId, // for account and other methods. Not cash
+		name: {type: String}, // cash, card, account, ...
+		amount: Number, // may exist or not depending on the type of method
+		paid: Number, // amount paid using the account
+	}],
 	parent: mongoose.Schema.Types.ObjectId, // id of parent occ. used for group private
 	checkinTime: {type: Date, default: Date.now},
 	checkoutTime: {type: Date},	

@@ -11,11 +11,11 @@ function CheckinService ($http, $q){
 	}	
 
 	//Validate Promote Code
-	this.validatePromoteCode = function(data){
+	this.validatePromoteCode = function(query){
 		return $http({
 			method: 'GET',
 			url: '/checkin/validate-promotion-code',
-			params: {data:JSON.stringify(data)}
+			params: query
 		})
 	}
 

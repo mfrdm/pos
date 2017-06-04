@@ -68,7 +68,7 @@ div(class="columns row")
 										td {{ result.phone[0] }}
 
 			// CHECK-IN FORM
-			form(ng-submit="vm.ctrl.checkin.validateCode ()")
+			form(ng-submit="vm.ctrl.checkin.confirm ()")
 				div(class="row column basicBox")
 					div(class="column row")
 						h3(class="paddingLR15 fontSize20 fontWeight600") Chọn dịch vụ
@@ -329,6 +329,16 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 					tr
 						th Khách hàng
 						td {{ vm.model.checkingout.occupancy.customer.fullname }} 
+					tr(ng-if="vm.model.checkingout.occupancy.accounts.length")
+						th Tài khoản trả trước
+						td
+							select(ng-model="vm.model.temporary.checkout.selectedAccount._id" ng-options="acc._id as acc.label.vn for acc in vm.model.checkingout.occupancy.accounts" ng-change="vm.ctrl.checkout.accChangeHandler ()")
+					tr
+						th Dịch vụ
+						td {{ vm.model.checkingout.occupancy.service.label }}
+					tr(ng-if="vm.model.checkingout.occupancy.parent")
+						th Nhóm
+						td Thành viên nhóm riêng					
 					tr
 						th Checkin
 						td {{ vm.model.checkingout.occupancy.checkinTime | date:'dd/MM/yyyy'}} {{ vm.model.checkingout.occupancy.checkinTime | date:'shortTime'}}				
@@ -337,25 +347,26 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 						td {{ vm.model.checkingout.occupancy.checkoutTime | date:'dd/MM/yyyy'}} {{ vm.model.checkingout.occupancy.checkoutTime | date:'shortTime'}}
 					tr
 						th Thời gian sử dụng
-						td {{ vm.model.checkingout.occupancy.usage + ' giờ' }}					
-					tr
-						th Dịch vụ
-						td {{ vm.model.checkingout.occupancy.service.label }}
-					tr(ng-if="vm.model.checkingout.occupancy.parent")
-						th Nhóm
-						td Thành viên nhóm riêng
+						td {{ vm.model.checkingout.occupancy.usage + ' giờ' }}
 					tr
 						th Giá
 						td {{ vm.model.checkingout.occupancy.service.price | number}} VNĐ
 					tr
 						th Tổng
-						td {{ vm.model.checkingout.occupancy.total | number}} VNĐ	
+						td {{ vm.model.checkingout.occupancy.total | number}} VNĐ
+					tr(ng-if="vm.model.temporary.checkout.withdrawnUsage")
+						th Tài khoản đã dùng
+						td {{ vm.model.temporary.checkout.withdrawnUsage | number}} Giờ
+					tr(ng-if="vm.model.temporary.checkout.accAmountRemain || vm.model.temporary.checkout.accAmountRemain == 0")
+						th Tài khoản còn
+						td {{ vm.model.temporary.checkout.accAmountRemain | number}} Giờ
+					tr(ng-if="vm.model.temporary.checkout.reaminTotal || vm.model.temporary.checkout.reaminTotal == 0")
+						th Tổng đã trừ trả trước
+						td {{ vm.model.temporary.checkout.reaminTotal | number}} VNĐ
 					tr
 						th Ghi chú
 						td
 							textarea(type='text' ng-model='vm.model.checkingout.occupancy.note')
-
-
 	div(class="row column")
 		div(class="column small-12 large-6 large-push-3")
 			a(class="paddingL15 button primary" ng-click="vm.ctrl.checkout.checkout()") Checkout

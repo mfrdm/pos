@@ -76,26 +76,7 @@ app.use(function(err, req, res, next) {
     // render the error page
     res.status(err.status || 500);
 
-    res.json ({error: err})
-
-    // if (res.status == 404){
-    //     return res.render('error', {
-    //         error: err,
-    //         data: {
-    //             user:{
-
-    //             },
-    //             look: {
-    //                 title: "Error",
-    //                 css: [''], // FIX: add name         
-    //             },
-    //         }
-    //     });       
-    // }
-
-    // else {
-    //     return res.json ({error: err});
-    // }
+    res.json ({error: err});
 });
 
 module.exports = app;

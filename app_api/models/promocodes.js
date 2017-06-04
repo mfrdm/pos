@@ -12,9 +12,7 @@ var studentPrice = {
 	'individual common': 10000,
 };
 
-// method to convert a value according to a promotion code
-// assume code is an array
-// assume code values are validated before redeemed
+// change total only. Assume total is calculated using current price and usage
 var redeemTotal = function (code, total){
 	var newTotal = total;
 	code = code ? code.toLowerCase () : code;
@@ -26,6 +24,7 @@ var redeemTotal = function (code, total){
 	return newTotal;
 };
 
+// change the price only
 var redeemPrice = function (code, price, productName){
 	var newPrice = price;
 	productName = productName ? productName.toLowerCase () : productName;
@@ -38,27 +37,28 @@ var redeemPrice = function (code, price, productName){
 	return newPrice;
 }
 
-var redeemUsage = function (code, usage){
-
+// change usage only
+var redeemUsage = function (code, usage, productName){
 	code = code ? code.toLowerCase () : code;
+	productName = productName ? productName.toLowerCase () : '';
 
-	if (code === 'v01h06'){ // change name later
+	if (code === 'v01h06' && (productName == productNames[0] || productName == productNames[1])){ // change name later
 		if (usage <= 1) usage = 0;
 		else usage = usage - 1;
 	}
-	else if (code === 'v02h06'){ // change name later
+	else if (code === 'v02h06' && (productName == productNames[0] || productName == productNames[1])){ // change name later
 		if (usage <= 2) usage = 0;
 		else usage = usage - 2;		
 	}
-	else if (code === 'gs05'){
+	else if (code === 'gs05' && (productName == productNames[0] || productName == productNames[1])){
 		if (usage <= 1) usage = 0;
 		else usage = usage - 1;
 	}
-	else if (code === 'mar05'){
+	else if (code === 'mar05' && (productName == productNames[0] || productName == productNames[1])){
 		if (usage <= 1) usage = 0;
 		else usage = usage - 1;
 	}
-	else if (code === 'freewed'){
+	else if (code === 'freewed' && (productName == productNames[0] || productName == productNames[1])){
 		if (usage <= 1) usage = 0;
 		else usage = usage - 1;
 	}		
@@ -143,6 +143,17 @@ var resolveConflict = function (codes){
 
 };
 
+// remove code added by server so that calling getTotal again will not cause problems having codes same priority
+var removeDefaultCode = function (codes){
+	return codes.filter (function (x, i, arr){
+		if (x.priority == 1){
+			return false
+		}
+		else{
+			return true
+		}
+	})
+}
 
 // FIX: Build actual test. This is just an placeholder, and assume no conflict and no override
 // Some codes cannot be used with another. The function checks and return list of conflicts if any.
@@ -162,6 +173,7 @@ var validateCodes = function (codes){
 // represent all codes that give customer some values like free seat or discount
 var PromocodesSchema = mongoose.Schema ({
 	name: {type: String, required: true},
+	services: [String], // all for all service. otherwises, specified applied services
 	label: {
 		vn: String,
 		en: String,
@@ -188,5 +200,6 @@ PromocodesSchema.statics.redeemTotal = redeemTotal;
 PromocodesSchema.statics.redeemMixed = redeemMixed;
 PromocodesSchema.statics.validateCodes = validateCodes;
 PromocodesSchema.statics.resolveConflict = resolveConflict;
+PromocodesSchema.statics.removeDefaultCode = removeDefaultCode;
 
 module.exports = mongoose.model ('promocodes', PromocodesSchema);

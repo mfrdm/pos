@@ -1,8 +1,8 @@
 (function (){
 	angular.module('posApp')
-		.controller('NewCheckinCtrl', ['$http','DataPassingService', 'CheckinService', 'OrderService', '$scope', '$window','$route', NewCheckinCtrl])
+		.controller('NewCheckinCtrl', ['$http','DataPassingService', 'CheckinService', 'OrderService', 'checkoutService', '$scope', '$window','$route', NewCheckinCtrl])
 
-	function NewCheckinCtrl ($http, DataPassingService, CheckinService, OrderService, $scope, $window, $route){
+	function NewCheckinCtrl ($http, DataPassingService, CheckinService, OrderService, CheckoutService, $scope, $window, $route){
 
 		var LayoutCtrl = DataPassingService.get ('layout');
 		var vm = this;
@@ -103,7 +103,8 @@
 					promocodes: [],
 				},
 				checkout:{
-					note:''
+					note:'',
+					selectedAccount: {},
 				},
 				displayedList:{
 					data:[],
@@ -293,7 +294,6 @@
 				function success (res){
 					vm.ctrl.hideLoader ();
 					var codes = res.data.data;
-					console.log(codes)
 					if (codes.length){
 						vm.ctrl.checkin.addCodeLabels (codes);
 						vm.model.dom.data.selected.checkin.promoteCode.codes = codes.sort (function (a, b){
@@ -558,6 +558,8 @@
 			if(vm.model.checkingin.occupancy.customer.fullname){
 				vm.model.checkingin.occupancy.promocodes = [{name: vm.model.temporary.checkin.codeName, status:1}];
 				vm.model.temporary.checkin.codeNames = [vm.model.temporary.checkin.codeName];
+
+				vm.ctrl.checkin.validateCodes ();
 			}
 		};
 
@@ -721,7 +723,61 @@
 			);			
 		};
 
-		// FIX: should validate after adding code
+		// new version
+		vm.ctrl.checkin.validateCodes = function (){
+			// not
+			if(vm.model.checkingin.occupancy.customer.fullname && vm.model.checkingin.occupancy.service.name){
+				var addedCodes = [];
+				if (vm.model.checkingin.occupancy.promocodes && vm.model.checkingin.occupancy.promocodes.length){
+					addedCodes = vm.model.checkingin.occupancy.promocodes.map (function(x, i, arr){
+						return x.name;
+					});
+				}
+
+				var data = {
+					codes: addedCodes,
+					isStudent: vm.model.checkingin.occupancy.customer.isStudent,
+					service: vm.model.checkingin.occupancy.service.name,
+				};
+
+				vm.ctrl.showLoader ();
+
+				CheckinService.validatePromoteCode(data).then(
+					function success(res){
+
+						vm.ctrl.hideLoader ();
+						var foundCodes = res.data.data;
+						vm.model.checkingin.occupancy.promocodes = foundCodes;
+						vm.model.temporary.checkin.codeNames = [];
+
+						foundCodes.map (function (x, i, arr){
+							vm.model.temporary.checkin.codeNames.push (x.name);
+						});
+
+						if(vm.model.checkingin.occupancy.promocodes){
+							vm.model.checkingin.occupancy.promocodes.map(function(item){
+								if(vm.model.temporary.checkin.codeNames.indexOf(item.name.toLowerCase()) != -1){
+									item.status = 3;
+								}else{
+									item.status = 2;
+								}
+							})
+						}
+					},
+
+					function failure (err){
+						vm.ctrl.hideLoader ();
+						console.log (err);
+						
+					}
+				)
+			}
+			else{
+				// display error message
+			}		
+		}
+
+		// REMOVE later. Depricated
 		vm.ctrl.checkin.validateCode = function (del=false){//del == true when click delete promocode button
 
 			if(vm.model.checkingin.occupancy.customer.fullname){
@@ -742,6 +798,8 @@
 
 				CheckinService.validatePromoteCode(data).then(
 					function success(res){
+						console.log (res.data.data)
+
 						vm.ctrl.hideLoader ();
 						var foundCodes = res.data.data;
 						vm.model.checkingin.occupancy.promocodes = foundCodes;
@@ -796,7 +854,8 @@
 				function success(res){
 					vm.ctrl.hideLoader ();
 					vm.model.checkingout.occupancy = res.data.data;
-					vm.model.checkingout.occupancy.note = vm.model.temporary.note
+					vm.model.checkingout.occupancy.note = vm.model.temporary.note; // likely to REMOVE later
+
 					vm.ctrl.addServiceLabel (vm.model.checkingout.occupancy.service);
 					// vm.ctrl.addGroupParent (vm.model.checkingout.occupancy.service) // Build later
 				}, 
@@ -808,13 +867,44 @@
 		
 		};
 
+		vm.ctrl.checkout.accChangeHandler = function (){
+			vm.ctrl.showLoader ();
+			var occ = vm.model.checkingout.occupancy;
+			var accId = vm.model.temporary.checkout.selectedAccount._id;
+
+			CheckoutService.withdrawOneAccount (occ, accId).then(
+				function success (res){
+					vm.ctrl.hideLoader ();
+					vm.model.temporary.checkout.reaminTotal = res.data.data.total;
+					vm.model.temporary.checkout.withdrawnUsage = res.data.data.withdrawnUsage;
+					vm.model.temporary.checkout.accAmountRemain = res.data.data.accAmountRemain;
+
+
+				},
+				function error (err){
+					vm.ctrl.hideLoader ();
+					console.log(err)
+				}
+			)
+		}
+
 		vm.ctrl.checkout.checkout = function (){
+			
+			// assume if the object exist, account is used to pay
+			// at this moment, only one account is used at one checkout time
+			if (vm.model.temporary.checkout.selectedAccount._id){
+				vm.model.checkingout.occupancy.paymentMethod = [{
+					methodId: vm.model.temporary.checkout.selectedAccount._id, 
+					name: 'account', 
+					amount: vm.model.temporary.checkout.withdrawnUsage,
+					paid: vm.model.checkingout.occupancy.total - vm.model.temporary.checkout.reaminTotal,
+				}]
+			}
+
 			vm.ctrl.showLoader ();
 			CheckinService.checkout(vm.model.checkingout.occupancy)
 				.then(function success(res){
 					vm.ctrl.hideLoader ();
-					// $('#askCheckout').foundation('close');
-					// $('#announceCheckoutSuccess').foundation('open');
 					vm.ctrl.reset();
 				}, function error(err){
 					vm.ctrl.hideLoader ();
@@ -822,10 +912,6 @@
 					// show message
 				})
 		};
-
-		// vm.ctrl.checkout.confirm = function (){
-		// 	$('#askCheckout').foundation('open');
-		// };
 
 		vm.ctrl.checkinBooking = function (){
 			var b = DataPassingService.get ('booking');
@@ -874,7 +960,6 @@
 		////////////////////////////// INITIALIZE ///////////////////////////////		
 		vm.model.dom.data.selected = vm.model.dom.data.vn;
 		angular.element(document.getElementById ('mainContentDiv')).ready(function () {
-			
 			vm.ctrl.getCheckedinList ();
 				
 		});	
