@@ -34,7 +34,7 @@ div(class="columns row")
 	
 	// CHECK-IN
 	div(class="column")
-		div(class="borderT newBox row column paddingB45" ng-show="vm.model.dom.checkin.checkinDiv")
+		div(class="borderT row column paddingTB45 paddingLR45 fullBox" ng-show="vm.model.dom.checkin.checkinDiv")
 			
 			// SEARCH CUSTOMERS
 			div(class="row column")
@@ -69,7 +69,7 @@ div(class="columns row")
 
 			// CHECK-IN FORM
 			form(ng-submit="vm.ctrl.checkin.confirm ()")
-				div(class="row column basicBox")
+				div(class="row column basicBox ")
 					div(class="column row")
 						h3(class="paddingLR15 fontSize20 fontWeight600") Chọn dịch vụ
 					// SERVICE
@@ -120,7 +120,7 @@ div(class="columns row")
 					div(class="column row")
 						div(class='column small-12')
 							label {{vm.model.dom.data.selected.checkin.promoteCode.label}}
-								select(ng-model="vm.model.temporary.checkin.codeName" ng-options="code.name as code.selectedLabel for code in vm.model.dom.data.selected.checkin.promoteCode.codes track by code.name" ng-change='vm.ctrl.checkin.addCode()')
+								select(ng-model="vm.model.temporary.checkin.codeName" ng-options="code.name as code.selectedLabel disable when code.disabled for code in vm.model.dom.data.selected.checkin.promoteCode.codes track by code.name" ng-change='vm.ctrl.checkin.addCode()')
 
 					div(class="column row")
 						div(class='column small-12 large-6')
@@ -135,7 +135,7 @@ div(class="columns row")
 										td {{ code.name }}
 										td(class='{{vm.model.temporary.checkin.statusCode[code.status]}}') {{ vm.model.temporary.checkin.statusCode[code.status] }}
 										td(class='text-center deleteIcon')
-											i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.removeCode ($index)') close
+											i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.removeCode ()') close
 
 				div(class="row column")
 					input(class="button" type="submit" value="Submit")
@@ -371,39 +371,3 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 		div(class="column small-12 large-6 large-push-3")
 			a(class="paddingL15 button primary" ng-click="vm.ctrl.checkout.checkout()") Checkout
 			a(class="paddingR15 button float-right secondary" ng-click='vm.ctrl.reset()') Cancel
-	
-// Validate Reveal Form ************************************************************************//
-// Validate add same promote code
-div(id='addSameCode' class='reveal text-center small' data-reveal data-animation-in="slide-in-down fast")
-	div(class=' text-center paddingTB15 marginB15')
-		h5 Thêm trùng mã code
-	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
-			span(aria-hidden="true") &times;
-
-
-// CHECK-OUT CONFIRM MODAL - Deprecated
-//div(id='askCheckout' class='reveal small column row' data-reveal data-animation-in="slide-in-down fast")
-	div(class=' text-center paddingTB15 marginB15')
-		h2 Checkout confirmation
-		p Xác nhận checkout khách hàng {{ vm.model.checkingout.occurancy.customer.fullname }}
-	button(class="close-button" data-close='' aria-label="Close modal" type="button")
-			span(aria-hidden="true") &times;
-	div(class="row column")
-		div(class='column small-12 large-paddingLR0')
-			a(class="button primary" ng-click='vm.ctrl.checkout.checkout()') Confirm
-			a(class="paddingR15 button float-right secondary" ng-click='vm.ctrl.reset()' data-close='') Cancel			
-
-// Announce checkout successfull
-div(id='announceCheckoutSuccess' class='reveal small column row' data-reveal data-animation-in="slide-in-down fast")
-	div(class=' text-center paddingTB15 marginB15')
-		h2 Message from Green Space Tech
-		p Khách hàng {{ vm.model.checkingout.occurancy.customer.fullname }} đã checkout thành công!
-	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
-			span(aria-hidden="true") &times;
-
-// Announce edit successfull
-div(id='announceEditSuccess' class='reveal small column row' data-reveal data-animation-in="slide-in-down fast")
-	div(class=' text-center paddingTB15 marginB15')
-		h5 Bạn đã Edit thành công!
-	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
-			span(aria-hidden="true") &times;

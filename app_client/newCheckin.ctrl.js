@@ -32,7 +32,8 @@
 						name: LayoutCtrl.model.dept.name,
 					},
 					promocodes:[],
-					service:{}
+					service:{},
+					customer:{}
 				},
 				order: {
 					orderline: [],
@@ -296,10 +297,12 @@
 					var codes = res.data.data;
 					if (codes.length){
 						vm.ctrl.checkin.addCodeLabels (codes);
-						vm.model.dom.data.selected.checkin.promoteCode.codes = codes.sort (function (a, b){
+						vm.model.dom.data.selected.checkin.promoteCode.temporary = codes.sort (function (a, b){
 								return a.selectedLabel > b.selectedLabel
 							}
 						);
+						vm.model.dom.data.selected.checkin.promoteCode.codes = vm.model.dom.data.selected.checkin.promoteCode.temporary
+						vm.ctrl.disableService()
 					}
 					else {
 						// do nothing
@@ -482,6 +485,12 @@
 			else{
 				vm.ctrl.checkin.resetCheckinDiv ();
 			}
+			vm.ctrl.disableService();	
+		};
+
+		vm.ctrl.checkin.removeCode = function(){
+			vm.model.checkingin.occupancy.promocodes = []
+			vm.model.temporary.checkin.codeName = ''
 		};
 
 		// Get both items and services
@@ -505,7 +514,6 @@
 						vm.ctrl.addServiceLabel (x);
 					});
 					
-
 					vm.model.dom.data.selected.services = vm.model.services;
 					vm.model.dom.data.selected.items = vm.model.items;
 
@@ -577,6 +585,8 @@
 			vm.model.checkingin.occupancy.promocodes = [];
 			vm.model.checkingin.occupancy.service = {};
 
+			vm.model.temporary.checkin.codeName = ''
+
 			vm.model.checkingin.order.customer = {};
 			vm.model.checkingin.order.orderline = [];
 			vm.model.temporary.checkin.selectedItems = [];
@@ -639,9 +649,9 @@
 				email: selectedCustomer.email[0],
 				isStudent: selectedCustomer.isStudent,
 			}
-			
 			vm.model.search.checkin.username = vm.ctrl.checkin.createUsername(selectedCustomer);
 			vm.ctrl.checkin.resetSearchCustomerDiv ();
+			vm.ctrl.disableService()
 		}
 
 		vm.ctrl.checkin.serviceChangeHandler = function (){
@@ -653,18 +663,20 @@
 					// Do sth when customer does uses private group service
 					if (service != expectedServiceNames[2] && service != expectedServiceNames[3] && service != expectedServiceNames[4]){
 						vm.model.dom.checkin.privateGroupLeaderDiv = false;
-
-
 					}	
 					else{
 						vm.model.dom.checkin.privateGroupLeaderDiv = true;
 					}
 
 					// update code depends on services
+					vm.model.dom.data.selected.checkin.promoteCode.codes = vm.model.dom.data.selected.checkin.promoteCode.temporary.filter(function(ele){
+						return ele.services.indexOf(vm.model.checkingin.occupancy.service.name) > -1
+					})
 
 					return
 				}
 			})
+			vm.ctrl.disableService()
 		};
 
 		vm.ctrl.checkin.selectedGroupChangeHandler = function (){
@@ -694,6 +706,7 @@
 		//Confirm checkin
 		vm.ctrl.checkin.confirm = function(){
 			if(vm.model.checkingin.occupancy.customer._id){
+				console.log(vm.model.checkingin.occupancy)
 				vm.ctrl.addServiceLabel (vm.model.checkingin.occupancy.service);
 				vm.model.checkingin.occupancy.checkinTime = new Date();
 				vm.model.dom.checkin.confirmDiv = true;
@@ -768,7 +781,6 @@
 					function failure (err){
 						vm.ctrl.hideLoader ();
 						console.log (err);
-						
 					}
 				)
 			}
@@ -776,63 +788,6 @@
 				// display error message
 			}		
 		}
-
-		// REMOVE later. Depricated
-		vm.ctrl.checkin.validateCode = function (del=false){//del == true when click delete promocode button
-
-			if(vm.model.checkingin.occupancy.customer.fullname){
-				var addedCodes = [];
-				if (vm.model.checkingin.occupancy.promocodes && vm.model.checkingin.occupancy.promocodes.length){
-					addedCodes = vm.model.checkingin.occupancy.promocodes.map (function(x, i, arr){
-						return x.name;
-					});
-				}
-
-				var data = {
-					codes: addedCodes,
-					isStudent: vm.model.checkingin.occupancy.customer.isStudent,
-					service: vm.model.checkingin.occupancy.service.name,
-				};
-
-				vm.ctrl.showLoader ();
-
-				CheckinService.validatePromoteCode(data).then(
-					function success(res){
-						console.log (res.data.data)
-
-						vm.ctrl.hideLoader ();
-						var foundCodes = res.data.data;
-						vm.model.checkingin.occupancy.promocodes = foundCodes;
-						vm.model.temporary.checkin.codeNames = [];
-
-						foundCodes.map (function (x, i, arr){
-							vm.model.temporary.checkin.codeNames.push (x.name);
-						});
-						console.log(foundCodes)
-
-						if(vm.model.checkingin.occupancy.promocodes){
-							vm.model.checkingin.occupancy.promocodes.map(function(item){
-								if(vm.model.temporary.checkin.codeNames.indexOf(item.name.toLowerCase()) != -1){
-									item.status = 3;
-								}else{
-									item.status = 2;
-								}
-							})
-						}
-						
-						// FIX: Not good. Better check if every founded codes are included in added codes
-						if (foundCodes.length >= addedCodes.length){
-							vm.ctrl.checkin.confirm ();
-						}
-					},
-					function failure (err){
-						vm.ctrl.hideLoader ();
-						console.log (err);
-						
-					}
-				)
-			}
-		};
 
 		vm.ctrl.order.confirm = function (){
 			OrderService.confirmOrder (vm.model.temporary.justCheckedin.order).then(
@@ -853,6 +808,7 @@
 			CheckinService.readInvoice(occupancy._id).then(
 				function success(res){
 					vm.ctrl.hideLoader ();
+					console.log(res.data.data)
 					vm.model.checkingout.occupancy = res.data.data;
 					vm.model.checkingout.occupancy.note = vm.model.temporary.note; // likely to REMOVE later
 
@@ -951,7 +907,20 @@
 
 		vm.ctrl.hideLoader = function (){
 			LayoutCtrl.ctrl.hideTransLoader ();
-		};		
+		};
+
+		vm.ctrl.disableService = function(){
+			if(vm.model.checkingin.occupancy.customer && vm.model.checkingin.occupancy.service.name){
+				vm.model.dom.data.selected.checkin.promoteCode.codes.map(function(ele){
+					return ele.disabled = false;
+				})
+			}else{
+
+				vm.model.dom.data.selected.checkin.promoteCode.codes.map(function(ele){
+					return ele.disabled = true;
+				})
+			}
+		}		
 
 		vm.ctrl.reset = function (){
 			$route.reload ();
