@@ -8,7 +8,7 @@ var mongoose = require ('mongoose');
 var Customers = mongoose.model ('customers');
 var Promocodes = mongoose.model ('promocodes');
 var Occupancy = mongoose.model ('occupancy');
-var Accounts = mongoose.model ('accounts');
+var Deposite = mongoose.model ('deposit');
 var should = chai.should ();
 
 chai.use (chaiHttp);
@@ -203,7 +203,7 @@ describe ('Checkout', function (){
 
 	});
 
-	xdescribe ('withdraw an account', function (){
+	describe ('withdraw an account', function (){
 		var occupancy, customer;
 		var newOcc, newCustomer;
 		var newAcc;

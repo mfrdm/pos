@@ -28,10 +28,11 @@ require('./companies');
 require('./depts');
 require('./products');
 require('./promocodes');
+require('./newPromocodes.model');
 require('./orders');
 require('./occupancy.model');
 require('./transactions');
 require('./bookings');
 require('./assets');
 require('./attendances');
-require('./accounts')
+require('./deposit.model')

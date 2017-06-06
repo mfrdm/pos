@@ -2,77 +2,62 @@ process.env.NODE_ENV = 'test';
 var chai = require ('chai');
 var should = chai.should ();
 var mongoose = require ('mongoose');
-var Accounts = require ('../../app_api/models/accounts');
+var Accounts = require ('../../app_api/models/accounts.model');
+var Deposits = require ('../../app_api/models/deposit.model');
 var moment = require ('moment');
 
-describe ('Accounts Model', function (){
-	describe ('Withdraw', function (){
-		var account, checkout;
-		beforeEach (function (){
-			account = {
-				amount: 10,
-				unit: 'hour',
-				services: 'group common'
-			};
 
-			checkout = {
-				total: 10,
+describe ('Renew recursive code', function (){
+	var accounts;
+	beforeEach(function (){
+		accounts = [
+			{
+				price: 350000,
+				amount: 0,
 				unit: 'hour',
-				service: 'group common'
+				services: ['group common', 'individual common'],
+				recursive: {
+					isRecursive: true,
+					lastRenew: moment ().add (-1, 'day'),
+					recursiveType: 1,
+					baseAmount: 3				
+				}
 			}
 
-		})
+		]
+	})
 
-		it ('Should withdaw nothing when amount in account is 0', function (){
-			account.amount = 0;
-			var acc = new Accounts (account);
-			var total = acc.withdraw (checkout.total, checkout.unit, checkout.service);
+	it ('should renew a 3-hour-daily-a-month account when it is a recursive, amount is zero, and today is valid day to renew', function (){
+		var acc = accounts[0];
+		Accounts.renew (acc);
 
-			total.should.to.equal (10);
-		})
-
-		it ('should withdraw all in account when required amount exceeds or equals amount in account and update account', function (){
-			var acc = new Accounts (account);
-			checkout.total = 100;
-			var total = acc.withdraw (checkout.total, checkout.unit, checkout.service);
-
-			total.should.to.equal (90);
-			acc.amount.should.to.equal (0);
-		});
-
-		it ('should withdraw and update account when required amount is less than amount in account', function (){
-			var acc = new Accounts (account);
-			checkout.total = 2;
-			var total = acc.withdraw (checkout.total, checkout.unit, checkout.service);
-
-			total.should.to.equal (0);
-			acc.amount.should.to.equal (8);			
-		})
-
-		it ('should not withdraw anything and return original required amount when unit is not that in account', function (){
-			var acc = new Accounts (account);
-			checkout.total = 100000;
-			checkout.unit = 'cash';
-			var total = acc.withdraw (checkout.total, checkout.unit, checkout.service);
-
-			total.should.to.equal (100000);
-			acc.amount.should.to.equal (10);				
-		});
-
-
-		it ('should be valid when being a `all` account', function (){
-			account.service = 'all';
-			var acc = new Accounts (account);
-			checkout.total = 100000;
-			checkout.unit = 'cash';
-			var total = acc.withdraw (checkout.total, checkout.unit, checkout.service);
-
-			total.should.to.equal (100000);
-			acc.amount.should.to.equal (10);				
-		});
-
-
+		acc.amount.should.to.equal (acc.recursive.baseAmount);
+		acc.lastRenew.should.to.be.at.least (moment ().hour (0).minute (0));
 	});
 
+	it ('should not renew a 3-hour-daily-a-month account when amount is zero and it has been renew today', function (){
+		var acc = accounts[0];
+		acc.amount = 1;
+		acc.recursive.lastRenew = moment ();
+		Accounts.renew (acc);
 
-})
+		acc.amount.should.to.equal (1);		
+	});	
+
+	it ('should not renew an account daily if it is not of type recursive daily', function (){
+		var acc = accounts[0];
+		acc.amount = 1;
+		acc.recursive.recursiveType = 2; 
+		Accounts.renew (acc);
+
+		acc.amount.should.to.equal (1);			
+	})
+
+	it ('should not renew account that is not recursive account', function (){
+		var acc = accounts[0];
+		acc.recursive.isRecursive = false;
+		Accounts.renew (acc);
+		acc.amount.should.to.equal (0);		
+	})
+
+});

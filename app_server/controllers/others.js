@@ -24,27 +24,15 @@ function Others() {
 		res.render ('newCustomers');
 	};	
 
-	// this.getBookingTemplate = function (req, res, next){
-	// 	res.render ('booking');
-	// };
-
-	// this.getOrderTemplate = function (req, res, next){
-	// 	res.render ('orders');
-	// };
-
-	// this.getCustomerTemplate = function (req, res, next){
-	// 	res.render ('customer');
-	// };
-
-	// this.getCheckinTemplate = function (req, res, next){
-	// 	res.render ('checkin');
-	// };	
+	this.getDepositTemplate = function (req, res, next){
+		res.render ('deposit');
+	};	
 
 	this.angularApp = function (req, res){
 
 		// load company and dept data and sent to client
 
-		var ctrFileNames = ['layout', 'newCheckin', 'checkout','products', 'assets', 'costs', 'home', 'depts', 'employees', 'login', 'register', 'newBooking', 'attendance', 'newOrders', 'newCustomers'];
+		var ctrFileNames = ['layout', 'newCheckin', 'checkout','products', 'assets', 'costs', 'home', 'depts', 'employees', 'login', 'register', 'newBooking', 'attendance', 'newOrders', 'newCustomers', 'deposit'];
 		var serviceFileNames = ['common', 'checkin', 'checkout', 'products','customers', 'assets', 'costs', 'home', 'depts','employees','authentication', 'socket', 'attendance', 'booking', 'other', 'combo', 'order'];
 		var directiveFileNames = ['components'];
 		var filterFileNames = ['myFilter'];

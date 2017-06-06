@@ -8,7 +8,7 @@ var moment = require ('moment');
 
 
 describe ('Occupancy Model', function (){
-	describe ('Get usage in hour', function (){
+	xdescribe ('Get usage in hour', function (){
 		var order, val;
 		beforeEach (function (){
 			val = {		
@@ -44,7 +44,7 @@ describe ('Occupancy Model', function (){
 		});	
 	});
 
-	describe ('Get after pre paid total', function (){
+	xdescribe ('Get after pre paid total', function (){
 		it ('should return ')
 	});
 

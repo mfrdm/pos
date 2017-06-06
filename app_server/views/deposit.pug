@@ -7,8 +7,8 @@ div(class="columns row")
 		div(class="column small-3")
 			ul(class="menu")
 				li
-					a(class="button primary" ng-click="vm.ctrl.toggleCheckInDiv()") 
-						span(class="show-for-large") Checkin
+					a(class="button primary" ng-click="vm.ctrl.toggleDepositDiv()") 
+						span(class="show-for-large") Make a deposit
 						i(class="material-icons customIcon hide-for-large") add
 		// FILTER CONTROLLER
 		div(class="column small-9")
@@ -23,7 +23,7 @@ div(class="columns row")
 						li: select(ng-model="vm.model.filter.orderBy" ng-options="key as value for (key , value) in vm.model.filter.orderOptions" ng-init='vm.model.filter.orderBy="checkinTime"')
 	
 	// FILTER 
-	div(class="column" ng-show="vm.model.dom.filterDiv")
+	//div(class="column" ng-show="vm.model.dom.filterDiv")
 		div(class="borderT newBox row column")
 			div(class='marginB15 column small-12 large-9 paddingLR0 large-paddingR15')
 				legend {{ vm.model.dom.data.selected.filter.username}}
@@ -32,173 +32,95 @@ div(class="columns row")
 				legend {{ vm.model.dom.data.selected.filter.status}}
 				select(ng-model='vm.model.filter.myfilter.status' ng-options='status.value as status.label for status in vm.model.filter.statusOptions' ng-init='vm.model.filter.myfilter.status="1"' ng-change='vm.ctrl.filterPaginate()' name="filterStatus")
 	
-	// CHECK-IN
+	// MAKE A DEPOSIT FORM
 	div(class="column")
-		div(class="borderT newBox row column paddingB45" ng-show="vm.model.dom.checkin.checkinDiv")
-			
+		div(class="borderT newBox row column paddingB45" ng-show="vm.model.dom.deposit.depositDiv")
 			// SEARCH CUSTOMERS
 			div(class="row column")
-				form(ng-submit="vm.ctrl.checkin.searchCustomer()")
+				form(ng-submit="vm.ctrl.deposit.searchCustomer()")
 					div(class="row column")
-						label {{vm.model.dom.data.selected.checkin.search.label}}
-							input(type="text" placeholder="{{ vm.model.dom.data.selected.checkin.search.placeholder }}" ng-model='vm.model.search.checkin.username' required="true" ng-change='vm.ctrl.checkin.validateSearchInput()')
-					div(ng-show='vm.model.dom.checkin.search.message.notFound' class='marginB15')
+						label {{vm.model.dom.data.selected.deposit.search.label}}
+							input(type="text" placeholder="{{ vm.model.dom.data.selected.deposit.search.placeholder }}" ng-model='vm.model.search.deposit.username' required="true" ng-change='vm.ctrl.deposit.validateSearchInput()')
+					div(ng-show='vm.model.dom.deposit.search.message.notFound' class='marginB15')
 						div(class='callout alert')
-							p {{ vm.model.dom.data.selected.checkin.search.message.notFound + ' "' + vm.model.search.checkin.username + '". ' }}
+							p {{ vm.model.dom.data.selected.deposit.search.message.notFound + ' "' + vm.model.search.deposit.username + '". ' }}
 								span: a(href='/#!/customers') {{ vm.model.dom.data.selected.createCustomer}}			
 					//div(ng-show='vm.model.dom.messageSearchAlreadyCheckin' class='marginB15')
 						div(class='callout alert')
 							p {{vm.model.search.messageAlreadyCheckin}}
-					div(ng-show="vm.model.dom.checkin.customerSearchResultDiv" class="marginB15")
+					div(ng-show="vm.model.dom.deposit.customerSearchResult" class="marginB15")
 						div(class="table-scroll")
 							table(class="hover unstriped borderAll")
 								thead
 									tr
-										th {{vm.model.dom.data.selected.checkin.search.list.number}}
-										th {{vm.model.dom.data.selected.checkin.search.list.fullname}}
-										th {{vm.model.dom.data.selected.checkin.search.list.birthday}}
-										th {{vm.model.dom.data.selected.checkin.search.list.email}}
-										th {{vm.model.dom.data.selected.checkin.search.list.phone}}				
+										th {{vm.model.dom.data.selected.deposit.search.list.number}}
+										th {{vm.model.dom.data.selected.deposit.search.list.fullname}}
+										th {{vm.model.dom.data.selected.deposit.search.list.birthday}}
+										th {{vm.model.dom.data.selected.deposit.search.list.email}}
+										th {{vm.model.dom.data.selected.deposit.search.list.phone}}				
 								tbody
-									tr(ng-repeat='result in vm.model.search.checkin.customers' ng-click='vm.ctrl.checkin.selectCustomer($index)' class="pointerCursor")
+									tr(ng-repeat='result in vm.model.search.deposit.customers' ng-click='vm.ctrl.deposit.selectCustomer($index)' class="pointerCursor")
 										td {{ $index + 1 }}
 										td {{ result.fullname }}
 										td {{ result.birthday | date:'dd/MM/yyyy' }}
 										td {{ result.email[0] }}
 										td {{ result.phone[0] }}
 
-			// CHECK-IN FORM
-			form(ng-submit="vm.ctrl.checkin.confirm ()")
-				div(class="row column basicBox")
-					div(class="column row")
-						h3(class="paddingLR15 fontSize20 fontWeight600") Chọn dịch vụ
-					// SERVICE
-					div(class="column small-12")
-						label {{ vm.model.dom.data.selected.fieldService }}
-							select(ng-change='vm.ctrl.checkin.serviceChangeHandler ()' ng-model="vm.model.checkingin.occupancy.service" ng-options="s as s.label for s in vm.model.dom.data.selected.services track by s.name")
-
-					// PICK GROUP
-					div(class="column small-12" ng-if="vm.model.dom.checkin.privateGroupLeaderDiv && vm.model.temporary.groupPrivateLeaders && vm.model.temporary.groupPrivateLeaders.length > 1")
-						label {{vm.model.dom.data.selected.fieldChooseGroup}}
-							select(name="selectedGroup" ng-model="vm.model.temporary.selectedGroupPrivate" ng-options="leader as leader.groupName for leader in vm.model.temporary.groupPrivateLeaders track by leader._id" ng-change="vm.ctrl.checkin.selectedGroupChangeHandler ()")
-				// ORDER FORM
+			// MAKE A DEPOSIT FORM
+			form(ng-submit="vm.ctrl.deposit.confirm ()")
+				// SELECT ACCOUNTS
 				div(class='basicBox row column paddingTB15 marginB15')
-					// ADD ITEMS
+					// ADD ACCOUNT
 					div(class="column row")
-						h3(class="paddingLR15 fontSize20 fontWeight600") {{vm.model.dom.data.selected.checkin.product.title}}
+						h3(class="paddingLR15 fontSize20 fontWeight600") Chọn tài khoản trả trước
 					div(class="column row")
 						div(class="column large-8 small-12")
-							label {{vm.model.dom.data.selected.checkin.product.productName.label}}
-								select(ng-model="vm.model.temporary.checkin.item.name" ng-options="item.name as item.name for item in vm.model.dom.data.selected.items track by item.name")
+							label Tài khoản
+								select(ng-change='vm.ctrl.deposit.accountChangeHandler ()' ng-model="vm.model.temporary.depositing.account" ng-options="account as account.label[vm.model.dom.data.selected.modelLanguage] for account in vm.model.dom.data.selected.deposit.accounts")
 						div(class="column large-3 small-12")
-							label {{vm.model.dom.data.selected.checkin.product.quantity.label}}
-								input( ng-model="vm.model.temporary.checkin.item.quantity" string-to-number type="number" min='0')
+							label Ngày sử dụng
+								input( ng-model="vm.model.temporary.depositing.account.start" type="date")
 						div(class="column show-for-large large-1 iconAdd")
-							i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.addItem (); $event.preventDefault()') add
+							i(class="material-icons customIcon" ng-click='vm.ctrl.deposit.addAccount ()') add
 						div(class="column hide-for-large text-center")
-							a(class="button full-width-small" ng-click="vm.ctrl.checkin.addItem (); $event.preventDefault()") Add
-					// SELECTED ITEMS
+							a(class="button full-width-small" ng-click="vm.ctrl.deposit.addAccount ()") Add
+					// SELECTED ACCOUNT
 					div(class="row column")
 						div(class='column small-12 large-6')
-							table(ng-if='vm.model.checkingin.order.orderline.length > 0' class="unstriped")
+							table(ng-if='vm.model.depositing.accounts.length > 0' class="unstriped")
 								thead
 									tr
-										th {{ vm.model.dom.data.selected.checkin.product.header.product }}
-										th {{ vm.model.dom.data.selected.checkin.product.header.quantity }}
+										th Tài khoản
+										th Ngày sử dụng
 										th Delete
 
 								tbody 
-									tr(ng-repeat='ord in vm.model.checkingin.order.orderline track by ord._id')
-										td {{ ord.productName }}
-										td {{ ord.quantity }}
+									tr(ng-repeat='account in vm.model.depositing.accounts')
+										td {{ account.label.vn }}
+										td {{ account.start | date:'dd/MM/yyyy'}}
 										td(class='text-center deleteIcon')
-											i(class="material-icons customIcon" ng-click="vm.ctrl.checkin.removeItem ($index)") close
-				// CODES
-				div(class="row column basicBox")
-					div(class="column row")
-						h3(class="paddingLR15 fontSize20 fontWeight600") {{vm.model.dom.data.selected.checkin.promoteCode.title}}
-					div(class="column row")
-						div(class='column small-12')
-							label {{vm.model.dom.data.selected.checkin.promoteCode.label}}
-								select(ng-model="vm.model.temporary.checkin.codeName" ng-options="code.name as code.selectedLabel for code in vm.model.dom.data.selected.checkin.promoteCode.codes track by code.name" ng-change='vm.ctrl.checkin.addCode()')
+											i(class="material-icons customIcon" ng-click="vm.ctrl.deposit.removeAccount ($index)") close
 
+				// SELECT TEAM							
+				div(class='basicBox row column paddingTB15 marginB15')
 					div(class="column row")
-						div(class='column small-12 large-6')
-							table(ng-if='vm.model.checkingin.occupancy.promocodes.length > 0')
-								thead
-									tr
-										th Code
-										th Trạng thái
-										th 
-								tbody
-									tr(ng-repeat='code in vm.model.checkingin.occupancy.promocodes track by code.name')
-										td {{ code.name }}
-										td(class='{{vm.model.temporary.checkin.statusCode[code.status]}}') {{ vm.model.temporary.checkin.statusCode[code.status] }}
-										td(class='text-center deleteIcon')
-											i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.removeCode ($index)') close
+						h3(class="paddingLR15 fontSize20 fontWeight600") Mua chung
+					// PICK GROUP
+					div(class="column row")
+						div(class="column small-12 large-8")
+							label Nhóm
+								select(name="selectedGroup" ng-model="vm.model.temporary.selectedGroupPrivate" ng-options="leader as leader.groupName for leader in vm.model.temporary.groupPrivateLeaders track by leader._id" ng-change="vm.ctrl.checkin.selectedGroupChangeHandler ()")
+						div(class="column small-12 large-4")
+							label số lượng thành viên
+								input(type="number" ng-model="vm.model.depositing.group.number")
+
 
 				div(class="row column")
 					input(class="button" type="submit" value="Submit")
 					button(class="button float-right primary" ng-click='vm.ctrl.checkin.cancel ()') Cancel
-	
-	// EDIT CHECKED-IN (or confirm edit). DISABLE temporarily.
-	//div(class='reveal small' id='editModal' data-reveal data-animation-in="slide-in-down fast")
-		div(class='column row paddingTB15 text-center')
-			h4 Edit Confirmation
-		div(class='column row')
-			div(class="invoice")
-				div(class='row column')
-					div(class='column small-6')
-						p {{vm.model.dom.data.selected.invoiceFullname}}: {{ vm.model.customer.editedCheckedInCustomer.occupancy.customer.lastname}} {{ vm.model.customer.editedCheckedInCustomer.occupancy.customer.middlename}} {{ vm.model.customer.editedCheckedInCustomer.occupancy.customer.firstname}}
-					div(class='column small-6 text-right')
-						p {{vm.model.dom.data.selected.invoicePhone}}: {{ vm.model.customer.editedCheckedInCustomer.occupancy.customer.phone}}
-				div(class='priceSection')
-
-					//Main Product
-					div(class="borderT newBox row column")
-						div(class='row column paddingTB15')
-							div(class='column small-4 text-right')
-								p {{vm.model.dom.data.selected.invoiceMainService}}
-							div(class='column small-8 greenBorder')
-								div(class='row column small-12')
-									div(class='column small-6 paddingLR0 marginT0')
-										p {{ vm.model.products[vm.model.customer.editedCheckedInCustomer.occupancy.service.name]}}
-
-					// Group
-					div(class="row column" ng-if='(vm.model.customer.editedCheckedInCustomer.occupancy.service.name == "medium group private" || vm.model.customer.editedCheckedInCustomer.occupancy.service.name == "small group private") && vm.model.customer.editedCheckedInCustomer.occupancy.parent')
-						div(class='column small-4 text-right')
-							p {{vm.model.dom.data.selected.fieldCheckoutGroup}}
-						div(class='column small-8 greenBorder')
-							p {{vm.model.customer.groupName}}
-		div(class='column row')
-			div(class='column small-6')
-				input(class='button' type='submit' ng-click='vm.ctrl.edit()' value='Yes' data-close='')
-			div(class='column small-6 text-right')
-				input(class='button secondary' data-close='' type='submit' value='No')
-		button(class="close-button"  data-close='' aria-label="Close modal" type="button")
-			span(aria-hidden="true") &times;
-	
-	// EDIT FORM. DISABLE temporarily.
-	//div(class="column" ng-show="vm.model.dom.checkInEditDiv")
-		div(class='borderT newBox row column paddingLR15')
-			form(ng-submit='vm.ctrl.confirmEdit()')
-				h3 {{ vm.model.customer.editedCheckedInCustomer.occupancy.customer.lastname}} {{ vm.model.customer.editedCheckedInCustomer.occupancy.customer.middlename}} {{ vm.model.customer.editedCheckedInCustomer.occupancy.customer.firstname}}
-
-				//Main service for edit
-				div(class="row column")
-					label {{ vm.model.dom.data.selected.fieldService}}
-						select(name="selectedService" ng-model="vm.model.customer.editedCheckedInCustomer.occupancy.service.name" ng-options="key as value for (key , value) in vm.model.products")
-
-				//Choose Group
-				div(class="row column" ng-if='vm.model.customer.editedCheckedInCustomer.occupancy.service.name == "medium group private" || vm.model.customer.editedCheckedInCustomer.occupancy.service.name == "small group private"')
-					label {{vm.model.dom.data.selected.fieldChooseGroup}}
-						select(name="selectedService" ng-model="vm.model.customer.editedCheckedInCustomer.occupancy.parent" ng-options="key as value for (key , value) in vm.model.parents.options")
-				div(class="row column")
-					input(class="button" type="submit" value="Submit")
-					button(class="button float-right primary") Cancel
 
 	// CHECKED-IN LIST 
-	div(class="column" ng-show="vm.model.dom.checkedinList")
+	//div(class="column" ng-show="vm.model.dom.checkedinList")
 		div(class="table-scroll paddingT15 marginT15")
 			table(class="borderAll unstriped")
 				thead
@@ -251,7 +173,7 @@ div(class="columns row")
 			p {{vm.model.dom.data.selected.checkinList.body.message.notFound}}
 
 // CHECK-IN CONFIRM
-div(class="fullBox row column" ng-show='vm.model.dom.checkin.confirmDiv')
+//div(class="fullBox row column" ng-show='vm.model.dom.checkin.confirmDiv')
 	div(class="column small-12 text-center paddingTB20")
 		h2 GREEN SPACE
 		h3 Check-in confirmation
@@ -281,7 +203,7 @@ div(class="fullBox row column" ng-show='vm.model.dom.checkin.confirmDiv')
 			a(class="paddingR15 button float-right secondary" ng-click="vm.ctrl.checkin.closeConfirm (); $event.preventDefault()") Cancel
 
 // ORDER INVOICE
-div(class="fullBox row column" ng-show='vm.model.temporary.justCheckedin.order.orderline.length')
+//div(class="fullBox row column" ng-show='vm.model.temporary.justCheckedin.order.orderline.length')
 	div(class="column small-12 text-center paddingTB20")
 		h2 GREEN SPACE
 		h3 Order
@@ -319,7 +241,7 @@ div(class="fullBox row column" ng-show='vm.model.temporary.justCheckedin.order.o
 			a(class="paddingR15 button float-right secondary" ng-click='vm.ctrl.reset(); $event.preventDefault()') Cancel	
 
 // INVOICE version 0.0.0
-div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
+//div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 	div(class="column small-12 text-center paddingTB20")
 		h2 GREEN SPACE
 	div(class="column small-12 paddingB20")
@@ -372,38 +294,9 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 			a(class="paddingL15 button primary" ng-click="vm.ctrl.checkout.checkout()") Checkout
 			a(class="paddingR15 button float-right secondary" ng-click='vm.ctrl.reset()') Cancel
 	
-// Validate Reveal Form ************************************************************************//
 // Validate add same promote code
-div(id='addSameCode' class='reveal text-center small' data-reveal data-animation-in="slide-in-down fast")
+//div(id='addSameCode' class='reveal text-center small' data-reveal data-animation-in="slide-in-down fast")
 	div(class=' text-center paddingTB15 marginB15')
 		h5 Thêm trùng mã code
-	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
-			span(aria-hidden="true") &times;
-
-
-// CHECK-OUT CONFIRM MODAL - Deprecated
-//div(id='askCheckout' class='reveal small column row' data-reveal data-animation-in="slide-in-down fast")
-	div(class=' text-center paddingTB15 marginB15')
-		h2 Checkout confirmation
-		p Xác nhận checkout khách hàng {{ vm.model.checkingout.occurancy.customer.fullname }}
-	button(class="close-button" data-close='' aria-label="Close modal" type="button")
-			span(aria-hidden="true") &times;
-	div(class="row column")
-		div(class='column small-12 large-paddingLR0')
-			a(class="button primary" ng-click='vm.ctrl.checkout.checkout()') Confirm
-			a(class="paddingR15 button float-right secondary" ng-click='vm.ctrl.reset()' data-close='') Cancel			
-
-// Announce checkout successfull
-div(id='announceCheckoutSuccess' class='reveal small column row' data-reveal data-animation-in="slide-in-down fast")
-	div(class=' text-center paddingTB15 marginB15')
-		h2 Message from Green Space Tech
-		p Khách hàng {{ vm.model.checkingout.occurancy.customer.fullname }} đã checkout thành công!
-	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
-			span(aria-hidden="true") &times;
-
-// Announce edit successfull
-div(id='announceEditSuccess' class='reveal small column row' data-reveal data-animation-in="slide-in-down fast")
-	div(class=' text-center paddingTB15 marginB15')
-		h5 Bạn đã Edit thành công!
 	button(class="close-button"  data-close='' aria-label="Close modal" type="button")
 			span(aria-hidden="true") &times;

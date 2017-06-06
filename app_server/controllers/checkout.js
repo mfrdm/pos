@@ -4,7 +4,7 @@ var Promocodes = mongoose.model ('promocodes');
 var Orders = mongoose.model ('orders');
 var Customers = mongoose.model ('customers');
 var Occupancy = mongoose.model ('occupancy');
-var Accounts = mongoose.model ('accounts');
+var Deposits = mongoose.model ('deposits');
 
 module.exports = new Checkout();
 
@@ -25,7 +25,7 @@ function Checkout() {
 			// Be aware that the cus is plain javascript object
 			Customers.findOne ({_id: foundOcc.customer._id})
 				.populate ({
-					path: 'accounts',
+					path: 'deposits',
 					match: 	{
 						start: {$lte: new Date ()},
 						end: {$gte: new Date ()},
@@ -40,7 +40,7 @@ function Checkout() {
 					}
 
 					foundOcc = foundOcc.toObject ();
-					foundOcc.accounts = cus.accounts ? cus.accounts : [];
+					foundOcc.deposits = cus.deposits ? cus.deposits : [];
 					res.json ({data: foundOcc});
 				});
 			
@@ -52,32 +52,32 @@ function Checkout() {
 	// at this moment only allow paid by one account at a checkout time
 	// Apply only usage account, whose unit is hour
 	// return reduced total, usage
-	this.withdrawOneUsageHourAccount = function (req, res, next){
-		var accId = req.query.accId;
+	this.withdrawUsageHourAccount = function (req, res, next){
+		var depositId = req.query.depositId;
 		var unit = 'hour';
 		var occ = JSON.parse (req.query.occ);
 		occ = new Occupancy (occ);
 		var remain;
 
-		Accounts.findOne ({_id: accId}, function (err, acc){
+		Deposits.findOne ({_id: depositId}, function (err, deposit){
 			if (err) {
 				console.log (err);
 				next (err);
 			}
  			
-			if (acc){
-				var accAmountRemain = acc.amount;
-				var beforeWithdrawUsage = occ.usage;
-				occ.promocodes = Promocodes.removeDefaultCode (occ.promocodes);
-				occ.usage = acc.withdraw (occ.usage, unit, occ.service.name);
+			if (deposit){
+				var accAmountRemain = deposit.account.amount;
+				var oriUsage = occ.usage;
+				occ.promocodes = Promocodes.removeDefaultCode (occ.promocodes); // necessary to reset effect of default codes
+				occ.usage = deposit.withdraw (occ.usage, unit, occ.service.name);
 				occ.getTotal ();
 
-				console.log (occ.total, beforeWithdrawUsage - occ.usage, acc.amount)
+				// console.log (occ.total, oriUsage - occ.usage, deposit.account.amount)
 
 				res.json ({data: {
 					total: occ.total,
-					withdrawnUsage: Number((beforeWithdrawUsage - occ.usage).toFixed(1)),
-					accAmountRemain: acc.amount
+					withdraw: Number((oriUsage - occ.usage).toFixed(1)),
+					accountRemain: deposit.account.amount
 				}})
 			}
 			else{
@@ -140,15 +140,15 @@ function Checkout() {
 						// update acc if being used
 						// At this moment. Only one method is used at a time
 						if (occ.paymentMethod && occ.paymentMethod.length){
-							var account;
+							var deposit;
 							occ.paymentMethod.map (function (x, i, arr){
 								if (x.name == 'account'){
-									account = x;
+									deposit = x;
 								}
 							});
 
-							if (account){
-								Accounts.findOneAndUpdate ({_id: account.methodId}, {$inc: {amount: - account.amount}}, function (err, acc){
+							if (deposit){
+								Deposits.findOneAndUpdate ({_id: deposit.methodId}, {$inc: {amount: - deposit.amount}}, function (err, acc){
 									if (err){
 										console.log (err);
 										next (err);

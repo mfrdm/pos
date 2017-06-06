@@ -3,7 +3,7 @@ var chai = require ('chai');
 var chaiHttp = require ('chai-http');
 var server = require ('../../app');
 var mongoose = require ('mongoose');
-var Accounts = mongoose.model ('accounts');
+var Deposits = mongoose.model ('deposits');
 var Customers = mongoose.model ('customers'); 
 
 var should = chai.should ();
@@ -12,7 +12,7 @@ var moment = require ('moment');
 chai.use (chaiHttp);
 
 describe ('Create one account', function (){
-	var customer, accounts, newCustomer, newAcc;
+	var customer, deposits, newCustomer, newAcc;
 	beforeEach (function (done){
 		customer = {
 			firstname: 'A',
@@ -28,7 +28,7 @@ describe ('Create one account', function (){
 			checkinStatus: false,
 		};
 
-		accounts = [
+		deposits = [
 			{
 				amount: 24,
 				unit: 'hour',
@@ -54,7 +54,7 @@ describe ('Create one account', function (){
 
 			newCustomer = cus;
 
-			accounts.map (function (x, i, arr){
+			deposits.map (function (x, i, arr){
 				x.customer = {_id: cus._id}
 			});
 
@@ -64,7 +64,7 @@ describe ('Create one account', function (){
 
 	});
 
-	afterEach (function (){
+	afterEach (function (done){
 
 		Customers.remove ({_id: newCustomer._id}, function (err, data){
 			if (err){
@@ -72,7 +72,7 @@ describe ('Create one account', function (){
 				return
 			}
 
-			Accounts.remove ({_id: newAcc._id}, function (err, result){
+			Deposits.remove ({_id: newAcc._id}, function (err, result){
 				if (err) {
 					// console.log (err)
 					return
@@ -86,8 +86,8 @@ describe ('Create one account', function (){
 
 	it ('should create a 1-day commbo account and update customer successfully', function (done){
 		chai.request (server)
-			.post ('/accounts/create')
-			.send ({data: accounts[0]})
+			.post ('/deposits/create')
+			.send ({data: deposits[0]})
 			.end (function (err, res){
 				if (err) console.log (err);
 
@@ -102,7 +102,7 @@ describe ('Create one account', function (){
 					}
 
 					foundCus.should.to.exist;
-					foundCus.accounts.should.include (newAcc._id);
+					foundCus.deposits.should.include (newAcc._id);
 					done ();
 				})
 
@@ -111,8 +111,8 @@ describe ('Create one account', function (){
 
 	it ('should create a 3-hour-1-month commbo account and update customer successfully', function (done){
 		chai.request (server)
-			.post ('/accounts/create')
-			.send ({data: accounts[0]})
+			.post ('/deposits/create')
+			.send ({data: deposits[0]})
 			.end (function (err, res){
 				if (err) console.log (err);
 
@@ -127,7 +127,7 @@ describe ('Create one account', function (){
 					}
 
 					foundCus.should.to.exist;
-					foundCus.accounts.should.include (newAcc._id);
+					foundCus.deposits.should.include (newAcc._id);
 					done ();
 				})
 
@@ -136,7 +136,17 @@ describe ('Create one account', function (){
 
 	// not test since similar to 
 	it ('should create a x hours account and update customer successfully')
-})
+
+	it ('should create an account and include group information when customers deposit together', function (){
+
+	})
+
+	it ('should create an account an calculate correct total a customer have to pay when deposit by his own or ')
+
+	it ('should create an account an calculate correct total a customer have to pay when deposit with 3')
+});
+
+
 
 describe ('update one account', function (){
 	
