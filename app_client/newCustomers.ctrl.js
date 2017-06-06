@@ -26,12 +26,18 @@
 			dom:{
 				register: {
 					confirmDiv: false,
-					registerDiv: true,
+					registerDiv: false,
 					existedCustomerDiv:false,
 					customerExistResultDiv: false,
 				},
 				customerSearchResultDiv: false,
 				data:{},
+				search:{
+					message:{}
+				},
+				customer:{
+					info:false
+				}
 			},
 			search: {
 				register: {
@@ -44,7 +50,8 @@
 			},
 			existedCustomer:{
 				customers:[]
-			}
+			},
+			customer:{}
 		};
 
 		vm.ctrl = {
@@ -184,12 +191,78 @@
 					email:'Email',
 					phone:'Điện thoại'
 				}
+			},
+			search:{
+				label:{
+					username:'Tên/Điện thoại/Email'
+				},
+				placeholder:{
+					username: 'Tên/Điện thoại/Email'
+				},
+				message:{
+					notFound:'Không có kết quả'
+				}
 			}
 		}
 
 		vm.model.dom.data.selected = {};
 
 		vm.model.dom.data.selected = vm.model.dom.data.vn
+
+		// Search
+		vm.ctrl.searchCustomer =  function (){
+			vm.ctrl.showLoader ();
+			CustomerService.readCustomers (vm.model.search.username).then(
+				function success (res){
+					vm.ctrl.hideLoader ();
+					if (!res.data){
+						// unexpected result. should never exist
+					}
+					else{
+						if (res.data.data.length){
+							vm.model.search.customers = res.data.data;
+							vm.model.dom.search.message.notFound = false;
+							vm.model.dom.customerSearchResult = true;
+						}
+						else{
+							vm.model.dom.search.message.notFound = true;
+							vm.model.dom.customerSearchResult = false;
+						}
+					}
+				}, 
+				function error (err){
+					vm.ctrl.hideLoader ();
+					console.log(err)
+				}
+			);
+		};
+
+		vm.ctrl.clearSearchInput = function(){
+			if(!vm.model.search.username){
+				if(vm.model.customer){
+					vm.model.customer = {};
+				}
+				vm.ctrl.resetSearchCustomerDiv()
+				vm.model.dom.search.message.notFound = false
+			}
+		}
+
+		vm.ctrl.selectCustomer = function (index){
+			vm.model.customer = vm.model.search.customers [index]
+
+			if (vm.model.search.customers [index].checkinStatus){
+				vm.model.occupancyId = vm.model.search.customers [index].occupancy.pop ();
+			}
+
+			vm.ctrl.resetSearchCustomerDiv ();
+
+			vm.model.dom.customer.info = true;
+		};
+
+		vm.ctrl.resetSearchCustomerDiv = function (){
+			vm.model.dom.customerSearchResult = false;
+			vm.model.search.customers = [];
+		};
 
 		vm.ctrl.toggleRegisterDiv = function(){
 			if (!vm.model.dom.register.registerDiv) {
@@ -249,7 +322,6 @@
 			vm.model.register.isStudent = vm.model.register.edu.school ? true : false;
 		}
 
-		
 		vm.ctrl.register.confirm = function(){
 			// vm.ctrl.register.sanatizeRawData (vm.model.register);	
 			vm.ctrl.register.showConfirm ();

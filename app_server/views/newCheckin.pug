@@ -90,12 +90,10 @@ div(class="columns row")
 						div(class="column large-8 small-12")
 							label {{vm.model.dom.data.selected.checkin.product.productName.label}}
 								select(ng-model="vm.model.temporary.checkin.item.name" ng-options="item.name as item.name for item in vm.model.dom.data.selected.items track by item.name")
-						div(class="column large-3 small-12")
+						div(class="column large-2 small-12")
 							label {{vm.model.dom.data.selected.checkin.product.quantity.label}}
 								input( ng-model="vm.model.temporary.checkin.item.quantity" string-to-number type="number" min='0')
-						div(class="column show-for-large large-1 iconAdd")
-							i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.addItem (); $event.preventDefault()') add
-						div(class="column hide-for-large text-center")
+						div(class="column large-2 small-12 text-center")
 							a(class="button full-width-small" ng-click="vm.ctrl.checkin.addItem (); $event.preventDefault()") Add
 					// SELECTED ITEMS
 					div(class="row column")
@@ -141,61 +139,44 @@ div(class="columns row")
 					input(class="button" type="submit" value="Submit")
 					button(class="button float-right primary" ng-click='vm.ctrl.checkin.cancel ()') Cancel
 	
-	// EDIT CHECKED-IN (or confirm edit). DISABLE temporarily.
-	//div(class='reveal small' id='editModal' data-reveal data-animation-in="slide-in-down fast")
-		div(class='column row paddingTB15 text-center')
-			h4 Edit Confirmation
-		div(class='column row')
-			div(class="invoice")
-				div(class='row column')
-					div(class='column small-6')
-						p {{vm.model.dom.data.selected.invoiceFullname}}: {{ vm.model.customer.editedCheckedInCustomer.occupancy.customer.lastname}} {{ vm.model.customer.editedCheckedInCustomer.occupancy.customer.middlename}} {{ vm.model.customer.editedCheckedInCustomer.occupancy.customer.firstname}}
-					div(class='column small-6 text-right')
-						p {{vm.model.dom.data.selected.invoicePhone}}: {{ vm.model.customer.editedCheckedInCustomer.occupancy.customer.phone}}
-				div(class='priceSection')
-
-					//Main Product
-					div(class="borderT newBox row column")
-						div(class='row column paddingTB15')
-							div(class='column small-4 text-right')
-								p {{vm.model.dom.data.selected.invoiceMainService}}
-							div(class='column small-8 greenBorder')
-								div(class='row column small-12')
-									div(class='column small-6 paddingLR0 marginT0')
-										p {{ vm.model.products[vm.model.customer.editedCheckedInCustomer.occupancy.service.name]}}
-
-					// Group
-					div(class="row column" ng-if='(vm.model.customer.editedCheckedInCustomer.occupancy.service.name == "medium group private" || vm.model.customer.editedCheckedInCustomer.occupancy.service.name == "small group private") && vm.model.customer.editedCheckedInCustomer.occupancy.parent')
-						div(class='column small-4 text-right')
-							p {{vm.model.dom.data.selected.fieldCheckoutGroup}}
-						div(class='column small-8 greenBorder')
-							p {{vm.model.customer.groupName}}
-		div(class='column row')
-			div(class='column small-6')
-				input(class='button' type='submit' ng-click='vm.ctrl.edit()' value='Yes' data-close='')
-			div(class='column small-6 text-right')
-				input(class='button secondary' data-close='' type='submit' value='No')
-		button(class="close-button"  data-close='' aria-label="Close modal" type="button")
-			span(aria-hidden="true") &times;
-	
 	// EDIT FORM. DISABLE temporarily.
-	//div(class="column" ng-show="vm.model.dom.checkInEditDiv")
-		div(class='borderT newBox row column paddingLR15')
-			form(ng-submit='vm.ctrl.confirmEdit()')
-				h3 {{ vm.model.customer.editedCheckedInCustomer.occupancy.customer.lastname}} {{ vm.model.customer.editedCheckedInCustomer.occupancy.customer.middlename}} {{ vm.model.customer.editedCheckedInCustomer.occupancy.customer.firstname}}
-
+	div(class="column" ng-show="vm.model.dom.checkInEditDiv")
+		div(class='borderT row column paddingTB45 paddingLR45 fullBox')
+			form(ng-submit='vm.ctrl.edit.confirm()')
 				//Main service for edit
 				div(class="row column")
-					label {{ vm.model.dom.data.selected.fieldService}}
-						select(name="selectedService" ng-model="vm.model.customer.editedCheckedInCustomer.occupancy.service.name" ng-options="key as value for (key , value) in vm.model.products")
+					label Service
+						select(name="selectedService" ng-model="vm.model.editedCustomer.service" ng-options="s as s.label for s in vm.model.dom.data.selected.services track by s.name" ng-change='vm.ctrl.edit.selectService()')
 
-				//Choose Group
-				div(class="row column" ng-if='vm.model.customer.editedCheckedInCustomer.occupancy.service.name == "medium group private" || vm.model.customer.editedCheckedInCustomer.occupancy.service.name == "small group private"')
-					label {{vm.model.dom.data.selected.fieldChooseGroup}}
-						select(name="selectedService" ng-model="vm.model.customer.editedCheckedInCustomer.occupancy.parent" ng-options="key as value for (key , value) in vm.model.parents.options")
+				// PICK GROUP
+				div(class="row column" ng-if="vm.model.dom.edit.privateGroupLeaderDiv && vm.model.temporary.groupPrivateLeaders && vm.model.temporary.groupPrivateLeaders.length > 1")
+					label Group
+						select(name="selectedGroup" ng-model="vm.model.temporary.edit.selectedGroupPrivate" ng-options="leader as leader.groupName for leader in vm.model.temporary.groupPrivateLeaders track by leader._id" ng-change="vm.ctrl.edit.selectGroup ()")
+				// Code
+				div(class="column row")
+					h3(class="fontSize20 fontWeight600") {{vm.model.dom.data.selected.checkin.promoteCode.title}}
+				div(class="column row")
+					div(class='column row small-12')
+						label {{vm.model.dom.data.selected.checkin.promoteCode.label}}
+							select(ng-model="vm.model.temporary.checkin.codeName" ng-options="code.name as code.selectedLabel disable when code.disabled for code in vm.model.dom.data.selected.checkin.promoteCode.codes track by code.name" ng-change='vm.ctrl.edit.addCode()')
+
+				div(class="column row")
+					div(class='column small-12 large-6')
+						table(ng-if='vm.model.editedCustomer.promocodes.length > 0')
+							thead
+								tr
+									th Code
+									th Trạng thái
+									th 
+							tbody
+								tr(ng-repeat='code in vm.model.editedCustomer.promocodes track by code.name')
+									td {{ code.name }}
+									td(class='{{vm.model.temporary.checkin.statusCode[code.status]}}') {{ vm.model.temporary.checkin.statusCode[code.status] }}
+									td(class='text-center deleteIcon')
+										i(class="material-icons customIcon" ng-click='vm.ctrl.edit.removeCode ()') close
 				div(class="row column")
 					input(class="button" type="submit" value="Submit")
-					button(class="button float-right primary") Cancel
+					button(class="button float-right primary" ng-click='vm.ctrl.edit.close()') Cancel
 
 	// CHECKED-IN LIST 
 	div(class="column" ng-show="vm.model.dom.checkedinList")
@@ -212,6 +193,7 @@ div(class="columns row")
 						th {{vm.model.dom.data.selected.checkinList.header.checkoutHour}}
 						th {{vm.model.dom.data.selected.checkinList.header.service}}
 						th Checkout
+						th Edit
 						th(ng-if='vm.model.dom.note') Note
 						
 						//th {{vm.model.dom.data.selected.headerEdit}}
@@ -228,11 +210,10 @@ div(class="columns row")
 						td
 							button(type="button" ng-if='occupancy.status == 1' class="primary button" ng-click="vm.ctrl.checkout.getInvoice (occupancy)") Checkout
 							button(type='button' ng-if='occupancy.status == 2' class="disabled button") Checkout
-						td(ng-if='occupancy.status != 1') {{occupancy.note}}
-
-						//td
-							button(type="button" ng-if='occupancy.status == 1' class="primary button" ng-click="vm.ctrl.checkin.update (occupancy)") Edit
+						td
+							button(type="button" ng-if='occupancy.status == 1' class="primary button" ng-click="vm.ctrl.edit.edit (occupancy)") Edit
 							button(type='button' ng-if='occupancy.status == 2' class="disabled button") Edit
+						td(ng-if='occupancy.status != 1') {{occupancy.note}}
 			div(ng-if='vm.model.temporary.displayedList.data.length > vm.model.checkedinList.pagination.itemsEachPages')
 				ul(class="pagination text-center" role="navigation" aria-label="Pagination")
 					li(class="pagination-previous disabled") Previous

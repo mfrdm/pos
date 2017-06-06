@@ -52,7 +52,6 @@
 				},
 				filterDiv: true,	
 				data: {}//data about translate
-
 			},
 			temporary: {
 				ordering: {
@@ -501,7 +500,19 @@
 
 		vm.ctrl.reset = function (){
 			$route.reload ();
-		};		
+		};	
+
+		vm.ctrl.resetInvoice = function(){
+			vm.model.dom.order.confirm = false;
+			vm.model.dom.orderDiv = true;
+			vm.model.search.order.username = ''
+			vm.model.dom.order.search.message.notFound = false
+			vm.model.temporary.ordering.item.name = ''
+			vm.model.temporary.ordering.item.quantity = null
+			vm.model.ordering.orderline = []
+			vm.model.ordering.customer = {}
+			vm.model.temporary.ordering.addedItem = []
+		}
 
 		////////////////////////////// INITIALIZE ///////////////////////////////		
 		angular.element(document.getElementById ('mainContentDiv')).ready(function () {

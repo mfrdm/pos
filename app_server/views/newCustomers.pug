@@ -44,7 +44,7 @@ div(class="row columns")
 
 	// CREATE CUSTOMER FORM						
 	div(class="column" ng-show='vm.model.dom.register.registerDiv')
-		form(class="borderT newBox row column" ng-submit='vm.ctrl.register.checkExist()')
+		form(class="borderT row column paddingTB45 paddingLR45 fullBox" ng-submit='vm.ctrl.register.checkExist()')
 			div(class="row column")
 				div(class="column small-12 large-4 large-paddingR15 paddingLR0")
 					label {{vm.model.dom.data.selected.register.customer.lastname}}
@@ -97,6 +97,30 @@ div(class="row columns")
 			div(class="row column paddingT15")
 				input(class="button" type="submit" value="Submit")
 				a(class="button float-right" ng-click="vm.ctrl.reset()") Cancel
+	// SEARCH CUSTOMER
+	div(class="column paddingT15")
+		form(ng-submit="vm.ctrl.searchCustomer()")
+			div(class="row column")
+				label {{ vm.model.dom.data.selected.search.label.username }}
+					input(type="text" placeholder="{{ vm.model.dom.data.selected.search.placeholder.username }}" ng-model='vm.model.search.username' required="true" ng-change='vm.ctrl.clearSearchInput()')
+			div(ng-show='vm.model.dom.search.message.notFound' class='marginB15')
+				div(class='callout alert')
+					p {{ vm.model.dom.data.selected.search.message.notFound + ' "' + vm.model.search.username + '". ' }}
+			div(ng-show="vm.model.dom.customerSearchResult" class="marginB15")
+				div(class="table-scroll")
+					table(class="hover unstriped borderAll")
+						thead
+							tr
+								th {{vm.model.dom.data.selected.search.list.number}}
+								th {{vm.model.dom.data.selected.search.list.fullname}}
+								th {{vm.model.dom.data.selected.search.list.email}}
+								th {{vm.model.dom.data.selected.search.list.phone}}				
+						tbody
+							tr(ng-repeat='result in vm.model.search.customers' ng-click='vm.ctrl.selectCustomer($index)' class="pointerCursor")
+								td {{ $index + 1 }}
+								td {{ result.fullname }}
+								td {{ result.email[0] }}
+								td {{ result.phone[0] }}
 
 // CONFRIM CREATE A CUSTOMER
 div(class="fullBox row column" ng-show='vm.model.dom.register.confirmDiv')
@@ -142,19 +166,26 @@ div(class="fullBox row column" ng-show='vm.model.dom.register.successDiv')
 			a(class="button" ng-click="vm.ctrl.checkin()") Check-in
 			a(class="button float-right secondary" ng-click="vm.ctrl.reset ()") Close		
 
-// SUCCESS MESSAGE  - deprecated
-div(id='createAccountSuccess' class='reveal paddingAll0' data-reveal data-animation-in="slide-in-down fast")
-	div(class="row column text-center paddingTB15 marginB15 callout success borderAll0")
-		h2 Success
-		p Tạo tài khoản khách hàng thành công!
-	div(class="row column")
-		a(class="button" ng-click="vm.ctrl.checkin()") Check-in
-		a(class="button float-right secondary" data-close='' aria-label="Close modal" ng-click="vm.ctrl.reset ()") Close
-
-//Announce create fail
-div(id='createAccountFailure' class='reveal text-center paddingAll0' data-reveal data-animation-in="slide-in-down fast")
-	div(class="row column paddingTB15 marginB15 callout alert borderAll0")
-		h2 Failure
-		p Tạo tài khoản khách hàng thất bại!
-	div(class="row column")
-		a(class="button secondary" data-close='' aria-label="Close modal" ng-click="vm.ctrl.reset ()") Close
+// Customer Info
+div(class="fullBox row column" ng-show='vm.model.dom.customer.info')
+	div(class="column small-12 text-center paddingTB20")
+		h2 GREEN SPACE
+		h3 Thông tin khách hàng
+	div(class='column small-12 large-6 large-push-3 text-center')
+		table
+			tr
+				th Fullname
+				td {{vm.model.customer.fullname}}
+			tr
+				th Birthday
+				td {{vm.model.customer.birthday | date:'dd-MM-yyyy'}}
+			tr
+				th Phone
+				td {{vm.model.customer.phone[0]}}
+			tr
+				th Email
+				td {{vm.model.customer.email[0]}}
+	div(class='column small-12 paddingB20')
+		div(class="column small-12 large-6 large-push-3")
+			a(class="button disabled") Edit
+			a(class="button float-right secondary" ng-click="vm.ctrl.reset ()") Close

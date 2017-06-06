@@ -30,8 +30,8 @@ describe('Controller: NewCheckinCtrl', function() {
     var mockPromoteCodes = [
         { "_id": "592e3e0b4eb93492334f27d5", "services": ["all"], "name": "studentprice", "start": "2017-05-06T17:00:00Z", "end": "2018-05-06T17:00:00Z", "desc": "10,000 VND for common service. Only for student", "codeType": 2, "createdAt": "2017-05-31T03:52:43.392Z", "conflict": [], "override": [], "excluded": true, "label": { "vn": "Common - Giá sinh viên" }, "priorxity": 1 },
         { "_id": "592e3e0b4eb93492334f27d6", "services": ["medium group private", "small group private"], "name": "privatediscountprice", "start": "2017-05-06T17:00:00Z", "end": "2018-05-06T17:00:00Z", "desc": "discount after first hour for private service. Small=120,000. Medium=200,000. Large=450,000.", "codeType": 2, "createdAt": "2017-05-23T15:06:47.822Z", "conflict": [], "override": [], "excluded": true, "label": { "vn": "Private - Giảm giá sau 1 giờ" }, "priorxity": 1 },
-		{ "_id": "592e3e0b4eb93492334f27d7", "services": ["group common", "individual common"], "name": "mar05", "start": "2017-05-06T17:00:00Z", "end": "2017-05-31T17:00:00Z", "desc": "1 free hour for group or individual common. Applied to everyone", "codeType": 1, "createdAt": "2017-05-31T03:52:43.392Z", "conflict": [], "override": [], "excluded": false, "label": { "vn": "Common - MAR05" }, "priorxity": 2 },
-		{ "_id" : "592e3e0b4eb93492334f27d8", "services" : [ "group common", "individual common" ], "name" : "gs05", "start" : "2017-05-06T17:00:00Z", "end" : "2017-05-31T17:00:00Z", "desc" : "1 free hour for group or individual common. Applied to customers visxit GS in the first week", "codeType" : 1, "createdAt" : "2017-05-31T03:52:43.392Z", "conflict" : [ ], "override" : [ ], "excluded" : false, "label" : { "vn" : "Common - GS05" }, "priorxity" : 2 }
+        { "_id": "592e3e0b4eb93492334f27d7", "services": ["group common", "individual common"], "name": "mar05", "start": "2017-05-06T17:00:00Z", "end": "2017-05-31T17:00:00Z", "desc": "1 free hour for group or individual common. Applied to everyone", "codeType": 1, "createdAt": "2017-05-31T03:52:43.392Z", "conflict": [], "override": [], "excluded": false, "label": { "vn": "Common - MAR05" }, "priorxity": 2 },
+        { "_id": "592e3e0b4eb93492334f27d8", "services": ["group common", "individual common"], "name": "gs05", "start": "2017-05-06T17:00:00Z", "end": "2017-05-31T17:00:00Z", "desc": "1 free hour for group or individual common. Applied to customers visxit GS in the first week", "codeType": 1, "createdAt": "2017-05-31T03:52:43.392Z", "conflict": [], "override": [], "excluded": false, "label": { "vn": "Common - GS05" }, "priorxity": 2 }
     ]
 
     var mockSuccessfulCheckin = {
@@ -78,6 +78,79 @@ describe('Controller: NewCheckinCtrl', function() {
         "createdAt": "2017-05-15T07:40:17.132Z",
         "label": "Cá nhân"
     }
+
+    var mockEditDataReturn = {
+        "customer": {
+            "fullname": "LÊ THỊ DUYÊN",
+            "_id": "5924168b164cb9030cee9509",
+            "phone": "0904543572",
+            "email": "duyenlt.nevents@gmail.com",
+            "isStudent": true
+        },
+        "promocodes": [{
+            "_id": "592e3e0b4eb93492334f27da",
+            "name": "v01h06",
+            "codeType": 1,
+            "priority": 2,
+            "override": [],
+            "services": [
+                "group common",
+                "individual common"
+            ],
+            "status": 3
+        }],
+        "service": {
+            "_id": "59195b6103476b069405e57f",
+            "name": "individual common",
+            "price": 15000,
+            "category": 1,
+            "__v": 0,
+            "updatedAt": [],
+            "createdAt": "2017-05-15T07:40:17.132Z",
+            "label": "Cá nhân"
+        },
+    }
+
+    var mockBeforeEditData = [{
+        "customer": {
+            "fullname": "LÊ THỊ DUYÊN",
+            "_id": "5924168b164cb9030cee9509",
+            "phone": "0904543572",
+            "email": "duyenlt.nevents@gmail.com",
+            "isStudent": true
+        },
+        "promocodes": [],
+        "service": {
+            "_id": "59195b6103476b069405e57f",
+            "name": "group common",
+            "price": 15000,
+            "category": 1,
+            "__v": 0,
+            "updatedAt": [],
+            "createdAt": "2017-05-15T07:40:17.132Z",
+            "label": "Nhóm chung"
+        },
+    },{
+        "customer": {
+            "fullname": "LÊ THỊ DUYÊN",
+            "_id": "5924168b164cb9030cee9509",
+            "phone": "0904543572",
+            "email": "duyenlt.nevents@gmail.com",
+            "isStudent": true
+        },
+        "promocodes": [],
+        "parent":"59263d72a74493116b6fe1ab",
+        "service": {
+            "_id": "59195b6103476b069405e57f",
+            "name": "group common",
+            "price": 15000,
+            "category": 1,
+            "__v": 0,
+            "updatedAt": [],
+            "createdAt": "2017-05-15T07:40:17.132Z",
+            "label": "Nhóm chung"
+        },
+    }]
 
     beforeEach(module('posApp'));
     beforeEach(inject(
@@ -129,14 +202,14 @@ describe('Controller: NewCheckinCtrl', function() {
     }));
 
     // describe ('testing', function (){
-    // 	xit ('should reset change after reload', function (){
-    // 		var layout = createLayout();
-    // 		var vm = createController ();
+    //  xit ('should reset change after reload', function (){
+    //      var layout = createLayout();
+    //      var vm = createController ();
 
-    // 		expect(vm.model.testChange).toEqual ('1234');
-    // 		vm.ctrl.reset ();
-    // 		expect(vm.model.testChange).toEqual ('xxxx');			
-    // 	})
+    //      expect(vm.model.testChange).toEqual ('1234');
+    //      vm.ctrl.reset ();
+    //      expect(vm.model.testChange).toEqual ('xxxx');           
+    //  })
 
     // })
 
@@ -540,34 +613,34 @@ describe('Controller: NewCheckinCtrl', function() {
             })
 
             // xit ('should remove xitem in check-in form when click delete', function(){
-            // 	// Get list xitems
-            // 	$httpBackend.when ('GET', '/api/products').respond ({
-            // 		data: productsList
-            // 	});
-            // 	var layout = createLayout();
-            // 	var vm = createController();
-            // 	vm.model.dom.checkin.checkinDiv = false;
-            // 	vm.ctrl.toggleCheckInDiv()
-            // 	$httpBackend.flush();
+            //  // Get list xitems
+            //  $httpBackend.when ('GET', '/api/products').respond ({
+            //      data: productsList
+            //  });
+            //  var layout = createLayout();
+            //  var vm = createController();
+            //  vm.model.dom.checkin.checkinDiv = false;
+            //  vm.ctrl.toggleCheckInDiv()
+            //  $httpBackend.flush();
 
-            // 	// Select customer
-            // 	$httpBackend.when ('GET', /\/checkin\/search-customers.*/).respond ({
-            // 		data: mockCustomer
-            // 	});
+            //  // Select customer
+            //  $httpBackend.when ('GET', /\/checkin\/search-customers.*/).respond ({
+            //      data: mockCustomer
+            //  });
 
-            // 	vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-            // 	vm.ctrl.checkin.searchCustomer();
-            // 	$httpBackend.flush();
-            // 	vm.ctrl.checkin.selectCustomer(0);
+            //  vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
+            //  vm.ctrl.checkin.searchCustomer();
+            //  $httpBackend.flush();
+            //  vm.ctrl.checkin.selectCustomer(0);
 
-            // 	// Assume have already xitem in orderline
-            // 	vm.model.temporary.checkin.selectedxitems = ['7up']
-            // 	vm.model.checkingin.order.orderline = mockOrderline;
+            //  // Assume have already xitem in orderline
+            //  vm.model.temporary.checkin.selectedxitems = ['7up']
+            //  vm.model.checkingin.order.orderline = mockOrderline;
 
-            // 	// Delete xitem
-            // 	vm.ctrl.checkin.removexitem(0)
+            //  // Delete xitem
+            //  vm.ctrl.checkin.removexitem(0)
 
-            // 	expect(vm.model.checkingin.order.orderline.length).toEqual(0);
+            //  expect(vm.model.checkingin.order.orderline.length).toEqual(0);
 
             // })
             xit('should remove xitem names in temporary object and xitems in orderline', function() {
@@ -675,8 +748,8 @@ describe('Controller: NewCheckinCtrl', function() {
                 vm.ctrl.checkin.addCode();
             })
 
-            it('should delete code when click delete button', function(){
-            	$httpBackend.when('GET', '/promocodes/').respond({
+            xit('should delete code when click delete button', function() {
+                $httpBackend.when('GET', '/promocodes/').respond({
                     data: mockPromoteCodes
                 });
                 var layout = createLayout();
@@ -698,8 +771,8 @@ describe('Controller: NewCheckinCtrl', function() {
                 vm.model.temporary.checkin.codeName = vm.model.dom.data.selected.checkin.promoteCode.codes[0].name;
                 vm.ctrl.checkin.addCode();
 
-                
-                vm.ctrl.checkin.removeCode ();
+
+                vm.ctrl.checkin.removeCode();
                 console.log(vm.model.checkingin.occupancy.promocodes)
                 expect(vm.model.checkingin.occupancy.promocodes).toEqual([])
                 expect(vm.model.temporary.checkin.codeName).toEqual('')
@@ -751,14 +824,49 @@ describe('Controller: NewCheckinCtrl', function() {
             })
         })
 
+        describe('Edit', function() {
+
+            it('should open edit form when click button edit', function() {
+                var layout = createLayout();
+                var vm = createController();
+                // Click button
+                vm.ctrl.edit.edit(mockBeforeEditData[0]);
+                expect(vm.model.dom.checkInEditDiv).toBeTruthy();
+            })
+
+            it('should close edit form when click cancel', function(){
+                var layout = createLayout();
+                var vm = createController();
+                // Click button
+                vm.ctrl.edit.close();
+                expect(vm.model.dom.checkInEditDiv).toBeFalsy();
+            })
+
+            it('should assign service name, promocodes', function() {
+                var layout = createLayout();
+                var vm = createController();
+                vm.ctrl.edit.edit(mockBeforeEditData[0]);
+                expect(vm.model.editedCustomer.service.name).toEqual('group common')
+            })
+
+            it('should assign group leader if have', function(){
+                var layout = createLayout();
+                var vm = createController();
+                vm.model.checkedinList.data = occupancyList;
+                vm.ctrl.checkin.getGroupPrivateLeader()
+                console.info(vm.model.temporary.groupPrivateLeaders)
+            })
+
+        })
+
         describe('Confirm checkin', function() {
             xit('should display confirm modal when user click submxit in check-in form and code, if exist, is valid', function() {
                 // Load page
                 // $httpBackend.when ('GET', /\/checkin.*/).respond ({
-                // 	data: occupancyList
+                //  data: occupancyList
                 // });
                 // $httpBackend.when ('GET', '/promocodes/').respond ({
-                // 	data: mockPromoteCodes
+                //  data: mockPromoteCodes
                 // });
                 $httpBackend.when('GET', '/api/products').respond({
                     data: productsList
