@@ -304,6 +304,13 @@
 			vm.model.search.booking.customers = [];
 			vm.model.dom.booking.bookingDiv = false;
 			vm.model.search.booking.username = ''
+			vm.model.temporary.booking.checkinDate = '';
+			vm.model.temporary.booking.checkinHour = '';
+			vm.model.temporary.booking.checkinMin = '';
+			vm.model.temporary.booking.checkinDuration = '';
+			vm.model.booking.note = '';
+			vm.model.booking.service = {};
+			vm.model.booking.quantity = 1
 		}
 
 		vm.ctrl.booking.resetSearchCustomerDiv = function (){
@@ -323,6 +330,17 @@
 
 		vm.ctrl.booking.closeConfirm = function (){
 			vm.model.dom.booking.confirmDiv = false;
+			vm.model.dom.booking.bookingDiv = true;
+			vm.model.dom.booking.customerSearchResultDiv = false;
+			vm.model.search.booking.customers = [];
+			vm.model.search.booking.username = '';
+			vm.model.temporary.booking.checkinDate = '';
+			vm.model.temporary.booking.checkinHour = '';
+			vm.model.temporary.booking.checkinMin = '';
+			vm.model.temporary.booking.checkinDuration = '';
+			vm.model.booking.note = '';
+			vm.model.booking.service = {};
+			vm.model.booking.quantity = 1
 		}
 
 		vm.ctrl.booking.confirm = function (){

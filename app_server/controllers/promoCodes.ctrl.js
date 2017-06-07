@@ -48,7 +48,7 @@ function PromoCodesCtrl() {
 			excluded: false,
 		};
 
-		PromoCodes.find (conditions, {name: 1, label: 1, codeType: 1, conflict: 1, override: 1}, function (err, foundCodes){
+		PromoCodes.find (conditions, {name: 1, label: 1, codeType: 1, conflict: 1, override: 1, services:1}, function (err, foundCodes){
 			if (err){
 				next (err);
 				return
