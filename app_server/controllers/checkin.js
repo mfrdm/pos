@@ -15,7 +15,7 @@ function Checkin() {
 	this.validatePromocodes = function (req, res, next){
 		var q = req.query;
 
-		var query = Promocodes.find ({name: {$in: q.codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}, excluded: false}, {name: 1, conflicted: 1, codeType: 1, override: 1, priority: 1, services: 1});
+		var query = Promocodes.find ({name: {$in: q.codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}, excluded: false}, {name: 1, conflicted: 1, codeType: 1, override: 1, priority: 1, services: 1, label:1});
 
 		query.$where ('this.services.indexOf ("' + q.service.toLowerCase () + '") != -1 || this.services.indexOf ("all") != -1');
 

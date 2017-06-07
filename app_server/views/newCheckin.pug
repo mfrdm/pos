@@ -33,9 +33,9 @@ div(class="columns row")
 				select(ng-model='vm.model.filter.myfilter.status' ng-options='status.value as status.label for status in vm.model.filter.statusOptions' ng-init='vm.model.filter.myfilter.status="1"' ng-change='vm.ctrl.filterPaginate()' name="filterStatus")
 	
 	// CHECK-IN
+
 	div(class="column")
 		div(class="borderT row column paddingTB45 paddingLR45 fullBox" ng-show="vm.model.dom.checkin.checkinDiv")
-			
 			// SEARCH CUSTOMERS
 			div(class="row column")
 				form(ng-submit="vm.ctrl.checkin.searchCustomer()")
@@ -146,7 +146,7 @@ div(class="columns row")
 				//Main service for edit
 				div(class="row column")
 					label Service
-						select(name="selectedService" ng-model="vm.model.editedCustomer.service" ng-options="s as s.label for s in vm.model.dom.data.selected.services track by s.name" ng-change='vm.ctrl.edit.selectService()')
+						select(name="selectedService" ng-model="vm.model.edit.service" ng-options="s as s.label for s in vm.model.dom.data.selected.services track by s.name" ng-change='vm.ctrl.edit.selectService()')
 
 				// PICK GROUP
 				div(class="row column" ng-if="vm.model.dom.edit.privateGroupLeaderDiv && vm.model.temporary.groupPrivateLeaders && vm.model.temporary.groupPrivateLeaders.length > 1")
@@ -162,14 +162,14 @@ div(class="columns row")
 
 				div(class="column row")
 					div(class='column small-12 large-6')
-						table(ng-if='vm.model.editedCustomer.promocodes.length > 0')
+						table(ng-if='vm.model.edit.promocodes.length > 0')
 							thead
 								tr
 									th Code
 									th Trạng thái
 									th 
 							tbody
-								tr(ng-repeat='code in vm.model.editedCustomer.promocodes track by code.name')
+								tr(ng-repeat='code in vm.model.edit.promocodes track by code.name')
 									td {{ code.name }}
 									td(class='{{vm.model.temporary.checkin.statusCode[code.status]}}') {{ vm.model.temporary.checkin.statusCode[code.status] }}
 									td(class='text-center deleteIcon')
@@ -221,7 +221,7 @@ div(class="columns row")
 					//- li(class='current')
 					//- 	span(class="show-for-sr") You're on page
 					//- 	span 1
-					li(ng-repeat="item in vm.model.temporary.displayedList.number track by $index")(class='{{item.class}}')
+					li(ng-repeat="item in vm.model.temporary.displayedList.number track by $index" class='{{item.class}}')
 						a(href ='' ng-click='vm.ctrl.sliceCheckinList(item.number)') {{item.number}}
 					
 					//- li(class="ellipsis" aria-hidden="true")
@@ -319,7 +319,10 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 						td {{ vm.model.checkingout.occupancy.service.label }}
 					tr(ng-if="vm.model.checkingout.occupancy.parent")
 						th Nhóm
-						td Thành viên nhóm riêng					
+						td Thành viên nhóm riêng		
+					tr
+						th Code
+						td {{ vm.model.checkingout.occupancy.promocodes.label.vn }}	
 					tr
 						th Checkin
 						td {{ vm.model.checkingout.occupancy.checkinTime | date:'dd/MM/yyyy'}} {{ vm.model.checkingout.occupancy.checkinTime | date:'shortTime'}}				
