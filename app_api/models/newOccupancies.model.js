@@ -114,22 +114,25 @@ var addDefaultCodes = function (){
 		}
 	});
 
+	// student price code
 	if (!higherType2 && occ.customer.isStudent && (defaultCodes ['studentprice'].services.indexOf (service) != -1)){
 		occ.promocodes.push (defaultCodes ['studentprice']);
 	}
 
+	// discount price for small group private
 	if (!higherType3 && usage > 1 && (defaultCodes ['smallprivatediscountprice'].services.indexOf (service) != -1)){
 		occ.promocodes.push (defaultCodes ['smallprivatediscountprice']);
 	}
 
+	// discount price for medium group private
 	if (!higherType3 && usage > 1 && (defaultCodes ['mediumprivatediscountprice'].services.indexOf (service) != -1)){
 		occ.promocodes.push (defaultCodes ['mediumprivatediscountprice']);
 	}
 
+	// discount price for large group private
 	if (!higherType3 && usage > 1 && (defaultCodes ['largeprivatediscountprice'].services.indexOf (service) != -1)){
 		occ.promocodes.push (defaultCodes['largeprivatediscountprice']);
 	}
-
 }
 
 var NewOccupanciesSchema = new mongoose.Schema({
@@ -189,4 +192,4 @@ NewOccupanciesSchema.methods.getUsageTime = getUsageTime;
 NewOccupanciesSchema.methods.getTotal = getTotal;
 NewOccupanciesSchema.methods.addDefaultCodes = addDefaultCodes;
 
-module.exports = mongoose.model ('newOccupancies', NewOccupanciesSchema);
+module.exports = mongoose.model ('NewOccupancies', NewOccupanciesSchema);

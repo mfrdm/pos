@@ -3,7 +3,8 @@ var mongoose = require ('mongoose');
 var Promocodes = mongoose.model ('promocodes');
 var Orders = mongoose.model ('orders');
 var Customers = mongoose.model ('customers');
-var Occupancy = mongoose.model ('occupancy');
+// var Occupancy = mongoose.model ('occupancy');
+var Occupancy = mongoose.model ('NewOccupancies');
 var Deposits = mongoose.model ('deposits');
 
 module.exports = new Checkout();
@@ -19,32 +20,41 @@ function Checkout() {
 				return
 			}
 
-			foundOcc.checkoutTime = foundOcc.checkoutTime ? foundOcc.checkoutTime : moment ();
-			foundOcc.getTotal ();
+			if (foundOcc){
+				foundOcc.checkoutTime = foundOcc.checkoutTime ? foundOcc.checkoutTime : moment ();
+				foundOcc.getTotal ();
 
-			// Be aware that the cus is plain javascript object
-			Customers.findOne ({_id: foundOcc.customer._id})
-				.populate ({
-					path: 'deposits',
-					match: 	{
-						start: {$lte: new Date ()},
-						end: {$gte: new Date ()},
-						amount: {$gt: 0}
-					},
-					select: 'amount service unit label'
-				}) 
-				.exec (function (err, cus){
-					if (err){
-						console.log (err);
-						next (err);
-					}
+				
+				Customers.findOne ({_id: foundOcc.customer._id})
+					.populate ({
+						path: 'deposits',
+						match: 	{
+							start: {$lte: new Date ()},
+							end: {$gte: new Date ()},
+							amount: {$gt: 0}
+						},
+						select: 'amount service unit label'
+					}) 
+					.exec (function (err, cus){
+						if (err){
+							console.log (err);
+							next (err);
+						}
 
-					foundOcc = foundOcc.toObject ();
-					foundOcc.deposits = cus.deposits ? cus.deposits : [];
-					res.json ({data: foundOcc});
-				});
-			
-		})
+						console.log (cus)
+
+						foundOcc = foundOcc.toObject (); // convert to add data
+						foundOcc.deposits = cus.deposits ? cus.deposits : [];
+						res.json ({data: foundOcc});
+					});
+
+			}
+			else{
+				next ();
+
+			}
+
+		});
 	
 	};
 

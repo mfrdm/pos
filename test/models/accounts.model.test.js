@@ -3,11 +3,9 @@ var chai = require ('chai');
 var should = chai.should ();
 var mongoose = require ('mongoose');
 var Accounts = require ('../../app_api/models/accounts.model');
-var Deposits = require ('../../app_api/models/deposit.model');
 var moment = require ('moment');
 
-
-describe ('Renew recursive code', function (){
+describe ('Renew a recursive account', function (){
 	var accounts;
 	beforeEach(function (){
 		accounts = [
@@ -18,46 +16,79 @@ describe ('Renew recursive code', function (){
 				services: ['group common', 'individual common'],
 				recursive: {
 					isRecursive: true,
-					lastRenew: moment ().add (-1, 'day'),
+					lastRenewDate: moment ().add (-1, 'day'),
 					recursiveType: 1,
+					renewNum: 0,
+					maxRenewNum: 3,
 					baseAmount: 3				
 				}
-			}
-
+			},
 		]
 	})
 
-	it ('should renew a 3-hour-daily-a-month account when it is a recursive, amount is zero, and today is valid day to renew', function (){
+	it ('should renew an account when it is a recursive and last review is not today, and maxRenewNum > renewNum', function (){
 		var acc = accounts[0];
-		Accounts.renew (acc);
+		var newAcc = new Accounts (acc);
+		newAcc.renew ();
 
-		acc.amount.should.to.equal (acc.recursive.baseAmount);
-		acc.lastRenew.should.to.be.at.least (moment ().hour (0).minute (0));
+		newAcc.amount.should.to.equal (newAcc.recursive.baseAmount);
+		newAcc.lastRenew.should.to.be.at.least (moment ().hour (0).minute (0));
 	});
 
-	it ('should not renew a 3-hour-daily-a-month account when amount is zero and it has been renew today', function (){
-		var acc = accounts[0];
-		acc.amount = 1;
-		acc.recursive.lastRenew = moment ();
-		Accounts.renew (acc);
-
-		acc.amount.should.to.equal (1);		
-	});	
-
-	it ('should not renew an account daily if it is not of type recursive daily', function (){
-		var acc = accounts[0];
-		acc.amount = 1;
-		acc.recursive.recursiveType = 2; 
-		Accounts.renew (acc);
-
-		acc.amount.should.to.equal (1);			
-	})
-
-	it ('should not renew account that is not recursive account', function (){
+	it ('should not renew when account is not recursive', function (){
 		var acc = accounts[0];
 		acc.recursive.isRecursive = false;
-		Accounts.renew (acc);
-		acc.amount.should.to.equal (0);		
+		var newAcc = new Accounts (acc);
+		newAcc.renew ();
+
+		newAcc.amount.should.to.not.equal (newAcc.recursive.baseAmount);
+	});
+
+	it ('should not renew when last renew is today', function (){
+		var acc = accounts[0];
+		acc.recursive.lastRenewDate = moment ();
+		var newAcc = new Accounts (acc);
+		newAcc.renew ();
+
+		newAcc.amount.should.to.not.equal (newAcc.recursive.baseAmount);		
+	});
+
+	it ('should not renew when maxRenewNum == renewNum', function (){
+		var acc = accounts[0];
+		acc.recursive.renewNum = acc.recursive.maxRenewNum;
+		var newAcc = new Accounts (acc);
+		newAcc.renew ();
+
+		newAcc.amount.should.to.not.equal (newAcc.recursive.baseAmount);			
+	});
+
+});
+
+xdescribe ('Withdraw an account', function (){
+	var account;
+	beforeEach (function (){
+		accounts = [
+			{
+				name: 'acc 1',
+				price: 350000,
+				amount: 3,			
+			}
+		]
 	})
 
+	it ('should return 0 when amount to be paid is less than or equal amount in the account', function (){
+		var amount = 2.5;
+		var acc = new Accounts (accounts[0]);
+		var remain = acc.withdraw (amount);
+		remain.should.to.equal (0);
+	});
+
+	it ('should return > 0 when amount to be paid is greater than amount in the account', function (){
+		var amount = 4.5;
+		var acc = new Accounts (accounts[0]);
+		var remain = acc.withdraw (amount);
+		remain.should.to.equal (1.5);		
+	});
+
+	it ('should ')
 });

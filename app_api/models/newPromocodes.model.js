@@ -34,7 +34,7 @@ var getDefaultCodes = function (){
 		services: ['small group private'],
 		priority: 1,
 		redeemData: {
-			price: {
+			total: {
 				value: 120000,
 				formula: 1
 			}
@@ -52,7 +52,7 @@ var getDefaultCodes = function (){
 		services: ['medium group private'],
 		priority: 1,
 		redeemData: {
-			price: {
+			total: {
 				value: 200000,
 				formula: 1
 			}
@@ -70,7 +70,7 @@ var getDefaultCodes = function (){
 		services: ['large group private'],
 		priority: 1,
 		redeemData: {
-			price: {
+			total: {
 				value: 450000,
 				formula: 1
 			}

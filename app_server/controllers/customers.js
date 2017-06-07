@@ -143,10 +143,11 @@ function CustomersCtrl() {
 			return;
 		};
 
-		if (req.body.data.phone && !validator.isMobilePhone (req.body.data.phone, 'vi-VN')){
-			res.status (500).json ({error: {message:'invalid phone', code: 3}});
-			return;
-		};
+		// this cause error since some new phone numbers are not recognized. Should turn off
+		// if (req.body.data.phone && !validator.isMobilePhone (req.body.data.phone, 'vi-VN')){
+		// 	res.status (500).json ({error: {message:'invalid phone', code: 3}});
+		// 	return;
+		// };
 
 		var newCustomer = new Customers (req.body.data);
 

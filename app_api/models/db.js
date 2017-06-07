@@ -31,6 +31,7 @@ require('./promocodes');
 require('./newPromocodes.model');
 require('./orders');
 require('./occupancy.model');
+require('./newOccupancies.model');
 require('./transactions');
 require('./bookings');
 require('./assets');
