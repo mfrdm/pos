@@ -39,9 +39,8 @@ var withdraw = function (amount){
 	return _withdraw (amount, this);
 }
 
-
 // Represent a pre paid amount of cash or hour usage number. Can be used later to pay for service usage
-var accountsSchema = new mongoose.Schema({
+var AccountsSchema = new mongoose.Schema({
 	name: String,
 	price: Number, // 
 	amount: Number,
@@ -60,7 +59,8 @@ var accountsSchema = new mongoose.Schema({
 		recursiveType: {type: Number}, // daily: 1, monthly: 2, annually: 3
 		baseAmount: Number
 	},
-	expireDayNum: Number, // use to calculate end date in deposit
+	start: Date,
+	end: Date,
 	createdAt: {type: Date, default: Date.now},
 	updateAt: [{
 		time: {type: Date},
@@ -69,9 +69,9 @@ var accountsSchema = new mongoose.Schema({
 	}],
 });	
 
-accountsSchema.methods.renew = renew;
-accountsSchema.methods.withdraw = withdraw;
+AccountsSchema.methods.renew = renew;
+AccountsSchema.methods.withdraw = withdraw;
 
-module.exports = mongoose.model ('Accounts', accountsSchema);
+module.exports = mongoose.model ('Accounts', AccountsSchema);
 
 

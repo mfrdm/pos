@@ -64,7 +64,7 @@ describe ('Renew a recursive account', function (){
 
 });
 
-xdescribe ('Withdraw an account', function (){
+describe ('Withdraw an account', function (){
 	var account;
 	beforeEach (function (){
 		accounts = [
@@ -74,7 +74,7 @@ xdescribe ('Withdraw an account', function (){
 				amount: 3,			
 			}
 		]
-	})
+	});
 
 	it ('should return 0 when amount to be paid is less than or equal amount in the account', function (){
 		var amount = 2.5;
@@ -90,5 +90,4 @@ xdescribe ('Withdraw an account', function (){
 		remain.should.to.equal (1.5);		
 	});
 
-	it ('should ')
 });

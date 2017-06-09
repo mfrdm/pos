@@ -1,41 +1,78 @@
 var mongoose = require('mongoose');
-var Promocodes = require ('NewPromocodes');
+var Promocodes = mongoose.model ('NewPromocodes');
 
-var addDefaultCodes = function (){
-
+function normalizeTotal (total){
+	return Math.round(total / 1000) * 1000;
 }
 
 var getTotal = function (){
+	var deposit = this;
 
+	// the context in strategy design
+	var context = {
+		productName: 'account',
+		price: deposit.account.price,
+		quantity: deposit.quantity,
+		total: null,
+		getServices: function (){ return deposit.account.services },
+		getPromocodes: function (){ return deposit.promocodes },
+		setPromocodes: function (codes) { deposit.promocodes = codes },
+		isStudent: function (){ return deposit.customer.isStudent },	
+		getPrice: function (){return this.price},
+		getTotal: function (){return this.total},
+		getQuantity: function (){return this.quantity},
+	}
+
+	Promocodes.preprocessCodes (context);
+
+	if (deposit.promocodes && deposit.promocodes.length){
+		deposit.promocodes.map (function (code, k, t){
+			var pc = new Promocodes (code);
+			var discountedResult = pc.redeem (context);
+			Object.assign (context, discountedResult);
+		});
+
+		if (context.total){
+			deposit.total = context.total;
+		}
+		else{
+			deposit.total = context.price * context.quantity;
+		}		
+	}
+	else{
+		deposit.total = deposit.quantity * deposit.account.price;
+	}
 }
 
 // Represent a pre paid amount of cash or hour usage number. Can be used later to pay for service usage
-var depositsSchema = new mongoose.Schema({
+var DepositsSchema = new mongoose.Schema({
 	total: Number,
-	orderline: [
+	quantity: Number,
+	account: {
+		_id: mongoose.Schema.Types.ObjectId,
+		services: [String],
+		price: Number
+	},
+	expire: [
 		{
-			account: mongoose.Schema.Types.Mixed,
 			start: {type: Date, default: Date.now},
 			end: Date,
-			receiver: {_id: type: mongoose.Schema.Types.ObjectId}, // customer who receives the account
 		}
 	],
-	promocodes: [
+	promocodes: [{
 		_id: mongoose.Schema.Types.ObjectId,
 		name: String,
 		codeType: Number,
 		priority: Number,
-		redeemData: {
-			price: { value: Number, formula: String },
-			usage: { value: Number, formula: String },
-			total: { value: Number, formula: String }
-		}		
-	],
+		redeemData: mongoose.Schema.Types.Mixed
+	}],
 	paymentMethod: {
 		name: String
 	},
 	customer: { // the person make purchase
-		_id: {type: mongoose.Schema.Types.ObjectId, ref: 'customers'}
+		_id: mongoose.Schema.Types.ObjectId,
+		fullname: String,
+		isStudent: Boolean,
 	},
 	location: {
 		_id: {type: mongoose.Schema.Types.ObjectId},
@@ -52,9 +89,8 @@ var depositsSchema = new mongoose.Schema({
 	note: String,
 });	
 
-depositsSchema.methods.withdraw = withdraw;
-depositsSchema.methods.discount = discount;
+DepositsSchema.methods.getTotal = getTotal;
 
-module.exports = mongoose.model ('deposits', depositsSchema);
+module.exports = mongoose.model ('Deposits', DepositsSchema);
 
 

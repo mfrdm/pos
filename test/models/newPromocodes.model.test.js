@@ -3,15 +3,16 @@ var chai = require ('chai');
 var should = chai.should ();
 var mongoose = require ('mongoose');
 var NewPromocodes = require ('../../app_api/models/newPromocodes.model');
+var NewOccupancies = require ('../../app_api/models/newOccupancies.model');
 
-describe ('redeem', function (){
+xdescribe ('redeem', function (){
 	var codes;
 	beforeEach (function (){
 		codes = [
 			{
 				name: 'code 1',
 				codeType: 2,
-				services: ['Group common'],
+				services: ['group common'],
 				priority: 2,
 				redeemData: {
 					price: {
@@ -22,7 +23,7 @@ describe ('redeem', function (){
 			{
 				name: 'code 2',
 				codeType: 1,
-				services: ['Group common'],
+				services: ['group common'],
 				priority: 2,
 				redeemData: {
 					usage: {
@@ -34,7 +35,7 @@ describe ('redeem', function (){
 			{
 				name: 'code 4',
 				codeType: 3,
-				services: ['Large group private'],
+				services: ['large group private'],
 				priority: 2,
 				redeemData: {
 					total: {
@@ -47,46 +48,217 @@ describe ('redeem', function (){
 	});
 
 	it ('should redeem price', function (){
-		var result = new NewPromocodes (codes[0]).redeem ();
+		var context = {
+			service: {
+				name: 'Group common',
+				price: 15000,
+			}
+		}
+
+		context = new NewOccupancies (context);
+
+		var result = new NewPromocodes (codes[0]).redeem (context);
 		result.price.should.to.equal (10000);
 		result.should.not.to.have.property ('total');
+		result.should.not.to.have.property ('quantity');
 		result.should.not.to.have.property ('usage');
 
 	})
 
 	it ('should redeem usage', function (){
-		var usage = 5;
-		var result = new NewPromocodes(codes[1]).redeem (null, usage);
+		var context = {
+			service: {
+				name: 'Group common',
+				price: 15000,
+			},
+			usage: 5,
+		}
+
+		context = new NewOccupancies (context);
+
+		var result = new NewPromocodes (codes[1]).redeem (context);
 		result.usage.should.to.equal (0);
 		result.should.not.to.have.property ('total');
+		result.should.not.to.have.property ('quantity');
 		result.should.not.to.have.property ('price');
 	})
 
 	it ('should redeem total', function (){
-		var price = 500000;
-		var usage = 2;
-		expectedTotal = 950000;
-		var result = new NewPromocodes (codes[2]).redeemTotal (price, usage);
+		var context = {
+			service: {
+				name: 'Large group private',
+				price: 500000,
+			},
+			usage: 2,
+		}
 
+		context = new NewOccupancies (context);
+		var expectedTotal = 950000;
+
+		var result = new NewPromocodes (codes[2]).redeem (context);
 		result.total.should.to.equal (expectedTotal);
-		result.should.not.to.have.property ('usage');
-		result.should.not.to.have.property ('price');	
+		result.should.not.to.have.property ('usage ');
+		result.should.not.to.have.property ('quantity');
+		result.should.not.to.have.property ('price');
 	})
-
 });
 
-describe ('Redeem total', function (){
+xdescribe ('Redeem price', function (){
+	var codes;
+	beforeEach (function (){
+		codes = [
+			{
+				name: 'code 1',
+				codeType: 2,
+				services: ['group common', 'individual common'],
+				priority: 2,
+				redeemData: {
+					price: {
+						value: 10000
+					}
+				}				
+			}
+		]
+	});
+
+	it ('should return correct price when a customer is a student', function (){
+		var context = {
+			service: {
+				name: 'Group common',
+				price: 15000,
+			}
+		}
+
+		context = new NewOccupancies (context);
+
+		var result = new NewPromocodes (codes[0]).redeemPrice (context);
+		result.price.should.to.equal (10000);
+		result.should.not.to.have.property ('total');
+		result.should.not.to.have.property ('quantity');
+		result.should.not.to.have.property ('usage');
+
+	});
+
+	it ('should return correct price when a group of 5 customers buy 1-day-common combo');
+
+	it ('should return correct price when a customer buy 3 1-day-common combo for student', function (){	
+	});
+});
+
+xdescribe ('Redeem quantity', function (){
+});
+
+xdescribe ('Redeem usage', function (){
+	var codes;
+	beforeEach (function (){
+		codes = [
+			{
+				name: 'code 1',
+				codeType: 1,
+				services: ['group common', 'individual common'],
+				priority: 2,
+				redeemData: {
+					usage: {
+						value: 0,
+					}
+				}				
+			},
+			{
+				name: 'code 2',
+				codeType: 1,
+				services: ['group common', 'individual common'],
+				priority: 2,
+				redeemData: {
+					usage: {
+						value: 10,
+						formula: 1
+					}
+				}				
+			},
+			{
+				name: 'code 3',
+				codeType: 1,
+				services: ['group common'],
+				priority: 2,
+				redeemData: {
+					usage: {
+						value: 2,
+						formula: 1
+					}
+				}				
+			},					
+
+		]
+	});	
+
+	it ('should return correct usage when apply new-usage code', function (){
+		var context = {
+			service: {
+				name: 'group common',
+				price: 15000
+			},
+			usage: 2,
+		};
+
+		context = new NewOccupancies (context);
+
+		var result = new NewPromocodes (codes[0]).redeemUsage (context);
+		result.usage.should.to.equal (0);
+		result.should.not.to.have.property ('total');
+		result.should.not.to.have.property ('price');
+		result.should.not.to.have.property ('quantity');
+
+	})
+
+	it ('should return a substracted quantity when applying substract-quantity code and service usage is LESS THAN OR EQUAL redeem usage', function (){
+		var context = {
+			service: {
+				name: 'group common',
+				price: 15000
+			},
+			usage: 2,
+		};
+
+		context = new NewOccupancies (context);
+
+		var result = new NewPromocodes (codes[1]).redeemUsage (context);
+		result.usage.should.to.equal (0);
+		result.should.not.to.have.property ('total');
+		result.should.not.to.have.property ('price');
+		result.should.not.to.have.property ('quantity');			
+	})
+
+	it ('should return a substracted quantity when applying substract-quantity code and service usage is GREATER than redeem usage', function (){
+		var context = {
+			service: {
+				name: 'group common',
+				price: 15000
+			},
+			usage: 5,
+		};
+
+		context = new NewOccupancies (context);
+
+		var result = new NewPromocodes (codes[2]).redeemUsage (context);
+		result.usage.should.to.equal (3);
+		result.should.not.to.have.property ('total');
+		result.should.not.to.have.property ('price');
+		result.should.not.to.have.property ('quantity');				
+	})
+});
+
+xdescribe ('Redeem total', function (){
 	var codes;
 	beforeEach (function (){
 		codes = [
 			{
 				name: 'code 1',
 				codeType: 3,
-				services: ['Small group private'],
+				services: ['small group private'],
 				priority: 2,
 				redeemData: {
 					total: {
-						value: 1000000
+						value: 75000
 					}
 				}				
 			},
@@ -143,169 +315,131 @@ describe ('Redeem total', function (){
 	});
 
 	it ('should return a fix total when fix-total code is used', function (){
-		var result = new NewPromocodes (codes[0]).redeemTotal ();
-		result.total.should.to.equal (1000000);
+		var context = {
+			service: {
+				name: 'small group private',
+				price: 150000
+			},
+			usage: 2
+		}
+
+		context = new NewOccupancies (context);
+
+		var result = new NewPromocodes (codes[0]).redeemTotal (context);
+
+		result.total.should.to.equal (75000);
 		result.should.not.to.have.property ('usage');
-		result.should.not.to.have.property ('price');			
+		result.should.not.to.have.property ('price');
+		result.should.not.to.have.property ('quantity');						
 	})
 
 	it ('should return a expected total when formula 1 is used and usage > 1', function (){
-		var usage = 2;
-		var price = [150000, 220000, 500000];
+		var contexts = [
+			{
+				service: {
+					name: 'Small group private',
+					price: 150000
+				},
+				usage: 2
+			},
+			{
+				service: {
+					name: 'Medium group private',
+					price: 220000
+				},
+				usage: 2
+			},
+			{
+				service: {
+					name: 'Large group private',
+					price: 500000
+				},
+				usage: 2
+			}
+		];						
+
+		var newContexts = contexts.map (function (x, i, arr){
+			return new NewOccupancies (x);
+		});
+
 		var expectedTotal = [270000, 420000, 950000]
 
 		codes = codes.slice (1, 4);
 
 		codes.map (function (x, i, arr){
-			var result = new NewPromocodes (x).redeemTotal (price[i], usage);
+			var result = new NewPromocodes (x).redeemTotal (newContexts[i]);
 
 			result.total.should.to.equal (expectedTotal[i]);
+			result.should.not.to.have.property ('quantity');
+			result.should.not.to.have.property ('price');
 			result.should.not.to.have.property ('usage');
-			result.should.not.to.have.property ('price');	
 		});
 	})
 
 	it ('should return a expected total when formula 1 is used and usage <= 1', function (){
-		var usage = 1;
-		var price = [150000, 220000, 500000];
+		var contexts = [
+			{
+				service: {
+					name: 'Small group private',
+					price: 150000
+				},
+				usage: 1
+			},
+			{
+				service: {
+					name: 'Medium group private',
+					price: 220000
+				},
+				usage: 1
+			},
+			{
+				service: {
+					name: 'Large group private',
+					price: 500000
+				},
+				usage: 1
+			}
+		];						
+
+		var newContexts = contexts.map (function (x, i, arr){
+			return new NewOccupancies (x);
+		});
 		var expectedTotal = [150000, 220000, 500000]
 
 		codes = codes.slice (1, 4);
 
 		codes.map (function (x, i, arr){
-			var result = new NewPromocodes (x).redeemTotal (price[i], usage);
+			var result = new NewPromocodes (x).redeemTotal (newContexts[i]);
 
 			result.total.should.to.equal (expectedTotal[i]);
-			result.should.not.to.have.property ('usage');
+			result.should.not.to.have.property ('quantity');
 			result.should.not.to.have.property ('price');	
+			result.should.not.to.have.property ('usage');
 		});		
 	});
 
 	it ('should return expected total when formula 2 is used', function (){
-		var usage = 2;
-		var price = 15000;
-		var result = new NewPromocodes (codes[4]).redeemTotal (price, usage);
-
-		result.total.should.to.equal (15000);
-	})
-});
-
-describe ('Redeem usage', function (){
-	var codes;
-	beforeEach (function (){
-		codes = [
-			{
-				name: 'code 1',
-				codeType: 1,
-				services: ['Group common'],
-				priority: 2,
-				redeemData: {
-					usage: {
-						value: 0
-					}
-				}				
+		var context = {
+			service: {
+				name: 'small group private',
+				price: 150000
 			},
-			{
-				name: 'code 2',
-				codeType: 1,
-				services: ['Group common'],
-				priority: 2,
-				redeemData: {
-					usage: {
-						value: 10,
-						formula: 1
-					}
-				}				
-			},
-			{
-				name: 'code 3',
-				codeType: 1,
-				services: ['Group common'],
-				priority: 2,
-				redeemData: {
-					usage: {
-						value: 2,
-						formula: 1
-					}
-				}				
-			},					
+			usage: 2
+		}
 
-		]
-	});	
+		context = new NewOccupancies (context);
 
+		var result = new NewPromocodes (codes[4]).redeemTotal (context);
 
-	it ('should return a new usage when applying new-usage code', function (){
-		var result = new NewPromocodes (codes[0]).redeemUsage ();
-		result.usage.should.to.equal (0);
-		result.should.not.to.have.property ('total');
-		result.should.not.to.have.property ('price');		
-	});
-
-	it ('should return a substracted usage when applying substract-usage code and service usage is less than or equal redeem usage', function (){
-		var usage = 5;
-		var result = new NewPromocodes(codes[1]).redeemUsage (usage);
-		
-		result.usage.should.to.equal (0);
-
-		result.should.not.to.have.property ('total');
-		result.should.not.to.have.property ('price');			
-	})
-
-	it ('should return a substracted usage when applying substract-usage code and service usage is greater than redeem usage', function (){
-		var usage = 5;
-		var result = new NewPromocodes(codes[2]).redeemUsage (usage);
-		
-		result.usage.should.to.equal (3);
-
-		result.should.not.to.have.property ('total');
-		result.should.not.to.have.property ('price');			
-	})
-});
-
-describe ('Redeem price', function (){
-	var codes;
-	beforeEach (function (){
-		codes = [
-			{
-				name: 'code 1',
-				codeType: 2,
-				services: ['Group common'],
-				priority: 2,
-				redeemData: {
-					price: {
-						value: 10000
-					}
-				}				
-			},
-			{
-				name: 'code 2',
-				codeType: 2,
-				services: ['Group common'],
-				priority: 2,
-				redeemData: {
-					price: {
-						value: 0.9,
-						formula: 1
-					}
-				}				
-			},			
-
-		]
-	});
-
-	it ('should return a expected price when applying code having no formula', function (){
-		var result = new NewPromocodes(codes[0]).redeemPrice ();
-		result.price.should.to.equal (10000);
-		result.should.not.to.have.property ('total');
+		result.total.should.to.equal (150000);
 		result.should.not.to.have.property ('usage');
-	});
-
-	it ('should return a expected price when applying code having formula of percentage', function (){
-		var price = 10000;
-		var result = new NewPromocodes(codes[1]).redeemPrice (price);
-		
-		result.price.should.to.equal (9000);
-		result.should.not.to.have.property ('total');
-		result.should.not.to.have.property ('usage');
-	});
+		result.should.not.to.have.property ('price');
+		result.should.not.to.have.property ('quantity');
+	})
 });
+
+describe ('Add account default code')
+
+describe ('Add service default code')
+
+describe ('Resolve code conflicts')

@@ -1,6 +1,6 @@
 var validator = require ('validator');
 var mongoose = require ('mongoose');
-var Deposits = mongoose.model ('deposits');
+var Deposits = mongoose.model ('Deposits');
 var Customers = mongoose.model ('customers');
 var moment = require ('moment');
 

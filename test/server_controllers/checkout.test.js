@@ -6,22 +6,20 @@ var chaiHttp = require ('chai-http');
 var server = require ('../../app');
 var mongoose = require ('mongoose');
 var Customers = mongoose.model ('customers');
-// var Promocodes = mongoose.model ('promocodes');
 var Promocodes = mongoose.model ('NewPromocodes');
-// var Occupancy = mongoose.model ('occupancy');
 var Occupancy = mongoose.model ('NewOccupancies');
-var Deposits = mongoose.model ('deposits');
+var Accounts = mongoose.model ('Accounts');
 var should = chai.should ();
 
 chai.use (chaiHttp);
 
 describe ('Checkout', function (){
 	this.timeout(3000);
-	describe ('Create invoice', function (){
+	xdescribe ('Create invoice', function (){
 		var occupancies, customers;
 		var newOcc, newCustomer;
-		var newDep;
-		
+		var newAcc;
+
 		beforeEach (function (done){
 			customers = [
 				{
@@ -116,18 +114,54 @@ describe ('Checkout', function (){
 									formula: 2
 								}
 							}					
-						}
+						}						
 					],
 					customer: {},
 					storeId: "58eb474538671b4224745192",
 					staffId: "58eb474538671b4224745192",
 					checkinTime: moment ().add (-2.3, 'hours'),	
 					checkoutTime: moment (),	
-				},				
-
+				},
+				{
+					service: {
+						price: 150000,
+						name: 'Small group private'
+					},
+					promocodes: [
+						{
+							name: 'code 4',
+							codeType: 3,
+							services: ['small group private'],
+							priority: 2,
+							redeemData: {
+								total: {
+									value: 0.5,
+									formula: 2
+								}
+							}					
+						},
+						{
+							name: 'code 5',
+							codeType: 3,
+							services: ['small group private'],
+							priority: 2,
+							redeemData: {
+								total: {
+									value: 0.1,
+									formula: 2
+								}
+							}					
+						},											
+					],
+					customer: {},
+					storeId: "58eb474538671b4224745192",
+					staffId: "58eb474538671b4224745192",
+					checkinTime: moment ().add (-2.3, 'hours'),	
+					checkoutTime: moment (),	
+				},
 			]
 
-			deposits = [
+			accounts = [
 				{
 					amount: 10,
 					unit: 'hour',
@@ -152,7 +186,6 @@ describe ('Checkout', function (){
 				{
 					amount: 24,
 					unit: 'hour',
-					active: false,
 					start: moment (),
 					end: moment().hour (23).minute (59),
 					services: ['group common', 'individual common']
@@ -171,6 +204,7 @@ describe ('Checkout', function (){
 				occupancies[2].customer = cus[1];
 				occupancies[3].customer = cus[1];
 				occupancies[4].customer = cus[1];
+				occupancies[5].customer = cus[1];
 
 				Occupancy.insertMany (occupancies, function (err, occ){
 					if (err){
@@ -178,24 +212,24 @@ describe ('Checkout', function (){
 						return
 					}
 
-					NewOccupancies = occ;
+					newOcc = occ;
 
-					deposits.map (function (x, i, arr){
+					accounts.map (function (x, i, arr){
 						x.customer = newCustomer[0]._id;
 					});
 
-					Deposits.insertMany (deposits, function (err, dep){
+					Accounts.insertMany (accounts, function (err, acc){
 						if (err){
 							console.log (err)
 							return
 						}
 
-						newDep = dep;
-						var newDepIds = newDep.map (function (x, i, arr){
+						newAcc = acc;
+						var newAccIds = newAcc.map (function (x, i, arr){
 							return x._id;
 						})
 
-						Customers.update ({_id: newCustomer[0]._id}, {$set: {deposits: newDepIds}}, function (err, cus){
+						Customers.update ({_id: newCustomer[0]._id}, {$set: {accounts: newAccIds}}, function (err, cus){
 							if (err){
 								console.log (err)
 								return
@@ -213,7 +247,7 @@ describe ('Checkout', function (){
 		});
 
 		afterEach (function (done){
-			var depIds = newDep.map (function (x, i, arr){
+			var accIds = newAcc.map (function (x, i, arr){
 				return x._id;
 			});
 
@@ -236,7 +270,7 @@ describe ('Checkout', function (){
 						return
 					}
 
-					Deposits.remove ({_id: {$in: depIds}}, function (err, result){
+					Accounts.remove ({_id: {$in: accIds}}, function (err, result){
 						if (err) {
 							// console.log (err)
 							return
@@ -252,7 +286,7 @@ describe ('Checkout', function (){
 
 		});
 
-		xit ('should return invoice successfully', function (done){
+		it ('should return invoice successfully with correct total when no code applied', function (done){
 			chai.request (server)
 				.get ('/checkout/invoice/' + newOcc[0]._id)
 				.end (function (err, res){
@@ -260,19 +294,23 @@ describe ('Checkout', function (){
 						console.log (err)
 					}
 
+					var foundOcc = res.body.data;
 					res.should.have.status (200);
-					res.body.data.should.to.exist;
-					res.body.data.total.should.to.exist;
-					res.body.data.usage.should.to.exist;
-					res.body.data.checkoutTime.should.to.exist;
-					res.body.data.usage.should.to.equal (1);
-					res.body.data.total.should.to.equal (15000);
+					foundOcc.should.to.exist;
+
+					foundOcc.total.should.to.exist;
+					foundOcc.usage.should.to.exist;
+					foundOcc.checkoutTime.should.to.exist;
+					foundOcc.usage.should.to.equal (1);
+					foundOcc.total.should.to.equal (15000);
+					foundOcc.promocodes.should.to.exist;
+					foundOcc.promocodes.length.should.to.equal (0);
 
 					done ();
 				});
 		});
 
-		xit ('should return invoice with correct total and usage when customer is a student and has total discount code', function (done){
+		it ('should return invoice with correct total and usage when customer is a student', function (done){
 			chai.request (server)
 				.get ('/checkout/invoice/' + newOcc[2]._id)
 				.end (function (err, res){
@@ -281,18 +319,22 @@ describe ('Checkout', function (){
 					}
 
 					res.should.have.status (200);
-					res.body.data.should.to.exist;
-					res.body.data.total.should.to.exist;
-					res.body.data.usage.should.to.exist;
-					res.body.data.checkoutTime.should.to.exist;
-					res.body.data.usage.should.to.equal (1);
-					res.body.data.total.should.to.equal (10000);
+					var foundOcc = res.body.data;
+
+					foundOcc.should.to.exist;
+					foundOcc.total.should.to.exist;
+					foundOcc.usage.should.to.exist;
+					foundOcc.checkoutTime.should.to.exist;
+					foundOcc.usage.should.to.equal (1);
+					foundOcc.total.should.to.equal (10000);
+
+					foundOcc.promocodes.length.should.to.be.at.least (1);
 
 					done ();
-				});	
-		});
+				});			
+		})
 
-		xit ('should return invoice with correct total and usage when customer used private service, customer is a leader, and usage is greater than 1 hour', function (done){
+		it ('should return invoice with correct total and usage when customer used private service, customer is a leader, and usage is greater than 1 hour', function (done){
 			chai.request (server)
 				.get ('/checkout/invoice/' + newOcc[1]._id)
 				.end (function (err, res){
@@ -309,11 +351,13 @@ describe ('Checkout', function (){
 					res.body.data.usage.should.to.equal (2.3);
 					res.body.data.total.should.to.equal (306000);
 
+					res.body.data.promocodes.length.should.to.be.at.least (1);
+
 					done ();
 				});				
 		})	
 
-		xit ('should return invoice with correct total and usage when customer used private service, customer is a member, and usage is greater than 1 hour', function (done){
+		it ('should return invoice with correct total and usage when customer used private service, customer is a member, and usage is greater than 1 hour', function (done){
 			chai.request (server)
 				.get ('/checkout/invoice/' + newOcc[3]._id)
 				.end (function (err, res){
@@ -334,7 +378,7 @@ describe ('Checkout', function (){
 				});				
 		})
 
-		xit ('should return invoice with correct total and usage when customer used private service, customer is a leader, usage is greater than 1 hour, and a total code is applied', function (done){
+		it ('should return invoice with correct total and usage when customer used private service, customer is a leader, usage is greater than 1 hour, and a total code is applied', function (done){
 			chai.request (server)
 				.get ('/checkout/invoice/' + newOcc[4]._id)
 				.end (function (err, res){
@@ -370,13 +414,24 @@ describe ('Checkout', function (){
 					res.body.data.usage.should.to.exist;
 					res.body.data.checkoutTime.should.to.exist;
 
-					res.body.data.deposits.should.to.have.length.of (deposits.length - 1);
+					res.body.data.accounts.should.to.have.length.of (accounts.length - 1);
 					done ();
 				});			
 		});
 
-		it ('should be invalid when not found required input')
+		it ('should be invalid when two codes of the same priority is provided', function (done){
+			chai.request (server)
+				.get ('/checkout/invoice/' + newOcc[5]._id)
+				.end (function (err, res){
+					if (err){
+						// console.log (err);
+					}
 
+					res.should.have.status (500);
+
+					done ();
+				});	
+		});
 	});
 
 	xdescribe ('withdraw an account', function (){
@@ -524,10 +579,10 @@ describe ('Checkout', function (){
 
 		});
 		
-		it ('should return correct total, withdrawn usage, remain account when withdraw from a hour usage account', function (done){
+		it ('should return expected total when withdraw from a hour usage account', function (done){
 			chai.request (server)
-				.get ('/checkout/account/withdraw')
-				.query ({occ: JSON.stringify (newOcc), accId: newAcc[0]._id.toString ()})
+				.get ('/checkout/account/withdraw/' + newAcc[0]._id.toString ())
+				.query ({occ: JSON.stringify (newOcc)})
 				.end (function (err, res){
 					if (err) {
 						console.log (err)
@@ -535,18 +590,18 @@ describe ('Checkout', function (){
 
 					res.should.to.have.status (200);
 					res.body.data.should.to.exist;
-					res.body.data.total.should.equal (0);
-					res.body.data.withdrawnUsage.should.equal (3);
-					res.body.data.accAmountRemain.should.equal (7);
+					res.body.data.occ.total.should.equal (0);
+					res.body.data.acc.remain.should.equal (7);
+					res.body.data.acc.paid.should.equal (3);
 
 					done ();
 				});			
 		})
 
-		it ('should return correct total, withdrawn usage, remain account when withdraw from a 1 day common combo account', function (done){
+		it ('should return correct total when withdraw from a 1 day common combo account', function (done){
 			chai.request (server)	
-				.get ('/checkout/account/withdraw')
-				.query ({occ: JSON.stringify (newOcc), accId: newAcc[2]._id.toString ()})
+				.get ('/checkout/account/withdraw/' + newAcc[2]._id.toString ())
+				.query ({occ: JSON.stringify (newOcc)})
 				.end (function (err, res){
 					if (err) {
 						console.log (err)
@@ -554,18 +609,18 @@ describe ('Checkout', function (){
 
 					res.should.to.have.status (200);
 					res.body.data.should.to.exist;
-					res.body.data.total.should.equal (0);
-					res.body.data.withdrawnUsage.should.equal (3);
-					res.body.data.accAmountRemain.should.equal (21);
+					res.body.data.occ.total.should.equal (0);
+					res.body.data.acc.remain.should.equal (21);
+					res.body.data.acc.paid.should.equal (3);
 
 					done ();
 				});			
 		})
 
-		it ('should return correct total, withdrawn usage, remain account when withdraw from a 3h-1-month common combo account', function (done){
+		it ('should return correct total when withdraw from a 3h-1-month common combo account', function (done){
 			chai.request (server)	
-				.get ('/checkout/account/withdraw')
-				.query ({occ: JSON.stringify (newOcc), accId: newAcc[3]._id.toString ()})
+				.get ('/checkout/account/withdraw/' + newAcc[3]._id.toString ())
+				.query ({occ: JSON.stringify (newOcc)})
 				.end (function (err, res){
 					if (err) {
 						console.log (err)
@@ -573,9 +628,10 @@ describe ('Checkout', function (){
 
 					res.should.to.have.status (200);
 					res.body.data.should.to.exist;
-					res.body.data.total.should.equal (0);
-					res.body.data.withdrawnUsage.should.equal (3);
-					res.body.data.accAmountRemain.should.equal (0);
+					res.body.data.occ.total.should.equal (0);
+					res.body.data.acc.remain.should.equal (0);
+					res.body.data.acc.paid.should.equal (3);
+
 					done ();
 				});
 		});
@@ -584,6 +640,7 @@ describe ('Checkout', function (){
 	xdescribe ('Confirm checkout', function (){
 		var occupancy, customer;
 		var newOcc, newCustomer;
+		var accounts, newAcc;
 		
 		beforeEach (function (done){
 			customer = {
@@ -616,7 +673,17 @@ describe ('Checkout', function (){
 						name: 'Group Common'
 					},
 					promocodes: [
-						{name: 'FREE1DAYCOMMON', codeType: 4, priority: 3},
+						{
+							name: 'Free 1 day common',
+							codeType: 3,
+							services: ['small group private'],
+							priority: 2,
+							redeemData: {
+								total: {
+									value: 0
+								}
+							}					
+						}						
 					],
 					customer: {},	
 					checkinTime: moment (),
@@ -628,7 +695,18 @@ describe ('Checkout', function (){
 						name: 'Small group private'
 					},
 					promocodes: [
-						{name: 'PRIVATEHALFTOTAL', codeType: 4, priority: 3}
+						{
+							name: 'Private half total',
+							codeType: 3,
+							services: ['small group private'],
+							priority: 2,
+							redeemData: {
+								total: {
+									value: 0.5,
+									formula: 2
+								}
+							}					
+						}						
 					],
 					customer: {},	
 					checkinTime: moment (),
@@ -637,13 +715,42 @@ describe ('Checkout', function (){
 
 			];
 
+			accounts = [
+				{
+					amount: 10,
+					unit: 'hour',
+					start: moment (),
+					end: moment().add (5, 'day'),
+					services: ['group common', 'individual common']
+				},
+				{
+					amount: 2,
+					unit: 'hour',
+					start: moment ().add (-2, 'day'),
+					end: moment().add (-1, 'day'),
+					services: ['group common', 'individual common']
+				},
+				{
+					amount: 3,
+					unit: 'hour',
+					start: moment (),
+					end: moment().hour(23).minute (59),
+					services: ['small group private']
+				},				
+
+			]
+
 			Customers.create (customer, function (err, cus){
 				if (err){
 					console.log (err)
 					return
 				}
 
-				newCustomer = cus.getPublicFields();
+				newCustomer = cus;
+
+				accounts.map (function (x, i, arr){
+					x.customer = newCustomer;
+				});
 
 				occupancy.map (function (x, i, arr){
 					x.customer = newCustomer;
@@ -656,201 +763,26 @@ describe ('Checkout', function (){
 					}
 
 					newOcc = occ;
+
 					newOcc.map(function(x, i, arr){
 						x.getTotal ();
 					});
 
-					done ();
-				});
-			});
-
-		});
-
-		afterEach (function (done){
-			var ids = newOcc.map (function (x, i, arr){return x._id});
-			Occupancy.remove ({_id: {$in: ids}}, function (err, data){
-				if (err) {
-					// console.log (err)
-					return
-				}
-
-				Customers.remove ({_id: newCustomer._id}, function (err, data){
-					if (err) {
-						// console.log (err)
-						return
-					}				
-					done ();
-				});
-
-			});
-
-		});
-
-		it ('should update checkout data successfully', function (done){
-			chai.request (server)
-				.post ('/checkout/')
-				.send ({data: newOcc[0]})
-				.end (function (err, res){
-					if (err) {
-						console.log (err)
-					}
-
-					res.body.data.should.to.exist;
-					res.body.data.checkoutTime.should.to.exist;
-					res.body.data.checkinTime.should.to.exist;
-					res.body.data.usage.should.to.exist;
-					res.body.data.total.should.to.exist;
-					res.body.data.customer.should.to.exist;
-					res.body.data.usage.should.to.equal (2);
-					res.body.data.total.should.to.equal (10000 * 2);
-					done ();
-				});
-		});
-
-		it ('should checkout success, return correct total and usage, and ignore discount for small group private service when using code PRIVATEHALFTOTAL', function (done){
-			chai.request (server)
-				.post ('/checkout/')
-				.send ({data: newOcc[2]})
-				.end (function (err, res){
-					if (err) {
-						console.log (err)
-					}
-
-					res.body.data.should.to.exist;
-					res.body.data.checkoutTime.should.to.exist;
-					res.body.data.checkinTime.should.to.exist;
-					res.body.data.usage.should.to.exist;
-					res.body.data.total.should.to.exist;
-					res.body.data.customer.should.to.exist;
-					res.body.data.usage.should.to.equal (2);
-					res.body.data.total.should.to.equal (150000);
-					done ();
-				});			
-		});
-
-		it ('should checkout success, return correct total and usage, and ignore discount for medium group private service when using code PRIVATEHALFTOTAL')
-		it ('should checkout success, return correct total and usage, and ignore discount for large group private service when using code PRIVATEHALFTOTAL')
-		it ('should checkout success, return 0 total and usage for group common service when using code FREE1DAYCOMMON', function (done){
-			chai.request (server)
-				.post ('/checkout/')
-				.send ({data: newOcc[1]})
-				.end (function (err, res){
-					if (err) {
-						console.log (err)
-					}
-
-					res.body.data.should.to.exist;
-					res.body.data.checkoutTime.should.to.exist;
-					res.body.data.checkinTime.should.to.exist;
-					res.body.data.usage.should.to.exist;
-					res.body.data.total.should.to.exist;
-					res.body.data.customer.should.to.exist;
-					res.body.data.usage.should.to.equal (2);
-					res.body.data.total.should.to.equal (0);
-					done ();
-				});					
-		});
-
-		it ('should checkout success, return 0 total and usage for individual common service when using code FREE1DAYCOMMON')
-
-		it ('should add note successfully')
-	});
-
-	xdescribe ('Confirm checkout using pre paid account', function (){
-		var occupancy, customer;
-		var newOcc, newCustomer;
-		var newAcc;
-		
-		beforeEach (function (done){
-			customer = {
-				firstname: 'Customer_Firstname',
-				middlename: 'Customer_Middlename',
-				lastname: 'Customer_Lastname',
-				gender: 1,
-				birthday: new Date ('1989-09-25'),
-				phone: '0965999999',
-				edu: {},
-				email: 'lastmiddlefirst@gmail.com', 
-				isStudent: false,
-				checkinStatus: false,
-			};
-
-			occupancy = {
-				service: {
-					price: 15000,
-					name: 'Group Common'
-				},
-				customer: {},
-				storeId: "58eb474538671b4224745192",
-				staffId: "58eb474538671b4224745192",
-				checkinTime: moment ().add (-3, 'hour'),		
-				checkoutTime: moment (),
-			};
-
-			accounts = [
-				{
-					amount: 2,
-					unit: 'hour',
-					start: moment (),
-					end: moment().add (5, 'day'),
-					services: ['group common', 'individual common']
-				}
-			]
-
-
-			Customers.create (customer, function (err, cus){
-				if (err){
-					console.log (err)
-					return
-				}
-
-				newCustomer = cus.getPublicFields();
-				occupancy.customer = newCustomer;
-
-				Occupancy.create (occupancy, function (err, occ){
-					if (err){
-						// console.log (err)
-						return
-					}
-
-					newOcc = occ;
-					newOcc.getTotal ();
-
-					accounts.map (function (x, i, arr){
-						x.customer = newCustomer._id;
-					});
-
 					Accounts.insertMany (accounts, function (err, acc){
 						if (err){
-							// console.log (err)
+							console.log (err);
 							return
 						}
 
-						newAcc = acc;	
+						newAcc = acc;
 
-						// indicate the service is pay part by account
-						newOcc.paymentMethod = [
-							{methodId: newAcc[0]._id, name: 'account', amount: 2, paid: 30000}
-						];
-
-						var newAccIds = newAcc.map (function (x, i, arr){
-							return x._id;
-						})
-
-						Customers.update ({_id: newCustomer._id}, {$set: {accounts: newAccIds}}, function (err, cus){
-							if (err){
-								// console.log (err)
-								return
-							}
-
-							done ();						
-						});
-
-					});
+						done ();
+					})
 
 					
 				});
 			});
+
 		});
 
 		afterEach (function (done){
@@ -884,40 +816,89 @@ describe ('Checkout', function (){
 			});
 		});
 
-		it ('should update account when it is used', function (done){
+		xit ('should checkout successfully when no account is used', function (done){
+		
 			chai.request (server)
 				.post ('/checkout/')
-				.send ({data: newOcc})
+				.send ({data: newOcc[0]})
 				.end (function (err, res){
 					if (err) {
 						console.log (err)
 					}
 
+					res.should.to.have.status (200);
 					res.body.data.should.to.exist;
-					res.body.data.checkoutTime.should.to.exist;
-					res.body.data.checkinTime.should.to.exist;
-					res.body.data.usage.should.to.exist;
-					res.body.data.total.should.to.exist;
-					res.body.data.customer.should.to.exist;
-					res.body.data.total.should.to.equal (15000);
-					res.body.data.paymentMethod[0].paid.should.to.equal (30000);
-					res.body.data.paymentMethod[0].amount.should.to.equal (2);
 
-					Accounts.findOne ({_id: newAcc[0]._id}, function (err, acc){
+					Occupancy.findOne ({_id: newOcc[0]._id}, {usage: 1, total: 1, promocodes: 1}, function (err, foundOcc){
 						if (err){
-							console.log (err)
+							console.log (err);
 						}
 
-						acc.should.to.exist;
-						acc.amount.should.to.equal (0);
-						
+						foundOcc.should.to.exist;
+						foundOcc.total.should.to.equal (20000);
+						foundOcc.usage.should.to.equal (2);
+						foundOcc.promocodes.should.to.have.length.of.at.least (1);	
 
 						done ();
-					});
+					})
 
 					
-				});					
+				});
 		});
+
+		it ('should checkout successfully when an account is used', function (done){
+			var selectedOcc = newOcc[2];
+			var selectedAcc = newAcc[2];
+
+			newOcc[2].paymentMethod = [
+				{
+					name: 'account',
+					_id: selectedAcc._id,
+					paid: 2
+				}
+			];
+
+			chai.request (server)
+				.post ('/checkout/')
+				.send ({data: selectedOcc})
+				.end (function (err, res){
+					if (err) {
+						console.log (err)
+					}
+
+					res.should.to.have.status (200);
+					res.body.data.should.to.exist;
+
+					Occupancy.findOne ({_id: selectedOcc._id}, {usage: 1, total: 1, promocodes: 1, paymentMethod: 1}, function (err, foundOcc){
+						if (err){
+							console.log (err);
+						}
+
+						foundOcc.should.to.exist;
+						foundOcc.total.should.to.equal (150000);
+						foundOcc.usage.should.to.equal (2);
+						foundOcc.promocodes.should.to.have.length.of.at.least (1);	
+
+						foundOcc.paymentMethod.length.should.to.equal (1);
+						foundOcc.paymentMethod[0].paid.should.to.equal (2);
+						foundOcc.paymentMethod[0].name.should.to.equal ('account');
+
+						Accounts.findOne ({_id: selectedAcc._id}, function (err, foundAcc){
+							if (err){
+								console.log (err);
+							}
+
+							foundAcc.amount.should.to.equal (1);
+							done ();
+						})
+
+						
+					})
+
+					
+				});
+		});
+
 	});
 })
 

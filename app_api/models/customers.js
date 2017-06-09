@@ -33,7 +33,7 @@ var customersSchema = mongoose.Schema({
 	}],
 	occupancy: [{type: mongoose.Schema.Types.ObjectId}],
 	bookings: [{type:mongoose.Schema.Types.ObjectId}],
-	deposits: [{type:mongoose.Schema.Types.ObjectId, ref: 'deposits'}],
+	accounts: [{type:mongoose.Schema.Types.ObjectId, ref: 'Accounts'}],
 	checkinStatus: {type: Boolean, default: false},
 	////////// Login Google
 	google: { // not complete

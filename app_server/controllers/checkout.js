@@ -1,11 +1,12 @@
 var moment = require ('moment');
 var mongoose = require ('mongoose');
-var Promocodes = mongoose.model ('promocodes');
+// var Promocodes = mongoose.model ('promocodes');
+var Promocodes = mongoose.model ('NewPromocodes');
 var Orders = mongoose.model ('orders');
 var Customers = mongoose.model ('customers');
 // var Occupancy = mongoose.model ('occupancy');
 var Occupancy = mongoose.model ('NewOccupancies');
-var Deposits = mongoose.model ('deposits');
+var Accounts = mongoose.model ('Accounts');
 
 module.exports = new Checkout();
 
@@ -22,12 +23,18 @@ function Checkout() {
 
 			if (foundOcc){
 				foundOcc.checkoutTime = foundOcc.checkoutTime ? foundOcc.checkoutTime : moment ();
-				foundOcc.getTotal ();
-
+				
+				try{
+					foundOcc.getTotal ();
+				}
+				catch (err){
+					next (err);
+					return;
+				}
 				
 				Customers.findOne ({_id: foundOcc.customer._id})
 					.populate ({
-						path: 'deposits',
+						path: 'accounts',
 						match: 	{
 							start: {$lte: new Date ()},
 							end: {$gte: new Date ()},
@@ -41,10 +48,8 @@ function Checkout() {
 							next (err);
 						}
 
-						console.log (cus)
-
 						foundOcc = foundOcc.toObject (); // convert to add data
-						foundOcc.deposits = cus.deposits ? cus.deposits : [];
+						foundOcc.accounts = cus.accounts ? cus.accounts : [];
 						res.json ({data: foundOcc});
 					});
 
@@ -55,40 +60,40 @@ function Checkout() {
 			}
 
 		});
-	
 	};
 
 	// assume call createInvoice beforehand
 	// at this moment only allow paid by one account at a checkout time
 	// Apply only usage account, whose unit is hour
-	// return reduced total, usage
 	this.withdrawUsageHourAccount = function (req, res, next){
-		var depositId = req.query.depositId;
-		var unit = 'hour';
+		var accId = req.params.accId;
 		var occ = JSON.parse (req.query.occ);
 		occ = new Occupancy (occ);
-		var remain;
 
-		Deposits.findOne ({_id: depositId}, function (err, deposit){
+		Accounts.findOne ({_id: accId}, function (err, foundAcc){
 			if (err) {
 				console.log (err);
 				next (err);
 			}
  			
-			if (deposit){
-				var accAmountRemain = deposit.account.amount;
-				var oriUsage = occ.usage;
-				occ.promocodes = Promocodes.removeDefaultCode (occ.promocodes); // necessary to reset effect of default codes
-				occ.usage = deposit.withdraw (occ.usage, unit, occ.service.name);
+			if (foundAcc){
+				var originalUsage = occ.usage; 
+				occ.usage = foundAcc.withdraw (occ.usage);
 				occ.getTotal ();
 
-				// console.log (occ.total, oriUsage - occ.usage, deposit.account.amount)
-
-				res.json ({data: {
-					total: occ.total,
-					withdraw: Number((oriUsage - occ.usage).toFixed(1)),
-					accountRemain: deposit.account.amount
-				}})
+				res.json ({
+					data: {
+						occ:{
+							total: occ.total,
+						},
+						acc: {
+							_id: foundAcc._id,
+							name: 'account',
+							paid: originalUsage - occ.total,
+							remain: foundAcc.amount,
+						}
+					}
+				});
 			}
 			else{
 				res.json (); // may not the best way to indicate 
@@ -107,14 +112,6 @@ function Checkout() {
 		var note = req.body.data.note ? req.body.data.note : ''; // optional
 		var status = 2;
 
-		if (req.body.data.paymentMethod && req.body.data.paymentMethod.length){
-			req.body.data.paymentMethod.map (function (x, i, arr){
-				if (x.name == 'account'){
-					total -= x.paid;
-				}
-			});
-		}
-
 		Customers.findOneAndUpdate({_id:req.body.data.customer._id}, {$set:{checkinStatus:false}}, function(err, cus){
 			if (err){
 				next (err)
@@ -127,16 +124,10 @@ function Checkout() {
 					total: total, 
 					usage: usage, 
 					promocodes: promocodes,
-					checkoutTime: checkoutTime, 
+					checkoutTime: checkoutTime,
+					paymentMethod: paymentMethods,
 					note: note
 				}
-
-				// add payment method if it is not cash. Not id means cash
-				req.body.data.paymentMethod.map (function (x, i, arr){
-					if (x.methodId){
-						updateOcc.paymentMethod = req.body.data.paymentMethod;
-					}
-				});	
 
 				Occupancy.findOneAndUpdate ({_id: req.body.data._id}, {$set: updateOcc}, {new: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function (err, occ){
 					if (err){
@@ -150,23 +141,23 @@ function Checkout() {
 						// update acc if being used
 						// At this moment. Only one method is used at a time
 						if (occ.paymentMethod && occ.paymentMethod.length){
-							var deposit;
+							var acc;
 							occ.paymentMethod.map (function (x, i, arr){
 								if (x.name == 'account'){
-									deposit = x;
+									acc = x;
 								}
 							});
 
-							if (deposit){
-								Deposits.findOneAndUpdate ({_id: deposit.methodId}, {$inc: {amount: - deposit.amount}}, function (err, acc){
+							if (acc){
+								Accounts.findOneAndUpdate ({_id: acc._id}, {$inc: {amount: - acc.paid}}, function (err, foundAcc){
 									if (err){
 										console.log (err);
 										next (err);
 										return
 									}
 
-									if (acc){
-										res.json ({data: occ});
+									if (foundAcc){
+										res.json ({data: {message: 'success'}});
 									}
 									else{
 										next ();
@@ -179,7 +170,7 @@ function Checkout() {
 
 						}
 						else{
-							res.json ({data: occ});
+							res.json ({data: {message: 'success'}});
 						}
 					}
 					else{
