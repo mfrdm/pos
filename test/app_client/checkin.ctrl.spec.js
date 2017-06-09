@@ -33,11 +33,11 @@ describe('Controller: NewCheckinCtrl', function() {
     // OrderlineList: an array contain all kind of orderline: [0]: 1 product, [1]: more than 1 product
     var OrderlineList = [
         [
-            { "_id": "59195bd8c3737906af8d083b", "productName": "7up", "price": 8000, "subTotal": 8000, "promocodes": [], "quantity": "1" }
+            { "_id": "59195bd8c3737906af8d083b", "productName": "7up", "price": 8000, "quantity": "1" }
         ],
         [
-            { "_id": "59195bd8c3737906af8d083b", "productName": "7up", "price": 8000, "subTotal": 16000, "promocodes": [], "quantity": "2" },
-            { "_id": "59195beac3737906af8d083c", "productName": "Oishi", "price": 5000, "subTotal": 10000, "promocodes": [], "quantity": "2" }
+            { "_id": "59195bd8c3737906af8d083b", "productName": "7up", "price": 8000, "quantity": "2" },
+            { "_id": "59195beac3737906af8d083c", "productName": "Oishi", "price": 5000, "quantity": "2" }
         ]
     ]
 
@@ -74,79 +74,6 @@ describe('Controller: NewCheckinCtrl', function() {
         "createdAt": "2017-05-15T07:40:17.132Z",
         "label": "Cá nhân"
     }]
-
-    // var mockEditDataReturn = {
-    //     "customer": {
-    //         "fullname": "LÊ THỊ DUYÊN",
-    //         "_id": "5924168b164cb9030cee9509",
-    //         "phone": "0904543572",
-    //         "email": "duyenlt.nevents@gmail.com",
-    //         "isStudent": true
-    //     },
-    //     "promocodes": [{
-    //         "_id": "592e3e0b4eb93492334f27da",
-    //         "name": "v01h06",
-    //         "codeType": 1,
-    //         "priority": 2,
-    //         "override": [],
-    //         "services": [
-    //             "group common",
-    //             "individual common"
-    //         ],
-    //         "status": 3
-    //     }],
-    //     "service": {
-    //         "_id": "59195b6103476b069405e57f",
-    //         "name": "individual common",
-    //         "price": 15000,
-    //         "category": 1,
-    //         "__v": 0,
-    //         "updatedAt": [],
-    //         "createdAt": "2017-05-15T07:40:17.132Z",
-    //         "label": "Cá nhân"
-    //     },
-    // }
-
-    // var mockBeforeEditData = [{
-    //     "customer": {
-    //         "fullname": "LÊ THỊ DUYÊN",
-    //         "_id": "5924168b164cb9030cee9509",
-    //         "phone": "0904543572",
-    //         "email": "duyenlt.nevents@gmail.com",
-    //         "isStudent": true
-    //     },
-    //     "promocodes": [],
-    //     "service": {
-    //         "_id": "59195b6103476b069405e57f",
-    //         "name": "group common",
-    //         "price": 15000,
-    //         "category": 1,
-    //         "__v": 0,
-    //         "updatedAt": [],
-    //         "createdAt": "2017-05-15T07:40:17.132Z",
-    //         "label": "Nhóm chung"
-    //     },
-    // }, {
-    //     "customer": {
-    //         "fullname": "LÊ THỊ DUYÊN",
-    //         "_id": "5924168b164cb9030cee9509",
-    //         "phone": "0904543572",
-    //         "email": "duyenlt.nevents@gmail.com",
-    //         "isStudent": true
-    //     },
-    //     "promocodes": [],
-    //     "parent": "59263d72a74493116b6fe1ab",
-    //     "service": {
-    //         "_id": "59195b6103476b069405e57f",
-    //         "name": "group common",
-    //         "price": 15000,
-    //         "category": 1,
-    //         "__v": 0,
-    //         "updatedAt": [],
-    //         "createdAt": "2017-05-15T07:40:17.132Z",
-    //         "label": "Nhóm chung"
-    //     },
-    // }]
 
     beforeEach(module('posApp'));
     beforeEach(inject(
@@ -194,9 +121,9 @@ describe('Controller: NewCheckinCtrl', function() {
             // FUNCTIONS
 
             // Get checkin list
-            getCheckinListCtrl = function(vm) {
+            getCheckinListCtrl = function(vm, occ) { // pass occupancy list want to display
                 $httpBackend.when('GET', /\/checkin.*/).respond({
-                    data: occupancyList
+                    data: occ
                 });
                 vm.ctrl.getCheckedinList();
                 $httpBackend.flush();
@@ -211,7 +138,67 @@ describe('Controller: NewCheckinCtrl', function() {
                 $httpBackend.flush();
             }
 
+            // Get products
+            getProductsCtrl = function(vm, products){
+                $httpBackend.when('GET', '/api/products').respond({
+                    data: products
+                });
+                vm.ctrl.checkin.getItems();
+                $httpBackend.flush();
+            }
 
+            // Get promocodes
+            getPromocodesCtrl = function(vm, codes){
+                $httpBackend.when('GET', '/promocodes/').respond({
+                    data: codes
+                });
+                vm.ctrl.checkin.getPromocodes();
+                $httpBackend.flush();
+            }
+
+            openCheckinDivCtrl = function(vm, codes, products){
+                vm.model.dom.checkin.checkinDiv = false;
+                $httpBackend.when('GET', '/api/products').respond({
+                    data: products
+                });
+                $httpBackend.when('GET', '/promocodes/').respond({
+                    data: codes
+                });
+                vm.ctrl.openCheckinDiv();
+                $httpBackend.flush();
+            }
+
+            // Search customer
+            searchCustomerCtrl = function(vm, customerArr){
+                vm.model.search.checkin.username = 'ĐỒNG THỊ THÙY DƯƠNG'
+                
+                $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
+                    data: customerArr
+                });
+                vm.ctrl.checkin.searchCustomer()
+                $httpBackend.flush();
+            }
+
+            // Add code and validate
+            addCodeCtrl = function(vm, correctCode){
+                $httpBackend.when('GET', /\/checkin\/validate-promotion-code.*/).respond({
+                    data: correctCode
+                });
+                vm.ctrl.checkin.addCode()
+                $httpBackend.flush();
+            }
+
+            // Open edit form and fetch data
+            openEditForm = function(vm, occ, products, codes){
+                $httpBackend.when('GET', '/api/products').respond({
+                    data: products
+                });
+                $httpBackend.when('GET', '/promocodes/').respond({
+                    data: codes
+                });
+                vm.ctrl.edit.edit(occ);
+                $httpBackend.flush();
+            }
         }
     ));
 
@@ -220,894 +207,504 @@ describe('Controller: NewCheckinCtrl', function() {
         $httpBackend.verifyNoOutstandingRequest();
     }));
 
-    // describe ('testing', function (){
-    //  it ('should reset change after reload', function (){
-    //      var layout = createLayout();
-    //      var vm = createController ();
-
-    //      expect(vm.model.testChange).toEqual ('1234');
-    //      vm.ctrl.reset ();
-    //      expect(vm.model.testChange).toEqual ('xxxx');           
-    //  })
-
-    // })
-
-    // describe('Get checked-in list', function() {
-    //     it('should success fetch check-in list', function() {
-    //         // Get checkin list
-    //         $httpBackend.when('GET', /\/checkin.*/).respond({
-    //             data: occupancyList
-    //         });
-    //         var layout = createLayout();
-    //         var vm = createController();
-
-    //         // Before get checked in List
-    //         expect(vm.model.checkedinList.data).toEqual([])
-    //         vm.ctrl.getCheckedinList();
-    //         $httpBackend.flush();
-
-    //         //After get checked in List
-    //         expect(vm.model.checkedinList.data.length).not.toEqual(0);
-    //     })
-    //     it('should display message when not found check-in', function() {
-    //         // Get checkin list
-    //         $httpBackend.when('GET', /\/checkin.*/).respond({
-    //             data: []
-    //         });
-    //         var layout = createLayout();
-    //         var vm = createController();
-
-    //         // Before get checked in List
-    //         expect(vm.model.checkinListEachPage.data.length).toEqual(0)
-    //         expect(vm.model.temporary.displayedList.data.length).toEqual(0)
-    //         vm.ctrl.getCheckedinList();
-    //         $httpBackend.flush();
-
-    //         // After get checked in List
-    //         expect(vm.model.checkinListEachPage.data.length).toEqual(0)
-    //         expect(vm.model.temporary.displayedList.data.length).toEqual(0)
-    //     });
-
-    // });
-
-    // describe('Check-in', function() {
-
-    //     describe('Open check-in form', function() {
-    //         it('should show check-in form when click check-in button 1st time', function() {
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             // Before click, form should be hidden
-    //             expect(vm.model.dom.checkin.checkinDiv).toBeFalsy();
-    //             // Click
-    //             vm.ctrl.toggleCheckInDiv();
-    //             // After click, should open form
-    //             expect(vm.model.dom.checkin.checkinDiv).toBeTruthy();
-    //         });
-    //         it('should fetch items and services', function() {
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             $httpBackend.when('GET', '/api/products').respond({
-    //                 data: productsList
-    //             });
-    //             // Before click, there is no items and services has been loaded yet
-    //             expect(vm.model.dom.checkin.products.length).toEqual(0)
-    //             expect(vm.model.dom.data.selected.services).toBeUndefined()
-    //             expect(vm.model.dom.data.selected.items).toBeUndefined()
-    //                 // Click
-    //             vm.ctrl.toggleCheckInDiv();
-    //             $httpBackend.flush();
-    //             // After click, should add products
-    //             expect(vm.model.dom.data.selected.services.length).toBeGreaterThan(0)
-    //             expect(vm.model.dom.data.selected.items.length).toBeGreaterThan(0)
-    //         });
-    //         it('should not fetch items and services if already got', function() {
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             // Assume existing services and items
-    //             vm.model.dom.data.selected.services = mockServices;
-    //             vm.model.dom.data.selected.items = mockitems;
-    //             // Click
-    //             vm.ctrl.toggleCheckInDiv();
-    //             // services and items should remain as mock
-    //             expect(vm.model.dom.data.selected.services.length).toEqual(1)
-    //             expect(vm.model.dom.data.selected.items.length).toEqual(1)
-    //         });
-    //     });
-
-    //     describe('Close check-in form', function() {
-
-    //         it('should hide check-in form when click check-in button 2nd time', function() {
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             // Before click, form should be showed
-    //             vm.model.dom.checkin.checkinDiv = true;
-    //             // Click
-    //             vm.ctrl.toggleCheckInDiv();
-    //             // After click, should close form
-    //             expect(vm.model.dom.checkin.checkinDiv).toBeFalsy();
-    //         });
-
-    //         it('should reset order when toogle checkin div', function() {
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.model.checkingin.order.orderline = mockOrderline;
-    //             vm.model.dom.checkin.checkinDiv = true;
-    //             vm.ctrl.toggleCheckInDiv();
-    //             // After click, orderline should be empty, temporary selected items too
-    //             expect(vm.model.checkingin.order.orderline.length).toEqual(0)
-    //             expect(vm.model.temporary.checkin.selecteditems.length).toEqual(0)
-    //         });
-
-    //         it('should reset promocodes when toogle checkin div close', function() {
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.model.dom.checkin.checkinDiv = true;
-    //             vm.model.temporary.checkin.codeName = mockPromoteCodes[0].name
-    //             vm.model.checkingin.occupancy.promocodes = [{ name: mockPromoteCodes[0].name, status: 1 }];
-    //             vm.ctrl.toggleCheckInDiv();
-    //             expect(vm.model.checkingin.occupancy.promocodes).toEqual([]);
-    //             expect(vm.model.temporary.checkin.codeName).toEqual('')
-    //         })
-    //     });
-
-    //     describe('Select service', function() {
-    //         it('should fetch list of checked-in leader of a group when customer using group private service', function() {
-
-    //             $httpBackend.when('GET', /\/checkin.*/).respond({
-    //                 data: occupancyList
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-
-    //             vm.ctrl.getCheckedinList();
-    //             vm.model.dom.checkin.checkinDiv = false;
-    //             vm.ctrl.toggleCheckInDiv()
-    //             $httpBackend.flush();
-    //             vm.model.checkingin.occupancy.service.name = 'small group private'
-    //             vm.ctrl.checkin.getGroupPrivateLeader()
-
-    //             expect(vm.model.temporary.groupPrivateLeaders.length).toEqual(2)
-    //             expect(vm.model.temporary.groupPrivateLeaders[1].groupName).toEqual('Nhóm riêng 15 / LÊ DUY KHÁNH / khanh.leduy.bav@gmail.com / 0968180934')
-    //         })
-    //         it('should display group list when customer uses group private', function() {
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             $httpBackend.when('GET', '/api/products').respond({
-    //                 data: productsList
-    //             });
-    //             vm.model.dom.checkin.checkinDiv = false;
-    //             vm.ctrl.toggleCheckInDiv()
-    //             $httpBackend.flush();
-    //             vm.model.checkingin.occupancy.service.name = 'small group private'
-    //             vm.ctrl.checkin.serviceChangeHandler()
-
-    //             expect(vm.model.dom.checkin.privateGroupLeaderDiv).toBeTruthy();
-    //         });
-    //     })
-
-    //     describe('Search a checking-in customer', function() {
-    //         it('should show customer search result div when having customer data after searching', function() {
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: mockCustomer
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //             vm.ctrl.checkin.searchCustomer();
-    //             $httpBackend.flush();
-    //             expect(vm.model.search.checkin.customers.length).toEqual(1)
-    //             expect(vm.model.search.checkin.customers[0].fullname).toEqual('NGUYỄN LAN HƯƠNG')
-    //         });
-    //         it('should show customer search result div and not found message when having no customer data after searching', function() {
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: []
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.ctrl.checkin.searchCustomer();
-    //             $httpBackend.flush();
-    //             expect(vm.model.search.checkin.customers.length).toEqual(0)
-    //             expect(vm.model.dom.checkin.search.message.notFound).toBeTruthy();
-    //         });
-    //         it('should hide customer checked-in message when start search a new term', function() {
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: mockCustomer
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //             vm.ctrl.checkin.searchCustomer();
-    //             $httpBackend.flush();
-    //             vm.model.search.checkin.username = '';
-    //             vm.ctrl.checkin.validateSearchInput();
-    //             expect(vm.model.dom.checkin.customerSearchResultDiv).toBeFalsy();
-
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: []
-    //             });
-    //             vm.model.search.checkin.username = 'jfjfhgfhfuyuygj';
-    //             vm.ctrl.checkin.searchCustomer();
-    //             $httpBackend.flush();
-    //             vm.model.search.checkin.username = '';
-    //             vm.ctrl.checkin.validateSearchInput();
-    //             expect(vm.model.dom.checkin.search.message.notFound).toBeFalsy();
-    //         });
-    //         it('should hide customer search result when click check-in button 2nd time', function() {
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: mockCustomer
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.model.dom.checkin.checkinDiv = true;
-    //             vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //             vm.ctrl.checkin.searchCustomer();
-    //             $httpBackend.flush();
-    //             vm.ctrl.toggleCheckInDiv();
-    //             expect(vm.model.dom.checkin.customerSearchResultDiv).toBeFalsy();
-    //             expect(vm.model.search.checkin.customers.length).toEqual(0);
-
-    //         });
-    //         it('should hide customer search result div when select a customer', function() {
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: mockCustomer
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.model.dom.checkin.checkinDiv = true;
-    //             vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //             vm.ctrl.checkin.searchCustomer();
-    //             $httpBackend.flush();
-
-    //             // Select customer after search
-    //             vm.ctrl.checkin.selectCustomer(0);
-    //             expect(vm.model.dom.checkin.customerSearchResultDiv).toBeFalsy();
-    //         })
-    //         it('should keep customer data in occupancy and order objects when select a customer', function() {
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: mockCustomer
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.model.dom.checkin.checkinDiv = true;
-    //             vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //             vm.ctrl.checkin.searchCustomer();
-    //             $httpBackend.flush();
-
-    //             // Select customer after search
-    //             vm.ctrl.checkin.selectCustomer(0);
-
-    //             //Check if customer data in occupancy
-    //             expect(vm.model.checkingin.occupancy.customer.fullname).toEqual('NGUYỄN LAN HƯƠNG')
-    //             expect(vm.model.checkingin.order.customer.fullname).toEqual('NGUYỄN LAN HƯƠNG')
-    //         });
-    //         it('should reset search result after select a customer to check-in', function() {
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: mockCustomer
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.model.dom.checkin.checkinDiv = true;
-    //             vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //             vm.ctrl.checkin.searchCustomer();
-    //             $httpBackend.flush();
-
-    //             // Select customer after search
-    //             vm.ctrl.checkin.selectCustomer(0);
-
-    //             // customers search array should be empty
-    //             expect(vm.model.search.checkin.customers.length).toEqual(0)
-    //         })
-    //         it('should hide customer search result div when remove all search input', function() {
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: mockCustomer
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.model.dom.checkin.checkinDiv = true;
-    //             vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //             vm.ctrl.checkin.searchCustomer();
-    //             $httpBackend.flush();
-
-    //             //Empty the search input
-    //             vm.model.search.checkin.username = '';
-    //             vm.ctrl.checkin.validateSearchInput();
-    //             expect(vm.model.dom.checkin.customerSearchResultDiv).toBeFalsy();
-    //         })
-
-    //         it('should reset occupancy, order when toogle checkin div', function() {
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: mockCustomer
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.model.dom.checkin.checkinDiv = true;
-    //             vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //             vm.ctrl.checkin.searchCustomer();
-    //             $httpBackend.flush();
-
-    //             // Select customer after search
-    //             vm.ctrl.checkin.selectCustomer(0);
-
-    //             //reset when toggle
-    //             vm.model.dom.checkin.checkinDiv = true;
-    //             vm.ctrl.toggleCheckInDiv();
-    //             console.info(vm.model.checkingin.occupancy.customer)
-    //             expect(vm.model.checkingin.occupancy.customer).toEqual({})
-    //             expect(vm.model.checkingin.order.orderline.length).toEqual(0)
-    //         })
-    //     })
-
-    //     describe('Order', function() {
-    //         it('should add a item when click "add item"', function() {
-    //             // Get list items
-    //             $httpBackend.when('GET', '/api/products').respond({
-    //                 data: productsList
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.model.dom.checkin.checkinDiv = false;
-    //             vm.ctrl.toggleCheckInDiv()
-    //             $httpBackend.flush();
-
-    //             // Select customer
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: mockCustomer
-    //             });
-
-    //             vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //             vm.ctrl.checkin.searchCustomer();
-    //             $httpBackend.flush();
-    //             vm.ctrl.checkin.selectCustomer(0);
-
-    //             // Add item
-    //             vm.model.temporary.checkin.item.name = '7up';
-    //             vm.model.temporary.checkin.item.quantity = 1;
-    //             vm.ctrl.checkin.additem();
-    //             expect(vm.model.checkingin.order.orderline[0].productName).toEqual('7up');
-    //             expect(vm.model.checkingin.order.orderline[0].quantity).toEqual(1);
-    //             expect(vm.model.checkingin.order.orderline[0].price).toEqual(8000);
-    //         })
-    //         it('should reset item data in temporary object after click "add item"', function() {
-    //             // Get list items
-    //             $httpBackend.when('GET', '/api/products').respond({
-    //                 data: productsList
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.model.dom.checkin.checkinDiv = false;
-    //             vm.ctrl.toggleCheckInDiv()
-    //             $httpBackend.flush();
-
-    //             // Select customer
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: mockCustomer
-    //             });
-
-    //             vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //             vm.ctrl.checkin.searchCustomer();
-    //             $httpBackend.flush();
-    //             vm.ctrl.checkin.selectCustomer(0);
-
-    //             // Add item
-    //             vm.model.temporary.checkin.item.name = '7up';
-    //             vm.model.temporary.checkin.item.quantity = 1;
-    //             vm.ctrl.checkin.additem();
-
-    //             //should remove temporary
-    //             expect(vm.model.temporary.checkin.item).toEqual({})
-    //         })
-    //         it('should not allow to add duplicate items', function() {
-    //             // Get list items
-    //             $httpBackend.when('GET', '/api/products').respond({
-    //                 data: productsList
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.model.dom.checkin.checkinDiv = false;
-    //             vm.ctrl.toggleCheckInDiv()
-    //             $httpBackend.flush();
-
-    //             // Select customer
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: mockCustomer
-    //             });
-
-    //             vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //             vm.ctrl.checkin.searchCustomer();
-    //             $httpBackend.flush();
-    //             vm.ctrl.checkin.selectCustomer(0);
-
-    //             // Assume have already item in orderline
-    //             vm.model.temporary.checkin.selecteditems = ['7up']
-    //             vm.model.checkingin.order.orderline = mockOrderline;
-
-    //             // Add item
-    //             vm.model.temporary.checkin.item.name = '7up';
-    //             vm.model.temporary.checkin.item.quantity = 1;
-    //             vm.ctrl.checkin.additem();
-
-    //             // should not add
-    //             expect(vm.model.checkingin.order.orderline.length).toEqual(1);
-    //             expect(vm.model.checkingin.order.orderline[0].productName).toEqual('7up')
-    //         })
-
-    //         // it ('should remove item in check-in form when click delete', function(){
-    //         //  // Get list items
-    //         //  $httpBackend.when ('GET', '/api/products').respond ({
-    //         //      data: productsList
-    //         //  });
-    //         //  var layout = createLayout();
-    //         //  var vm = createController();
-    //         //  vm.model.dom.checkin.checkinDiv = false;
-    //         //  vm.ctrl.toggleCheckInDiv()
-    //         //  $httpBackend.flush();
-
-    //         //  // Select customer
-    //         //  $httpBackend.when ('GET', /\/checkin\/search-customers.*/).respond ({
-    //         //      data: mockCustomer
-    //         //  });
-
-    //         //  vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //         //  vm.ctrl.checkin.searchCustomer();
-    //         //  $httpBackend.flush();
-    //         //  vm.ctrl.checkin.selectCustomer(0);
-
-    //         //  // Assume have already item in orderline
-    //         //  vm.model.temporary.checkin.selecteditems = ['7up']
-    //         //  vm.model.checkingin.order.orderline = mockOrderline;
-
-    //         //  // Delete item
-    //         //  vm.ctrl.checkin.removeitem(0)
-
-    //         //  expect(vm.model.checkingin.order.orderline.length).toEqual(0);
-
-    //         // })
-    //         it('should remove item names in temporary object and items in orderline', function() {
-    //             // Get list items
-    //             $httpBackend.when('GET', '/api/products').respond({
-    //                 data: productsList
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.model.dom.checkin.checkinDiv = false;
-    //             vm.ctrl.toggleCheckInDiv()
-    //             $httpBackend.flush();
-
-    //             // Select customer
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: mockCustomer
-    //             });
-
-    //             vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //             vm.ctrl.checkin.searchCustomer();
-    //             $httpBackend.flush();
-    //             vm.ctrl.checkin.selectCustomer(0);
-
-    //             // Assume have already item in orderline
-    //             vm.model.temporary.checkin.selecteditems = ['7up']
-    //             vm.model.checkingin.order.orderline = mockOrderline;
-
-    //             // Delete item
-    //             vm.ctrl.checkin.removeitem(0)
-
-    //             // This tests both remove orderline, and temporary items
-    //             expect(vm.model.checkingin.order.orderline.length).toEqual(0);
-    //             expect(vm.model.temporary.checkin.selecteditems.length).toEqual(0);
-    //             expect(vm.model.temporary.checkin.item).toEqual({})
-    //         })
-    //     })
-
-    //     describe('Promocodes', function() {
-
-    //         it('should add code and display it in added code section when select code. No longer use plus button to add code.', function() {
-    //             $httpBackend.when('GET', '/promocodes/').respond({
-    //                 data: mockPromoteCodes
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.model.dom.checkin.checkinDiv = false;
-    //             vm.ctrl.toggleCheckInDiv()
-    //             $httpBackend.flush();
-    //             // Select customer
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: mockCustomer
-    //             });
-    //             vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //             vm.ctrl.checkin.searchCustomer();
-
-    //             $httpBackend.flush();
-    //             vm.ctrl.checkin.selectCustomer(0);
-
-    //             // Get promotecodes from server
-    //             console.info(vm.model.dom.data.selected.checkin.promoteCode.codes)
-
-    //             // should show all codes in selections
-    //             expect(vm.model.dom.data.selected.checkin.promoteCode.codes[0].selectedLabel).toEqual('Common - GS05')
-    //             expect(vm.model.dom.data.selected.checkin.promoteCode.codes[1].selectedLabel).toEqual('Common - Giá sinh viên')
-
-    //             // Before select
-    //             expect(vm.model.checkingin.occupancy.promocodes).toEqual([])
-    //             expect(vm.model.temporary.checkin.codeNames).toEqual([])
-
-    //             vm.model.temporary.checkin.codeName = vm.model.dom.data.selected.checkin.promoteCode.codes[0].name
-    //             vm.ctrl.checkin.addCode();
-    //             // Code should be add right after select
-    //             expect(vm.model.checkingin.occupancy.promocodes).toEqual([{ name: vm.model.temporary.checkin.codeName, status: 1 }])
-    //             expect(vm.model.temporary.checkin.codeNames).toEqual([vm.model.temporary.checkin.codeName])
-    //         });
-
-    //         it('should validate and show invalid status when codes are invalid', function() {
-    //             $httpBackend.when('GET', '/promocodes/').respond({
-    //                 data: mockPromoteCodes
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.model.dom.checkin.checkinDiv = false;
-    //             vm.ctrl.toggleCheckInDiv()
-    //             $httpBackend.flush();
-    //             // Select customer
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: mockCustomer
-    //             });
-    //             vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //             vm.ctrl.checkin.searchCustomer();
-
-    //             $httpBackend.flush();
-    //             vm.ctrl.checkin.selectCustomer(0);
-
-    //             // Get promotecodes from server
-    //             console.info(vm.model.dom.data.selected.checkin.promoteCode.codes)
-
-    //             // should show all codes in selections
-    //             expect(vm.model.dom.data.selected.checkin.promoteCode.codes[0].selectedLabel).toEqual('Common - GS05')
-    //             expect(vm.model.dom.data.selected.checkin.promoteCode.codes[1].selectedLabel).toEqual('Common - Giá sinh viên')
-    //             expect(vm.model.dom.data.selected.checkin.promoteCode.codes[2].selectedLabel).toEqual('Common - MAR05')
-
-    //             vm.model.temporary.checkin.codeName = vm.model.dom.data.selected.checkin.promoteCode.codes[0].name
-    //             vm.ctrl.checkin.addCode();
-    //         })
-
-    //         it('should delete code when click delete button', function() {
-    //             $httpBackend.when('GET', '/promocodes/').respond({
-    //                 data: mockPromoteCodes
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.model.dom.checkin.checkinDiv = false;
-    //             vm.ctrl.toggleCheckInDiv()
-    //             $httpBackend.flush();
-    //             // Select customer
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: mockCustomer
-    //             });
-    //             vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //             vm.ctrl.checkin.searchCustomer();
-
-    //             $httpBackend.flush();
-    //             vm.ctrl.checkin.selectCustomer(0);
-
-    //             // Select a promocodes
-    //             vm.model.temporary.checkin.codeName = vm.model.dom.data.selected.checkin.promoteCode.codes[0].name;
-    //             vm.ctrl.checkin.addCode();
-
-
-    //             vm.ctrl.checkin.removeCode();
-    //             console.log(vm.model.checkingin.occupancy.promocodes)
-    //             expect(vm.model.checkingin.occupancy.promocodes).toEqual([])
-    //             expect(vm.model.temporary.checkin.codeName).toEqual('')
-    //         })
-
-    //         describe('should disable select if customer and service is not selected', function() {
-    //             var layout, vm;
-    //             beforeEach(function() {
-    //                 $httpBackend.when('GET', '/promocodes/').respond({
-    //                     data: mockPromoteCodes
-    //                 });
-    //                 layout = createLayout();
-    //                 vm = createController();
-    //                 vm.model.dom.checkin.checkinDiv = false;
-    //                 vm.ctrl.toggleCheckInDiv()
-    //                 $httpBackend.flush();
-    //                 // Select customer
-    //                 $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                     data: mockCustomer
-    //                 });
-    //                 vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //                 vm.ctrl.checkin.searchCustomer();
-
-    //                 $httpBackend.flush();
-    //             })
-
-    //             it('should disable if no customer select', function() {
-    //                 // Without select customer disable all options
-    //                 expect(vm.model.dom.data.selected.checkin.promoteCode.codes[0].disabled).toBeTruthy();
-    //                 expect(vm.model.dom.data.selected.checkin.promoteCode.codes[1].disabled).toBeTruthy();
-    //                 expect(vm.model.dom.data.selected.checkin.promoteCode.codes[2].disabled).toBeTruthy();
-    //             })
-
-    //             it('should disabled if customer selected but no service select', function() {
-    //                 vm.ctrl.checkin.selectCustomer(0); // Select Customer
-    //                 expect(vm.model.dom.data.selected.checkin.promoteCode.codes[0].disabled).toBeTruthy();
-    //                 expect(vm.model.dom.data.selected.checkin.promoteCode.codes[1].disabled).toBeTruthy();
-    //                 expect(vm.model.dom.data.selected.checkin.promoteCode.codes[2].disabled).toBeTruthy();
-    //             })
-
-    //             it('should not disable if customer select and service select', function() {
-    //                 vm.ctrl.checkin.selectCustomer(0); // Select Customer
-    //                 vm.model.checkingin.occupancy.service.name = mockSelectedService.name;
-    //                 vm.ctrl.checkin.serviceChangeHandler(); // Select service
-    //                 expect(vm.model.dom.data.selected.checkin.promoteCode.codes[0].disabled).toBeFalsy();
-    //                 expect(vm.model.dom.data.selected.checkin.promoteCode.codes[1].disabled).toBeFalsy();
-    //                 expect(vm.model.dom.data.selected.checkin.promoteCode.codes[2].disabled).toBeFalsy();
-    //             })
-    //         })
-    //     })
-
-    //     describe('Edit', function() {
-
-    //         it('should open edit form when click button edit', function() {
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             // Click button
-    //             vm.ctrl.edit.edit(mockBeforeEditData[0]);
-    //             expect(vm.model.dom.checkInEditDiv).toBeTruthy();
-    //         })
-
-    //         it('should close edit form when click cancel', function() {
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             // Click button
-    //             vm.ctrl.edit.close();
-    //             expect(vm.model.dom.checkInEditDiv).toBeFalsy();
-    //         })
-
-    //         it('should assign service name, promocodes', function() {
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.ctrl.edit.edit(mockBeforeEditData[0]);
-    //             expect(vm.model.editedCustomer.service.name).toEqual('group common')
-    //         })
-
-    //         it('should assign group leader if have', function() {
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.model.checkedinList.data = occupancyList;
-    //             vm.ctrl.checkin.getGroupPrivateLeader()
-    //             console.info(vm.model.temporary.groupPrivateLeaders)
-    //         })
-
-    //     })
-
-    //     describe('Confirm checkin', function() {
-    //         it('should display confirm modal when user click submit in check-in form and code, if exist, is valid', function() {
-    //             // Load page
-    //             // $httpBackend.when ('GET', /\/checkin.*/).respond ({
-    //             //  data: occupancyList
-    //             // });
-    //             // $httpBackend.when ('GET', '/promocodes/').respond ({
-    //             //  data: mockPromoteCodes
-    //             // });
-    //             $httpBackend.when('GET', '/api/products').respond({
-    //                 data: productsList
-    //             });
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: mockCustomer
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.ctrl.getCheckedinList();
-    //             vm.model.dom.checkin.checkinDiv = false;
-    //             vm.ctrl.toggleCheckInDiv()
-    //                 // Select customer
-    //             vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //             vm.ctrl.checkin.searchCustomer();
-    //             $httpBackend.flush();
-    //             vm.ctrl.checkin.selectCustomer(0);
-
-    //             // Select service
-    //             vm.model.checkingin.occupancy.service.name = 'individual common'
-    //             vm.ctrl.checkin.serviceChangeHandler()
-    //             vm.ctrl.checkin.confirm();
-    //             expect(vm.model.dom.checkin.confirmDiv).toBeTruthy();
-
-    //             // TODO: Need to deal with code later
-
-    //         })
-    //         it('should update new data in confirm modal when user cancel confirm and then update check-in info', function() {
-    //             $httpBackend.when('GET', '/api/products').respond({
-    //                 data: productsList
-    //             });
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: mockCustomer
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.ctrl.getCheckedinList();
-    //             vm.model.dom.checkin.checkinDiv = false;
-    //             vm.ctrl.toggleCheckInDiv()
-    //                 // Select customer
-    //             vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //             vm.ctrl.checkin.searchCustomer();
-    //             $httpBackend.flush();
-    //             vm.ctrl.checkin.selectCustomer(0);
-
-    //             // Select service
-    //             vm.model.checkingin.occupancy.service.name = 'individual common'
-    //             vm.ctrl.checkin.serviceChangeHandler()
-    //             vm.ctrl.checkin.confirm();
-
-    //             vm.ctrl.checkin.cancel();
-    //             // Reselect
-    //             vm.model.checkingin.occupancy.service.name = 'group common'
-    //             vm.ctrl.checkin.serviceChangeHandler()
-    //             vm.ctrl.checkin.confirm();
-
-    //             expect(vm.model.checkingin.occupancy.service.name).toEqual('group common')
-    //         })
-    //     });
-
-    //     describe('Submit checkin', function() {
-    //         it('should checkin success', function() {
-    //             $httpBackend.when('GET', '/api/products').respond({
-    //                 data: productsList
-    //             });
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: mockCustomer
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.ctrl.getCheckedinList();
-    //             vm.model.dom.checkin.checkinDiv = false;
-    //             vm.ctrl.toggleCheckInDiv()
-    //                 // Select customer
-    //             vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //             vm.ctrl.checkin.searchCustomer();
-    //             $httpBackend.flush();
-    //             vm.ctrl.checkin.selectCustomer(0);
-
-    //             // Select service
-    //             vm.model.checkingin.occupancy.service.name = 'individual common'
-    //             vm.ctrl.checkin.serviceChangeHandler()
-    //             vm.ctrl.checkin.confirm();
-
-    //             // Check in
-    //             $httpBackend.when('POST', '/checkin/customer/5924168b164cb9030cee9308').respond({
-    //                 data: mockSuccessfulCheckin
-    //             });
-    //             vm.ctrl.checkin.checkin()
-    //             $httpBackend.flush();
-    //             expect(vm.model.temporary.justCheckedin).toBeDefined()
-    //         })
-    //         it('should be invalid and cannot be submitted when customer being checking in are not selected', function() {
-    //             $httpBackend.when('GET', '/api/products').respond({
-    //                 data: productsList
-    //             });
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: mockCustomer
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.ctrl.getCheckedinList();
-    //             vm.model.dom.checkin.checkinDiv = false;
-    //             vm.ctrl.toggleCheckInDiv()
-    //                 // Select customer
-    //             vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //             vm.ctrl.checkin.searchCustomer();
-    //             $httpBackend.flush();
-
-    //             // Select service
-    //             vm.model.checkingin.occupancy.service.name = 'individual common'
-    //             vm.ctrl.checkin.serviceChangeHandler()
-    //             vm.ctrl.checkin.confirm();
-
-    //             // Check in
-    //             $httpBackend.when('POST', '/checkin/customer/5924168b164cb9030cee9308').respond({
-    //                 data: mockSuccessfulCheckin
-    //             });
-    //             vm.ctrl.checkin.checkin()
-    //             $httpBackend.flush();
-    //             expect(vm.model.temporary.justCheckedin).toBeUndefined()
-    //         })
-    //     });
-
-    //     describe('Order invoice', function() {
-    //         it('should display order invoice when checked in and customer makes an order', function() {
-    //             $httpBackend.when('GET', '/api/products').respond({
-    //                 data: productsList
-    //             });
-    //             $httpBackend.when('GET', /\/checkin\/search-customers.*/).respond({
-    //                 data: mockCustomer
-    //             });
-    //             var layout = createLayout();
-    //             var vm = createController();
-    //             vm.ctrl.getCheckedinList();
-    //             vm.model.dom.checkin.checkinDiv = false;
-    //             vm.ctrl.toggleCheckInDiv()
-    //                 // Select customer
-    //             vm.model.search.checkin.username = 'NGUYỄN LAN HƯƠNG';
-    //             vm.ctrl.checkin.searchCustomer();
-    //             $httpBackend.flush();
-    //             vm.ctrl.checkin.selectCustomer(0);
-
-    //             // Select service
-    //             vm.model.checkingin.occupancy.service.name = 'individual common'
-    //             vm.ctrl.checkin.serviceChangeHandler()
-    //             vm.ctrl.checkin.confirm();
-
-    //             // Add item
-    //             vm.model.temporary.checkin.item.name = '7up';
-    //             vm.model.temporary.checkin.item.quantity = 1;
-    //             vm.ctrl.checkin.additem();
-
-    //             // Check in
-    //             $httpBackend.when('POST', '/checkin/customer/5924168b164cb9030cee9308').respond({
-    //                 data: mockSuccessfulCheckin
-    //             });
-    //             vm.ctrl.checkin.checkin()
-    //             $httpBackend.flush();
-    //             expect(vm.model.temporary.justCheckedin.order.occupancyId).toBeDefined()
-    //         })
-    //     });
-
-    // });
-
-
-    // describe('Edit checked-in', function() {
-    //     it('should get checked-in of selected customer')
-    //     it('should display confirm when submit edit')
-    //     it('should update ')
-    // })
-
-    // describe('Check-out', function() {
-    //     it('should select correctly checking out customer', function() {
-    //         // Get checkin list
-    //         var layout = createLayout();
-    //         var vm = createController();
-    //         $httpBackend.when('GET', '/checkout/invoice/59253a1d466e685c1733834d').respond({
-    //             data: mockInvoice
-    //         });
-    //         //Select occupancy
-    //         vm.ctrl.checkout.getInvoice(occupancyList[0])
-    //         $httpBackend.flush();
-    //         expect(vm.model.checkingout.occupancy).toBeDefined();
-
-    //     })
-    //     it('should display confirm when click checkout button', function() {
-    //         // Get checkin list
-    //         var layout = createLayout();
-    //         var vm = createController();
-    //         $httpBackend.when('GET', '/checkout/invoice/59253a1d466e685c1733834d').respond({
-    //             data: mockInvoice
-    //         });
-    //         //Select occupancy
-    //         vm.ctrl.checkout.getInvoice(occupancyList[0])
-    //         $httpBackend.flush();
-    //         expect(vm.model.dom.checkOutDiv).toBeTruthy()
-    //     })
-    //     it('should return success message', function() {
-    //         // Get checkin list
-    //         var layout = createLayout();
-    //         var vm = createController();
-    //         $httpBackend.when('GET', '/checkout/invoice/59253a1d466e685c1733834d').respond({
-    //             data: mockInvoice
-    //         });
-    //         //Select occupancy
-    //         vm.ctrl.checkout.getInvoice(occupancyList[0])
-    //         $httpBackend.flush();
-    //         $httpBackend.when('POST', '/checkout').respond({
-    //             data: 'sucess'
-    //         });
-    //         vm.ctrl.checkout.checkout()
-    //         $httpBackend.flush();
-
-    //     })
-    //     it('should update checked-in list', function() {
-
-    //     })
-    // })
+    xdescribe('Get checked-in list', function() {
+        it('should success fetch check-in list', function() {
+            var layout = createLayout();
+            var vm = createController();
+
+            // Before get checked in List
+            expect(vm.model.checkedinList.data.length).toEqual(0)
+            // Get checkin list
+            getCheckinListCtrl(vm, occupancyList)
+            //After get checked in List
+            expect(vm.model.checkedinList.data.length).toEqual(5);
+        })
+        it('should display message when not found check-in', function() {
+            // Get checkin list
+            var layout = createLayout();
+            var vm = createController();
+
+            // Before get checked in List
+            expect(vm.model.checkinListEachPage.data.length).toEqual(0)
+            expect(vm.model.temporary.displayedList.data.length).toEqual(0)
+
+            getCheckinListCtrl(vm, [])
+
+            // After get checked in List
+            expect(vm.model.checkinListEachPage.data.length).toEqual(0)
+            expect(vm.model.temporary.displayedList.data.length).toEqual(0)
+        });
+    });
+
+    xdescribe('Check-in', function() {
+
+        xdescribe('Open check-in form', function() {
+            it('should show check-in form when click check-in button 1st time', function() {
+                var layout = createLayout();
+                var vm = createController();
+                
+                // Before click, form should be hidden
+                expect(vm.model.dom.checkin.checkinDiv).toBeFalsy();
+                openCheckinDivCtrl(vm, promocodesList, productsList)
+                expect(vm.model.dom.checkin.checkinDiv).toBeTruthy();
+            });
+            it('should fetch items and services', function() {
+                var layout = createLayout();
+                var vm = createController();
+                
+                // Before click, there is no items and services has been loaded yet
+                expect(vm.model.dom.checkin.products.length).toEqual(0)
+                expect(vm.model.dom.data.selected.services).toBeUndefined()
+                expect(vm.model.dom.data.selected.items).toBeUndefined()
+                // Click
+                vm.ctrl.openCheckinDiv();
+                getProductsCtrl(vm, productsList)
+                // After click, should add products
+                expect(vm.model.dom.data.selected.services.length).toBeGreaterThan(0)
+                expect(vm.model.dom.data.selected.items.length).toBeGreaterThan(0)
+            });
+            it('should not fetch items and services if already got', function() {
+                var layout = createLayout();
+                var vm = createController();
+                // Assume existing services and items
+                vm.model.dom.data.selected.services = productsList.slice(0,4);
+                vm.model.dom.data.selected.items = productsList.slice(4);
+                // Click
+                vm.ctrl.openCheckinDiv();
+                getProductsCtrl(vm, productsList);
+                // services and items should remain as mock
+                expect(vm.model.dom.data.selected.services.length).toEqual(4)
+                expect(vm.model.dom.data.selected.items.length).toEqual(2)
+            });
+        });
+
+        xdescribe('Close check-in form', function() {
+
+            it('should hide check-in form when click check-in button 2nd time', function() {
+                var layout = createLayout();
+                var vm = createController();
+                // Before click, form should be showed
+                vm.model.dom.checkin.checkinDiv = true;
+                // Click
+                vm.ctrl.openCheckinDiv();
+                // After click, should close form
+                expect(vm.model.dom.checkin.checkinDiv).toBeFalsy();
+            });
+
+            it('should reset order when toogle checkin div', function() {
+                var layout = createLayout();
+                var vm = createController();
+                vm.model.checkingin.order.orderline = OrderlineList;
+                vm.model.dom.checkin.checkinDiv = true;
+                vm.ctrl.openCheckinDiv();
+                // After click, orderline should be empty, temporary selected items too
+                expect(vm.model.checkingin.order.orderline.length).toEqual(0)
+                expect(vm.model.temporary.checkin.selectedItems.length).toEqual(0)
+            });
+
+            it('should reset promocodes when toogle checkin div close', function() {
+                var layout = createLayout();
+                var vm = createController();
+                vm.model.dom.checkin.checkinDiv = true;
+                vm.model.temporary.checkin.codeName = promocodesList[0].name
+                vm.model.checkingin.occupancy.promocodes = [{ name: promocodesList[0].name, status: 1 }];
+                vm.ctrl.openCheckinDiv();
+                expect(vm.model.checkingin.occupancy.promocodes).toEqual([]);
+                expect(vm.model.temporary.checkin.codeName).toEqual('')
+            })
+
+        });
+
+        describe('Select service', function() {
+
+            it('should not select service without selecting customer first', function(){
+                var layout = createLayout();
+                var vm = createController();
+
+                openCheckinDivCtrl(vm, promocodesList, productsList)
+
+                // Select service
+                expect(vm.model.checkingin.occupancy.service).toEqual({})
+                vm.ctrl.checkin.serviceChangeHandler();
+                expect(vm.model.checkingin.occupancy.service).toEqual({})
+            })
+
+            it('should display services list after selecting customer', function(){
+                var layout = createLayout();
+                var vm = createController();
+
+                openCheckinDivCtrl(vm, promocodesList, productsList)
+
+                // openCheckinDivCtrl(vm, promocodesList, productsList);
+                $httpBackend.when('GET', '/api/products').respond({
+                    data: productsList
+                });
+                
+                searchCustomerCtrl(vm, [mockCustomer])
+                vm.ctrl.checkin.selectCustomer(0);
+
+                $httpBackend.flush();
+
+                expect(vm.model.services.length).toEqual(4)
+
+            })
+
+            it('should fetch list of checked-in leader of a group when customer using group private service', function() {
+                var layout = createLayout();
+                var vm = createController();
+
+                getCheckinListCtrl(vm, occupancyList)
+                openCheckinDivCtrl(vm, promocodesList, productsList)
+
+                vm.model.checkingin.occupancy.service.name = 'small group private'
+                vm.ctrl.checkin.getGroupPrivateLeader()
+
+                expect(vm.model.temporary.groupPrivateLeaders.length).toEqual(2)
+                expect(vm.model.temporary.groupPrivateLeaders[1].groupName).toEqual('Nhóm riêng 15 / ĐÀO THỊ THU HÀ / ancol245@gmail.com / 0989669896')
+            })
+            xit('should display group list when customer uses group private', function() {
+                var layout = createLayout();
+                var vm = createController();
+
+                getCheckinListCtrl(vm, occupancyList)
+                openCheckinDivCtrl(vm, promocodesList, productsList)
+
+                vm.model.checkingin.occupancy.service.name = 'small group private'
+                vm.ctrl.checkin.serviceChangeHandler()
+
+                expect(vm.model.dom.checkin.privateGroupLeaderDiv).toBeTruthy();
+            });
+        });
+
+        xdescribe('Search a checking-in customer', function() {
+
+            it('should show customer search result div when having customer data after searching', function() {
+                var layout = createLayout();
+                var vm = createController();
+                searchCustomerCtrl(vm, [mockCustomer])
+                expect(vm.model.search.checkin.customers.length).toEqual(1)
+                expect(vm.model.search.checkin.customers[0].fullname).toEqual('ĐỒNG THỊ THÙY DƯƠNG')
+            })
+
+            it('should show customer search result div and not found message when having no customer data after searching', function() {
+                var layout = createLayout();
+                var vm = createController();
+                searchCustomerCtrl(vm, [])
+                expect(vm.model.search.checkin.customers.length).toEqual(0)
+                expect(vm.model.dom.checkin.search.message.notFound).toBeTruthy();
+            })
+
+            it('should hide customer checked-in message when start search a new term', function() {
+                var layout = createLayout();
+                var vm = createController();
+                searchCustomerCtrl(vm, [mockCustomer])
+                vm.model.search.checkin.username = '';
+                vm.ctrl.checkin.validateSearchInput();
+                expect(vm.model.dom.checkin.customerSearchResultDiv).toBeFalsy();
+
+                searchCustomerCtrl(vm, [])
+                vm.model.search.checkin.username = '';
+                vm.ctrl.checkin.validateSearchInput();
+                expect(vm.model.dom.checkin.search.message.notFound).toBeFalsy();
+            })
+
+            it('should hide customer search result div when select a customer', function() {
+                var layout = createLayout();
+                var vm = createController();
+                searchCustomerCtrl(vm, [mockCustomer])
+
+                // Select customer after search
+                vm.ctrl.checkin.selectCustomer(0);
+                expect(vm.model.dom.checkin.customerSearchResultDiv).toBeFalsy();
+            })
+
+            it('should keep customer data in occupancy and order objects when select a customer and reset search result', function() {
+                var layout = createLayout();
+                var vm = createController();
+                searchCustomerCtrl(vm, [mockCustomer])
+
+                // Select customer after search
+                vm.ctrl.checkin.selectCustomer(0);
+
+                //Check if customer data in occupancy
+                expect(vm.model.checkingin.occupancy.customer.fullname).toEqual('ĐỒNG THỊ THÙY DƯƠNG')
+                expect(vm.model.checkingin.order.customer.fullname).toEqual('ĐỒNG THỊ THÙY DƯƠNG')
+                expect(vm.model.search.checkin.customers.length).toEqual(0)
+            })
+
+            it('should hide customer search result div when remove all search input', function() {
+                var layout = createLayout();
+                var vm = createController();
+                searchCustomerCtrl(vm, [mockCustomer])
+
+                //Empty the search input
+                vm.model.search.checkin.username = '';
+                vm.ctrl.checkin.validateSearchInput();
+                expect(vm.model.dom.checkin.customerSearchResultDiv).toBeFalsy();
+            })
+        });
+
+    });
+
+    xdescribe('Order', function() {
+        xit('should add a item when click "add item"', function() {
+            // Get list items
+            var layout = createLayout();
+            var vm = createController();
+            getProductsCtrl(vm, productsList)
+
+            // Select customer
+            searchCustomerCtrl(vm, [mockCustomer])
+            vm.ctrl.checkin.selectCustomer(0);
+
+            // Add item
+            vm.model.temporary.checkin.item.name = '7up';
+            vm.model.temporary.checkin.item.quantity = 1;
+            vm.ctrl.checkin.addItem();
+            expect(vm.model.checkingin.order.orderline[0].productName).toEqual('7up');
+            expect(vm.model.checkingin.order.orderline[0].quantity).toEqual(1);
+            expect(vm.model.checkingin.order.orderline[0].price).toEqual(8000);
+        })
+
+        xit('should reset item data in temporary object after click "add item"', function() {
+            // Get list items
+            var layout = createLayout();
+            var vm = createController();
+            getProductsCtrl(vm, productsList)
+
+            // Select customer
+            searchCustomerCtrl(vm, [mockCustomer])
+            vm.ctrl.checkin.selectCustomer(0);
+
+            // Add item
+            vm.model.temporary.checkin.item.name = '7up';
+            vm.model.temporary.checkin.item.quantity = 1;
+            vm.ctrl.checkin.addItem();
+
+            //should remove temporary
+            expect(vm.model.temporary.checkin.item).toEqual({})
+        })
+
+        xit('should not allow to add duplicate items', function() {
+            // Get list items
+            var layout = createLayout();
+            var vm = createController();
+            getProductsCtrl(vm, productsList)
+
+            // Select customer
+            searchCustomerCtrl(vm, [mockCustomer])
+            vm.ctrl.checkin.selectCustomer(0);
+
+            // Assume have already item in orderline
+            vm.model.temporary.checkin.selectedItems = ['7up']
+            vm.model.checkingin.order.orderline = OrderlineList[0];
+
+            // Add item
+            vm.model.temporary.checkin.item.name = '7up';
+            vm.model.temporary.checkin.item.quantity = 1;
+            vm.ctrl.checkin.addItem();
+
+            // should not add
+            expect(vm.model.checkingin.order.orderline.length).toEqual(1);
+            expect(vm.model.checkingin.order.orderline[0].productName).toEqual('7up')
+        })
+    });
+
+    xdescribe('Promocodes', function() {
+
+        it ('should get codes only choose customer and services', function(){
+            var layout = createLayout();
+            var vm = createController();
+            expect(vm.model.dom.data.selected.checkin.promoteCode.original).toBeUndefined()
+            expect(vm.model.dom.data.selected.checkin.promoteCode.codes.length).toEqual(0)
+            // Open checkin form
+            openCheckinDivCtrl(vm, promocodesList, productsList);
+            expect(vm.model.dom.data.selected.checkin.promoteCode.original.length).toEqual(3)
+            expect(vm.model.dom.data.selected.checkin.promoteCode.codes.length).toEqual(0)
+            // not select customer to checkin yet
+            expect(vm.model.dom.data.selected.checkin.promoteCode.original.length).toEqual(3)
+            expect(vm.model.dom.data.selected.checkin.promoteCode.codes.length).toEqual(0)
+            
+        })
+
+        it('should show correct type of code for each type of service', function(){
+            var layout = createLayout();
+            var vm = createController();
+            openCheckinDivCtrl(vm, promocodesList, productsList);
+            searchCustomerCtrl(vm, [mockCustomer])
+            vm.ctrl.checkin.selectCustomer(0);
+            // Select service
+            vm.model.checkingin.occupancy.service.name = 'individual common'
+            
+            vm.ctrl.checkin.serviceChangeHandler()
+            expect(vm.model.dom.data.selected.checkin.promoteCode.codes.length).toEqual(2)
+            expect(vm.model.dom.data.selected.checkin.promoteCode.codes[0].name).toEqual('v01h06')
+            expect(vm.model.dom.data.selected.checkin.promoteCode.codes[1].name).toEqual('vymcs')
+
+            // Select service
+            vm.model.checkingin.occupancy.service.name = 'medium group private'
+            
+            vm.ctrl.checkin.serviceChangeHandler()
+            expect(vm.model.dom.data.selected.checkin.promoteCode.codes.length).toEqual(2)
+            expect(vm.model.dom.data.selected.checkin.promoteCode.codes[0].name).toEqual('vfsc')
+            expect(vm.model.dom.data.selected.checkin.promoteCode.codes[1].name).toEqual('vymcs')
+        })
+
+        it('should add code and display it in added code section when select code. No longer use plus button to add code.', function() {
+            var layout = createLayout();
+            var vm = createController();
+            openCheckinDivCtrl(vm, promocodesList, productsList);
+            searchCustomerCtrl(vm, [mockCustomer])
+            vm.ctrl.checkin.selectCustomer(0);
+            // Select service
+            vm.model.checkingin.occupancy.service.name = 'individual common'
+            
+            vm.ctrl.checkin.serviceChangeHandler()
+
+            // Before select
+            expect(vm.model.checkingin.occupancy.promocodes).toEqual([])
+            expect(vm.model.temporary.checkin.codeNames).toEqual([])
+
+            vm.model.temporary.checkin.codeName = 'v01h06'
+            addCodeCtrl(vm, [vm.model.dom.data.selected.checkin.promoteCode.codes[0]]);
+            // Code should be add right after select
+            expect(vm.model.checkingin.occupancy.promocodes[0].name).toEqual('v01h06')
+            expect(vm.model.temporary.checkin.codeNames).toEqual([vm.model.temporary.checkin.codeName])
+        });
+
+        it('should validate and show invalid status when codes are invalid', function() {
+            var layout = createLayout();
+            var vm = createController();
+            openCheckinDivCtrl(vm, promocodesList, productsList);
+            searchCustomerCtrl(vm, [mockCustomer])
+            vm.ctrl.checkin.selectCustomer(0);
+            // Select service
+            vm.model.checkingin.occupancy.service.name = 'individual common'
+            
+            vm.ctrl.checkin.serviceChangeHandler();
+
+            vm.model.temporary.checkin.codeName = 'v01h06'
+            addCodeCtrl(vm, [vm.model.dom.data.selected.checkin.promoteCode.codes[0]]);
+
+            expect(vm.model.checkingin.occupancy.promocodes[0].status).toEqual(3)
+        })
+
+        it('should delete code when click delete button', function() {
+            var layout = createLayout();
+            var vm = createController();
+            openCheckinDivCtrl(vm, promocodesList, productsList);
+            searchCustomerCtrl(vm, [mockCustomer])
+            vm.ctrl.checkin.selectCustomer(0);
+            // Select service
+            vm.model.checkingin.occupancy.service.name = 'individual common'
+            
+            vm.ctrl.checkin.serviceChangeHandler();
+
+            vm.model.temporary.checkin.codeName = 'v01h06'
+            addCodeCtrl(vm, [vm.model.dom.data.selected.checkin.promoteCode.codes[0]]);
+
+            vm.ctrl.checkin.removeCode();
+            expect(vm.model.checkingin.occupancy.promocodes).toEqual([])
+            expect(vm.model.temporary.checkin.codeName).toEqual('')
+        })
+    });
+
+    describe('Edit', function() {
+
+        xit('should fetch data occupancy to editing occupancy', function() {
+            var layout = createLayout();
+            var vm = createController();
+            openEditForm(vm, occupancyList[0], productsList, promocodesList)
+            expect(vm.model.dom.checkInEditDiv).toBeTruthy();
+            expect(vm.model.edit.occupancy.customer.fullname).toEqual('ĐỒNG THỊ THÙY DƯƠNG')
+            expect(vm.model.edit.occupancy.customer.phone).toEqual('0969094332')
+            expect(vm.model.edit.occupancy.customer.email).toEqual('dongthuyduong1210@gmail.com')
+            expect(vm.model.edit.occupancy.service.name).toEqual('individual common')
+
+            openEditForm(vm, occupancyList[4], productsList, promocodesList)
+            expect(vm.model.dom.checkInEditDiv).toBeTruthy();
+            expect(vm.model.edit.occupancy.customer.fullname).toEqual('VÕ LINH CHI')
+            expect(vm.model.edit.occupancy.customer.phone).toEqual('01644492857')
+            expect(vm.model.edit.occupancy.customer.email).toEqual('volinhchi.96@gmail.com')
+            expect(vm.model.edit.occupancy.service.name).toEqual('individual common')
+            expect(vm.model.edit.occupancy.promocodes[0].name).toEqual('v02h06')
+        })
+
+        xit('should close form and reset editing data when click cancel', function(){
+            var layout = createLayout();
+            var vm = createController();
+            openEditForm(vm, occupancyList[0], productsList, promocodesList)
+            vm.ctrl.edit.close();
+            expect(vm.model.dom.checkInEditDiv).toBeFalsy();
+            expect(vm.model.edit.occupancy).toEqual({})
+        })
+
+        xit('should fetch correct service to editing data', function(){
+            var layout = createLayout();
+            var vm = createController();
+            
+            openEditForm(vm, occupancyList[0], productsList, promocodesList)
+            expect(vm.model.edit.occupancy.service.name).toEqual('individual common')
+            expect(vm.model.dom.data.selected.edit.services.length).toEqual(4)
+            vm.ctrl.edit.close();
+            openEditForm(vm, occupancyList[2], productsList, promocodesList)
+            expect(vm.model.edit.occupancy.service.name).toEqual('small group private')
+            expect(vm.model.dom.data.selected.edit.services.length).toEqual(4)
+        })
+
+        xit('should fetch correct group leader if any', function(){
+            var layout = createLayout();
+            var vm = createController();
+            getCheckinListCtrl(vm, occupancyList)
+            openEditForm(vm, occupancyList[1], productsList, promocodesList)
+            expect(vm.model.temporary.groupPrivateLeaders.length).toEqual(2)
+            expect(vm.model.temporary.groupPrivateLeaders[0].leader).toEqual('')
+            expect(vm.model.temporary.groupPrivateLeaders[1].leader).toEqual('ĐÀO THỊ THU HÀ')
+            expect(vm.model.dom.edit.privateGroupLeaderDiv).toBeTruthy();
+            expect(vm.model.temporary.edit.selectedGroupPrivate).toEqual({})
+
+            vm.ctrl.edit.close();
+            openEditForm(vm, occupancyList[2], productsList, promocodesList)
+            expect(vm.model.temporary.groupPrivateLeaders.length).toEqual(2)
+            expect(vm.model.temporary.groupPrivateLeaders[0].leader).toEqual('')
+            expect(vm.model.temporary.groupPrivateLeaders[1].leader).toEqual('ĐÀO THỊ THU HÀ')
+            expect(vm.model.dom.edit.privateGroupLeaderDiv).toBeTruthy();
+            expect(vm.model.temporary.edit.selectedGroupPrivate.service.name).toEqual('small group private')
+
+            vm.ctrl.edit.close();
+            openEditForm(vm, occupancyList[2], productsList, promocodesList)
+            expect(vm.model.temporary.edit.selectedGroupPrivate.service.name).toEqual('small group private')
+
+        })
+
+        xit('should fetch correct codes if any', function(){
+            var layout = createLayout();
+            var vm = createController();
+            getCheckinListCtrl(vm, occupancyList)
+            openEditForm(vm, occupancyList[4], productsList, promocodesList)
+            expect(vm.model.temporary.edit.codeName).toEqual('v02h06')
+            expect(vm.model.dom.data.selected.edit.promoteCode.codes.length).toEqual(2)
+        })
+
+        it('should validate code when select code', function(){
+            var layout = createLayout();
+            var vm = createController();
+            $httpBackend.when('GET', /\/checkin\/validate-promotion-code.*/).respond({
+                data: [promocodesList[2]]
+            });
+            getCheckinListCtrl(vm, occupancyList)
+            openEditForm(vm, occupancyList[4], productsList, promocodesList)
+            vm.model.temporary.edit.codeName = 'vymcs';
+            
+            vm.ctrl.edit.addCode();
+            $httpBackend.flush();
+            expect(vm.model.edit.occupancy.promocodes[0].status).toEqual(3)
+        })
+    
+    })
 
     // Test add member to checkout with leader
-    describe('Show list of checkbox', function() {
+    xdescribe('Show list of checkbox', function() {
 
         it('should display checkboxes div if occ has private services and no parent', function() {
             var layout = createLayout();
@@ -1123,7 +720,7 @@ describe('Controller: NewCheckinCtrl', function() {
         it('should contain all children occ ids which have the same parent id as checkout occ id', function() {
             var layout = createLayout();
             var vm = createController();
-            getCheckinListCtrl(vm) // get checkin
+            getCheckinListCtrl(vm, occupancyList) // get checkin
             getInvoiceCtrl(vm, occupancyList[1]) // get invoice
             expect(vm.model.temporary.availableChildren.length).toEqual(1);
             expect(vm.model.temporary.availableChildren[0]._id).toEqual('593750866548c57de15054c2')
@@ -1132,12 +729,12 @@ describe('Controller: NewCheckinCtrl', function() {
 
     });
 
-    describe('Add member to the list', function() {
+    xdescribe('Add member to the list', function() {
 
         it('should collect all selected children occ ids and save in an array', function() {
             var layout = createLayout();
             var vm = createController();
-            getCheckinListCtrl(vm) // get checkin
+            getCheckinListCtrl(vm, occupancyList) // get checkin
             getInvoiceCtrl(vm, occupancyList[1]) // get invoice
             expect(vm.model.temporary.availableChildren.length).toEqual(1);
             expect(vm.model.temporary.availableChildren[0]._id).toEqual('593750866548c57de15054c2')
@@ -1145,12 +742,12 @@ describe('Controller: NewCheckinCtrl', function() {
 
     })
 
-    describe('Disable checkboxes represent a checkout customer', function() {
+    xdescribe('Disable checkboxes represent a checkout customer', function() {
 
         it('should disable children occ which have been checked out', function() {
             var layout = createLayout();
             var vm = createController();
-            getCheckinListCtrl(vm) // get checkin
+            getCheckinListCtrl(vm, occupancyList) // get checkin
             getInvoiceCtrl(vm, occupancyList[1]) // get invoice
             expect(vm.model.temporary.disableChildren.length).toEqual(1);
             expect(vm.model.temporary.disableChildren[0]._id).toEqual('5937bd3dc098114b9c27b9f3')
@@ -1158,13 +755,12 @@ describe('Controller: NewCheckinCtrl', function() {
 
     })
 
-    describe('Send request includes selected children to server', function() {
+    xdescribe('Send request includes selected children to server', function() {
         it('should include childrenIdArr in data sent to checkout', function() {
             var layout = createLayout();
             var vm = createController();
-            getCheckinListCtrl(vm) // get checkin
+            getCheckinListCtrl(vm, occupancyList) // get checkin
             getInvoiceCtrl(vm, occupancyList[1]) // get invoice
-            console.log(vm.model.checkingout.occupancy)
             vm.model.checkingout.occupancy.childrenIdList.push(vm.model.temporary.availableChildren[0]._id); // Assume select all available members
             expect(vm.model.checkingout.occupancy.childrenIdList[0]).toEqual('593750866548c57de15054c2')
         })

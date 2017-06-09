@@ -43,60 +43,63 @@ div(class="row columns")
 						td {{ result.phone[0] }}
 
 	// CREATE CUSTOMER FORM						
-	div(class="column" ng-show='vm.model.dom.register.registerDiv')
-		form(class="borderT row column paddingTB45 paddingLR45 fullBox" ng-submit='vm.ctrl.register.checkExist()')
-			div(class="row column")
-				div(class="column small-12 large-4 large-paddingR15 paddingLR0")
-					label {{vm.model.dom.data.selected.register.customer.lastname}}
-						input(type="text" ng-model='vm.model.register.lastname' required)
-				div(class="column small-12 large-4 large-paddingLR15 paddingLR0")
-					label {{vm.model.dom.data.selected.register.customer.middlename}}
-						input(type="text" ng-model='vm.model.register.middlename')
-				div(class="column small-12 large-4 large-paddingL15 paddingLR0")
-					label {{vm.model.dom.data.selected.register.customer.firstname}}
-						input(type="text" ng-model='vm.model.register.firstname' required)
+	div(class="column row" ng-show='vm.model.dom.register.registerDiv')
+		form(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-submit='vm.ctrl.register.checkExist()')
+			div(class='small-12 large-6 large-push-3')
+				div(class="row column text-center")
+					h3 Create Customer
+				div(class="row column")
+					div(class="column small-12 large-4 large-paddingR15 paddingLR0")
+						label {{vm.model.dom.data.selected.register.customer.lastname}}
+							input(type="text" ng-model='vm.model.register.lastname' required)
+					div(class="column small-12 large-4 large-paddingLR15 paddingLR0")
+						label {{vm.model.dom.data.selected.register.customer.middlename}}
+							input(type="text" ng-model='vm.model.register.middlename')
+					div(class="column small-12 large-4 large-paddingL15 paddingLR0")
+						label {{vm.model.dom.data.selected.register.customer.firstname}}
+							input(type="text" ng-model='vm.model.register.firstname' required)
 
-			div(ng-show="vm.model.dom.register.customerExistResultDiv" class="marginB15 row column")
-				div(class="table-scroll")
-					table(class="hover unstriped borderAll")
-						thead
-							tr
-								th {{vm.model.dom.data.selected.register.search.list.number}}
-								th {{vm.model.dom.data.selected.register.search.list.fullname}}
-								th {{vm.model.dom.data.selected.register.search.list.birthday}}
-								th {{vm.model.dom.data.selected.register.search.list.email}}
-								th {{vm.model.dom.data.selected.register.search.list.phone}}				
-						tbody
-							tr(ng-repeat='result in vm.model.search.register.customers' ng-click='vm.ctrl.register.checkinExistCustomer($index)' class="pointerCursor")
-								td {{ $index + 1 }}
-								td {{ result.fullname }}
-								td {{ result.birthday | date:'dd/MM/yyyy' }}
-								td {{ result.email[0] }}
-								td {{ result.phone[0] }}						
-			div(class=" row column")
-				div(class="column small-12 large-6 large-paddingR15 paddingLR0")
-					label {{vm.model.dom.data.selected.register.customer.gender}}
-						select(ng-model='vm.model.register.gender' ng-options="gender.value as gender.label for gender in vm.model.dom.data.selected.register.genders track by gender.value" ng-change="vm.ctrl.register.getGenderLabel ()" required)
-							<option value="">Chọn giới tính</option>
-				div(class="column small-12 large-6 large-paddingL15 large-paddingR0 paddingLR0")
-					label {{vm.model.dom.data.selected.register.customer.birthday}}
-						input(type="date" ng-model='vm.model.register.birthday' required)
-			div(class="row column")
-				div(class="column small-12 large-6 large-paddingR15 paddingLR0")
-					label {{vm.model.dom.data.selected.register.customer.email}}
-						input(type="email" ng-model='vm.model.register.email')
-				div(class="column small-12 large-6 large-paddingL15 paddingLR0")
-					label {{vm.model.dom.data.selected.register.customer.phone}}
-						input(type="tel" ng-model='vm.model.register.phone' )
-			div(class=" row column")
-				div(class="column small-12 paddingLR0")
-					label {{vm.model.dom.data.selected.register.customer.school}}
-						select(ng-model='vm.model.register.edu.school' ng-options="s.value as s.label for s in vm.model.dom.data.selected.register.schools track by s.value" ng-change="vm.ctrl.register.getSchoolLabel ()")
-							<option value="">{{vm.model.dom.data.selected.register.customer.selectSchool}}</option>
+				div(ng-show="vm.model.dom.register.customerExistResultDiv" class="marginB15 row column")
+					div(class="table-scroll")
+						table(class="hover unstriped borderAll")
+							thead
+								tr
+									th {{vm.model.dom.data.selected.register.search.list.number}}
+									th {{vm.model.dom.data.selected.register.search.list.fullname}}
+									th {{vm.model.dom.data.selected.register.search.list.birthday}}
+									th {{vm.model.dom.data.selected.register.search.list.email}}
+									th {{vm.model.dom.data.selected.register.search.list.phone}}				
+							tbody
+								tr(ng-repeat='result in vm.model.search.register.customers' ng-click='vm.ctrl.register.checkinExistCustomer($index)' class="pointerCursor")
+									td {{ $index + 1 }}
+									td {{ result.fullname }}
+									td {{ result.birthday | date:'dd/MM/yyyy' }}
+									td {{ result.email[0] }}
+									td {{ result.phone[0] }}						
+				div(class=" row column")
+					div(class="column small-12 large-6 large-paddingR15 paddingLR0")
+						label {{vm.model.dom.data.selected.register.customer.gender}}
+							select(ng-model='vm.model.register.gender' ng-options="gender.value as gender.label for gender in vm.model.dom.data.selected.register.genders track by gender.value" ng-change="vm.ctrl.register.getGenderLabel ()" required)
+								<option value="">Chọn giới tính</option>
+					div(class="column small-12 large-6 large-paddingL15 large-paddingR0 paddingLR0")
+						label {{vm.model.dom.data.selected.register.customer.birthday}}
+							input(type="date" ng-model='vm.model.register.birthday' required)
+				div(class="row column")
+					div(class="column small-12 large-6 large-paddingR15 paddingLR0")
+						label {{vm.model.dom.data.selected.register.customer.email}}
+							input(type="email" ng-model='vm.model.register.email')
+					div(class="column small-12 large-6 large-paddingL15 paddingLR0")
+						label {{vm.model.dom.data.selected.register.customer.phone}}
+							input(type="tel" ng-model='vm.model.register.phone' )
+				div(class=" row column")
+					div(class="column small-12 paddingLR0")
+						label {{vm.model.dom.data.selected.register.customer.school}}
+							select(ng-model='vm.model.register.edu.school' ng-options="s.value as s.label for s in vm.model.dom.data.selected.register.schools track by s.value" ng-change="vm.ctrl.register.getSchoolLabel ()")
+								<option value="">{{vm.model.dom.data.selected.register.customer.selectSchool}}</option>
 
-			div(class="row column paddingT15")
-				input(class="button" type="submit" value="Submit")
-				a(class="button float-right" ng-click="vm.ctrl.reset()") Cancel
+				div(class="row column paddingT15")
+					input(class="button" type="submit" value="Submit")
+					a(class="button float-right" ng-click="vm.ctrl.reset()") Cancel
 	// SEARCH CUSTOMER
 	div(class="column paddingT15")
 		form(ng-submit="vm.ctrl.searchCustomer()")
@@ -111,10 +114,10 @@ div(class="row columns")
 					table(class="hover unstriped borderAll")
 						thead
 							tr
-								th {{vm.model.dom.data.selected.search.list.number}}
-								th {{vm.model.dom.data.selected.search.list.fullname}}
-								th {{vm.model.dom.data.selected.search.list.email}}
-								th {{vm.model.dom.data.selected.search.list.phone}}				
+								th {{vm.model.dom.data.selected.register.search.list.number}}
+								th {{vm.model.dom.data.selected.register.search.list.fullname}}
+								th {{vm.model.dom.data.selected.register.search.list.email}}
+								th {{vm.model.dom.data.selected.register.search.list.phone}}				
 						tbody
 							tr(ng-repeat='result in vm.model.search.customers' ng-click='vm.ctrl.selectCustomer($index)' class="pointerCursor")
 								td {{ $index + 1 }}

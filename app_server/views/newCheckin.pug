@@ -7,7 +7,7 @@ div(class="columns row")
 		div(class="column small-3")
 			ul(class="menu")
 				li
-					a(class="button primary" ng-click="vm.ctrl.toggleCheckInDiv()") 
+					a(class="button primary" ng-click="vm.ctrl.openCheckinDiv()") 
 						span(class="show-for-large") Checkin
 						i(class="material-icons customIcon hide-for-large") add
 		// FILTER CONTROLLER
@@ -35,148 +35,162 @@ div(class="columns row")
 	// CHECK-IN
 
 	div(class="column")
-		div(class="borderT row column paddingTB45 paddingLR45 fullBox" ng-show="vm.model.dom.checkin.checkinDiv")
-			// SEARCH CUSTOMERS
-			div(class="row column")
-				form(ng-submit="vm.ctrl.checkin.searchCustomer()")
-					div(class="row column")
-						label {{vm.model.dom.data.selected.checkin.search.label}}
-							input(type="text" placeholder="{{ vm.model.dom.data.selected.checkin.search.placeholder }}" ng-model='vm.model.search.checkin.username' required="true" ng-change='vm.ctrl.checkin.validateSearchInput()')
-					div(ng-show='vm.model.dom.checkin.search.message.notFound' class='marginB15')
-						div(class='callout alert')
-							p {{ vm.model.dom.data.selected.checkin.search.message.notFound + ' "' + vm.model.search.checkin.username + '". ' }}
-								span: a(href='/#!/customers') {{ vm.model.dom.data.selected.createCustomer}}			
-					//div(ng-show='vm.model.dom.messageSearchAlreadyCheckin' class='marginB15')
-						div(class='callout alert')
-							p {{vm.model.search.messageAlreadyCheckin}}
-					div(ng-show="vm.model.dom.checkin.customerSearchResultDiv" class="marginB15")
-						div(class="table-scroll")
-							table(class="hover unstriped borderAll")
-								thead
-									tr
-										th {{vm.model.dom.data.selected.checkin.search.list.number}}
-										th {{vm.model.dom.data.selected.checkin.search.list.fullname}}
-										th {{vm.model.dom.data.selected.checkin.search.list.birthday}}
-										th {{vm.model.dom.data.selected.checkin.search.list.email}}
-										th {{vm.model.dom.data.selected.checkin.search.list.phone}}				
-								tbody
-									tr(ng-repeat='result in vm.model.search.checkin.customers' ng-click='vm.ctrl.checkin.selectCustomer($index)' class="pointerCursor")
-										td {{ $index + 1 }}
-										td {{ result.fullname }}
-										td {{ result.birthday | date:'dd/MM/yyyy' }}
-										td {{ result.email[0] }}
-										td {{ result.phone[0] }}
+		div(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-show="vm.model.dom.checkin.checkinDiv")
+			div(class='small-12 large-6 large-push-3')
+				div(class="row column text-center")
+					h3 Check in
+				// SEARCH CUSTOMERS
+				div(class="row column")
+					form(ng-submit="vm.ctrl.checkin.searchCustomer()")
+						div(class="row column")
+							label {{vm.model.dom.data.selected.checkin.search.label}}
+								input(type="text" placeholder="{{ vm.model.dom.data.selected.checkin.search.placeholder }}" ng-model='vm.model.search.checkin.username' required="true" ng-change='vm.ctrl.checkin.validateSearchInput()')
+						div(ng-show='vm.model.dom.checkin.search.message.notFound' class='marginB15')
+							div(class='callout alert')
+								p {{ vm.model.dom.data.selected.checkin.search.message.notFound + ' "' + vm.model.search.checkin.username + '". ' }}
+									span: a(href='/#!/customers') {{ vm.model.dom.data.selected.createCustomer}}			
+						//div(ng-show='vm.model.dom.messageSearchAlreadyCheckin' class='marginB15')
+							div(class='callout alert')
+								p {{vm.model.search.messageAlreadyCheckin}}
+						div(ng-show="vm.model.dom.checkin.customerSearchResultDiv" class="marginB15")
+							div(class="table-scroll")
+								table(class="hover unstriped borderAll")
+									thead
+										tr
+											th {{vm.model.dom.data.selected.checkin.search.list.number}}
+											th {{vm.model.dom.data.selected.checkin.search.list.fullname}}
+											th {{vm.model.dom.data.selected.checkin.search.list.birthday}}
+											th {{vm.model.dom.data.selected.checkin.search.list.email}}
+											th {{vm.model.dom.data.selected.checkin.search.list.phone}}				
+									tbody
+										tr(ng-repeat='result in vm.model.search.checkin.customers' ng-click='vm.ctrl.checkin.selectCustomer($index)' class="pointerCursor")
+											td {{ $index + 1 }}
+											td {{ result.fullname }}
+											td {{ result.birthday | date:'dd/MM/yyyy' }}
+											td {{ result.email[0] }}
+											td {{ result.phone[0] }}
 
-			// CHECK-IN FORM
-			form(ng-submit="vm.ctrl.checkin.confirm ()")
-				div(class="row column basicBox ")
-					div(class="column row")
-						h3(class="paddingLR15 fontSize20 fontWeight600") Chọn dịch vụ
-					// SERVICE
-					div(class="column small-12")
-						label {{ vm.model.dom.data.selected.fieldService }}
-							select(ng-change='vm.ctrl.checkin.serviceChangeHandler ()' ng-model="vm.model.checkingin.occupancy.service" ng-options="s as s.label for s in vm.model.dom.data.selected.services track by s.name")
+				// CHECK-IN FORM
+				form(ng-submit="vm.ctrl.checkin.confirm ()")
+					div(class="row column basicBox ")
+						div(class="column row")
+							h3(class="paddingLR15 fontSize20 fontWeight600") Chọn dịch vụ
+						// SERVICE
+						div(class="column small-12")
+							label {{ vm.model.dom.data.selected.fieldService }}
+								select(ng-change='vm.ctrl.checkin.serviceChangeHandler ()' ng-model="vm.model.checkingin.occupancy.service" ng-options="s as s.label for s in vm.model.dom.data.selected.services track by s.name")
+
+						// PICK GROUP
+						div(class="column small-12" ng-if="vm.model.dom.checkin.privateGroupLeaderDiv && vm.model.temporary.groupPrivateLeaders && vm.model.temporary.groupPrivateLeaders.length > 1")
+							label {{vm.model.dom.data.selected.fieldChooseGroup}}
+								select(name="selectedGroup" ng-model="vm.model.temporary.selectedGroupPrivate" ng-options="leader as leader.groupName for leader in vm.model.temporary.groupPrivateLeaders track by leader._id" ng-change="vm.ctrl.checkin.selectedGroupChangeHandler ()")
+					// ORDER FORM
+					div(class='basicBox row column paddingTB15 marginB15')
+						// ADD ITEMS
+						div(class="column row")
+							h3(class="paddingLR15 fontSize20 fontWeight600") {{vm.model.dom.data.selected.checkin.product.title}}
+						div(class="column row")
+							div(class="column large-8 small-12")
+								label {{vm.model.dom.data.selected.checkin.product.productName.label}}
+									select(ng-model="vm.model.temporary.checkin.item.name" ng-options="item.name as item.name for item in vm.model.dom.data.selected.items track by item.name")
+							div(class="column large-2 small-12")
+								label {{vm.model.dom.data.selected.checkin.product.quantity.label}}
+									input( ng-model="vm.model.temporary.checkin.item.quantity" string-to-number type="number" min='0')
+							div(class="column large-2 small-12 text-center")
+								a(class="button full-width-small large-marginT30" ng-click="vm.ctrl.checkin.addItem (); $event.preventDefault()") Add
+						// SELECTED ITEMS
+						div(class="row column")
+							div(class='column small-12')
+								table(ng-if='vm.model.checkingin.order.orderline.length > 0' class="unstriped")
+									thead
+										tr
+											th {{ vm.model.dom.data.selected.checkin.product.header.product }}
+											th {{ vm.model.dom.data.selected.checkin.product.header.quantity }}
+											th Delete
+
+									tbody 
+										tr(ng-repeat='ord in vm.model.checkingin.order.orderline track by ord._id')
+											td {{ ord.productName }}
+											td {{ ord.quantity }}
+											td(class='text-center deleteIcon')
+												i(class="material-icons customIcon" ng-click="vm.ctrl.checkin.removeItem ($index)") close
+					// CODES
+					div(class="row column basicBox")
+						div(class="column row")
+							h3(class="paddingLR15 fontSize20 fontWeight600") {{vm.model.dom.data.selected.checkin.promoteCode.title}}
+						div(class="column row")
+							div(class='column small-12')
+								label {{vm.model.dom.data.selected.checkin.promoteCode.label}}
+									select(ng-model="vm.model.temporary.checkin.codeName" ng-options="code.name as code.selectedLabel disable when code.disabled for code in vm.model.dom.data.selected.checkin.promoteCode.codes track by code.name" ng-change='vm.ctrl.checkin.addCode()')
+
+						div(class="column row")
+							div(class='column small-12 large-6')
+								table(ng-if='vm.model.checkingin.occupancy.promocodes.length > 0')
+									thead
+										tr
+											th Code
+											th Trạng thái
+											th 
+									tbody
+										tr(ng-repeat='code in vm.model.checkingin.occupancy.promocodes track by code.name')
+											td {{ code.name }}
+											td(class='{{vm.model.temporary.checkin.statusCode[code.status]}}') {{ vm.model.temporary.checkin.statusCode[code.status] }}
+											td(class='text-center deleteIcon')
+												i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.removeCode ()') close
+
+					div(class="row column")
+						input(class="button" type="submit" value="Submit")
+						button(class="button float-right primary" ng-click='vm.ctrl.checkin.cancel ()') Cancel
+	
+	// EDIT FORM. DISABLE temporarily.
+	div(class="column" ng-show="vm.model.dom.checkInEditDiv")
+		div(class='borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox')
+			div(class='small-12 large-6 large-push-3')
+				div(class="row column text-center")
+					h3 Edit
+				form(ng-submit='vm.ctrl.edit.confirm()')
+					// User Info
+					div(class='row column')
+						label Fullname
+							input(type='text' ng-model='vm.model.edit.occupancy.customer.fullname')
+					div(class='row column')
+						label Email
+							input(type='text' ng-model='vm.model.edit.occupancy.customer.email')
+					div(class='row column')
+						label Phone
+							input(type='text' ng-model='vm.model.edit.occupancy.customer.phone')
+					//Main service for edit
+					div(class="row column")
+						label Service
+							select(name="selectedService" ng-model="vm.model.edit.occupancy.service" ng-options="s as s.label for s in vm.model.dom.data.selected.edit.services track by s.name" ng-change='vm.ctrl.edit.serviceChangeHandler()')
 
 					// PICK GROUP
-					div(class="column small-12" ng-if="vm.model.dom.checkin.privateGroupLeaderDiv && vm.model.temporary.groupPrivateLeaders && vm.model.temporary.groupPrivateLeaders.length > 1")
-						label {{vm.model.dom.data.selected.fieldChooseGroup}}
-							select(name="selectedGroup" ng-model="vm.model.temporary.selectedGroupPrivate" ng-options="leader as leader.groupName for leader in vm.model.temporary.groupPrivateLeaders track by leader._id" ng-change="vm.ctrl.checkin.selectedGroupChangeHandler ()")
-				// ORDER FORM
-				div(class='basicBox row column paddingTB15 marginB15')
-					// ADD ITEMS
+					div(class="row column" ng-if="vm.model.dom.edit.privateGroupLeaderDiv && vm.model.temporary.groupPrivateLeaders && vm.model.temporary.groupPrivateLeaders.length > 1")
+						label Group
+							select(name="selectedGroup" ng-model="vm.model.temporary.edit.selectedGroupPrivate" ng-options="leader as leader.groupName for leader in vm.model.temporary.groupPrivateLeaders track by leader._id" ng-change="vm.ctrl.edit.selectGroup ()")
+					// Code
 					div(class="column row")
-						h3(class="paddingLR15 fontSize20 fontWeight600") {{vm.model.dom.data.selected.checkin.product.title}}
-					div(class="column row")
-						div(class="column large-8 small-12")
-							label {{vm.model.dom.data.selected.checkin.product.productName.label}}
-								select(ng-model="vm.model.temporary.checkin.item.name" ng-options="item.name as item.name for item in vm.model.dom.data.selected.items track by item.name")
-						div(class="column large-2 small-12")
-							label {{vm.model.dom.data.selected.checkin.product.quantity.label}}
-								input( ng-model="vm.model.temporary.checkin.item.quantity" string-to-number type="number" min='0')
-						div(class="column large-2 small-12 text-center")
-							a(class="button full-width-small" ng-click="vm.ctrl.checkin.addItem (); $event.preventDefault()") Add
-					// SELECTED ITEMS
-					div(class="row column")
-						div(class='column small-12')
-							table(ng-if='vm.model.checkingin.order.orderline.length > 0' class="unstriped")
-								thead
-									tr
-										th {{ vm.model.dom.data.selected.checkin.product.header.product }}
-										th {{ vm.model.dom.data.selected.checkin.product.header.quantity }}
-										th Delete
-
-								tbody 
-									tr(ng-repeat='ord in vm.model.checkingin.order.orderline track by ord._id')
-										td {{ ord.productName }}
-										td {{ ord.quantity }}
-										td(class='text-center deleteIcon')
-											i(class="material-icons customIcon" ng-click="vm.ctrl.checkin.removeItem ($index)") close
-				// CODES
-				div(class="row column basicBox")
-					div(class="column row")
-						h3(class="paddingLR15 fontSize20 fontWeight600") {{vm.model.dom.data.selected.checkin.promoteCode.title}}
-					div(class="column row")
-						div(class='column small-12')
+						div(class='column row small-12')
 							label {{vm.model.dom.data.selected.checkin.promoteCode.label}}
-								select(ng-model="vm.model.temporary.checkin.codeName" ng-options="code.name as code.selectedLabel disable when code.disabled for code in vm.model.dom.data.selected.checkin.promoteCode.codes track by code.name" ng-change='vm.ctrl.checkin.addCode()')
+								select(ng-model="vm.model.temporary.edit.codeName" ng-options="code.name as code.selectedLabel for code in vm.model.dom.data.selected.edit.promoteCode.codes track by code.name" ng-change='vm.ctrl.edit.addCode()')
 
 					div(class="column row")
 						div(class='column small-12 large-6')
-							table(ng-if='vm.model.checkingin.occupancy.promocodes.length > 0')
+							table(ng-if='vm.model.edit.occupancy.promocodes.length > 0')
 								thead
 									tr
 										th Code
 										th Trạng thái
 										th 
 								tbody
-									tr(ng-repeat='code in vm.model.checkingin.occupancy.promocodes track by code.name')
+									tr(ng-repeat='code in vm.model.edit.occupancy.promocodes track by code.name')
 										td {{ code.name }}
 										td(class='{{vm.model.temporary.checkin.statusCode[code.status]}}') {{ vm.model.temporary.checkin.statusCode[code.status] }}
 										td(class='text-center deleteIcon')
-											i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.removeCode ()') close
-
-				div(class="row column")
-					input(class="button" type="submit" value="Submit")
-					button(class="button float-right primary" ng-click='vm.ctrl.checkin.cancel ()') Cancel
-	
-	// EDIT FORM. DISABLE temporarily.
-	div(class="column" ng-show="vm.model.dom.checkInEditDiv")
-		div(class='borderT row column paddingTB45 paddingLR45 fullBox')
-			form(ng-submit='vm.ctrl.edit.confirm()')
-				//Main service for edit
-				div(class="row column")
-					label Service
-						select(name="selectedService" ng-model="vm.model.edit.service" ng-options="s as s.label for s in vm.model.dom.data.selected.services track by s.name" ng-change='vm.ctrl.edit.selectService()')
-
-				// PICK GROUP
-				div(class="row column" ng-if="vm.model.dom.edit.privateGroupLeaderDiv && vm.model.temporary.groupPrivateLeaders && vm.model.temporary.groupPrivateLeaders.length > 1")
-					label Group
-						select(name="selectedGroup" ng-model="vm.model.temporary.edit.selectedGroupPrivate" ng-options="leader as leader.groupName for leader in vm.model.temporary.groupPrivateLeaders track by leader._id" ng-change="vm.ctrl.edit.selectGroup ()")
-				// Code
-				div(class="column row")
-					h3(class="fontSize20 fontWeight600") {{vm.model.dom.data.selected.checkin.promoteCode.title}}
-				div(class="column row")
-					div(class='column row small-12')
-						label {{vm.model.dom.data.selected.checkin.promoteCode.label}}
-							select(ng-model="vm.model.temporary.checkin.codeName" ng-options="code.name as code.selectedLabel disable when code.disabled for code in vm.model.dom.data.selected.checkin.promoteCode.codes track by code.name" ng-change='vm.ctrl.edit.addCode()')
-
-				div(class="column row")
-					div(class='column small-12 large-6')
-						table(ng-if='vm.model.edit.promocodes.length > 0')
-							thead
-								tr
-									th Code
-									th Trạng thái
-									th 
-							tbody
-								tr(ng-repeat='code in vm.model.edit.promocodes track by code.name')
-									td {{ code.name }}
-									td(class='{{vm.model.temporary.checkin.statusCode[code.status]}}') {{ vm.model.temporary.checkin.statusCode[code.status] }}
-									td(class='text-center deleteIcon')
-										i(class="material-icons customIcon" ng-click='vm.ctrl.edit.removeCode ()') close
-				div(class="row column")
-					input(class="button" type="submit" value="Submit")
-					button(class="button float-right primary" ng-click='vm.ctrl.edit.close()') Cancel
+											i(class="material-icons customIcon" ng-click='vm.ctrl.edit.removeCode ()') close
+					div(class="row column")
+						input(class="button" type="submit" value="Submit")
+						button(class="button float-right primary" ng-click='vm.ctrl.edit.close()') Cancel
 
 	// CHECKED-IN LIST 
 	div(class="column" ng-show="vm.model.dom.checkedinList")

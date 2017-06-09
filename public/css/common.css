@@ -54,6 +54,11 @@ label {
 	padding-right: .9375rem!important;	
 }
 
+.paddingLR30{
+	padding-left: 1.875rem!important;
+	padding-right: 1.875rem!important;	
+}
+
 .paddingLR10 {
 	padding-left: 0.625rem!important;
 	padding-right: 0.625rem!important;	
@@ -259,7 +264,10 @@ label {
 		padding-left: 0px;
 		padding-right: 0px;
 	}
-
+	
+	.large-marginT30{
+		margin-top: 1.875rem;
+	}
 }
 
 @media print, screen and (max-width: 64rem){

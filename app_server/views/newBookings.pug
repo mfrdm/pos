@@ -21,66 +21,69 @@ div(class="row columns")
 	
 	// BOOKING
 	div(class="column small-12")
-		div(class="borderT row column paddingTB45 paddingLR45 fullBox" ng-show='vm.model.dom.booking.bookingDiv')
-			// SEARCH CUSTOMER
-			div(class="column row")
-				form(ng-submit="vm.ctrl.booking.searchCustomer()")
+		div(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-show='vm.model.dom.booking.bookingDiv')
+			div(class='small-12 large-6 large-push-3')
+				div(class="row column text-center")
+					h3 Booking
+				// SEARCH CUSTOMER
+				div(class="column row")
+					form(ng-submit="vm.ctrl.booking.searchCustomer()")
+						div(class="row column")
+							label {{ vm.model.dom.data.selected.booking.search.label.username }}
+								input(type="text" placeholder="{{ vm.model.dom.data.selected.booking.placeholder.username }}" ng-model='vm.model.search.booking.username' required="true" ng-change='vm.ctrl.booking.clearSearchInput')
+						div(ng-show='vm.model.dom.booking.search.message.notFound' class='marginB15')
+							div(class='callout alert')
+								p {{ vm.model.dom.data.selected.booking.search.message.notFound + ' "' + vm.model.search.booking.username + '". ' }}
+									span: a(href='/#!/customers') {{ vm.model.dom.data.selected.createCustomer}}			
+						div(ng-show="vm.model.dom.booking.customerSearchResultDiv" class="marginB15")
+							div(class="table-scroll")
+								table(class="hover unstriped borderAll")
+									thead
+										tr
+											th {{vm.model.dom.data.selected.booking.search.header.number}}
+											th {{vm.model.dom.data.selected.booking.search.header.fullname}}
+											th {{vm.model.dom.data.selected.booking.search.header.email}}
+											th {{vm.model.dom.data.selected.booking.search.header.phone}}				
+									tbody
+										tr(ng-repeat='result in vm.model.search.booking.customers' ng-click='vm.ctrl.booking.selectCustomer($index)' class="pointerCursor")
+											td {{ $index + 1 }}
+											td {{ result.fullname }}
+											td {{ result.email[0] }}
+											td {{ result.phone[0] }}
+
+				// BOOKING FORM
+				form(ng-submit='vm.ctrl.booking.confirm ()')
+					div(class='row column')
+						label {{ vm.model.dom.data.selected.booking.location }}
+							select(name="selectedLocation" ng-model="vm.model.booking.location" ng-options="loc as loc.name for loc in vm.model.dom.data.selected.locations track by loc._id")
+					
+					div(class='row column basicBox')
+						div(class='column small-12 large-6')
+							label {{ vm.model.dom.data.selected.booking.service }}
+								select(name="selectedService" ng-model="vm.model.booking.service" ng-options="s as s.label for s in vm.model.dom.data.selected.services track by s.name")
+						div(class='column small-12 large-6')
+							label {{ vm.model.dom.data.selected.booking.quantity }}
+								input(type="number" ng-model="vm.model.booking.quantity" min=1 max=100)
+					div(class='row column basicBox')
+						div(class='column small-12 large-3 large-paddingL15')
+							label {{ vm.model.dom.data.selected.booking.checkinDate }}
+								input(type='date' min='1' max='31' ng-model='vm.model.temporary.booking.checkinDate' required ng-change="vm.ctrl.booking.checkinTimehangeHandler ()")
+						div(class='column small-12 large-2')
+							label {{ vm.model.dom.data.selected.booking.hour }}
+								input(type='number' min='0' max='23' ng-model='vm.model.temporary.booking.checkinHour' required ng-change="vm.ctrl.booking.checkinTimehangeHandler ()")
+						div(class='column small-12 large-2 large-paddingR15')
+							label {{ vm.model.dom.data.selected.booking.minute }}
+								input(type='number' min='0' max='60' ng-model='vm.model.temporary.booking.checkinMin' ng-change="vm.ctrl.booking.checkinTimehangeHandler ()")
+						div(class='column small-12 large-3 large-paddingR15')
+							label {{ vm.model.dom.data.selected.booking.spendHours }}
+								input(type='number' min='0' max='24' ng-model='vm.model.temporary.booking.checkinDuration' ng-change="vm.ctrl.booking.checkinTimehangeHandler ()")
+
+					div(class='row column')
+						label {{ vm.model.dom.data.selected.booking.otherRequirements }}
+							textarea(type='text' ng-model='vm.model.booking.note')
 					div(class="row column")
-						label {{ vm.model.dom.data.selected.booking.search.label.username }}
-							input(type="text" placeholder="{{ vm.model.dom.data.selected.booking.placeholder.username }}" ng-model='vm.model.search.booking.username' required="true" ng-change='vm.ctrl.booking.clearSearchInput')
-					div(ng-show='vm.model.dom.booking.search.message.notFound' class='marginB15')
-						div(class='callout alert')
-							p {{ vm.model.dom.data.selected.booking.search.message.notFound + ' "' + vm.model.search.booking.username + '". ' }}
-								span: a(href='/#!/customers') {{ vm.model.dom.data.selected.createCustomer}}			
-					div(ng-show="vm.model.dom.booking.customerSearchResultDiv" class="marginB15")
-						div(class="table-scroll")
-							table(class="hover unstriped borderAll")
-								thead
-									tr
-										th {{vm.model.dom.data.selected.booking.search.header.number}}
-										th {{vm.model.dom.data.selected.booking.search.header.fullname}}
-										th {{vm.model.dom.data.selected.booking.search.header.email}}
-										th {{vm.model.dom.data.selected.booking.search.header.phone}}				
-								tbody
-									tr(ng-repeat='result in vm.model.search.booking.customers' ng-click='vm.ctrl.booking.selectCustomer($index)' class="pointerCursor")
-										td {{ $index + 1 }}
-										td {{ result.fullname }}
-										td {{ result.email[0] }}
-										td {{ result.phone[0] }}
-
-			// BOOKING FORM
-			form(ng-submit='vm.ctrl.booking.confirm ()')
-				div(class='row column')
-					label {{ vm.model.dom.data.selected.booking.location }}
-						select(name="selectedLocation" ng-model="vm.model.booking.location" ng-options="loc as loc.name for loc in vm.model.dom.data.selected.locations track by loc._id")
-				
-				div(class='row column basicBox')
-					div(class='column small-12 large-6')
-						label {{ vm.model.dom.data.selected.booking.service }}
-							select(name="selectedService" ng-model="vm.model.booking.service" ng-options="s as s.label for s in vm.model.dom.data.selected.services track by s.name")
-					div(class='column small-12 large-6')
-						label {{ vm.model.dom.data.selected.booking.quantity }}
-							input(type="number" ng-model="vm.model.booking.quantity" min=1 max=100)
-				div(class='row column basicBox')
-					div(class='column small-12 large-3 large-paddingL15')
-						label {{ vm.model.dom.data.selected.booking.checkinDate }}
-							input(type='date' min='1' max='31' ng-model='vm.model.temporary.booking.checkinDate' required ng-change="vm.ctrl.booking.checkinTimehangeHandler ()")
-					div(class='column small-12 large-2')
-						label {{ vm.model.dom.data.selected.booking.hour }}
-							input(type='number' min='0' max='23' ng-model='vm.model.temporary.booking.checkinHour' required ng-change="vm.ctrl.booking.checkinTimehangeHandler ()")
-					div(class='column small-12 large-2 large-paddingR15')
-						label {{ vm.model.dom.data.selected.booking.minute }}
-							input(type='number' min='0' max='60' ng-model='vm.model.temporary.booking.checkinMin' ng-change="vm.ctrl.booking.checkinTimehangeHandler ()")
-					div(class='column small-12 large-3 large-paddingR15')
-						label {{ vm.model.dom.data.selected.booking.spendHours }}
-							input(type='number' min='0' max='24' ng-model='vm.model.temporary.booking.checkinDuration' ng-change="vm.ctrl.booking.checkinTimehangeHandler ()")
-
-				div(class='row column')
-					label {{ vm.model.dom.data.selected.booking.otherRequirements }}
-						textarea(type='text' ng-model='vm.model.booking.note')
-				div(class="row column")
-					input(class="button" type="submit" value="Create")
-					button(class="button float-right" ng-click='vm.ctrl.reset(); event.preventDefault()') Cancel
+						input(class="button" type="submit" value="Create")
+						button(class="button float-right" ng-click='vm.ctrl.reset(); event.preventDefault()') Cancel
 	
 	// FILTER
 	//div(class="column" ng-show='vm.look.filter')
