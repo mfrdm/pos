@@ -1,9 +1,9 @@
 var validator = require ('validator');
 var mongoose = require ('mongoose');
 var Orders = mongoose.model ('orders');
-var Occupancy = mongoose.model ('occupancy')
+var Occupancies = mongoose.model ('Occupancies')
 var Customers = mongoose.model ('customers');
-var Promocodes = mongoose.model ('promocodes');
+var Promocodes = mongoose.model ('Promocodes');
 var moment = require ('moment');
 
 module.exports = new OrdersCtrl();

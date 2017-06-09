@@ -1,9 +1,9 @@
 var validator = require ('validator');
 var mongoose = require ('mongoose');
 var Orders = mongoose.model ('orders');
-var Occupancy = mongoose.model ('occupancy')
+var Occupancies = mongoose.model ('Occupancies');
 var Customers = mongoose.model ('customers');
-var Promocodes = mongoose.model ('promocodes');
+var Promocodes = mongoose.model ('Promocodes');
 var Bookings = mongoose.model ('bookings');
 var moment = require ('moment');
 
@@ -11,13 +11,20 @@ module.exports = new Checkin();
 
 function Checkin() {
 
+	// FIX: encapsulate validate into Promocode
 	// only validate one code at a time
+	// codes is an array of strings of code names
 	this.validatePromocodes = function (req, res, next){
 		var q = req.query;
+		if (!q.codes || (q.codes && !q.codes.length)){
+			next ();
+			return;
+		}
 
-		var query = Promocodes.find ({name: {$in: q.codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}, excluded: false}, {name: 1, conflicted: 1, codeType: 1, override: 1, priority: 1, services: 1});
+		var query = Promocodes.find ({name: {$in: q.codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}, excluded: false}, {name: 1, codeType: 1, priority: 1, services: 1, label:1, redeemData: 1});
 
-		query.$where ('this.services.indexOf ("' + q.service.toLowerCase () + '") != -1 || this.services.indexOf ("all") != -1');
+		// FIX: find better solution. Not work if a code is used for more than one services
+		// query.$where ('this.services.indexOf ("' + q.service.toLowerCase () + '") != -1 || this.services.indexOf ("all") != -1');
 
 		query.exec(function (err, pc){
 			if (err){
@@ -26,17 +33,18 @@ function Checkin() {
 				return
 			}
 
-			if (pc.length){
-				pc = Promocodes.validateCodes (pc);
-			}
+			// if (pc.length){
+			// 	pc = Promocodes.validateCodes (pc);
+			// }
 
 			res.json ({data: pc});
+
 		});
 	};
 
 	// assume promocode are validated
 	this.checkin = function(req, res, next) {
-		var occ = new Occupancy (req.body.data.occupancy);
+		var occ = new Occupancies (req.body.data.occupancy);
 
 		if (req.body.data.order && req.body.data.order.orderline && req.body.data.order.orderline.length){
 			var order = new Orders (req.body.data.order);
@@ -181,7 +189,7 @@ function Checkin() {
 			})
 		}
 
-		var q = Occupancy.find (stmt, {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0});
+		var q = Occupancies.find (stmt, {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0});
 
 		if (checkinStatus == 4){
 			// do nothing and get all checked-in and checked-out
@@ -208,7 +216,7 @@ function Checkin() {
 	this.updateCheckin = function(req, res, next) {
 		var updateQuery = {}; 
 
-		Occupancy.findByIdAndUpdate (req.params.occId, req.body, {new: true}, function (err, updatedOcc){
+		Occupancies.findByIdAndUpdate (req.params.occId, req.body, {new: true}, function (err, updatedOcc){
 			if (err){
 				console.log (err);
 				next (err);
@@ -224,7 +232,7 @@ function Checkin() {
 	}
 
 	this.readOccupancies = function(req, res){
-		var q = Occupancy.find (
+		var q = Occupancies.find (
 			{
 				status:req.query.status
 			});

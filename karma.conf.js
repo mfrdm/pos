@@ -19,6 +19,7 @@ module.exports = function(config) {
       'node_modules/angular-mocks/angular-mocks.js',
       'node_modules/angular-ui-router/release/angular-ui-router.js',
       'node_modules/angular-route/angular-route.js',
+      'public/vendor/js/checklist-model.min.js',
       'app_client/app.js',
       'app_client/common/services/*.service.js',
       'app_client/*.ctrl.js',

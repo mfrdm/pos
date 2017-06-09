@@ -2,7 +2,7 @@ process.env.NODE_ENV = 'test';
 var chai = require ('chai');
 var should = chai.should ();
 var mongoose = require ('mongoose');
-var NewPromocodes = require ('../../app_api/models/newPromocodes.model');
+var Promocodes = require ('../../app_api/models/promocodes.model');
 var Deposits = require ('../../app_api/models/deposit.model');
 var moment = require ('moment');
 

@@ -1,11 +1,9 @@
 var moment = require ('moment');
 var mongoose = require ('mongoose');
-// var Promocodes = mongoose.model ('promocodes');
-var Promocodes = mongoose.model ('NewPromocodes');
+var Promocodes = mongoose.model ('Promocodes');
 var Orders = mongoose.model ('orders');
 var Customers = mongoose.model ('customers');
-// var Occupancy = mongoose.model ('occupancy');
-var Occupancy = mongoose.model ('NewOccupancies');
+var Occupancies = mongoose.model ('Occupancies');
 var Accounts = mongoose.model ('Accounts');
 
 module.exports = new Checkout();
@@ -14,7 +12,7 @@ function Checkout() {
 
 	// assume promotion codes, if provided, are valid, since checked when checking in
 	this.createInvoice = function (req, res, next){
-		Occupancy.findOne ({_id: req.params.occId}, {location: 0, staffId: 0, updateAt: 0}, function (err, foundOcc){
+		Occupancies.findOne ({_id: req.params.occId}, {location: 0, staffId: 0, updateAt: 0}, function (err, foundOcc){
 			if (err){
 				console.log (err);
 				next (err);
@@ -31,7 +29,7 @@ function Checkout() {
 					next (err);
 					return;
 				}
-				
+
 				Customers.findOne ({_id: foundOcc.customer._id})
 					.populate ({
 						path: 'accounts',
@@ -56,7 +54,6 @@ function Checkout() {
 			}
 			else{
 				next ();
-
 			}
 
 		});
@@ -68,7 +65,7 @@ function Checkout() {
 	this.withdrawUsageHourAccount = function (req, res, next){
 		var accId = req.params.accId;
 		var occ = JSON.parse (req.query.occ);
-		occ = new Occupancy (occ);
+		occ = new Occupancies (occ);
 
 		Accounts.findOne ({_id: accId}, function (err, foundAcc){
 			if (err) {
@@ -129,7 +126,7 @@ function Checkout() {
 					note: note
 				}
 
-				Occupancy.findOneAndUpdate ({_id: req.body.data._id}, {$set: updateOcc}, {new: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function (err, occ){
+				Occupancies.findOneAndUpdate ({_id: req.body.data._id}, {$set: updateOcc}, {new: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function (err, occ){
 					if (err){
 						next (err)
 						return

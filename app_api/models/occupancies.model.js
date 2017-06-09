@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var Promocodes = mongoose.model ('NewPromocodes');
+var Promocodes = mongoose.model ('Promocodes');
 var moment = require ('moment');
 
 function normalizeTotal (total){
@@ -93,7 +93,7 @@ function getTotal (){
 }
 
 
-var NewOccupanciesSchema = new mongoose.Schema({
+var OccupanciesSchema = new mongoose.Schema({
 	_id: {type: mongoose.Schema.Types.ObjectId, default: mongoose.Types.ObjectId},
 	total: {type: Number, min: 0},
 	usage: {type: Number, min: 0},
@@ -116,7 +116,7 @@ var NewOccupanciesSchema = new mongoose.Schema({
 		codeType: Number,
 		priority: Number,
 		redeemData: mongoose.Schema.Types.Mixed,		
-	}], // expect only one code applied at a time
+	}],
 	orders: [mongoose.Schema.Types.ObjectId], // id of occ
 	customer: {
 		_id: {type: mongoose.Schema.Types.ObjectId},
@@ -141,7 +141,7 @@ var NewOccupanciesSchema = new mongoose.Schema({
 	note: String, // note if something unexpected happens
 });
 
-NewOccupanciesSchema.methods.getUsageTime = getUsageTime;
-NewOccupanciesSchema.methods.getTotal = getTotal;
+OccupanciesSchema.methods.getUsageTime = getUsageTime;
+OccupanciesSchema.methods.getTotal = getTotal;
 
-module.exports = mongoose.model ('NewOccupancies', NewOccupanciesSchema);
+module.exports = mongoose.model ('Occupancies', OccupanciesSchema);

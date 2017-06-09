@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var Promocodes = mongoose.model ('NewPromocodes');
+var Promocodes = mongoose.model ('Promocodes');
 
 function normalizeTotal (total){
 	return Math.round(total / 1000) * 1000;

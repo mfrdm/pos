@@ -6,8 +6,8 @@ var chaiHttp = require ('chai-http');
 var server = require ('../../app');
 var mongoose = require ('mongoose');
 var Customers = mongoose.model ('customers');
-var Promocodes = mongoose.model ('NewPromocodes');
-var Occupancy = mongoose.model ('NewOccupancies');
+var Promocodes = mongoose.model ('Promocodes');
+var Occupancy = mongoose.model ('Occupancies');
 var Accounts = mongoose.model ('Accounts');
 var should = chai.should ();
 
@@ -15,7 +15,7 @@ chai.use (chaiHttp);
 
 describe ('Checkout', function (){
 	this.timeout(3000);
-	xdescribe ('Create invoice', function (){
+	describe ('Create invoice', function (){
 		var occupancies, customers;
 		var newOcc, newCustomer;
 		var newAcc;

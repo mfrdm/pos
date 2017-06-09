@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var Promocodes = mongoose.model ('promocodes');
+var Promocodes = mongoose.model ('Promocodes');
 var moment = require ('moment');
 
 function normalizeTotal (total){
@@ -34,12 +34,14 @@ var ordersSchema = new mongoose.Schema({
 		productName: {type: String, required: true},
 		quantity: {type: String, default: 1, required: true},
 		price: {type: Number, required: true},
-		promocodes: [{
-			_id: mongoose.Schema.Types.ObjectId,
-			name: String,
-			codeType: Number,
-		}], // expect only one code applied at a time
 		subTotal: {type: Number, min: 0, default: 0},	
+	}],
+	promocodes: [{
+		_id: mongoose.Schema.Types.ObjectId,
+		name: String,
+		codeType: Number,
+		priority: Number,
+		redeemData: mongoose.Schema.Types.Mixed,		
 	}],
 	customer: {
 		_id: {type: mongoose.Schema.Types.ObjectId},

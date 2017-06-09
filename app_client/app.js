@@ -1,4 +1,4 @@
-var app = angular.module ('posApp', ['ngRoute']);
+var app = angular.module ('posApp', ['ngRoute', 'checklist-model']);
 
 app
 	.config (['$locationProvider', '$routeProvider', config])

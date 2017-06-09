@@ -1,7 +1,8 @@
 var mongoose = require('mongoose');
 var moment = require ('moment');
 
-var validateCodes = function (){
+var validateCodes = function (context){
+	// Need to build
 }
 
 var preprocessCodes = function (context){
@@ -491,7 +492,7 @@ var removeDefaultCodes = function (context){
 	context.setPromocodes (originalCodes);
 }
 
-var NewPromocodesSchema = mongoose.Schema ({
+var PromocodesSchema = mongoose.Schema ({
 	name: String,
 	desc: {type: String}, // describe what is the promotion about and how to apply
 	label: {
@@ -530,14 +531,14 @@ var NewPromocodesSchema = mongoose.Schema ({
 	}],	
 });
 
-NewPromocodesSchema.methods.redeemUsage = redeemUsage;
-NewPromocodesSchema.methods.redeemPrice = redeemPrice;
-NewPromocodesSchema.methods.redeemQuantity = redeemQuantity;
-NewPromocodesSchema.methods.redeemTotal= redeemTotal;
-NewPromocodesSchema.methods.redeem = redeem;
-NewPromocodesSchema.statics.resolveConflict = resolveConflict;
-NewPromocodesSchema.statics.getDefaultCodes = getDefaultCodes;
-NewPromocodesSchema.statics.addDefaultCodes = addDefaultCodes;
-NewPromocodesSchema.statics.preprocessCodes = preprocessCodes;
+PromocodesSchema.methods.redeemUsage = redeemUsage;
+PromocodesSchema.methods.redeemPrice = redeemPrice;
+PromocodesSchema.methods.redeemQuantity = redeemQuantity;
+PromocodesSchema.methods.redeemTotal= redeemTotal;
+PromocodesSchema.methods.redeem = redeem;
+PromocodesSchema.statics.resolveConflict = resolveConflict;
+PromocodesSchema.statics.getDefaultCodes = getDefaultCodes;
+PromocodesSchema.statics.addDefaultCodes = addDefaultCodes;
+PromocodesSchema.statics.preprocessCodes = preprocessCodes;
 
-module.exports = mongoose.model ('NewPromocodes', NewPromocodesSchema);
+module.exports = mongoose.model ('Promocodes', PromocodesSchema);

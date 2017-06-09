@@ -133,10 +133,11 @@ function CustomersCtrl() {
 		req.body.data.phone = req.body.data.phone ? validator.trim (req.body.data.phone) : req.body.data.phone;
 		req.body.data.email = req.body.data.email ? validator.trim (req.body.data.email) : req.body.data.email;
 
-		if (!req.body.data.email && !req.body.data.phone){
-			res.status (500).json ({error: {message: 'phone and email are not provided', code: 1}});
-			return;
-		}
+		// NOT REQUIRE PHONE OR EMAIL. CHANGE TO BE REQUIRED LATER
+		// if (!req.body.data.email && !req.body.data.phone){
+		// 	res.status (500).json ({error: {message: 'phone and email are not provided', code: 1}});
+		// 	return;
+		// }
 
 		if (req.body.data.email && !validator.isEmail (req.body.data.email)){
 			res.status (500).json ({error: {message: 'invalid email', code: 2}});

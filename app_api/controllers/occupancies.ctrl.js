@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var Occupancy = mongoose.model ('occupancy');
+var Occupancy = mongoose.model ('Occupancies');
 var moment = require ('moment');
 
 module.exports = new OccupanciesCtrl ();

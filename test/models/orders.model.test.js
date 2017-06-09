@@ -2,7 +2,7 @@ var chai = require ('chai');
 var should = chai.should ();
 var server = require ('../../app');
 var mongoose = require ('mongoose');
-var Promocodes = require ('../../app_api/models/promocodes');
+var Promocodes = require ('../../app_api/models/promocodes.model');
 var Orders = require ('../../app_api/models/orders');
 
 describe ('Orders', function (){

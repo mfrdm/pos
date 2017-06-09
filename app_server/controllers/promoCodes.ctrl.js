@@ -1,5 +1,5 @@
 var mongoose = require ('mongoose');
-var PromoCodes = mongoose.model ('promocodes');
+var PromoCodes = mongoose.model ('Promocodes');
 var moment = require ('moment');
 
 module.exports = new PromoCodesCtrl();
