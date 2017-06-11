@@ -96,16 +96,15 @@ div(class="columns row")
 								label {{vm.model.dom.data.selected.checkin.product.quantity.label}}
 									input( ng-model="vm.model.temporary.checkin.item.quantity" string-to-number type="number" min='0')
 							div(class="column large-2 small-12 text-center")
-								a(class="button full-width-small large-marginT30" ng-click="vm.ctrl.checkin.addItem (); $event.preventDefault()") Add
+								a(class="button full-width-small" style="margin-top: 28px; display: block;" ng-click="vm.ctrl.checkin.addItem (); $event.preventDefault()") Add
 						// SELECTED ITEMS
 						div(class="row column")
-							div(class='column small-12')
+							div(class='column small-12 large-10')
 								table(ng-if='vm.model.checkingin.order.orderline.length > 0' class="unstriped")
 									thead
 										tr
 											th {{ vm.model.dom.data.selected.checkin.product.header.product }}
 											th {{ vm.model.dom.data.selected.checkin.product.header.quantity }}
-											th Delete
 
 									tbody 
 										tr(ng-repeat='ord in vm.model.checkingin.order.orderline track by ord._id')
@@ -123,13 +122,12 @@ div(class="columns row")
 									select(ng-model="vm.model.temporary.checkin.codeName" ng-options="code.name as code.selectedLabel disable when code.disabled for code in vm.model.dom.data.selected.checkin.promoteCode.codes track by code.name" ng-change='vm.ctrl.checkin.addCode()')
 
 						div(class="column row")
-							div(class='column small-12')
+							div(class='column small-12 large-10')
 								table(ng-if='vm.model.checkingin.occupancy.promocodes.length > 0')
 									thead
 										tr
 											th Code
 											th Trạng thái
-											th 
 									tbody
 										tr(ng-repeat='code in vm.model.checkingin.occupancy.promocodes track by code.name')
 											td {{ code.name }}
@@ -206,8 +204,8 @@ div(class="columns row")
 						th(ng-if='vm.model.dom.seeMore == true')  {{vm.model.dom.data.selected.checkinList.header.checkoutDate}}
 						th {{vm.model.dom.data.selected.checkinList.header.checkoutHour}}
 						th {{vm.model.dom.data.selected.checkinList.header.service}}
-						th Checkout
-						th Edit
+						th
+						th
 						th(ng-if='vm.model.dom.note') Note
 						
 						//th {{vm.model.dom.data.selected.headerEdit}}
@@ -222,11 +220,11 @@ div(class="columns row")
 						td {{ occupancy.service.label }}
 						
 						td
-							button(type="button" ng-if='occupancy.status == 1' class="primary button" ng-click="vm.ctrl.checkout.getInvoice (occupancy)") Checkout
-							button(type='button' ng-if='occupancy.status == 2' class="disabled button") Checkout
+							a(ng-if='occupancy.status == 1' class="primary button" ng-click="vm.ctrl.checkout.getInvoice (occupancy)") Checkout
+							a(ng-if='occupancy.status == 2' class="disabled button") Checkout
 						td
-							button(type="button" ng-if='occupancy.status == 1' class="primary button" ng-click="vm.ctrl.edit.edit (occupancy)" disabled) Edit
-							button(type='button' ng-if='occupancy.status == 2' class="disabled button") Edit
+							a(ng-if='occupancy.status == 1' class="primary button" ng-click="vm.ctrl.edit.edit (occupancy)" disabled) Edit
+							a(ng-if='occupancy.status == 2' class="disabled button") Edit
 						td(ng-if='occupancy.status != 1') {{occupancy.note}}
 			div(ng-if='vm.model.temporary.displayedList.data.length > vm.model.checkedinList.pagination.itemsEachPages')
 				ul(class="pagination text-center" role="navigation" aria-label="Pagination")
@@ -270,10 +268,9 @@ div(class="fullBox row column" ng-show='vm.model.dom.checkin.confirmDiv')
 					tr(ng-show="vm.model.checkingin.occupancy.promocodes.length" ng-repeat="code in vm.model.checkingin.occupancy.promocodes")
 						th Code
 						td {{ code.name | uppercase }}
-	div(class="row column")
-		div(class="column small-12 large-6 large-push-3")
-			a(class="paddingL15 button primary" ng-click="vm.ctrl.checkin.checkin ()") Check-in
-			a(class="paddingR15 button float-right secondary" ng-click="vm.ctrl.checkin.closeConfirm (); $event.preventDefault()") Cancel
+			div(class="row column marginT30 paddingLR10")
+				a(class="paddingL15 button primary" ng-click="vm.ctrl.checkin.checkin ()") Check-in
+				a(class="paddingR15 button float-right secondary" ng-click="vm.ctrl.checkin.closeConfirm (); $event.preventDefault()") Cancel
 
 // ORDER INVOICE
 div(class="fullBox row column" ng-show='vm.model.temporary.justCheckedin.order.orderline.length')
@@ -287,10 +284,6 @@ div(class="fullBox row column" ng-show='vm.model.temporary.justCheckedin.order.o
 					tr
 						th Khách hàng
 						td(colspan="3") {{ vm.model.temporary.justCheckedin.order.customer.fullname }}
-					tr
-						th Ghi chú
-						th(colspan='3')
-							textarea(type='text' ng-model='vm.model.temporary.justCheckedin.order.note')
 					tr
 						table(class="hover unstriped")
 							thead
@@ -308,15 +301,19 @@ div(class="fullBox row column" ng-show='vm.model.temporary.justCheckedin.order.o
 								tr
 									td(colspan="3") 
 									td {{ vm.model.temporary.justCheckedin.order.total | number }}
-	div(class="row column")
-		div(class="column small-12 large-6 large-push-3")
-			a(class="paddingL15 button primary" ng-click="vm.ctrl.order.confirm ()") Order
-			a(class="paddingR15 button float-right secondary" ng-click='vm.ctrl.reset(); $event.preventDefault()') Cancel	
+			
+					tr
+						th(colspan='2')
+							textarea(type='text' ng-model='vm.model.temporary.justCheckedin.order.note' placeholder="Ghi chú")
+			div(class="row column marginT30")
+				a(class="paddingL15 button primary" ng-click="vm.ctrl.order.confirm ()") Order
+				a(class="paddingR15 button float-right secondary" ng-click='vm.ctrl.reset(); $event.preventDefault()') Cancel	
 
 // INVOICE version 0.0.0
 div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 	div(class="column small-12 text-center paddingTB20")
 		h2 GREEN SPACE
+		h3 Check-out confirmation
 	div(class="column small-12 paddingB20")
 		div(class="column small-12 large-6 large-push-3")
 			table(class="hover unstriped stack")
@@ -333,10 +330,7 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 						td {{ vm.model.checkingout.occupancy.service.label }}
 					tr(ng-if="vm.model.checkingout.occupancy.parent")
 						th Nhóm
-						td Thành viên nhóm riêng		
-					tr(ng-if="vm.model.checkingout.occupancy.promocodes && vm.model.checkingout.occupancy.promocodes.length" ng-repeat="code in vm.model.checkingout.occupancy.promocodes")
-						th Code
-						td {{ code.name }}	
+						td Thành viên nhóm riêng
 					tr
 						th Checkin
 						td {{ vm.model.checkingout.occupancy.checkinTime | date:'dd/MM/yyyy'}} {{ vm.model.checkingout.occupancy.checkinTime | date:'shortTime'}}				
@@ -344,28 +338,31 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 						th Checkout
 						td {{ vm.model.checkingout.occupancy.checkoutTime | date:'dd/MM/yyyy'}} {{ vm.model.checkingout.occupancy.checkoutTime | date:'shortTime'}}
 					tr
-						th Thời gian sử dụng
-						td {{ vm.model.checkingout.occupancy.usage + ' giờ' }}
+						th Thời gian
+						td {{ vm.model.checkingout.occupancy.oriUsage | number: 1 }} Giờ
 					tr
 						th Giá
-						td {{ vm.model.checkingout.occupancy.service.price | number}} VNĐ
+						td {{ vm.model.checkingout.occupancy.price | number}} VNĐ
+					tr(ng-if="vm.model.checkingout.occupancy.promocodes && vm.model.checkingout.occupancy.promocodes.length")
+						th Codes
+						td {{ vm.model.temporary.checkout.invoice.codeNames }}
 					tr
 						th Tổng
-						td {{ vm.model.checkingout.occupancy.total | number}} VNĐ
-					tr(ng-if="vm.model.temporary.checkout.withdrawnUsage")
+						td {{ vm.model.checkingout.occupancy.total | number }} VNĐ
+					tr(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.paid")
 						th Tài khoản đã dùng
-						td {{ vm.model.temporary.checkout.withdrawnUsage | number}} Giờ
-					tr(ng-if="vm.model.temporary.checkout.accAmountRemain || vm.model.temporary.checkout.accAmountRemain == 0")
+						td(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.unit == 'hour'") {{ vm.model.temporary.checkout.prepaidTotal.acc.paid | number: 1}} Giờ
+						td(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.unit == 'vnd'") {{ vm.model.temporary.checkout.prepaidTotal.acc.paid | number }} VNĐ
+					tr(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.remain || vm.model.temporary.checkout.prepaidTotal.acc.remain == 0")
 						th Tài khoản còn
-						td {{ vm.model.temporary.checkout.accAmountRemain | number}} Giờ
-					tr(ng-if="vm.model.temporary.checkout.reaminTotal || vm.model.temporary.checkout.reaminTotal == 0")
-						th Tổng đã trừ trả trước
-						td {{ vm.model.temporary.checkout.reaminTotal | number}} VNĐ
+						td(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.unit == 'hour'") {{ vm.model.temporary.checkout.prepaidTotal.acc.remain | number: 1}} Giờ
+						td(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.unit == 'vnd'") {{ vm.model.temporary.checkout.prepaidTotal.acc.remain }} VNĐ						
+					tr(ng-if="vm.model.temporary.checkout.prepaidTotal.occ.total || vm.model.temporary.checkout.prepaidTotal.occ.total == 0")
+						th Tổng trừ trả trước
+						td {{ vm.model.temporary.checkout.prepaidTotal.occ.total | number}} VNĐ
 					tr
-						th Ghi chú
-						td
-							textarea(type='text' ng-model='vm.model.checkingout.occupancy.note')
-	div(class="row column")
-		div(class="column small-12 large-6 large-push-3")
-			a(class="paddingL15 button primary" ng-click="vm.ctrl.checkout.checkout()") Checkout
-			a(class="paddingR15 button float-right secondary" ng-click='vm.ctrl.reset()') Cancel
+						td(colspan=2)
+							textarea(type='text' ng-model='vm.model.checkingout.occupancy.note' placeholder="Ghi chú")
+			div(class="row column marginT30 paddingLR10")
+				a(class="paddingL15 button primary" ng-click="vm.ctrl.checkout.checkout()") Checkout
+				a(class="paddingR15 button float-right secondary" ng-click='vm.ctrl.reset()') Cancel

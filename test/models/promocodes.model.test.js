@@ -5,7 +5,7 @@ var mongoose = require ('mongoose');
 var Promocodes = require ('../../app_api/models/promocodes.model');
 var Occupancies = require ('../../app_api/models/occupancies.model');
 
-xdescribe ('redeem', function (){
+describe ('redeem', function (){
 	var codes, context;
 	beforeEach (function (){
 		context = {
@@ -93,7 +93,7 @@ xdescribe ('redeem', function (){
 	})
 });
 
-xdescribe ('Redeem price', function (){
+describe ('Redeem price', function (){
 	var codes, context;
 	beforeEach (function (){
 		context = {
@@ -142,7 +142,7 @@ xdescribe ('Redeem price', function (){
 xdescribe ('Redeem quantity', function (){
 });
 
-xdescribe ('Redeem usage', function (){
+describe ('Redeem usage', function (){
 	var codes, context;
 	beforeEach (function (){
 		context = {
@@ -229,7 +229,7 @@ xdescribe ('Redeem usage', function (){
 	})
 });
 
-xdescribe ('Redeem total', function (){
+describe ('Redeem total', function (){
 	var codes, context;
 	beforeEach (function (){
 		context = {

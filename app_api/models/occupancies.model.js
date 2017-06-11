@@ -6,6 +6,45 @@ function normalizeTotal (total){
 	return Math.round(total / 1000) * 1000;
 }
 
+function getCodeContext (occ){
+	return {
+		productName: 'service',
+		price: occ.price,
+		usage: occ.usage,
+		total: null,
+		getService: function (){ return occ.service.name.toLowerCase() },
+		getUsage: function (){ return this.usage },
+		getPrice: function (){return this.price},
+		getTotal: function (){return this.total},
+		getPromocodes: function (){ return occ.promocodes },
+		setPromocodes: function (codes){ occ.promocodes = codes },
+		isStudent: function (){ return occ.customer.isStudent }
+	}
+} 
+
+function getAccContext (){
+	var occ = this;
+	occ.usage = occ.getUsageTime ();
+
+	return {
+		getUsage: function (){
+			return occ.usage;
+		},
+		setUsage: function (usage){
+			occ.usage = usage;
+		},		
+		getTotal: function (){
+			return occ.total;
+		},
+		setTotal: function (total){
+			occ.total = total;
+		},
+		genTotal: function (){
+			occ.getTotal ();
+		}
+	}
+}
+
 // method to calculate total usage time
 // below 6 mins, return as 0.
 function getUsageTime (){
@@ -23,7 +62,8 @@ function normalizeUsage (diff){
 	var mod = diff % 60;
 	var quotient = (diff - mod) / 60;
 	var tenths = mod / 60;
-	var tenthsFixed = Number(tenths.toFixed(1));
+	// var tenthsFixed = Number(tenths.toFixed(1));
+	var tenthsFixed = tenths;
 	var usage;
 
 	if (quotient > 0){
@@ -42,7 +82,9 @@ function normalizeUsage (diff){
 // get usage and total after applied codes
 function getTotal (){
 	var occ = this;
-	occ.usage = occ.usage || occ.usage == 0 ? occ.usage : occ.getUsageTime ();
+	occ.oriUsage = occ.oriUsage || occ.oriUsage == 0 ? occ.oriUsage : occ.getUsageTime ();
+	occ.usage = occ.usage || occ.usage == 0 ? occ.usage : occ.oriUsage;
+	occ.price = occ.service.price;
 
 	if (occ.parent){
 		occ.total = 0;
@@ -50,19 +92,7 @@ function getTotal (){
 
 	else{
 		// the context in strategy design
-		var context = {
-			productName: 'service',
-			price: occ.service.price,
-			usage: occ.usage,
-			total: null,
-			getService: function (){ return occ.service.name.toLowerCase() },
-			getUsage: function (){ return this.usage },
-			getPrice: function (){return this.price},
-			getTotal: function (){return this.total},
-			getPromocodes: function (){ return occ.promocodes },
-			setPromocodes: function (codes){ occ.promocodes = codes },
-			isStudent: function (){ return occ.customer.isStudent }
-		}		
+		var context = getCodeContext (occ); 
 
 		Promocodes.preprocessCodes (context);
 
@@ -84,10 +114,12 @@ function getTotal (){
 
 		}
 		else {
-			occ.total = occ.service.price * occ.usage;
+			occ.total = occ.price * occ.usage;
 		}
 
 		occ.total = normalizeTotal (occ.total);	
+		occ.price = context.price;
+		occ.usage = context.usage;
 
 	}	
 }
@@ -96,7 +128,9 @@ function getTotal (){
 var OccupanciesSchema = new mongoose.Schema({
 	_id: {type: mongoose.Schema.Types.ObjectId, default: mongoose.Types.ObjectId},
 	total: {type: Number, min: 0},
-	usage: {type: Number, min: 0},
+	usage: {type: Number, min: 0}, // may be orignal or adjusted
+	oriUsage: {type: Number, min: 0},
+	price: {type: Number, min: 0}, // may be orignal or adjusted
 	paymentMethod: [{
 		_id: mongoose.Schema.Types.ObjectId, // for account and other methods. Not cash
 		name: {type: String}, // cash, card, account, ...
@@ -143,5 +177,6 @@ var OccupanciesSchema = new mongoose.Schema({
 
 OccupanciesSchema.methods.getUsageTime = getUsageTime;
 OccupanciesSchema.methods.getTotal = getTotal;
+OccupanciesSchema.methods.getAccContext = getAccContext;
 
 module.exports = mongoose.model ('Occupancies', OccupanciesSchema);

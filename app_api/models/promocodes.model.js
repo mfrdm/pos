@@ -14,7 +14,7 @@ var preprocessCodes = function (context){
 	});
 }
 
-// use temporary
+// use temporary. Need to move all or part of them to database.
 var getAccountDefaultCodes = function (){
 	var studentPriceCommonOneDay = {
 		name: 'studentprice_common1day',
@@ -105,7 +105,7 @@ var getAccountDefaultCodes = function (){
 	}
 }
 
-// use temporary
+// use temporary. Need to move all or part of them to database.
 var getServiceDefaultCodes = function (){
 	var studendPrice = {
 		name: 'studentprice',

@@ -141,13 +141,13 @@ div(class="row columns")
 	// BOOKING LIST
 	div(class="column small-12")
 		div(class="newBox table-scroll")
-			table(class="hover unstriped borderAll")
+			table(class="unstriped borderAll")
 				thead
 					tr
 						th {{ vm.model.dom.data.selected.bookingList.number }}
 						th {{ vm.model.dom.data.selected.bookingList.fullname }}
 						th {{ vm.model.dom.data.selected.bookingList.service }}
-						th(colspan=1) {{ vm.model.dom.data.selected.bookingList.checkin }}
+						th {{ vm.model.dom.data.selected.bookingList.checkin }}
 						th(colspan=3) {{ vm.model.dom.data.selected.bookingList.note }}
 				tbody
 					tr(ng-repeat='booking in vm.model.bookingList.data')
@@ -156,10 +156,6 @@ div(class="row columns")
 						td {{ booking.service.label }}
 						td {{ booking.checkinTime | date:'dd/MM/yyyy'}} {{ booking.checkinTime | date:'shortTime'}}
 						td {{ booking.note }}
-						//td(ng-if='booking.status == 3') Waiting
-						//td(ng-if='booking.status == 1') Accepted
-						//td(ng-if='booking.status == 2') Refused
-						//td(ng-if='booking.status == 4') Canceled
 						td(ng-if="booking.status == 3"): a(class="button" ng-click="vm.ctrl.bookingList.checkin($index)") Check-in
 						td(ng-if="booking.status == 5"): a(class="button disabled") Check-in
 						td(ng-if="booking.status == 5"): a(class="button secondary disabled") Cancel
@@ -175,24 +171,23 @@ div(class="fullBox row column" ng-show='vm.model.dom.bookingList.cancelConfirmDi
 		h3 Booking cancel confirmation
 	div(class="column small-12 paddingB20")
 		div(class="column small-12 large-6 large-push-3")
-			table(class="hover unstriped")
+			table(class="hover unstriped border")
 				tbody
 					tr
-						th(class="text-right") Khách hàng
+						th Khách hàng
 						td {{ vm.model.temporary.canceledBooking.customer.fullname }}
 					tr
-						th(class="text-right") Địa điểm
+						th Địa điểm
 						td {{ vm.model.temporary.canceledBooking.location.name }}				
 					tr
-						th(class="text-right") Dịch vụ
+						th Dịch vụ
 						td {{ vm.model.temporary.canceledBooking.service.label }}					
 					tr
-						th(class="text-right") Check-in
+						th Check-in
 						td {{ vm.model.temporary.canceledBooking.checkinTime | date:'dd/MM/yyyy'}} {{ vm.model.temporary.canceledBooking.checkinTime | date:'shortTime'}}
-	div(class="row column")
-		div(class="column small-12 large-6 large-push-3")
-			a(class="paddingL15 button primary" ng-click="vm.ctrl.bookingList.cancel ()") Confirm
-			a(class="paddingR15 button float-right secondary" ng-click="vm.ctrl.bookingList.closeCancel (); $event.preventDefault()") Cancel
+			div(class="row column marginT30")
+					a(class="paddingL15 button primary" ng-click="vm.ctrl.bookingList.cancel ()") Confirm
+					a(class="paddingR15 button float-right secondary" ng-click="vm.ctrl.bookingList.closeCancel (); $event.preventDefault()") Cancel
 
 // BOOKING CONFIRM
 div(class="fullBox row column" ng-show='vm.model.dom.booking.confirmDiv')
@@ -224,7 +219,7 @@ div(class="fullBox row column" ng-show='vm.model.dom.booking.confirmDiv')
 					tr(ng-if="vm.model.booking.note")
 						th Yêu cầu khác
 						td {{ vm.model.booking.note }}	
-			div(class="row column")
+			div(class="row column marginT30")
 				a(class="paddingL15 button primary" ng-click="vm.ctrl.booking.book ()") Confirm
 				a(class="paddingR15 button float-right secondary" ng-click="vm.ctrl.booking.closeConfirm ()") Cancel
 

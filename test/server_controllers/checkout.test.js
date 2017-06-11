@@ -15,7 +15,7 @@ chai.use (chaiHttp);
 
 describe ('Checkout', function (){
 	this.timeout(3000);
-	describe ('Create invoice', function (){
+	xdescribe ('Create invoice', function (){
 		var occupancies, customers;
 		var newOcc, newCustomer;
 		var newAcc;
@@ -302,6 +302,7 @@ describe ('Checkout', function (){
 					foundOcc.usage.should.to.exist;
 					foundOcc.checkoutTime.should.to.exist;
 					foundOcc.usage.should.to.equal (1);
+					foundOcc.price.should.to.equal (15000);
 					foundOcc.total.should.to.equal (15000);
 					foundOcc.promocodes.should.to.exist;
 					foundOcc.promocodes.length.should.to.equal (0);
@@ -326,6 +327,7 @@ describe ('Checkout', function (){
 					foundOcc.usage.should.to.exist;
 					foundOcc.checkoutTime.should.to.exist;
 					foundOcc.usage.should.to.equal (1);
+					foundOcc.price.should.to.equal (10000);
 					foundOcc.total.should.to.equal (10000);
 
 					foundOcc.promocodes.length.should.to.be.at.least (1);
@@ -349,6 +351,7 @@ describe ('Checkout', function (){
 					res.body.data.checkoutTime.should.to.exist;
 					res.body.data.should.to.not.have.property ('parent');
 					res.body.data.usage.should.to.equal (2.3);
+					res.body.data.price.should.to.equal (150000);
 					res.body.data.total.should.to.equal (306000);
 
 					res.body.data.promocodes.length.should.to.be.at.least (1);
@@ -372,6 +375,7 @@ describe ('Checkout', function (){
 					res.body.data.checkoutTime.should.to.exist;
 					res.body.data.parent.should.to.exist;
 					res.body.data.usage.should.to.equal (2.3);
+					res.body.data.price.should.to.equal (150000);
 					res.body.data.total.should.to.equal (0);
 
 					done ();
@@ -393,6 +397,7 @@ describe ('Checkout', function (){
 					res.body.data.checkoutTime.should.to.exist;
 					res.body.data.should.to.not.have.property ('parent');
 					res.body.data.usage.should.to.equal (2.3);
+					res.body.data.price.should.to.equal (150000);
 					res.body.data.total.should.to.equal (173000);
 
 					done ();
@@ -441,9 +446,9 @@ describe ('Checkout', function (){
 		
 		beforeEach (function (done){
 			customer = {
-				firstname: 'Customer_Firstname',
-				middlename: 'Customer_Middlename',
-				lastname: 'Customer_Lastname',
+				firstname: 'a',
+				middlename: 'b',
+				lastname: 'c',
 				gender: 1,
 				birthday: new Date ('1989-09-25'),
 				phone: '0965999999',
@@ -493,6 +498,52 @@ describe ('Checkout', function (){
 					start: moment (),
 					end: moment().hour(23).minute (59),
 					services: ['group common', 'individual common']
+				},
+				{
+					amount: 30000,
+					unit: 'vnd',
+					start: moment (),
+					end: moment().add (30, 'day'),
+					services: ['group common', 'individual common']
+				},
+				{
+					amount: 100000,
+					unit: 'vnd',
+					start: moment (),
+					end: moment().add (30, 'day'),
+					services: ['group common', 'individual common']
+				},	
+				{
+					price: 350000,
+					amount: 0,
+					unit: 'hour',
+					start: moment (),
+					end: moment().add (30, 'day'),					
+					services: ['group common', 'individual common'],
+					recursive: {
+						isRecursive: true,
+						lastRenewDate: moment ().add (-1, 'day'),
+						recursiveType: 1,
+						renewNum: 0,
+						maxRenewNum: 3,
+						baseAmount: 3				
+					}
+				},
+				{
+					price: 350000,
+					amount: 0,
+					unit: 'hour',
+					start: moment (),
+					end: moment().add (30, 'day'),					
+					services: ['group common', 'individual common'],
+					recursive: {
+						isRecursive: true,
+						lastRenewDate: moment ().add (-1, 'day'),
+						recursiveType: 1,
+						renewNum: 3,
+						maxRenewNum: 3,
+						baseAmount: 3				
+					}
 				},
 			]
 
@@ -579,7 +630,26 @@ describe ('Checkout', function (){
 
 		});
 		
-		it ('should return expected total when withdraw from a hour usage account', function (done){
+		it ('should return correct total, remain, and paid when withdraw from an HOUR account when the amount in account is less than or equal being-paid amount', function (done){
+			chai.request (server)
+				.get ('/checkout/account/withdraw/' + newAcc[1]._id.toString ())
+				.query ({occ: JSON.stringify (newOcc)})
+				.end (function (err, res){
+					if (err) {
+						console.log (err)
+					}
+
+					res.should.to.have.status (200);
+					res.body.data.should.to.exist;
+					res.body.data.occ.total.should.equal (15000);
+					res.body.data.acc.remain.should.equal (0);
+					res.body.data.acc.paid.should.equal (2);
+
+					done ();
+				});				
+		});
+
+		it ('should return correct total, remain, and paid when withdraw from an HOUR account when the amount in account is greater than being-paid amount', function (done){
 			chai.request (server)
 				.get ('/checkout/account/withdraw/' + newAcc[0]._id.toString ())
 				.query ({occ: JSON.stringify (newOcc)})
@@ -595,7 +665,45 @@ describe ('Checkout', function (){
 					res.body.data.acc.paid.should.equal (3);
 
 					done ();
-				});			
+				});				
+		})	
+
+		it ('should return correct total, remain, and paid when withdraw from an CASH account when the amount in account is less than or equal being-paid amount', function (done){
+			chai.request (server)
+				.get ('/checkout/account/withdraw/' + newAcc[4]._id.toString ())
+				.query ({occ: JSON.stringify (newOcc)})
+				.end (function (err, res){
+					if (err) {
+						console.log (err)
+					}
+
+					res.should.to.have.status (200);
+					res.body.data.should.to.exist;
+					res.body.data.occ.total.should.equal (15000);
+					res.body.data.acc.remain.should.equal (0);
+					res.body.data.acc.paid.should.equal (30000);
+
+					done ();
+				});				
+		})
+
+		it ('should return correct total, remain, and paid when withdraw from an CASH account when the amount in account is greater than being-paid amount', function (done){
+			chai.request (server)
+				.get ('/checkout/account/withdraw/' + newAcc[5]._id.toString ())
+				.query ({occ: JSON.stringify (newOcc)})
+				.end (function (err, res){
+					if (err) {
+						console.log (err)
+					}
+
+					res.should.to.have.status (200);
+					res.body.data.should.to.exist;
+					res.body.data.occ.total.should.equal (0);
+					res.body.data.acc.remain.should.equal (55000);
+					res.body.data.acc.paid.should.equal (45000);
+
+					done ();
+				});				
 		})
 
 		it ('should return correct total when withdraw from a 1 day common combo account', function (done){
@@ -635,6 +743,71 @@ describe ('Checkout', function (){
 					done ();
 				});
 		});
+
+		it ('should renew an account when the account is valid', function (done){
+			var now = moment ();
+			chai.request (server)	
+				.get ('/checkout/account/withdraw/' + newAcc[6]._id.toString ())
+				.query ({occ: JSON.stringify (newOcc)})
+				.end (function (err, res){
+					if (err) {
+						// console.log (err)
+					}
+
+					res.should.to.have.status (200);
+					res.body.data.should.to.exist;
+					res.body.data.occ.total.should.equal (0);
+					res.body.data.acc.remain.should.equal (0);
+					res.body.data.acc.paid.should.equal (3);
+
+					Accounts.findOne ({_id: res.body.data.acc._id}, {amount: 1, 'recursive.lastRenewDate': 1, 'recursive.renewNum': 1}, function (err, foundAcc){
+
+						if (err){
+							console.log (err);
+						}
+
+						foundAcc.amount.should.to.equal (3);
+						moment(foundAcc.recursive.lastRenewDate).isSameOrAfter (now).should.to.equal (true);
+						foundAcc.recursive.renewNum.should.to.equal (1);
+						done ();
+					})
+
+					
+				});
+		})
+
+		it ('should not renew an account when it is not valid', function (done){
+			var now = moment ();
+
+			chai.request (server)	
+				.get ('/checkout/account/withdraw/' + newAcc[7]._id.toString ())
+				.query ({occ: JSON.stringify (newOcc)})
+				.end (function (err, res){
+					if (err) {
+						// console.log (err)
+					}
+
+					res.should.to.have.status (200);
+					res.body.data.should.to.exist;
+					res.body.data.occ.total.should.equal (45000);
+					res.body.data.acc.remain.should.equal (0);
+					res.body.data.acc.paid.should.equal (0);
+
+					Accounts.findOne ({_id: res.body.data.acc._id}, {amount: 1, 'recursive.lastRenewDate': 1, 'recursive.renewNum': 1}, function (err, foundAcc){
+
+						if (err){
+							console.log (err);
+						}
+
+						foundAcc.amount.should.to.equal (0);
+						moment(foundAcc.recursive.lastRenewDate).isBefore (now).should.to.equal (true);
+						foundAcc.recursive.renewNum.should.to.equal (3);
+						done ();
+					})
+
+					
+				});			
+		})
 	})
 
 	xdescribe ('Confirm checkout', function (){
@@ -816,7 +989,7 @@ describe ('Checkout', function (){
 			});
 		});
 
-		xit ('should checkout successfully when no account is used', function (done){
+		it ('should checkout successfully when no account is used', function (done){
 		
 			chai.request (server)
 				.post ('/checkout/')
@@ -829,7 +1002,7 @@ describe ('Checkout', function (){
 					res.should.to.have.status (200);
 					res.body.data.should.to.exist;
 
-					Occupancy.findOne ({_id: newOcc[0]._id}, {usage: 1, total: 1, promocodes: 1}, function (err, foundOcc){
+					Occupancy.findOne ({_id: newOcc[0]._id}, {usage: 1, total: 1, promocodes: 1, price: 1}, function (err, foundOcc){
 						if (err){
 							console.log (err);
 						}
@@ -837,6 +1010,7 @@ describe ('Checkout', function (){
 						foundOcc.should.to.exist;
 						foundOcc.total.should.to.equal (20000);
 						foundOcc.usage.should.to.equal (2);
+						foundOcc.price.should.to.equal (10000)
 						foundOcc.promocodes.should.to.have.length.of.at.least (1);	
 
 						done ();
@@ -869,7 +1043,7 @@ describe ('Checkout', function (){
 					res.should.to.have.status (200);
 					res.body.data.should.to.exist;
 
-					Occupancy.findOne ({_id: selectedOcc._id}, {usage: 1, total: 1, promocodes: 1, paymentMethod: 1}, function (err, foundOcc){
+					Occupancy.findOne ({_id: selectedOcc._id}, {usage: 1, total: 1, price: 1,promocodes: 1, paymentMethod: 1}, function (err, foundOcc){
 						if (err){
 							console.log (err);
 						}
@@ -877,6 +1051,7 @@ describe ('Checkout', function (){
 						foundOcc.should.to.exist;
 						foundOcc.total.should.to.equal (150000);
 						foundOcc.usage.should.to.equal (2);
+						foundOcc.price.should.to.equal (150000);
 						foundOcc.promocodes.should.to.have.length.of.at.least (1);	
 
 						foundOcc.paymentMethod.length.should.to.equal (1);
@@ -898,7 +1073,6 @@ describe ('Checkout', function (){
 					
 				});
 		});
-
 	});
 })
 

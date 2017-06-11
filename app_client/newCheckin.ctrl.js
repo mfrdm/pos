@@ -107,6 +107,10 @@
                 checkout: {
                     note: '',
                     selectedAccount: {},
+                    invoice: {
+                        codeNames: ""
+                    }
+
                 },
                 displayedList: {
                     data: [],
@@ -340,15 +344,17 @@
             var b = DataPassingService.get ('booking');
             
             if (b){
-                vm.ctrl.openCheckinDiv ();
                 Object.assign (vm.model.checkingin.occupancy, b);
+                vm.ctrl.openCheckinDiv ();
+
                 var tempCustomer = {
                     email: [b.customer.email],
                     phone: [b.customer.phone],
                     fullname: b.customer.fullname,
                 }
 
-                vm.model.search.checkin.username = vm.ctrl.checkin.createUsername (tempCustomer);           
+                vm.model.search.checkin.username = vm.ctrl.checkin.createUsername (tempCustomer);
+
                 DataPassingService.reset ('booking');
             }
         };
@@ -356,14 +362,17 @@
         vm.ctrl.checkinNewCustomer = function (){
             var c = DataPassingService.get ('customer');
             if (c){
-                vm.ctrl.openCheckinDiv ();
+                
                 vm.model.checkingin.occupancy.customer = vm.model.checkingin.order.customer = c;
                 var tempCustomer = {
                     email: [c.email],
                     phone: [c.phone],
                     fullname: c.fullname,
                 }
-                vm.model.search.checkin.username = vm.ctrl.checkin.createUsername (tempCustomer);           
+
+                vm.model.search.checkin.username = vm.ctrl.checkin.createUsername (tempCustomer);
+
+                vm.ctrl.openCheckinDiv ();
                 DataPassingService.reset ('customer');
             }           
         }
@@ -567,7 +576,7 @@
             vm.model.search.checkin.username = vm.ctrl.checkin.createUsername(selectedCustomer);// display selected customer on search input
             vm.model.services = []
             vm.model.items = []
-            vm.ctrl.checkin.getItems();
+            vm.ctrl.checkin.getItems ();
             vm.ctrl.checkin.resetSearchCustomerDiv ();// After select we remove search result div
             vm.ctrl.disablePromocodes()// Check to disable promocodes
         }
@@ -733,8 +742,15 @@
         // vm.model.dom.data.selected.items: use for dom selection, equal vm.mode.items
 
         vm.ctrl.checkin.getItems = function (){
+            console.log (vm.model.checkingin.occupancy)
+            console.log (vm.model.checkingin.occupancy.customer) 
+            console.log (vm.model.checkingin.occupancy.customer.fullname)
+            console.log ('123123')
 
             if(vm.model.checkingin.occupancy.customer.fullname){
+
+
+
                 CheckinService.readSomeProducts().then(
                     function success(res){
                         res.data.data.map(function(x, i, arr){
@@ -794,7 +810,6 @@
         // Handle when select sevice
         vm.ctrl.checkin.serviceChangeHandler = function (){
             if(vm.model.checkingin.occupancy.customer.fullname){
-
                 vm.model.services.map (function (x, i, arr){
                     if (x.name.toLowerCase() == vm.model.checkingin.occupancy.service.name.toLowerCase()){
                         vm.model.checkingin.occupancy.service.price = x.price;// add price for select service
@@ -808,8 +823,6 @@
                         }
                         
                         vm.model.dom.data.selected.checkin.promoteCode.codes = vm.ctrl.selectCodesForService(vm.model.checkingin.occupancy.service.name, vm.model.dom.data.selected.checkin.promoteCode.original);
-
-                        console.log (vm.model.checkingin.occupancy.service.name, vm.model.dom.data.selected.checkin.promoteCode.original)
 
                         return
                     }
@@ -946,6 +959,16 @@
             })
         }
 
+        vm.ctrl.checkout.getPromocodeNames = function (){
+            var codeNames = "";
+            vm.model.checkingout.occupancy.promocodes.map (function (x, i, arr){
+                codeNames = (codeNames ? codeNames + " / " : "" ) + x.name;
+            });
+
+            vm.model.temporary.checkout.invoice.codeNames = codeNames;
+
+        }
+
         vm.ctrl.checkout.getInvoice = function (occupancy){
 
             vm.ctrl.showLoader ();
@@ -955,13 +978,13 @@
                     vm.ctrl.hideLoader ();
                     vm.model.checkingout.occupancy = res.data.data;
 
-                    console.log (vm.model.checkingout.occupancy)
-
                     vm.model.checkingout.occupancy.childrenIdList = []
                     vm.model.checkingout.occupancy.note = vm.model.temporary.note; // likely to REMOVE later
 
+                    vm.ctrl.checkout.getPromocodeNames ();
+
                     vm.ctrl.addServiceLabel (vm.model.checkingout.occupancy.service);
-                    showCheckbox(occupancy)
+                    showCheckbox(occupancy);
                     collectChildren(occupancy)
                 }, 
                 function error(err){
@@ -971,6 +994,8 @@
             );
         };
 
+        // FIX to apply new model
+        // FIX: allow more than one account being used. LATER
         vm.ctrl.checkout.accChangeHandler = function (){
             vm.ctrl.showLoader ();
             var occ = vm.model.checkingout.occupancy;
@@ -979,11 +1004,8 @@
             CheckoutService.withdrawOneAccount (occ, accId).then(
                 function success (res){
                     vm.ctrl.hideLoader ();
-                    vm.model.temporary.checkout.reaminTotal = res.data.data.total;
-                    vm.model.temporary.checkout.withdrawnUsage = res.data.data.withdrawnUsage;
-                    vm.model.temporary.checkout.accAmountRemain = res.data.data.accAmountRemain;
-
-
+                    console.log (res.data.data)
+                    vm.model.temporary.checkout.prepaidTotal = res.data.data;
                 },
                 function error (err){
                     vm.ctrl.hideLoader ();
@@ -992,17 +1014,10 @@
             )
         }
 
+        // FIX: allow more than one account being used. LATER
         vm.ctrl.checkout.checkout = function (){
-            // assume if the object exist, account is used to pay
-            // at this moment, only one account is used at one checkout time
-
             if (vm.model.temporary.checkout.selectedAccount._id){
-                vm.model.checkingout.occupancy.paymentMethod = [{
-                    methodId: vm.model.temporary.checkout.selectedAccount._id, 
-                    name: 'account', 
-                    amount: vm.model.temporary.checkout.withdrawnUsage,
-                    paid: vm.model.checkingout.occupancy.total - vm.model.temporary.checkout.reaminTotal,
-                }]
+                vm.model.checkingout.occupancy.paymentMethod = [vm.model.temporary.checkout.prepaidTotal.account];
             }
 
             vm.ctrl.showLoader ();
@@ -1123,7 +1138,6 @@
                 service: vm.model.edit.occupancy.service.name
             };
             vm.ctrl.showLoader ();
-            console.log(data)
             CheckinService.validatePromoteCode(data).then(
                 function success(res){
                     vm.ctrl.hideLoader ();
@@ -1184,24 +1198,26 @@
 
         // FIX: should not reset the route. only the checkin div
         vm.ctrl.checkin.resetCheckinDiv = function (){
-            // Clear model related to checkin data
-            vm.model.checkingin.occupancy.checkinTime = {};
-            vm.model.checkingin.occupancy.customer = {};
-            vm.model.checkingin.occupancy.promocodes = [];
-            vm.model.checkingin.occupancy.service = {};
+            // // Clear model related to checkin data
+            // vm.model.checkingin.occupancy.checkinTime = {};
+            // vm.model.checkingin.occupancy.customer = {};
+            // vm.model.checkingin.occupancy.promocodes = [];
+            // vm.model.checkingin.occupancy.service = {};
 
-            vm.model.temporary.checkin.codeName = ''
+            // vm.model.temporary.checkin.codeName = ''
 
-            vm.model.checkingin.order.customer = {};
-            vm.model.checkingin.order.orderline = [];
-            vm.model.temporary.checkin.selectedItems = [];
+            // vm.model.checkingin.order.customer = {};
+            // vm.model.checkingin.order.orderline = [];
+            // vm.model.temporary.checkin.selectedItems = [];
 
-            // Search div
-            vm.model.dom.checkin.customerSearchResultDiv = false;
-            vm.model.search.checkin.customers = []
+            // // Search div
+            // vm.model.dom.checkin.customerSearchResultDiv = false;
+            // vm.model.search.checkin.customers = []
 
-            vm.model.dom.checkin.checkinDiv = false;
-            vm.model.search.checkin.username = '';
+            // vm.model.dom.checkin.checkinDiv = false;
+            // vm.model.search.checkin.username = '';
+
+            vm.ctrl.reset ();
         }
 
         vm.ctrl.checkin.cancel = function (){

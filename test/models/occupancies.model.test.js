@@ -26,7 +26,9 @@ describe ('Get total', function (){
 		var newOcc = new Occupancies (occ);
 		newOcc.getTotal ();
 		newOcc.total.should.to.equal (53000);
+		newOcc.oriUsage.should.to.equal (3.5);
 		newOcc.usage.should.to.equal (3.5);
+		newOcc.price.should.to.equal (15000);
 	})
 
 	it ('should return correct total when 1 usage code provided', function (){
@@ -49,7 +51,9 @@ describe ('Get total', function (){
 		newOcc.getTotal ();
 
 		newOcc.total.should.to.equal (0);
-		newOcc.usage.should.to.equal (3.5);		
+		newOcc.oriUsage.should.to.equal (3.5);	
+		newOcc.usage.should.to.equal (0);
+		newOcc.price.should.to.equal (15000);
 	})
 
 	it ('should return correct total when 1 price code provided', function (){
@@ -71,7 +75,9 @@ describe ('Get total', function (){
 		newOcc.getTotal ();
 
 		newOcc.total.should.to.equal (35000);
-		newOcc.usage.should.to.equal (3.5);			
+		newOcc.oriUsage.should.to.equal (3.5);	
+		newOcc.usage.should.to.equal (3.5);
+		newOcc.price.should.to.equal (10000);				
 	})
 
 	it ('should return correct total when 1 total code provided', function (){
@@ -99,7 +105,9 @@ describe ('Get total', function (){
 		newOcc.getTotal ();
 
 		newOcc.total.should.to.equal (1625000);
-		newOcc.usage.should.to.equal (3.5);			
+		newOcc.oriUsage.should.to.equal (3.5);
+		newOcc.usage.should.to.equal (3.5);
+		newOcc.price.should.to.equal (500000);				
 	})
 
 	it ('should return correct total when 1 code usage and 1 code price provided', function (){
@@ -123,8 +131,11 @@ describe ('Get total', function (){
 		newOcc.getTotal ();
 
 		newOcc.total.should.to.equal (25000);
-		newOcc.usage.should.to.equal (3.5);
+		newOcc.oriUsage.should.to.equal (3.5);
+		newOcc.usage.should.to.equal (2.5);
+		newOcc.price.should.to.equal (10000);	
 		newOcc.promocodes.length.should.to.be.at.least (2);	
+
 	});
 
 	it ('should return correct total when 1 code price and 1 code total provided', function (){
@@ -149,7 +160,9 @@ describe ('Get total', function (){
 		newOcc.getTotal ();
 
 		newOcc.total.should.to.equal (18000);
+		newOcc.oriUsage.should.to.equal (3.5);
 		newOcc.usage.should.to.equal (3.5);
+		newOcc.price.should.to.equal (10000);	
 		newOcc.promocodes.length.should.to.be.at.least (2);				
 	});
 
@@ -169,6 +182,7 @@ describe ('Get total', function (){
 			},
 		];
 
+
 		occ.service = {
 			name: 'small group private',
 			price: 150000
@@ -179,7 +193,9 @@ describe ('Get total', function (){
 		newOcc.getTotal ();
 
 		newOcc.total.should.to.equal (225000);
-		newOcc.usage.should.to.equal (3.5);
+		newOcc.oriUsage.should.to.equal (3.5);
+		newOcc.usage.should.to.equal (1.5);
+		newOcc.price.should.to.equal (150000);	
 		newOcc.promocodes.length.should.to.be.at.least (1);
 	});
 
@@ -209,8 +225,67 @@ describe ('Get total', function (){
 		newOcc.getTotal ();
 
 		newOcc.total.should.to.equal (263000);
+		newOcc.oriUsage.should.to.equal (3.5);
 		newOcc.usage.should.to.equal (3.5);
+		newOcc.price.should.to.equal (150000);
 		newOcc.promocodes.length.should.to.be.at.least (1);		
 	})
+});
 
-})
+xdescribe ('Get usage', function (){
+
+	it ('should return usage of 0 if it is less than 6 min', function (){
+		var occ = {
+			checkinTime: moment ().add (-2, 'minute'),
+			checkoutTime: moment ()
+		}
+
+		var newOcc = new Occupancies (occ);
+
+		newOcc.getUsageTime ().should.to.equal (0);
+
+	});
+
+	it ('should return usage of 1 if it is at least 6 min and no more than 1 hour', function (){
+		var occ = [
+			{
+				checkinTime: moment ().add (-6, 'minute'),
+				checkoutTime: moment ()
+			},
+			{
+				checkinTime: moment ().add (-11, 'minute'),
+				checkoutTime: moment ()
+			},			
+		];
+
+		occ.map (function (x, i, arr){
+			var newOcc = new Occupancies (x);
+			var usage = newOcc.getUsageTime ();
+			usage.should.to.be.equal (1);
+		});
+
+	});
+
+	// Remove later
+	xit ('show usage with decimal number', function (){
+		var occ = [
+			{
+				checkinTime: moment ().add (-67, 'minute'),
+				checkoutTime: moment ()
+			},
+			{
+				checkinTime: moment ().add (-68, 'minute'),
+				checkoutTime: moment ()
+			},			
+		];
+
+		occ.map (function (x, i, arr){
+			var newOcc = new Occupancies (x);
+			var usage = newOcc.getUsageTime ();
+			usage.should.to.be.above (1);
+			usage.should.to.be.below (1.2);
+		});		
+	});
+
+
+});

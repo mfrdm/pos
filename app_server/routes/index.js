@@ -43,12 +43,6 @@ router.get('/', OthersCtrl.angularApp);
 router.get('/login', OthersCtrl.login);
 router.get('/register', OthersCtrl.register);
 
-// Deprecated
-// router.get('/template/checkin', OthersCtrl.getCheckinTemplate);
-// router.get('/template/orders', OthersCtrl.getOrderTemplate);
-// router.get('/template/customers', OthersCtrl.getCustomerTemplate);
-// router.get('/template/bookings', OthersCtrl.getBookingTemplate);
-
 router.get('/template/newCheckin', OthersCtrl.getNewCheckinTemplate);
 router.get('/template/newOrders', OthersCtrl.getNewOrdersTemplate);
 router.get('/template/newCustomers', OthersCtrl.getNewCustomersTemplate);

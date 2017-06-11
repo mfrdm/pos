@@ -3,6 +3,7 @@ var Combos = mongoose.model ('combos');
 
 module.exports = new CombosCtrl();
 
+// DELETE later
 function CombosCtrl() {
 	// this.buy = function (){
 		

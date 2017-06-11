@@ -48,6 +48,7 @@ function Checkout() {
 
 						foundOcc = foundOcc.toObject (); // convert to add data
 						foundOcc.accounts = cus.accounts ? cus.accounts : [];
+
 						res.json ({data: foundOcc});
 					});
 
@@ -74,35 +75,84 @@ function Checkout() {
 			}
  			
 			if (foundAcc){
-				var originalUsage = occ.usage; 
-				occ.usage = foundAcc.withdraw (occ.usage);
-				occ.getTotal ();
 
-				res.json ({
-					data: {
-						occ:{
-							total: occ.total,
-						},
-						acc: {
-							_id: foundAcc._id,
-							name: 'account',
-							paid: originalUsage - occ.total,
-							remain: foundAcc.amount,
-						}
+				if (foundAcc.isRenewable ()){
+					foundAcc.renew ();
+
+					var accUpdate = {
+						amount: foundAcc.amount,
+						'recursive.lastRenewDate': foundAcc.recursive.lastRenewDate,
+						'recursive.renewNum': foundAcc.recursive.renewNum,
 					}
-				});
+
+					Accounts.findOneAndUpdate ({_id: foundAcc._id}, {$set: accUpdate}, {new: true}, function (err, updatedAcc){
+						if (err){
+							console.log (err);
+							next (err);
+							return
+						}
+
+						if (!updatedAcc){
+							next ();
+							return
+						}
+
+						var beforeAccAmount = updatedAcc.amount;
+						var context = occ.getAccContext ();
+
+						updatedAcc.withdraw (context);
+
+						res.json ({
+							data: {
+								occ:{
+									total: occ.total,
+								},
+								acc: {
+									_id: updatedAcc._id,
+									name: 'account',
+									unit: updatedAcc.unit,
+									paid: beforeAccAmount - updatedAcc.amount, // already paid hours
+									remain: updatedAcc.amount,
+								}
+							}
+						});
+					});
+
+				}
+				else{
+					var beforeAccAmount = foundAcc.amount;
+					var context = occ.getAccContext ();
+
+					foundAcc.withdraw (context);
+
+					res.json ({
+						data: {
+							occ:{
+								total: occ.total,
+							},
+							acc: {
+								_id: foundAcc._id,
+								name: 'account',
+								unit: foundAcc.unit,
+								paid: beforeAccAmount - foundAcc.amount, // already paid hours
+								remain: foundAcc.amount,
+							}
+						}
+					});
+				}
+
 			}
 			else{
 				res.json (); // may not the best way to indicate 
 			}
 			
 		});
-
 	};
 
 	this.confirmCheckout = function(req, res, next) {
 		var total = req.body.data.total;
 		var usage = req.body.data.usage;
+		var price = req.body.data.price;
 		var checkoutTime = req.body.data.checkoutTime;
 		var promocodes = req.body.data.promocodes;
 		var paymentMethods = req.body.data.paymentMethod ? req.body.data.paymentMethod : [];
@@ -120,6 +170,7 @@ function Checkout() {
 					status: status, 
 					total: total, 
 					usage: usage, 
+					price: price,
 					promocodes: promocodes,
 					checkoutTime: checkoutTime,
 					paymentMethod: paymentMethods,
@@ -131,7 +182,6 @@ function Checkout() {
 						next (err)
 						return
 					}
-
 
 					if (occ){
 
@@ -177,6 +227,5 @@ function Checkout() {
 				})
 			}
 		})
-		
 	};
 };

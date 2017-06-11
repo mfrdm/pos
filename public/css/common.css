@@ -49,6 +49,10 @@ label {
 	margin-bottom: .9375rem;
 }
 
+.marginT30 {
+	margin-top: 1.875rem;
+}
+
 .paddingLR15 {
 	padding-left: .9375rem!important;
 	padding-right: .9375rem!important;	
