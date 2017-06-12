@@ -146,8 +146,5 @@ describe ('Create one account', function (){
 	it ('should create an account an calculate correct total a customer have to pay when deposit with 3')
 });
 
-
-
-describe ('update one account', function (){
-	
+xdescribe ('update one account', function (){	
 })

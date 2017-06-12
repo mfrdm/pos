@@ -126,6 +126,8 @@ router.post ('/promo-codes/code/:codeId', promoCodesCtrl.updateOneCode);
 
 router.post ('/deposits/create', DepositsCtrl.createOneDeposit);
 router.post ('/deposits/deposit/:depositId/edit', DepositsCtrl.updateOneDeposit);
+router.get ('/deposits/account/default', DepositsCtrl.readDefaultAccounts);
+router.get ('/deposits/invoice', DepositsCtrl.readInvoice);
 
 // Others
 router.get ('/components/template/message', OthersCtrl.getMessageTemplate);

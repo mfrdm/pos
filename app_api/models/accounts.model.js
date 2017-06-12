@@ -1,6 +1,53 @@
 var mongoose = require('mongoose');
 var moment = require ('moment');
 
+// used to create an account for a customer
+var getDefaultAccounts = function (){
+	var oneDayCommon = {
+		name: '1dCommon',
+		price: 80000, // 
+		amount: 24,
+		unit: 'hour',
+		desc: "",
+		services: ['group common', 'individual common'], // name of service applied
+		label: {
+			vn: "Combo 1 ngày",
+			en: "1 day commbo",
+		},
+		recursive: {
+			isRecursive: false
+		},
+		expireDateNum: 1
+	};
+
+	var threeDaysCommon = {
+		name: '3dCommon',
+		price: 190000, // 
+		amount: 24,
+		unit: 'hour',
+		desc: "",
+		services: ['group common', 'individual common'], // name of service applied
+		label: {
+			vn: "Combo 3 ngày",
+			en: "1 day commbo",
+		},
+		recursive: {
+			isRecursive: true,
+			lastRenewDate: new Date (),
+			renewNum: 0, // number of renew
+			maxRenewNum: 3, // 
+			recursiveType: 1, // daily: 1, monthly: 2, annually: 3
+			baseAmount: 24
+		},
+		expireDateNum: 7,
+	};
+
+	return {
+		oneDayCommon: oneDayCommon,
+		threeDaysCommon: threeDaysCommon
+	}
+}
+
 var renew = function (){
 	var acc = this;
 	var today = moment ().hour (0).minute (0);
@@ -13,19 +60,6 @@ var renew = function (){
 	else{
 		//
 	}
-
-	// if (acc.recursive && acc.recursive.isRecursive && (acc.recursive.renewNum < acc.recursive.maxRenewNum)){
-	// 	if (acc.recursive.recursiveType == 1){
-	// 		if (moment (acc.recursive.lastRenewDate).isSameOrAfter (today)){
-	// 			return 
-	// 		}
-	// 		else {
-	// 			acc.amount = acc.recursive.baseAmount;
-	// 			acc.recursive.lastRenewDate = moment ();
-	// 			acc.recursive.renewNum++;
-	// 		}			
-	// 	}
-	// }
 }
 
 var isRenewable = function (){
@@ -74,6 +108,10 @@ var withdraw = function (context){
 }
 
 
+var init = function (){
+	this.end = moment (this.start).add (this.expireDateNum - 1);
+}
+
 // Represent a pre paid amount of cash or hour usage number. Can be used later to pay for service usage
 var AccountsSchema = new mongoose.Schema({
 	name: String,
@@ -96,6 +134,7 @@ var AccountsSchema = new mongoose.Schema({
 	},
 	start: Date,
 	end: Date,
+	expireDateNum: Number, // number of day between start date and end date
 	customer: {_id: mongoose.Schema.Types.ObjectId},
 	createdAt: {type: Date, default: Date.now},
 	updateAt: [{
@@ -108,6 +147,7 @@ var AccountsSchema = new mongoose.Schema({
 AccountsSchema.methods.renew = renew;
 AccountsSchema.methods.withdraw = withdraw;
 AccountsSchema.methods.isRenewable = isRenewable;
+AccountsSchema.statics.getDefaultAccounts = getDefaultAccounts;
 
 module.exports = mongoose.model ('Accounts', AccountsSchema);
 

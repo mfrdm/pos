@@ -5,8 +5,14 @@ function normalizeTotal (total){
 	return Math.round(total / 1000) * 1000;
 }
 
+function preprocess (){
+	deposit = this;
+	deposit.quantity = deposit.quantity ? deposit.quantity : 1;
+}
+
 var getTotal = function (){
 	var deposit = this;
+	deposit.preprocess ();
 
 	// the context in strategy design
 	var context = {
@@ -49,16 +55,10 @@ var DepositsSchema = new mongoose.Schema({
 	total: Number,
 	quantity: Number,
 	account: {
-		_id: mongoose.Schema.Types.ObjectId,
-		services: [String],
-		price: Number
+		_id: {type: mongoose.Schema.Types.ObjectId},
+		services: mongoose.Schema.Types.Mixed,
+		price: Number 
 	},
-	expire: [
-		{
-			start: {type: Date, default: Date.now},
-			end: Date,
-		}
-	],
 	promocodes: [{
 		_id: mongoose.Schema.Types.ObjectId,
 		name: String,
@@ -70,9 +70,11 @@ var DepositsSchema = new mongoose.Schema({
 		name: String
 	},
 	customer: { // the person make purchase
-		_id: mongoose.Schema.Types.ObjectId,
-		fullname: String,
+		_id: {type: mongoose.Schema.Types.ObjectId},
 		isStudent: Boolean,
+		fullname: String,
+		email: String,
+		phone: String,
 	},
 	location: {
 		_id: {type: mongoose.Schema.Types.ObjectId},
@@ -90,6 +92,7 @@ var DepositsSchema = new mongoose.Schema({
 });	
 
 DepositsSchema.methods.getTotal = getTotal;
+DepositsSchema.methods.preprocess = preprocess;
 
 module.exports = mongoose.model ('Deposits', DepositsSchema);
 
