@@ -36,6 +36,8 @@ div(class="columns row")
 	div(class="column")
 		div(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-show="vm.model.dom.deposit.depositDiv")
 			div(class='small-12 large-8 large-push-2')
+				div(class="row column text-center paddingB15")
+					h3 DEPOSIT			
 				// SEARCH CUSTOMERS
 				div(class="row column")
 					form(ng-submit="vm.ctrl.deposit.searchCustomer()")
@@ -108,7 +110,7 @@ div(class="columns row")
 									select(name="selectedGroup" ng-model="vm.model.temporary.depositing.groupon.leader" ng-options="leader.groupon as leader.customer.username for leader in vm.model.dom.data.selected.deposit.groupon.leaders" ng-change="vm.ctrl.deposit.grouponChangeHandler ()" ng-disabled="!vm.model.dom.data.selected.deposit.groupon.enableLeader")
 										<option value="" ng-selected="vm.model.dom.data.selected.deposit.groupon.selectedBlank">Chọn nhóm</option>
 							div(class="column small-12 large-4")
-								label số lượng thành viên
+								label Số lượng thành viên
 									input(type="number" ng-model="vm.model.temporary.depositing.groupon.quantity" ng-disabled="!vm.model.dom.data.selected.deposit.groupon.enableQuantity" ng-change="vm.ctrl.deposit.grouponChangeHandler ()" min=0)
 
 
