@@ -112,13 +112,30 @@ var getAccountDefaultCodes = function (){
 		}	
 	}
 
+	var studentCommon3h1d30d = {
+		name: 'student_common3h1d30d',
+		desc: {type: 'Price of 3-hour-1-day-30-days common for students'},
+		label: {
+			vn: 'Combo 30 ngày / 3 giờ mỗi ngày cho sinh viên',
+		},	
+		codeType: 2,
+		accounts: ['3h1d30dCommon'],
+		priority: 1,
+		redeemData: {
+			price: {
+				value: 300000
+			}
+		}	
+	};
+
 	return {
 		studentCommon1day: studentCommon1day,
 		studentCommon3days: studentCommon3days,
 		studentGroup3Common1day: studentGroup3Common1day,
 		studentGroup5Common1day: studentGroup5Common1day,
 		group3Common1day: group3Common1day,
-		group5Common1day: group5Common1day
+		group5Common1day: group5Common1day,
+		studentCommon3h1d30d: studentCommon3h1d30d
 	}
 }
 
@@ -145,7 +162,7 @@ var getServiceDefaultCodes = function (){
 		name: 'smallprivatediscountprice',
 		desc: {type: 'Discount the price for small private service after the first hour'},
 		label: {
-			vn: 'Giảm giá sau giờ đầu',
+			vn: 'Giảm giá sau giờ đầu phòng riêng 15',
 			en: 'Private discount after first hour',
 		},	
 		codeType: 3,
@@ -163,7 +180,7 @@ var getServiceDefaultCodes = function (){
 		name: 'mediumprivatediscountprice',
 		desc: {type: 'Discount the price for medium private service after the first hour'},
 		label: {
-			vn: 'Giảm giá sau giờ đầu',
+			vn: 'Giảm giá sau giờ đầu phòng riêng 30',
 			en: 'Private discount after first hour',
 		},	
 		codeType: 3,
@@ -181,7 +198,7 @@ var getServiceDefaultCodes = function (){
 		name: 'largeprivatediscountprice',
 		desc: {type: 'Discount the price for large private service after the first hour'},
 		label: {
-			vn: 'Giảm giá sau giờ đầu',
+			vn: 'Giảm giá sau giờ đầu phòng riêng 40',
 			en: 'Private discount after first hour',
 		},	
 		codeType: 3,
@@ -189,7 +206,7 @@ var getServiceDefaultCodes = function (){
 		priority: 1,
 		redeemData: {
 			total: {
-				value: 450000,
+				value: 200000,
 				formula: 1
 			}
 		}			
@@ -282,7 +299,8 @@ var addAccountDefaultCodes = function (context){
 
 	if (!higherType2 && isStudent && !isGroupon){
 		var targetCodes = [
-			defaultCodes ['studentCommon1day']
+			defaultCodes ['studentCommon1day'],
+			defaultCodes ['studentCommon3h1d30d'],
 		];
 
 		targetCodes.map (function (x, i, arr){

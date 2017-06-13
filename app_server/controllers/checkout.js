@@ -59,9 +59,6 @@ function Checkout() {
 							});
 						}
 
-						console.log (cus.accounts)
-
-
 						foundOcc = foundOcc.toObject (); // convert to add data
 						foundOcc.accounts = cus.accounts ? cus.accounts : [];
 
@@ -173,6 +170,7 @@ function Checkout() {
 	this.confirmCheckout = function(req, res, next) {
 		var total = req.body.data.total;
 		var usage = req.body.data.usage;
+		var oriUsage = req.body.data.oriUsage;
 		var price = req.body.data.price;
 		var checkoutTime = req.body.data.checkoutTime;
 		var promocodes = req.body.data.promocodes;
@@ -191,6 +189,7 @@ function Checkout() {
 					status: status, 
 					total: total, 
 					usage: usage, 
+					oriUsage: oriUsage,
 					price: price,
 					promocodes: promocodes,
 					checkoutTime: checkoutTime,

@@ -6,6 +6,6 @@ node_modules/
 
 client_secret_service_account.json
 
-dbbackup/
+dbbackups/
 
 nohup.out
