@@ -330,7 +330,19 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 						td {{ vm.model.checkingout.occupancy.service.label }}
 					tr(ng-if="vm.model.checkingout.occupancy.parent")
 						th Nhóm
-						td Thành viên nhóm riêng
+						td {{vm.model.temporary.groupParent}}
+					tr(ng-show='vm.model.dom.checkboxDiv' ng-if='vm.model.temporary.availableChildren.length > 0')
+						th Members chưa checkout
+						td
+							label(ng-repeat='avaiChild in vm.model.temporary.availableChildren')
+								input(type='checkbox' checklist-model='vm.model.checkingout.occupancy.childrenIdList' checklist-value='avaiChild._id')
+								span {{avaiChild.customer.fullname}}
+					tr(ng-show='vm.model.dom.checkboxDiv' ng-if='vm.model.temporary.disableChildren.length > 0')
+						th Members đã checkout
+						td
+							label(ng-repeat='disableChild in vm.model.temporary.disableChildren')
+								input(type='checkbox' checklist-model='vm.model.temporary.disableChild' checklist-value='disableChild' disabled)
+								span {{disableChild.customer.fullname}}
 					tr
 						th Checkin
 						td {{ vm.model.checkingout.occupancy.checkinTime | date:'dd/MM/yyyy'}} {{ vm.model.checkingout.occupancy.checkinTime | date:'shortTime'}}				

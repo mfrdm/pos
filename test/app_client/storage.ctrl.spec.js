@@ -63,7 +63,7 @@ describe('Controller: StorageCtrl', function() {
         }
     ));
 
-    describe('Show list of products/assets in storage', function(){
+    xdescribe('Show list of products/assets in storage', function(){
 
     	it('should display products/assets correctly with current category filter', function(){
 			var layout = createLayout();

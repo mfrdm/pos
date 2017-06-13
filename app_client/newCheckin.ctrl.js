@@ -5,6 +5,7 @@
     function NewCheckinCtrl ($http, DataPassingService, CheckinService, OrderService, CheckoutService, $scope, $window, $route){
         var LayoutCtrl = DataPassingService.get('layout');
         var vm = this;
+        console.log(LayoutCtrl)
 
         vm.ctrl = {
             checkin: {},
@@ -16,9 +17,9 @@
         }; // Everything about ctroller
 
         vm.model = {
-            staff: LayoutCtrl.user,
-            company: LayoutCtrl.company,
-            dept: LayoutCtrl.dept,
+            staff: LayoutCtrl.model.user,
+            company: LayoutCtrl.model.company,
+            dept: LayoutCtrl.model.dept,
             services: [],
             items: [],
             checkingin: {
@@ -952,6 +953,16 @@
             })
         }
 
+        // Get parent for a child
+        function getParent(id){
+            var groupParent = vm.model.checkedinList.data.filter(function(ele){
+                return ele._id == id;
+            });
+            if(groupParent.length > 0){
+                vm.model.temporary.groupParent = groupParent[0].customer.fullname
+            }
+        }
+
         vm.ctrl.checkout.getPromocodeNames = function (){
             var codeNames = "";
             vm.model.checkingout.occupancy.promocodes.map (function (x, i, arr){
@@ -966,6 +977,9 @@
 
             vm.ctrl.showLoader ();
             vm.model.dom.checkOutDiv = true;
+            if(occupancy.parent){
+                getParent(occupancy.parent)
+            }
             CheckinService.readInvoice(occupancy._id).then(
                 function success(res){
                     vm.ctrl.hideLoader ();
@@ -1016,7 +1030,7 @@
             }
 
             vm.ctrl.showLoader ();
-            // console.log(vm.model.checkingout.occupancy.childrenIdList)
+
             CheckinService.checkout(vm.model.checkingout.occupancy)
                 .then(function success(res){
                     vm.ctrl.hideLoader ();
