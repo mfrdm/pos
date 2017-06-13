@@ -609,7 +609,7 @@ describe('Controller: NewCheckinCtrl', function() {
         })
     });
 
-    describe('Edit', function() {
+    xdescribe('Edit', function() {
 
         xit('should fetch data occupancy to editing occupancy', function() {
             var layout = createLayout();

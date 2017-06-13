@@ -26,14 +26,18 @@ function Others() {
 
 	this.getDepositTemplate = function (req, res, next){
 		res.render ('deposit');
-	};	
+	};
+
+	this.getStorageTemplate = function(req, res, next){
+		res.render('storage')
+	}
 
 	this.angularApp = function (req, res){
 
 		// load company and dept data and sent to client
 
-		var ctrFileNames = ['layout', 'newCheckin', 'checkout','products', 'assets', 'costs', 'home', 'depts', 'employees', 'login', 'register', 'newBooking', 'attendance', 'newOrders', 'newCustomers', 'deposit'];
-		var serviceFileNames = ['common', 'checkin', 'checkout', 'products','customers', 'assets', 'costs', 'home', 'depts','employees','authentication', 'socket', 'attendance', 'booking', 'other', 'combo', 'order', 'deposit'];
+		var ctrFileNames = ['layout', 'newCheckin', 'checkout','products', 'assets', 'costs', 'home', 'depts', 'employees', 'login', 'register', 'newBooking', 'attendance', 'newOrders', 'newCustomers', 'deposit', 'storage'];
+		var serviceFileNames = ['common', 'checkin', 'checkout', 'products','customers', 'assets', 'costs', 'home', 'depts','employees','authentication', 'socket', 'attendance', 'booking', 'other', 'combo', 'order', 'deposit', 'storage'];
 		var directiveFileNames = ['components'];
 		var filterFileNames = ['myFilter'];
 

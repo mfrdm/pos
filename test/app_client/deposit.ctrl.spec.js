@@ -10,8 +10,8 @@ describe ('Deposit controller', function (){
 		it ('should disable start date input when account is not selected')
 		it ('should enable start date input when account is selected') 
 
-		it ('should show confirm div when click sub in deposit form') it
-		('should not show confirm div when customer, account, or start date is not exist')
+		it ('should show confirm div when click sub in deposit form')
+		it ('should not show confirm div when customer, account, or start date is not exist')
 
 	})
 
