@@ -25,6 +25,8 @@ var OrdersCtrl = require ('../controllers/orders.ctrl');
 var TransactionCtrl = require ('../controllers/transactions.ctrl');
 var DepositsCtrl = require ('../controllers/deposits.ctrl');
 
+var StorageCtrl = require ('../controllers/storage.ctrl');
+
 router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
 router.get('/auth/google/callback', 
 	passport.authenticate(
@@ -48,6 +50,7 @@ router.get('/template/newOrders', OthersCtrl.getNewOrdersTemplate);
 router.get('/template/newCustomers', OthersCtrl.getNewCustomersTemplate);
 router.get('/template/newBookings', OthersCtrl.getNewBookingTemplate);
 router.get('/template/deposit', OthersCtrl.getDepositTemplate);
+router.get('/template/storage', OthersCtrl.getStorageTemplate);
 
 // Checkin
 router.get('/checkin', CheckinCtrl.readCheckinList);

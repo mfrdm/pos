@@ -1,0 +1,11 @@
+div(class="row columns")
+	div(class="column small-12")
+		h2 Storage
+	div(class='column small-12 paddingT30')
+		//- select(ng-options='option.value as option.label for option in vm.model.options' ng-model='vm.model.filter' ng-change='vm.ctrl.filter()' ng-init='vm.model.filter=2')
+		//- label(ng-repeat='option in vm.model.options') 
+		//- 	input(type='radio' ng-model='vm.model.filter' name='test' value='{{option.value}}' ng-change='vm.ctrl.filter()')
+		//- 	span {{option.label}}
+		div(ng-repeat='item in vm.model.items | filter:vm.model.filter')
+			p {{item.name}} {{item.age}}
+		//- input(type='submit' value='submit' ng-click='vm.ctrl.filter()')

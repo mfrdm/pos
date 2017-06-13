@@ -4,8 +4,8 @@ describe ('Deposit controller', function (){
 		it ('should show deposit form when click button `Make a deposit`')
 		it ('should reset and hide deposit form when click button `cancel` in deposit form')
 
-		it ('should show confirm div when click sub in deposit form') it
-		('should not show confirm div when customer, account, or start date is not exist')
+		it ('should show confirm div when click sub in deposit form')
+		it ('should not show confirm div when customer, account, or start date is not exist')
 
 	})
 

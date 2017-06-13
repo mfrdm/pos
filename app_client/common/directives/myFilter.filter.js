@@ -141,3 +141,5 @@ function filterName(){
 		})
 	}
 }
+
+// Filter for storage page

@@ -168,7 +168,7 @@
 		// }
 		
 		//=========================================================
-
+		DataPassingService.set ('layout', $scope.layout);
 		angular.element(document).ready(function () {
 			$scope.layout.ctrl.hideLoader ();
 			$("body").foundation();
@@ -177,7 +177,7 @@
 				$scope.layout.ctrl.updateAfterLogin ();
 			}
 
-			DataPassingService.set ('layout', $scope.layout);
+			
 
 			$scope.$apply();
 		});

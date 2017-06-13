@@ -57,6 +57,7 @@ html(ng-app='posApp')
 					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/bookings') Booking
 					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/customers') Customer
 					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/deposit') Deposit
+					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/storage') Storage
 
 		div(class="row marginLR0 relative")
 			div(class="large-2 columns show-for-large" id="alternativeMenu" ng-show="layout.model.dom.sideBarMenu")
@@ -66,6 +67,7 @@ html(ng-app='posApp')
 					li: a(href="/#!/bookings") Booking
 					li: a(href="/#!/customers") Customer
 					li: a(href="/#!/deposit") Deposit
+					li: a(href="/#!/storage") Storage
 			div(class="large-10 small-12 columns" id="mainContentDiv")
 				//- div(class="row medium-up-3 show-for-medium colorGrey" ng-show="layout.commonStatisticBar")
 					div(class="column column-block text-center")
