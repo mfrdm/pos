@@ -12,13 +12,13 @@
 		}
 
 		vm.model = {
-			staff: LayoutCtrl.user,
-			company: LayoutCtrl.company,
-			dept: LayoutCtrl.dept,
+			staff: LayoutCtrl.model.user,
+			company: LayoutCtrl.model.company,
+			dept: LayoutCtrl.model.dept,
 			items: [],
 			orderedList: [], // adjusted
 			pagination:{
-				itemsEachPages:10,
+				itemsEachPages: 10,
 				numberOfPages:''
 			},
 			orderedListEachPage:{

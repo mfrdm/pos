@@ -4,6 +4,7 @@ var should = chai.should ();
 var mongoose = require ('mongoose');
 var Promocodes = require ('../../app_api/models/promocodes.model');
 var Occupancies = require ('../../app_api/models/occupancies.model');
+var Deposits = require ('../../app_api/models/deposit.model')
 
 describe ('redeem', function (){
 	var codes, context;
@@ -355,7 +356,142 @@ describe ('Redeem total', function (){
 	})
 });
 
-xdescribe ('Add account default code')
+describe ('Add account default code', function (){
+	var context, deposit;
+	beforeEach (function (){
+		deposit = [
+			{
+				account: {name: '1dCommon'},
+				customer: {isStudent: true}
+			},
+			{
+				account: {name: '1dCommon'},
+				customer: {isStudent: false}
+			},
+			{
+				account: {name: '3dCommon'},
+				customer: {isStudent: true}
+			},
+			{
+				account: {name: '1dCommon'},
+				groupon: {quantity: 4},
+				customer: {isStudent: true}
+			},	
+			{
+				account: {name: '1dCommon'},
+				groupon: {quantity: 5},
+				customer: {isStudent: true}
+			},	
+			{
+				account: {name: '1dCommon'},
+				groupon: {quantity: 4},
+				customer: {isStudent: false}
+			},	
+			{
+				account: {name: '1dCommon'},
+				groupon: {quantity: 5},
+				customer: {isStudent: false}
+			},										
+		]
+
+	});
+
+	it ('should not add code when a non-student deposits 1 day combo', function (){
+		deposit = new Deposits (deposit[1]);
+		context = deposit.getContext ();
+
+		Promocodes.addDefaultCodes (context);
+
+		var promocodes = context.getPromocodes ();
+		promocodes.should.have.lengthOf (0);
+	})
+
+	it ('should add a default code when a student deposits 1 day commbo', function (){
+		deposit = new Deposits (deposit[0]);
+		context = deposit.getContext ();
+
+		Promocodes.addDefaultCodes (context);
+
+		var promocodes = context.getPromocodes ();
+		promocodes.should.have.lengthOf (1);
+
+		promocodes.map (function (x, i, arr){
+			x.name.should.to.equal ('student_common1d');
+		});
+
+	});
+
+	it ('should add a default code when a student deposits 3 day commbo', function (){
+		deposit = new Deposits (deposit[2]);
+		context = deposit.getContext ();
+
+		Promocodes.addDefaultCodes (context);
+
+		var promocodes = context.getPromocodes ();
+		promocodes.should.have.lengthOf (1);
+
+		promocodes.map (function (x, i, arr){
+			x.name.should.to.equal ('student_common3d');
+		});
+	});
+
+	it ('should add default code when a group of 3 students deposit 1 day commbo', function (){
+		deposit = new Deposits (deposit[3]);
+		context = deposit.getContext ();
+
+		Promocodes.addDefaultCodes (context);
+
+		var promocodes = context.getPromocodes ();
+		promocodes.should.have.lengthOf (1);
+
+		promocodes.map (function (x, i, arr){
+			x.name.should.to.equal ('student_group3_common1d');
+		});
+	})
+
+	it ('should add default code when a group of 5 students deposit 1 day commbo', function (){
+		deposit = new Deposits (deposit[4]);
+		context = deposit.getContext ();
+
+		Promocodes.addDefaultCodes (context);
+
+		var promocodes = context.getPromocodes ();
+		promocodes.should.have.lengthOf (1);
+
+		promocodes.map (function (x, i, arr){
+			x.name.should.to.equal ('student_group5_common1d');
+		});		
+	})
+
+	it ('should add default code when a group of 3 deposit 1 day commbo', function (){
+		deposit = new Deposits (deposit[5]);
+		context = deposit.getContext ();
+
+		Promocodes.addDefaultCodes (context);
+
+		var promocodes = context.getPromocodes ();
+		promocodes.should.have.lengthOf (1);
+
+		promocodes.map (function (x, i, arr){
+			x.name.should.to.equal ('group3_common1d');
+		});			
+	})
+
+	it ('should add default code when a group of 5 deposit 1 day commbo', function (){
+		deposit = new Deposits (deposit[6]);
+		context = deposit.getContext ();
+
+		Promocodes.addDefaultCodes (context);
+
+		var promocodes = context.getPromocodes ();
+		promocodes.should.have.lengthOf (1);
+
+		promocodes.map (function (x, i, arr){
+			x.name.should.to.equal ('group5_common1d');
+		});			
+	})
+
+})
 
 xdescribe ('Add service default code')
 

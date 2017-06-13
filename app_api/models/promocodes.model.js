@@ -16,14 +16,14 @@ var preprocessCodes = function (context){
 
 // use temporary. Need to move all or part of them to database.
 var getAccountDefaultCodes = function (){
-	var studentPriceCommonOneDay = {
-		name: 'studentprice_common1day',
-		desc: {type: 'Price of 1 common accounts for students'},
+	var studentCommon1day = {
+		name: 'student_common1d',
+		desc: {type: 'Price of 1-day common for students'},
 		label: {
-			vn: 'Giá sinh viên 1 1-day-common combo',
+			vn: 'Combo 1 ngày cho sinh viên',
 		},	
 		codeType: 2,
-		services: ['group common', 'individual common'],
+		accounts: ['1dCommon'],
 		priority: 1,
 		redeemData: {
 			price: {
@@ -32,47 +32,63 @@ var getAccountDefaultCodes = function (){
 		}	
 	};
 
-	var studentPriceThreeCommonOneDay = {
-		name: 'studentprice_3common1day',
-		desc: {type: 'Price of 3 common accounts for students'},
+	var studentCommon3days = {
+		name: 'student_common3d',
+		desc: {type: 'Price of 3-days combo for students'},
 		label: {
-			vn: 'Giá sinh viên 3 1-day-common combo',
+			vn: 'Combo 3 ngày cho sinh viên',
 		},	
 		codeType: 2,
-		services: ['group common', 'individual common'],
-		priority: 2,
+		accounts: ['3dCommon'],
+		priority: 1,
 		redeemData: {
 			price: {
-				value: 49000
+				value: 150000
 			}
 		}			
 	}
 
-	var studentPriceFiveCommonOneDay = {
-		name: 'studentprice_5common1day',
-		desc: {type: 'Price of 5 common accounts for students'},
+	var studentGroup3Common1day = {
+		name: 'student_group3_common1d',
+		desc: {type: 'Price of 1-day common for 3 students'},
 		label: {
-			vn: 'Giá sinh viên 5 1-day-common combo',
+			vn: 'Combo 1 ngày cho nhóm 3 sinh viên',
 		},	
 		codeType: 2,
-		services: ['group common', 'individual common'],
-		priority: 3,
+		accounts: ['1dCommon'],
+		priority: 1,
+		redeemData: {
+			price: {
+				value: 49000
+			}
+		}	
+	};
+
+	var studentGroup5Common1day = {
+		name: 'student_group5_common1d',
+		desc: {type: 'Price of 1-day common for 5 students'},
+		label: {
+			vn: 'Combo 1 ngày cho nhóm 5 sinh viên',
+		},	
+		codeType: 2,
+		accounts: ['1dCommon'],
+		priority: 1,
 		redeemData: {
 			price: {
 				value: 39000
 			}
 		}	
-	};
+	};	
 
-	var threeCommonOneDay = {
-		name: '3common1day',
+	var group3Common1day = {
+		name: 'group3_common1d',
 		desc: {type: 'Price of 3 common accounts'},
 		label: {
-			vn: '3 1-day-common combo',
+			vn: 'Combo 1 ngày cho nhóm 3 người',
 		},	
 		codeType: 2,
-		services: ['group common', 'individual common'],
-		priority: 2,
+		accounts: ['1dCommon'],
+		priority: 1,
 		redeemData: {
 			price: {
 				value: 69000
@@ -80,28 +96,29 @@ var getAccountDefaultCodes = function (){
 		}			
 	}
 
-	var fiveCommonOneDay = {
-		name: '5common1day',
+	var group5Common1day = {
+		name: 'group5_common1d',
 		desc: {type: 'Price of 5 common accounts'},
 		label: {
-			vn: '5 1-day-common combo',
+			vn: 'Combo 1 ngày cho nhóm 5 người',
 		},	
 		codeType: 2,
-		services: ['group common', 'individual common'],
-		priority: 3,
+		accounts: ['1dCommon'],
+		priority: 1,
 		redeemData: {
 			price: {
 				value: 59000
 			}
-		}			
-	}	
+		}	
+	}
 
 	return {
-		'student3common1day': studentPriceThreeCommonOneDay,
-		'student5common1day': studentPriceFiveCommonOneDay,
-		'studentcommon1day': studentPriceCommonOneDay,
-		'3common1day': threeCommonOneDay,
-		'5common1day': fiveCommonOneDay,
+		studentCommon1day: studentCommon1day,
+		studentCommon3days: studentCommon3days,
+		studentGroup3Common1day: studentGroup3Common1day,
+		studentGroup5Common1day: studentGroup5Common1day,
+		group3Common1day: group3Common1day,
+		group5Common1day: group5Common1day
 	}
 }
 
@@ -211,12 +228,16 @@ var addDefaultCodes = function (context){
 }
 
 var addAccountDefaultCodes = function (context){
+
 	var productName = context.productName;
 	var defaultCodes = getDefaultCodes (productName);
 
 	var services = context.getServices ();
+	var account = context.getAccount ();
 	var promocodes = context.getPromocodes ();
 	var isStudent = context.isStudent ();
+	var isGroupon = context.isGroupon ();
+	var groupMemberNumber = context.getGroupMemberNumber ();
 	var quantity = context.getQuantity ();
 
 	// check if there any any code of the same type but higher priority
@@ -239,40 +260,51 @@ var addAccountDefaultCodes = function (context){
 	});	
 	
 	var _addDefaultCode = function (targetCode){
-		services.map (function (x, i, arr){
-			if (targetCode.services.indexOf (x)){
-				targetServices = true;
-			}
-		});
+		var targetAccount = false;
+		// if target accounts
 
-		if (targetServices){
+		targetAccount = targetCode.accounts.indexOf (account) == -1 ? targetAccount : true;
+
+		if (targetAccount){
 			promocodes.push (targetCode);
-		}		
+		}
 	} 
 
 	if (!higherType2 && isStudent){
-		var targetCode = defaultCodes ['studentcommon1day'];
-		_addDefaultCode (targetCode);
+		var targetCodes = [
+			defaultCodes ['studentCommon3days']
+		];
+
+		targetCodes.map (function (x, i, arr){
+			_addDefaultCode (x);
+		});		
 	}
 
-	if (!higherType2 && isStudent && quantity >= 3 && quantity <= 4){
-		var targetCode = defaultCodes ['student3common1day'];
+	if (!higherType2 && isStudent && !isGroupon){
+		var targetCodes = [
+			defaultCodes ['studentCommon1day']
+		];
+
+		targetCodes.map (function (x, i, arr){
+			_addDefaultCode (x);
+		});
+	}
+	else if (!higherType2 && isStudent && isGroupon && groupMemberNumber >= 3 && groupMemberNumber <= 4){
+		var targetCode = defaultCodes ['studentGroup3Common1day'];
+		_addDefaultCode (targetCode);
+	}
+	else if (!higherType2 && isStudent && isGroupon && groupMemberNumber >= 5){
+		var targetCode = defaultCodes ['studentGroup5Common1day'];
+		_addDefaultCode (targetCode);
+	}		
+	else if (!higherType2 && !isStudent && isGroupon && groupMemberNumber >= 3 && groupMemberNumber <= 4){
+		var targetCode = defaultCodes ['group3Common1day'];
 		_addDefaultCode (targetCode);
 	}	
-
-	if (!higherType2 && isStudent && quantity >= 5){
-		var targetCode = defaultCodes ['student5common1day'];
+	else if (!higherType2 && !isStudent && isGroupon && groupMemberNumber >= 5){
+		var targetCode = defaultCodes ['group5Common1day'];
 		_addDefaultCode (targetCode);
-	}
 
-	if (!higherType2 && !isStudent && quantity >= 3 && quantity <= 4){
-		var targetCode = defaultCodes ['3common1day'];
-		_addDefaultCode (targetCode);
-	}
-
-	if (!higherType2 && !isStudent && quantity >= 5){
-		var targetCode = defaultCodes ['5common1day'];
-		_addDefaultCode (targetCode);
 	}
 
 	context.setPromocodes (resolveConflict (promocodes));

@@ -742,14 +742,7 @@
         // vm.model.dom.data.selected.items: use for dom selection, equal vm.mode.items
 
         vm.ctrl.checkin.getItems = function (){
-            console.log (vm.model.checkingin.occupancy)
-            console.log (vm.model.checkingin.occupancy.customer) 
-            console.log (vm.model.checkingin.occupancy.customer.fullname)
-            console.log ('123123')
-
             if(vm.model.checkingin.occupancy.customer.fullname){
-
-
 
                 CheckinService.readSomeProducts().then(
                     function success(res){
@@ -984,8 +977,9 @@
                     vm.ctrl.checkout.getPromocodeNames ();
 
                     vm.ctrl.addServiceLabel (vm.model.checkingout.occupancy.service);
+                   
                     showCheckbox(occupancy);
-                    collectChildren(occupancy)
+                    collectChildren(occupancy);
                 }, 
                 function error(err){
                     vm.ctrl.hideLoader ();
@@ -1004,7 +998,7 @@
             CheckoutService.withdrawOneAccount (occ, accId).then(
                 function success (res){
                     vm.ctrl.hideLoader ();
-                    console.log (res.data.data)
+                    
                     vm.model.temporary.checkout.prepaidTotal = res.data.data;
                 },
                 function error (err){
@@ -1016,8 +1010,9 @@
 
         // FIX: allow more than one account being used. LATER
         vm.ctrl.checkout.checkout = function (){
+
             if (vm.model.temporary.checkout.selectedAccount._id){
-                vm.model.checkingout.occupancy.paymentMethod = [vm.model.temporary.checkout.prepaidTotal.account];
+                vm.model.checkingout.occupancy.paymentMethod = [vm.model.temporary.checkout.prepaidTotal.acc];
             }
 
             vm.ctrl.showLoader ();

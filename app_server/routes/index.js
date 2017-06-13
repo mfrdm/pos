@@ -124,10 +124,13 @@ router.get ('/promo-codes/code/:codeId', promoCodesCtrl.readOneCodeById);
 router.post ('/promo-codes/create', promoCodesCtrl.createOneCode);
 router.post ('/promo-codes/code/:codeId', promoCodesCtrl.updateOneCode);
 
+router.get ('/deposits', DepositsCtrl.readDeposits);
 router.post ('/deposits/create', DepositsCtrl.createOneDeposit);
 router.post ('/deposits/deposit/:depositId/edit', DepositsCtrl.updateOneDeposit);
 router.get ('/deposits/account/default', DepositsCtrl.readDefaultAccounts);
 router.get ('/deposits/invoice', DepositsCtrl.readInvoice);
+router.get ('/deposits/groupon', DepositsCtrl.readGroupon);
+
 
 // Others
 router.get ('/components/template/message', OthersCtrl.getMessageTemplate);

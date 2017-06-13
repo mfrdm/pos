@@ -136,8 +136,6 @@
 			    }
 			}
 
-
-
 		    return str.replace(/[^\u0000-\u007E]/g, function(a){ 
 		       return diacriticsMap[a] || a; 
 		    });
@@ -150,6 +148,7 @@
 				$scope.layout.model.dom.profileList = true
 			}
 		}
+
 		// $scope.layout.notiAlert = function(msg){
 		// 	console.log(msg)
 		// 	$scope.layout.notifications.push(msg)
@@ -178,9 +177,11 @@
 				$scope.layout.ctrl.updateAfterLogin ();
 			}
 
+			DataPassingService.set ('layout', $scope.layout);
+
 			$scope.$apply();
 		});
-		DataPassingService.set ('layout', $scope.layout)
+
 	}
 
 })();

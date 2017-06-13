@@ -1,32 +1,28 @@
 (function (){
 	angular.module('posApp')
-		.controller('DepositCtrl', ['$route', 'DataPassingService', 'CustomerService', 'DepositService', DepositCtrl])
+		.controller('DepositCtrl', ['$scope', '$route', 'DataPassingService', 'CustomerService', 'DepositService', DepositCtrl])
 
-	function DepositCtrl ($route, DataPassingService, CustomerService, DepositService){
+	function DepositCtrl ($scope, $route, DataPassingService, CustomerService, DepositService){
 		var LayoutCtrl = DataPassingService.get ('layout');
-		var vm = this;
 
-		var accounts = [
-			{
-				label: {
-					vn: 'Combo 1 ngày',
-				},
-				amount: 24,
-				unit: 'hour',
-			}
-		]
+		var vm = this;
 
 		vm.ctrl = {
 			deposit: {}
 		};
 
 		vm.model = {
-			staff: LayoutCtrl.user,
-			company: LayoutCtrl.company,
-			dept: LayoutCtrl.dept,
+			staff: LayoutCtrl.model.user,
+			company: LayoutCtrl.model.company,
+			dept: LayoutCtrl.model.dept,
 			depositing:{
 				account: null,
-				customer: {}
+				customer: {},
+				groupon: {},
+				location: {_id: LayoutCtrl.model.dept._id}
+			},
+			depositList: {
+				data: []
 			},
 			dom: {
 				messageSearchResult: false,
@@ -45,6 +41,9 @@
 						default: [],
 					}					
 				},
+				depositList: {
+					depositListDiv: true,
+				},
 				filterDiv: true,
 				data: {},				
 			},
@@ -56,7 +55,10 @@
 			},			
 			temporary: {
 				depositing: {
-					account: null,
+					account: {},
+					groupon: {
+						selectedBlank: true,
+					}
 				},
 			},
 			filter:{
@@ -116,7 +118,6 @@
 			title: 'Deposite List',
 			deposit: {
 				buttonToogle:'Mua tài khoản trả trước',
-				accounts: accounts,
 				search:{
 					label:'Khách hàng',
 					placeholder:'Điền tên, sđt, hoặc email để tìm kiếm khách hàng',
@@ -131,6 +132,9 @@
 						phone:'Điện thoại'
 					}
 				},
+				groupon: {
+
+				}
 			},
 			sorting:{
 				label:'Sắp xếp'
@@ -157,7 +161,27 @@
 		// DEPOSIT controller
 		vm.ctrl.deposit.initDepositDiv = function (){
 			vm.model.dom.deposit.depositDiv = true;
+			vm.ctrl.deposit.loadGroupon ();
 		}
+
+		vm.ctrl.deposit.getDepositList = function (){
+			var query = {
+				storeId: vm.model.dept._id,
+			}
+
+			vm.ctrl.showLoader ();
+
+			DepositService.readDeposits (query).then (
+				function success (res){
+					vm.ctrl.hideLoader ();
+					vm.model.depositList.data = res.data.data;
+				},
+				function error (err){
+					vm.ctrl.hideLoader ();
+					console.log (err);
+				}
+			)
+		} 
 
 		vm.ctrl.deposit.reset = function (){
 			vm.ctrl.reset ();
@@ -243,20 +267,43 @@
 			);
 		}
 
+		vm.ctrl.deposit.resetSelectedAccount = function (){
+			vm.model.depositing.account = {};
+		}
+
+		vm.ctrl.deposit.resetSelectedGroupon = function (){
+			vm.model.depositing.groupon = {};
+		}
+
 		vm.ctrl.deposit.accountChangeHandler = function (){
+			if (vm.model.temporary.depositing.account.start || vm.model.temporary.depositing.account.label){		
+				vm.ctrl.deposit.resetSelectedAccount ();
+				
+				if (vm.model.temporary.depositing.account.label){
+					vm.ctrl.deposit.resetTemporaryGroupon ();					
+				}				
+			}
+
 			if (vm.model.temporary.depositing.account.start && vm.model.temporary.depositing.account.label){
 				vm.ctrl.deposit.addAccount ();
+
+				vm.ctrl.deposit.resetSelectedGroupon ();
+
+				if (vm.model.depositing.account.grouponable){
+					vm.ctrl.deposit.enableGroupon ();
+				}
+				else{
+					vm.ctrl.deposit.disableGroupon ();
+				}
 			}
-			
 		}
 
 		// account is not deep copied. Need to reset default accounts
 		vm.ctrl.deposit.addAccount = function (){
 			if (vm.model.temporary.depositing.account.start){
-				vm.model.depositing.account = {};
 				var obj = Object.assign(vm.model.depositing.account, vm.model.temporary.depositing.account);
 
-				vm.model.temporary.depositing.account.start = null;
+				vm.model.temporary.depositing.account.start = null; // important!!
 				vm.model.temporary.depositing.account = {};
 			}
 		}
@@ -265,7 +312,74 @@
 			vm.model.depositing.account = '';
 		}
 
+		vm.ctrl.deposit.getGroupLeaderName = function (customer){
+			customer.username = customer.fullname + (customer.email ? ' / ' + customer.email : '') + (customer.phone ? ' / ' + customer.phone : '');
+		}
+
+		vm.ctrl.deposit.loadGroupon = function (){
+			var query = {
+				storeId: vm.model.dept._id
+			}
+
+			vm.ctrl.showLoader ();
+			DepositService.readGroupon (query).then (
+				function success (res){
+
+					vm.ctrl.hideLoader ();
+					vm.model.dom.data.selected.deposit.groupon.leaders = res.data.data;
+
+					vm.model.dom.data.selected.deposit.groupon.leaders.map (function (x, i, arr){
+						vm.ctrl.deposit.getGroupLeaderName (x.customer);
+					});
+				},
+				function err (err){
+					vm.ctrl.hideLoader ();
+					console.log (err);
+				}
+
+			)
+		}
+
+		vm.ctrl.deposit.enableGroupon = function (){
+			vm.model.dom.data.selected.deposit.groupon.enableLeader = true;
+			vm.model.dom.data.selected.deposit.groupon.enableQuantity = true;
+		}
+
+		vm.ctrl.deposit.disableGroupon = function (){
+			vm.model.dom.data.selected.deposit.groupon.enableLeader = false;
+			vm.model.dom.data.selected.deposit.groupon.enableQuantity = false;
+		}		
+
+		vm.ctrl.deposit.disableGrouponQuantity = function (){
+			vm.model.dom.data.selected.deposit.groupon.enableQuantity = false;
+		}
+
+		vm.ctrl.deposit.resetTemporaryGroupon = function (){
+			vm.ctrl.deposit.disableGroupon ();
+			vm.model.temporary.depositing.groupon.quantity = null;
+			vm.model.temporary.depositing.groupon.leader = null;
+			vm.model.temporary.depositing.groupon.selectedBlank = true;
+
+		}
+
+		vm.ctrl.deposit.grouponChangeHandler = function (){
+			vm.model.depositing.groupon = {};
+
+			if (vm.model.temporary.depositing.groupon.leader){
+				vm.model.depositing.groupon.leaderId = vm.model.temporary.depositing.groupon.leader.leaderId;
+				vm.model.depositing.groupon.quantity = vm.model.temporary.depositing.groupon.leader.quantity;
+				vm.model.temporary.depositing.groupon.quantity = 0;
+				vm.ctrl.deposit.disableGrouponQuantity ();
+			}
+
+			if (vm.model.temporary.depositing.groupon.quantity){
+				vm.model.depositing.groupon.quantity = vm.model.temporary.depositing.groupon.quantity;
+			}
+
+		};
+
 		vm.ctrl.deposit.invoice = function (){
+
 			if (vm.model.depositing.account && vm.model.depositing.account.start && vm.model.depositing.account.label && vm.model.depositing.customer && vm.model.depositing.customer.fullname){
 
 				vm.ctrl.showLoader ();
@@ -285,8 +399,6 @@
 				)
 
 			}
-			
-			
 		}
 
 		vm.ctrl.deposit.invoiceBackDepositForm = function (){
@@ -295,6 +407,7 @@
 
 		vm.ctrl.deposit.submit = function (){
 			vm.ctrl.showLoader ();
+
 			DepositService.createOneDeposit (vm.model.depositing).then (
 				function success (res){
 					vm.ctrl.hideLoader ();
@@ -323,7 +436,7 @@
 		////////////////////////////// INITIALIZE ///////////////////////////////		
 		vm.model.dom.data.selected = vm.model.dom.data.vn;
 		angular.element(document.getElementById ('mainContentDiv')).ready(function () {
-
+			vm.ctrl.deposit.getDepositList ();
 		});	
 
 	};

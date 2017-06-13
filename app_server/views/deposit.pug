@@ -75,7 +75,7 @@ div(class="columns row")
 						div(class="column row")
 							h3(class="paddingLR15 fontSize20 fontWeight600") Chọn tài khoản trả trước
 						div(class="column row")
-							div(class="column large-8 small-12")
+							div(class="column small-12 large-8")
 								label Tài khoản
 									select(ng-change='vm.ctrl.deposit.accountChangeHandler ()' ng-model="vm.model.temporary.depositing.account" ng-options="account as account.label[vm.model.dom.data.selected.modelLanguage] for account in vm.model.dom.deposit.accounts.default")
 							div(class="column large-4 small-12")
@@ -84,7 +84,7 @@ div(class="columns row")
 						// SELECTED ACCOUNT
 						div(class="row column")
 							div(class='column small-12 large-8')
-								table(ng-if='vm.model.depositing.account' class="unstriped")
+								table(ng-if='vm.model.depositing.account.label && vm.model.depositing.account.start' class="unstriped")
 									thead
 										tr
 											th Tài khoản
@@ -93,11 +93,11 @@ div(class="columns row")
 									tbody 
 										tr
 											td {{ vm.model.depositing.account.label.vn }}
-											td {{ vm.model.depositing.account.start | date:'dd/MM/yyyy'}}
+											td {{ vm.model.depositing.account.start | date:'dd/MM/yyyy' }}
 											td(class='text-center deleteIcon')
 												i(class="material-icons customIcon" ng-click="vm.ctrl.deposit.removeAccount ()") close
 
-					// SELECT TEAM							
+					// SELECT GROUPON							
 					div(class='basicBox row column paddingTB15 marginB15')
 						div(class="column row")
 							h3(class="paddingLR15 fontSize20 fontWeight600") Mua chung
@@ -105,10 +105,11 @@ div(class="columns row")
 						div(class="column row")
 							div(class="column small-12 large-8")
 								label Nhóm
-									select(name="selectedGroup" ng-model="vm.model.temporary.selectedGroupPrivate" ng-options="leader as leader.groupName for leader in vm.model.temporary.groupPrivateLeaders track by leader._id" ng-change="vm.ctrl.checkin.selectedGroupChangeHandler ()")
+									select(name="selectedGroup" ng-model="vm.model.temporary.depositing.groupon.leader" ng-options="leader.groupon as leader.customer.username for leader in vm.model.dom.data.selected.deposit.groupon.leaders" ng-change="vm.ctrl.deposit.grouponChangeHandler ()" ng-disabled="!vm.model.dom.data.selected.deposit.groupon.enableLeader")
+										<option value="" ng-selected="vm.model.dom.data.selected.deposit.groupon.selectedBlank">Chọn nhóm</option>
 							div(class="column small-12 large-4")
 								label số lượng thành viên
-									input(type="number" ng-model="vm.model.depositing.group.number")
+									input(type="number" ng-model="vm.model.temporary.depositing.groupon.quantity" ng-disabled="!vm.model.dom.data.selected.deposit.groupon.enableQuantity" ng-change="vm.ctrl.deposit.grouponChangeHandler ()" min=0)
 
 
 					div(class="row column")
@@ -116,57 +117,28 @@ div(class="columns row")
 						button(class="button float-right primary" ng-click='vm.ctrl.deposit.cancel ()') Cancel
 
 	// DEPOSIT LIST 
-	//div(class="column" ng-show="vm.model.dom.checkedinList")
+	div(class="column" ng-show="vm.model.dom.depositList.depositListDiv")
 		div(class="table-scroll paddingT15 marginT15")
 			table(class="borderAll unstriped")
 				thead
 					tr
-						th {{vm.model.dom.data.selected.checkinList.header.number}}
-						th {{vm.model.dom.data.selected.checkinList.header.fullname}}
-						//- th {{vm.model.dom.data.selected.checkinList.header.headerBirthday}}
-						th(ng-if='vm.model.dom.seeMore == true') {{vm.model.dom.data.selected.checkinList.header.checkinDate}}
-						th {{vm.model.dom.data.selected.checkinList.header.checkinHour}}
-						th(ng-if='vm.model.dom.seeMore == true')  {{vm.model.dom.data.selected.checkinList.header.checkoutDate}}
-						th {{vm.model.dom.data.selected.checkinList.header.checkoutHour}}
-						th {{vm.model.dom.data.selected.checkinList.header.service}}
-						th Checkout
-						th(ng-if='vm.model.dom.note') Note
-						
-						//th {{vm.model.dom.data.selected.headerEdit}}
+						th No
+						th Khách hàng
+						th Tài khoản
+						th Thời gian
+						th Phí
+						th Ghi chú
 				tbody
-					tr(ng-repeat='occupancy in vm.model.checkedinList.data | myfilter:vm.model.filter.myfilter.status | orderBy: [vm.model.filter.orderBy] | filterName:vm.model.filter.others.customer.username' ng-show='vm.ctrl.showInPage(occupancy)')
+					tr(ng-repeat='deposit in vm.model.depositList.data')
 						td {{ $index + 1 }}
-						td {{ occupancy.customer.fullname }}
-						td(ng-if='vm.model.dom.seeMore == true')  {{ occupancy.checkinTime | date:'dd/MM/yyyy' }}
-						td {{ occupancy.checkinTime | date: 'shortTime' }}
-						td(ng-if='vm.model.dom.seeMore == true')  {{ occupancy.checkoutTime | date:'dd/MM/yyyy' }}
-						td {{ occupancy.checkoutTime | date: 'shortTime' }}
-						td {{ occupancy.service.label }}
-						
-						td
-							button(type="button" ng-if='occupancy.status == 1' class="primary button" ng-click="vm.ctrl.checkout.getInvoice (occupancy)") Checkout
-							button(type='button' ng-if='occupancy.status == 2' class="disabled button") Checkout
-						td(ng-if='occupancy.status != 1') {{occupancy.note}}
+						td {{ deposit.customer.fullname }}
+						td {{ deposit.account.name }}
+						td {{ deposit.createdAt | date:'yyyy-MM-dd HH:mm:ss' }}
+						td {{ deposit.total | number }}
+						td {{ deposit.note }}
 
-						//td
-							button(type="button" ng-if='occupancy.status == 1' class="primary button" ng-click="vm.ctrl.checkin.update (occupancy)") Edit
-							button(type='button' ng-if='occupancy.status == 2' class="disabled button") Edit
-			div(ng-if='vm.model.temporary.displayedList.data.length > vm.model.checkedinList.pagination.itemsEachPages')
-				ul(class="pagination text-center" role="navigation" aria-label="Pagination")
-					li(class="pagination-previous disabled") Previous
-						//- span(class="show-for-sr") page
-					//- li(class='current')
-					//- 	span(class="show-for-sr") You're on page
-					//- 	span 1
-					li(ng-repeat="item in vm.model.temporary.displayedList.number track by $index")(class='{{item.class}}')
-						a(href ='' ng-click='vm.ctrl.sliceCheckinList(item.number)') {{item.number}}
-					
-					//- li(class="ellipsis" aria-hidden="true")
-					li(class="pagination-next disabled") Next
-						//- a(aria-label="Next page") Next
-							//- span(class="show-for-sr") page
-		div(class='emptyResult text-center' ng-if='vm.model.checkinListEachPage.data.length == 0 || vm.model.temporary.displayedList.data.length == 0')
-			p {{vm.model.dom.data.selected.checkinList.body.message.notFound}}
+		div(class='emptyResult text-center' ng-if='vm.model.depositList.data.length == 0')
+			p Not found!
 
 // DEPOSIT INVOICE
 div(class="fullBox row column" ng-show='vm.model.dom.deposit.confirmDiv')

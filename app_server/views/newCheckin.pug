@@ -349,10 +349,10 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 					tr
 						th Tổng
 						td {{ vm.model.checkingout.occupancy.total | number }} VNĐ
-					tr(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.paid")
+					tr(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.paidAmount")
 						th Tài khoản đã dùng
-						td(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.unit == 'hour'") {{ vm.model.temporary.checkout.prepaidTotal.acc.paid | number: 1}} Giờ
-						td(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.unit == 'vnd'") {{ vm.model.temporary.checkout.prepaidTotal.acc.paid | number }} VNĐ
+						td(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.unit == 'hour'") {{ vm.model.temporary.checkout.prepaidTotal.acc.paidAmount | number: 1}} Giờ
+						td(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.unit == 'vnd'") {{ vm.model.temporary.checkout.prepaidTotal.acc.paidAmount | number }} VNĐ
 					tr(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.remain || vm.model.temporary.checkout.prepaidTotal.acc.remain == 0")
 						th Tài khoản còn
 						td(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.unit == 'hour'") {{ vm.model.temporary.checkout.prepaidTotal.acc.remain | number: 1}} Giờ
