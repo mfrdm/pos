@@ -17,7 +17,8 @@ var getDefaultAccounts = function (){
 		recursive: {
 			isRecursive: false
 		},
-		expireDateNum: 1
+		expireDateNum: 1,
+		grouponable: true,
 	};
 
 	var threeDaysCommon = {
@@ -40,6 +41,7 @@ var getDefaultAccounts = function (){
 			baseAmount: 24
 		},
 		expireDateNum: 7,
+		grouponable: false,
 	};
 
 	return {
@@ -108,8 +110,8 @@ var withdraw = function (context){
 }
 
 
-var init = function (){
-	this.end = moment (this.start).add (this.expireDateNum - 1);
+var initAccount = function (){
+	this.end = moment (this.start).add (this.expireDateNum - 1, 'day').hour (24).minute (0);
 }
 
 // Represent a pre paid amount of cash or hour usage number. Can be used later to pay for service usage
@@ -132,11 +134,12 @@ var AccountsSchema = new mongoose.Schema({
 		recursiveType: {type: Number}, // daily: 1, monthly: 2, annually: 3
 		baseAmount: Number
 	},
-	start: Date,
+	start: {type: Date, default: Date.now},
 	end: Date,
 	expireDateNum: Number, // number of day between start date and end date
 	customer: {_id: mongoose.Schema.Types.ObjectId},
 	createdAt: {type: Date, default: Date.now},
+	grouponable: {type: Boolean, default: false}, // can be grouponed
 	updateAt: [{
 		time: {type: Date},
 		explain: {type: Number},
@@ -147,6 +150,7 @@ var AccountsSchema = new mongoose.Schema({
 AccountsSchema.methods.renew = renew;
 AccountsSchema.methods.withdraw = withdraw;
 AccountsSchema.methods.isRenewable = isRenewable;
+AccountsSchema.methods.initAccount = initAccount;
 AccountsSchema.statics.getDefaultAccounts = getDefaultAccounts;
 
 module.exports = mongoose.model ('Accounts', AccountsSchema);

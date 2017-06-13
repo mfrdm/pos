@@ -21,7 +21,23 @@ function DepositService ($http, $q){
 		return $http({
 			method:'POST',
 			url:'/deposits/create',
-			data: deposit
+			data: {data: deposit}
+		});			
+	}
+
+	this.readGroupon = function (query){
+		return $http({
+			method:'GET',
+			url:'/deposits/groupon',
+			params: query
+		})		
+	};
+
+	this.readDeposits = function (query){
+		return $http({
+			method:'GET',
+			url:'/deposits',
+			params: query
 		});			
 	}
 }

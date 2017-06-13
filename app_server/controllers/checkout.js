@@ -36,15 +36,31 @@ function Checkout() {
 						match: 	{
 							start: {$lte: new Date ()},
 							end: {$gte: new Date ()},
-							amount: {$gt: 0}
+							$or: [{amount: {$gt: 0}}, {$and: [{'recursive.isRecursive': true}, {amount: {$lte: 0}}]}]
+							
 						},
-						select: 'amount service unit label'
+						// select: 'amount service unit label'
 					}) 
 					.exec (function (err, cus){
 						if (err){
 							console.log (err);
 							next (err);
 						}
+
+
+						if (cus.accounts.length){
+							cus.accounts = cus.accounts.filter (function (acc, i, arr){
+								acc.renew ();
+								if (acc.amount > 0){
+									return acc;
+								}
+
+								return false
+							});
+						}
+
+						console.log (cus.accounts)
+
 
 						foundOcc = foundOcc.toObject (); // convert to add data
 						foundOcc.accounts = cus.accounts ? cus.accounts : [];
@@ -98,6 +114,7 @@ function Checkout() {
 						}
 
 						var beforeAccAmount = updatedAcc.amount;
+						var beforeTotal = occ.total;
 						var context = occ.getAccContext ();
 
 						updatedAcc.withdraw (context);
@@ -111,7 +128,8 @@ function Checkout() {
 									_id: updatedAcc._id,
 									name: 'account',
 									unit: updatedAcc.unit,
-									paid: beforeAccAmount - updatedAcc.amount, // already paid hours
+									paidTotal: beforeTotal - occ.total,
+									paidAmount: beforeAccAmount - updatedAcc.amount,
 									remain: updatedAcc.amount,
 								}
 							}
@@ -121,6 +139,7 @@ function Checkout() {
 				}
 				else{
 					var beforeAccAmount = foundAcc.amount;
+					var beforeTotal = occ.total;
 					var context = occ.getAccContext ();
 
 					foundAcc.withdraw (context);
@@ -134,8 +153,10 @@ function Checkout() {
 								_id: foundAcc._id,
 								name: 'account',
 								unit: foundAcc.unit,
-								paid: beforeAccAmount - foundAcc.amount, // already paid hours
+								paidTotal: beforeTotal - occ.total,
+								paidAmount: beforeAccAmount - foundAcc.amount, // already paid hours
 								remain: foundAcc.amount,
+
 							}
 						}
 					});
@@ -196,7 +217,7 @@ function Checkout() {
 							});
 
 							if (acc){
-								Accounts.findOneAndUpdate ({_id: acc._id}, {$inc: {amount: - acc.paid}}, function (err, foundAcc){
+								Accounts.findOneAndUpdate ({_id: acc._id}, {$inc: {amount: - acc.paidAmount}}, function (err, foundAcc){
 									if (err){
 										console.log (err);
 										next (err);

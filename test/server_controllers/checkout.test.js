@@ -424,6 +424,13 @@ describe ('Checkout', function (){
 				});			
 		});
 
+		it ('should not return expired accounts')
+
+		it ('should not non-expired accounts, but amount is 0')
+		it ('should not non-expired accounts, but amount is 0')
+
+		it ('should renew and renewable account and reuturn it')
+
 		it ('should be invalid when two codes of the same priority is provided', function (done){
 			chai.request (server)
 				.get ('/checkout/invoice/' + newOcc[5]._id)
