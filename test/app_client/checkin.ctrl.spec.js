@@ -444,6 +444,10 @@ describe('Controller: NewCheckinCtrl', function() {
             })
         });
 
+        describe ('Checkout', function (){
+            it ('it should hide accounts when customer is a member of a private group')
+        })
+
     });
 
     xdescribe('Order', function() {

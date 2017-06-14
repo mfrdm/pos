@@ -931,7 +931,7 @@
         
         // check if occ has no parent, will show checkbox
         function showCheckbox(occupancy){
-            if(!occupancy.parent && expectedServiceNames.indexOf(occupancy.service.name) > 1){
+            if(!occupancy.parent && expectedServiceNames.indexOf(occupancy.service.name.toLowerCase ()) > 1){
                 vm.model.dom.checkboxDiv = true;
             }else{
                 vm.model.dom.checkboxDiv = false;
