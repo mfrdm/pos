@@ -134,6 +134,13 @@ router.get ('/deposits/account/default', DepositsCtrl.readDefaultAccounts);
 router.get ('/deposits/invoice', DepositsCtrl.readInvoice);
 router.get ('/deposits/groupon', DepositsCtrl.readGroupon);
 
+// Storage
+// router.post ('/storage/create', StorageCtrl.createOneStorage) // Each store gonna have only one storage, and each product/ asset created will be saved in Storage too (after save in their own model)
+// router.post ('/storage/create/product', StorageCtrl.createProduct) // update storage, after create one type of product, its id will be stored in storage
+// router.post ('/storage/create/asset', StorageCtrl.createAsset) // update storage, after create one type of asset, its id will be stored in storage
+// router.get ('/storage/items', StorageCtrl.readSomeItems)// get all products/ assets from storage to display in storage list in view
+// router.get ('/storage/sold/products', StorageCtrl.readSoldProducts)// get quantity, name, total money of sold product in any duration // need to pass params include duration time
+
 
 // Others
 router.get ('/components/template/message', OthersCtrl.getMessageTemplate);

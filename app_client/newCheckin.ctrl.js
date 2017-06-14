@@ -5,7 +5,6 @@
     function NewCheckinCtrl ($http, DataPassingService, CheckinService, OrderService, CheckoutService, $scope, $window, $route){
         var LayoutCtrl = DataPassingService.get('layout');
         var vm = this;
-        console.log(LayoutCtrl)
 
         vm.ctrl = {
             checkin: {},
@@ -15,7 +14,6 @@
             sort: {},
             edit: {}
         }; // Everything about ctroller
-
         vm.model = {
             staff: LayoutCtrl.model.user,
             company: LayoutCtrl.model.company,
