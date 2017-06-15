@@ -295,7 +295,6 @@ function Checkout() {
 					}
 
 					if (occ){
-						console.log(occ)
 						// update acc if being used
 						// At this moment. Only one method is used at a time
 						if (occ.paymentMethod && occ.paymentMethod.length){
@@ -307,7 +306,6 @@ function Checkout() {
 							});
 
 							if (acc){
-								console.log(acc)
 								Accounts.findOneAndUpdate ({_id: acc._id}, {$inc: {amount: - acc.paidAmount}}, function (err, foundAcc){
 									if (err){
 										console.log (err);

@@ -1048,7 +1048,7 @@ xdescribe('Checkout', function() {
 describe('Checkout members with leader', function() {
     this.timeout(6000);
     describe('Leader without members', function() {
-        var mockOccs, mockCustomers, newOcc, newCustomer, group;
+        var mockOccs, mockCustomers, newOcc, newCustomer, group, selectedAcc;
         beforeEach(function(done) {
             mockCustomers = [
 	            {
@@ -1205,7 +1205,7 @@ describe('Checkout members with leader', function() {
                         var newAccIds = newAcc.map(function(x, i, arr) {
                             return x._id;
                         })
-                        var selectedAcc = newAcc[4];
+                        selectedAcc = newAcc[4];
 
 			            newOcc[2].paymentMethod = [{
 			                _id: selectedAcc._id,
@@ -1328,29 +1328,36 @@ describe('Checkout members with leader', function() {
                     	if (err) {
                             return
                         }
-                        console.log(occ)
                         occ.status.should.equal(2);
+
                         Customers.findById({ _id: newCustomer[0]._id }, function(err, cus) {
                             if (err) {
                                 return
                             }
 
                             cus.checkinStatus.should.equal(false);
-                            Occupancy.findById({ _id: newOcc[3]._id }, function(err, occ) {
-		                        if (err) {
-		                            return
-		                        }
-		                        console.log(occ)
-		                        occ.status.should.equal(2);
-		                        Customers.findById({ _id: newCustomer[1]._id }, function(err, cus) {
-		                            if (err) {
-		                                return
-		                            }
+                            Accounts.findOne({ _id: selectedAcc._id }, function(err, foundAcc) {
+                                if (err) {
+                                    console.log(err);
+                                }
 
-		                            cus.checkinStatus.should.equal(false);
-		                            done()
-		                        })
-		                    });
+                                foundAcc.amount.should.to.equal(8);
+                            
+                                Occupancy.findById({ _id: newOcc[3]._id }, function(err, occ) {
+    		                        if (err) {
+    		                            return
+    		                        }
+    		                        occ.status.should.equal(2);
+    		                        Customers.findById({ _id: newCustomer[1]._id }, function(err, cus) {
+    		                            if (err) {
+    		                                return
+    		                            }
+
+    		                            cus.checkinStatus.should.equal(false);
+    		                            done()
+    		                        })
+    		                    });
+                            })
                         })
                     })
                     
