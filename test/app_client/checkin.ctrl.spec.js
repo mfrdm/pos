@@ -444,10 +444,6 @@ describe('Controller: NewCheckinCtrl', function() {
             })
         });
 
-        describe ('Checkout', function (){
-            it ('it should hide accounts when customer is a member of a private group')
-        })
-
     });
 
     xdescribe('Order', function() {
@@ -705,6 +701,14 @@ describe('Controller: NewCheckinCtrl', function() {
             expect(vm.model.edit.occupancy.promocodes[0].status).toEqual(3)
         })
     
+    })
+
+    describe ('Checkout', function (){
+
+        it ('it should hide accounts when customer is a member of a private group', function(){
+
+        })
+        
     })
 
     // Test add member to checkout with leader
