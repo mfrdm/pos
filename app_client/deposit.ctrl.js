@@ -287,6 +287,8 @@
 			if (vm.model.temporary.depositing.account.start && vm.model.temporary.depositing.account.label){
 				vm.ctrl.deposit.addAccount ();
 
+
+
 				vm.ctrl.deposit.resetSelectedGroupon ();
 
 				if (vm.model.depositing.account.grouponable){
@@ -298,9 +300,21 @@
 			}
 		}
 
+		vm.ctrl.deposit.fixAccStartDate = function (date){
+			var curYear = new Date ().getFullYear ();
+			var targetYear = date.getFullYear ();
+
+			if (curYear != targetYear){
+				return date.setYear (curYear)
+			}
+		}
+
 		// account is not deep copied. Need to reset default accounts
 		vm.ctrl.deposit.addAccount = function (){
 			if (vm.model.temporary.depositing.account.start){
+
+				vm.ctrl.deposit.fixAccStartDate (vm.model.temporary.depositing.account.start)
+
 				var obj = Object.assign(vm.model.depositing.account, vm.model.temporary.depositing.account);
 
 				vm.model.temporary.depositing.account.start = null; // important!!

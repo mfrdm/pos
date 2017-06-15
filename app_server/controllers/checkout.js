@@ -48,6 +48,7 @@ function Checkout() {
 							next (err);
 						}
 
+						// console.log (cus)
 
 						if (cus.accounts.length){
 							cus.accounts = cus.accounts.filter (function (acc, i, arr){
