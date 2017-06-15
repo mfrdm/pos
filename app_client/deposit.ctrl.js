@@ -409,7 +409,7 @@
 						vm.ctrl.hideLoader ();
 						console.log (err);
 
-					},					
+					}					
 				)
 
 			}
@@ -431,7 +431,7 @@
 					vm.ctrl.hideLoader ();
 					console.log (err);
 
-				},					
+				}				
 			)
 		}
 
