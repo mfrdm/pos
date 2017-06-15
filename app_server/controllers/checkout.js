@@ -36,6 +36,7 @@ function Checkout() {
 						match: 	{
 							start: {$lte: new Date ()},
 							end: {$gte: new Date ()},
+							services: foundOcc.service.name.toLowerCase (), 
 							$or: [{amount: {$gt: 0}}, {$and: [{'recursive.isRecursive': true}, {amount: {$lte: 0}}]}]
 							
 						},
@@ -250,7 +251,6 @@ function Checkout() {
 	};
 
 	this.checkoutGroup =function(req, res, next){
-		console.log(req.body.data)
 		var leader = req.body.data[0]
 		var members = req.body.data.slice(1)
 		var membersId = members.map(function(ele){
@@ -288,7 +288,6 @@ function Checkout() {
 					paymentMethod: paymentMethods,
 					note: note
 				}
-				console.log(leader._id)
 				Occupancies.findOneAndUpdate ({_id: leader._id}, {$set: updateOcc}, {new: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function (err, occ){
 					if (err){
 						next (err)
@@ -296,7 +295,7 @@ function Checkout() {
 					}
 
 					if (occ){
-
+						console.log(occ)
 						// update acc if being used
 						// At this moment. Only one method is used at a time
 						if (occ.paymentMethod && occ.paymentMethod.length){
@@ -308,6 +307,7 @@ function Checkout() {
 							});
 
 							if (acc){
+								console.log(acc)
 								Accounts.findOneAndUpdate ({_id: acc._id}, {$inc: {amount: - acc.paidAmount}}, function (err, foundAcc){
 									if (err){
 										console.log (err);
@@ -315,8 +315,33 @@ function Checkout() {
 										return
 									}
 
-									return
+									Customers.update({'_id':{$in:memberCusId}}, {$set:{checkinStatus:false}}, function(err, cus){
+										if(err){
+											next(err)
+											return
+										}else{
 
+											var updateOccMember = {
+												status:status,
+												total: 0, 
+												usage: usage, 
+												oriUsage: oriUsage,
+												price: price,
+												// promocodes: promocodes,
+												checkoutTime: checkoutTime,
+												// paymentMethod: paymentMethods,
+												note: note
+											}
+											Occupancies.update({'_id':{$in:membersId}}, {$set: updateOccMember}, {new: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function(err, occ){
+												if(err){
+													next(err)
+													return
+												}else{
+													res.json ({data: {message: 'success'}});
+												}
+											})
+										}
+									})
 								});
 							}
 						}

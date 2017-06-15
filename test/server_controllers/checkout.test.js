@@ -410,6 +410,8 @@ xdescribe('Checkout', function() {
         it('should not non-expired accounts, but amount is 0')
         it('should not non-expired accounts, but amount is 0')
 
+        it ('should return no account if no account can be used for such service')
+
         it('should renew and renewable account and reuturn it')
 
         it('should be invalid when two codes of the same priority is provided', function(done) {
@@ -1046,11 +1048,10 @@ xdescribe('Checkout', function() {
 describe('Checkout members with leader', function() {
     this.timeout(6000);
     describe('Leader without members', function() {
-        var mockOccs, mockCustomers, newOcc, newCus, group;
+        var mockOccs, mockCustomers, newOcc, newCustomer, group;
         beforeEach(function(done) {
             mockCustomers = [
 	            {
-	                "_id": "5924168b164cb9030cee931d",
 	                firstname: 'p',
 	                middlename: 'q',
 	                lastname: 'k',
@@ -1062,7 +1063,6 @@ describe('Checkout members with leader', function() {
 	                checkinStatus: false,
 	            },
 	            {
-	                "_id": "5924168b164cb9030cee9365",
 	                firstname: 'g',
 	                middlename: 'f',
 	                lastname: 's',
@@ -1074,75 +1074,170 @@ describe('Checkout members with leader', function() {
 	                checkinStatus: false,
 	            }
             ];
+
+            mockAccounts = [
+	            {
+	                amount: 10,
+	                unit: 'hour',
+	                start: moment(),
+	                end: moment().add(5, 'day'),
+	                services: ['group common', 'individual common']
+	            }, {
+	                amount: 2,
+	                unit: 'hour',
+	                start: moment(),
+	                end: moment().add(5, 'day'),
+	                services: ['group common', 'individual common']
+	            }, {
+	                amount: 24,
+	                unit: 'hour',
+	                start: moment(),
+	                end: moment().hour(23).minute(59),
+	                services: ['group common', 'individual common']
+	            }, {
+	                amount: 3,
+	                unit: 'hour',
+	                start: moment(),
+	                end: moment().hour(23).minute(59),
+	                services: ['group common', 'individual common']
+	            }, {
+	                amount: 10,
+	                unit: 'hour',
+	                start: moment(),
+	                end: moment().add(30, 'day'),
+	                services: ['small group private', 'individual common']
+	            }
+            ];
+
             mockOccs = [
 	            {
-	                total: 150000,
-	                price: 150000,
-	                usage: 1,
-	                oriUsage: 1,
-	                checkoutTime: '2017-06-15T01:47:45.770Z',
-	                _id: '5941dbd882dedd1a1ceb1044',
+	            	_id: '5941dbd882dedd1a1ceb1044',
 	                createdAt: '2017-06-15T00:59:04.561Z',
 	                status: 1,
-	                customer: {
-	                    fullname: 'NGUYỄN THU THỦY',
-	                    _id: '5924168b164cb9030cee931d',
-	                    phone: '01644605955',
-	                    email: 'thuyn9155@gmail.com',
-	                    isStudent: true
-	                },
-	                orders: [],
+	                customer: {},
 	                promocodes: [],
 	                service: {
 	                    name: 'small group private',
 	                    price: 150000,
-	                    label: 'Nhóm riêng 15'
 	                },
-	                checkinTime: '2017-06-15T00:59:02.757Z',
 	                paymentMethod: [],
-	                accounts: [],
-	                note: ''
+	                checkinTime: moment().add(-3, 'hour'),
+                	checkoutTime: moment(),
 	            }, {
 	                "_id": "5941dbe482dedd1a1ceb1045",
 	                "parent": "5941dbd882dedd1a1ceb1044",
 	                "updateAt": [],
 	                "status": 1,
-	                "customer": {
-	                    "fullname": "NGUYỄN THỊ PHƯƠNG THẢO",
-	                    "_id": "5924168b164cb9030cee9365",
-	                    "phone": "0984731656",
-	                    "email": "thaohvnh1212@gmail.com",
-	                    "isStudent": true
-	                },
+	                "customer": {},
 	                "promocodes": [],
 	                "service": {
 	                    "name": "small group private",
 	                    "price": 150000,
-	                    "label": "Nhóm riêng 15"
 	                },
-	                "checkinTime": "2017-06-15T00:59:15.302Z",
 	                "paymentMethod": [],
+	                checkinTime: moment().add(-3, 'hour'),
+                	checkoutTime: moment(),
+	            }, {
+	            	_id: '5941dbd882dedd1a1ceb1046',
+	                createdAt: '2017-06-15T00:59:04.561Z',
+	                status: 1,
+	                customer: {},
+	                promocodes: [],
+	                service: {
+	                    name: 'small group private',
+	                    price: 150000,
+	                },
+	                paymentMethod: [{name:'account', paid:2}],
+	                checkinTime: moment().add(-3, 'hour'),
+                	checkoutTime: moment(),
+	            },{
+	            	_id: '5941dbd882dedd1a1ceb1047',
+	            	"parent": "5941dbd882dedd1a1ceb1046",
+	                createdAt: '2017-06-15T00:59:04.561Z',
+	                status: 1,
+	                customer: {},
+	                promocodes: [],
+	                service: {
+	                    name: 'small group private',
+	                    price: 150000,
+	                },
+	                paymentMethod: [],
+	                checkinTime: moment().add(-3, 'hour'),
+                	checkoutTime: moment(),
 	            }
             ];
+
             Customers.insertMany(mockCustomers, function(err, cus) {
                 if (err) {
                     console.log(err)
                     return
-                };
-                newCus = cus;
+                }
+
+                newCustomer = cus;
+                mockOccs[0].customer = cus[0];
+                mockOccs[1].customer = cus[1];
+                mockOccs[2].customer = cus[0];
+                mockOccs[3].customer = cus[1];
+
                 Occupancy.insertMany(mockOccs, function(err, occ) {
                     if (err) {
                         console.log(err)
                         return
-                    };
+                    }
+
                     newOcc = occ;
-                    done();
+                    newOcc[0].getTotal();
+                    newOcc[1].getTotal();
+                    newOcc[2].getTotal();
+                    newOcc[3].getTotal();
+
+                    mockAccounts.map(function(x, i, arr) {
+                        x.customer = newCustomer[0]._id;
+                    });
+
+                    Accounts.insertMany(mockAccounts, function(err, acc) {
+                        if (err) {
+                            console.log(err)
+                            return
+                        }
+
+                        newAcc = acc;
+                        var newAccIds = newAcc.map(function(x, i, arr) {
+                            return x._id;
+                        })
+                        var selectedAcc = newAcc[4];
+
+			            newOcc[2].paymentMethod = [{
+			                _id: selectedAcc._id,
+							name: 'account',
+							unit: selectedAcc.unit,
+							paidTotal: 150000,
+							paidAmount: 2,
+							remain: 8,
+			            }];
+
+                        Customers.update({ _id: newCustomer[0]._id }, { $set: { accounts: newAccIds } }, function(err, cus) {
+                            if (err) {
+                                console.log(err)
+                                return
+                            }
+
+                            done();
+                        });
+
+                    });
+
+
                 });
             });
         });
 
         afterEach(function(done) {
-            var cusIds = newCus.map(function(x, i, arr) {
+            var accIds = newAcc.map(function(x, i, arr) {
+                return x._id;
+            });
+
+            var cusIds = newCustomer.map(function(x, i, arr) {
                 return x._id;
             });
 
@@ -1160,33 +1255,105 @@ describe('Checkout members with leader', function() {
                         // console.log (err)
                         return
                     }
-                    done();
+
+                    Accounts.remove({ _id: { $in: accIds } }, function(err, result) {
+                        if (err) {
+                            // console.log (err)
+                            return
+                        }
+
+                        done();
+                    });
+
+
                 });
+
             });
+
         });
 
         it('should confirm checkout for leader with member successfully', function(done) {
             chai.request(server)
                 .post('/checkout/group')
-                .send({ data: mockOccs })
+                .send({ data: newOcc.slice(0,2) })
                 .end(function(err, res) {
                     if (err) {
                         console.log(err);
                     }
+
                     res.body.data.message.should.equal('success')
-                    Occupancy.findById({ _id: '5941dbe482dedd1a1ceb1045' }, function(err, occ) {
-                        if (err) {
+                    Occupancy.findById({_id:newOcc[0]._id}, function(err, occ){
+                    	if (err) {
                             return
                         }
+                        
                         occ.status.should.equal(2);
-                        Customers.findById({ _id: '5924168b164cb9030cee9365' }, function(err, cus) {
+                        Customers.findById({ _id: newCustomer[0]._id }, function(err, cus) {
                             if (err) {
                                 return
                             }
+
                             cus.checkinStatus.should.equal(false);
-                            done()
+                            Occupancy.findById({ _id: newOcc[1]._id }, function(err, occ) {
+		                        if (err) {
+		                            return
+		                        }
+		                        occ.status.should.equal(2);
+		                        Customers.findById({ _id: newCustomer[1]._id }, function(err, cus) {
+		                            if (err) {
+		                                return
+		                            }
+
+		                            cus.checkinStatus.should.equal(false);
+		                            done()
+		                        })
+		                    });
                         })
-                    });
+                    })
+                    
+                });
+        })
+
+        it ('should confirm checkout for leader and member with account', function(done){
+        	chai.request(server)
+                .post('/checkout/group')
+                .send({ data: newOcc.slice(2) })
+                .end(function(err, res) {
+                    if (err) {
+                        console.log(err);
+                    }
+
+                    res.body.data.message.should.equal('success')
+                    Occupancy.findById({_id:newOcc[2]._id}, function(err, occ){
+                    	if (err) {
+                            return
+                        }
+                        console.log(occ)
+                        occ.status.should.equal(2);
+                        Customers.findById({ _id: newCustomer[0]._id }, function(err, cus) {
+                            if (err) {
+                                return
+                            }
+
+                            cus.checkinStatus.should.equal(false);
+                            Occupancy.findById({ _id: newOcc[3]._id }, function(err, occ) {
+		                        if (err) {
+		                            return
+		                        }
+		                        console.log(occ)
+		                        occ.status.should.equal(2);
+		                        Customers.findById({ _id: newCustomer[1]._id }, function(err, cus) {
+		                            if (err) {
+		                                return
+		                            }
+
+		                            cus.checkinStatus.should.equal(false);
+		                            done()
+		                        })
+		                    });
+                        })
+                    })
+                    
                 });
         })
     })
