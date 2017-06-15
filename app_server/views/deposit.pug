@@ -82,7 +82,7 @@ div(class="columns row")
 									select(ng-change='vm.ctrl.deposit.accountChangeHandler ()' ng-model="vm.model.temporary.depositing.account" ng-options="account as account.label[vm.model.dom.data.selected.modelLanguage] for account in vm.model.dom.deposit.accounts.default")
 							div(class="column large-4 small-12")
 								label Ngày sử dụng
-									input(ng-change="vm.ctrl.deposit.accountChangeHandler ()" ng-model="vm.model.temporary.depositing.account.start" type="date" ng-disabled="!vm.model.temporary.depositing.account.label")
+									input( ng-change="vm.ctrl.deposit.accountChangeHandler ()" ng-model="vm.model.temporary.depositing.account.start" type="date" ng-disabled="!vm.model.temporary.depositing.account.label")
 						// SELECTED ACCOUNT
 						div(class="row column")
 							div(class='column small-12 large-8')
@@ -165,7 +165,7 @@ div(class="fullBox row column" ng-show='vm.model.dom.deposit.confirmDiv')
 						td {{ vm.model.depositing.account.label[vm.model.dom.data.selected.modelLanguage] }}
 					tr
 						th Giá
-						td {{ vm.model.depositing.account.price | number}}
+						td {{ vm.model.depositing.account.price | number}} VNĐ
 					tr
 						th Số lượng
 						td {{ vm.model.depositing.quantity}}
@@ -174,7 +174,7 @@ div(class="fullBox row column" ng-show='vm.model.dom.deposit.confirmDiv')
 						td {{ code.name | uppercase }}						
 					tr
 						th Tổng
-						td {{ vm.model.depositing.total | number }}					
+						td {{ vm.model.depositing.total | number }}	VNĐ				
 	div(class="row column")
 		div(class="column small-12 large-6 large-push-3")
 			a(class="paddingL15 button primary" ng-click="vm.ctrl.deposit.submit ()") Confirm

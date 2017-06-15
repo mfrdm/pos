@@ -166,6 +166,10 @@
 					vm.model.bookingList.data.map (function (x,i,arr){
 						vm.ctrl.addServiceLabel (x.service);
 					});
+
+					vm.model.bookingList.data = vm.model.bookingList.data.sort (function (a, b){
+						return (new Date (a.checkinTime) - new Date (b.checkinTime))
+					})
 					
 				},
 				function failure (err){

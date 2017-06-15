@@ -749,7 +749,7 @@
                             if(x.category == 1){
                                 vm.model.services.push(x);
                             }
-                        });
+                        });                     
 
                         res.data.data.map(function(x, i, arr){
                             if(x.category != 1){
@@ -757,11 +757,19 @@
                             }
                         });
 
+                        vm.model.items = vm.model.items.sort (function (a, b){
+                            return a.name.localeCompare (b.name)
+                        });
+
                         // push data into dom.data objects
                         vm.model.services.map (function (x, i, arr){
                             vm.ctrl.addServiceLabel (x);
                         });
                         
+                        vm.model.services = vm.model.services.sort (function (a, b){
+                            return a.label.localeCompare (b.label)
+                        });   
+
                         vm.model.dom.data.selected.services = vm.model.services;
                         vm.model.dom.data.selected.items = vm.model.items;
                     },

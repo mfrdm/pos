@@ -331,6 +331,11 @@
 							vm.model.items.push(x);
 						}
 					});
+
+                    vm.model.items = vm.model.items.sort (function (a, b){
+                        return a.name.localeCompare (b.name)
+                    });
+					
 					vm.model.dom.data.selected.items = vm.model.items;
 				},
 				function error (err){
