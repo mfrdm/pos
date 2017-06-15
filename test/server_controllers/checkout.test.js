@@ -817,7 +817,7 @@ describe ('Checkout', function (){
 		})
 	})
 
-	xdescribe ('Confirm checkout', function (){
+	describe ('Confirm checkout', function (){
 		var occupancy, customer;
 		var newOcc, newCustomer;
 		var accounts, newAcc;
@@ -916,7 +916,8 @@ describe ('Checkout', function (){
 					start: moment (),
 					end: moment().hour(23).minute (59),
 					services: ['small group private']
-				},				
+				},
+
 
 			]
 
@@ -996,7 +997,7 @@ describe ('Checkout', function (){
 			});
 		});
 
-		it ('should checkout successfully when no account is used', function (done){
+		xit ('should checkout successfully when no account is used', function (done){
 		
 			chai.request (server)
 				.post ('/checkout/')
@@ -1031,11 +1032,15 @@ describe ('Checkout', function (){
 			var selectedOcc = newOcc[2];
 			var selectedAcc = newAcc[2];
 
-			newOcc[2].paymentMethod = [
+			selectedOcc.paymentMethod = [
 				{
 					name: 'account',
 					_id: selectedAcc._id,
-					paid: 2
+					paid: 2,
+					unit: selectedAcc.unit,
+					paidTotal: 150000,
+					paidAmount: 2,
+					remain: 1,					
 				}
 			];
 
@@ -1050,7 +1055,7 @@ describe ('Checkout', function (){
 					res.should.to.have.status (200);
 					res.body.data.should.to.exist;
 
-					Occupancy.findOne ({_id: selectedOcc._id}, {usage: 1, total: 1, price: 1,promocodes: 1, paymentMethod: 1}, function (err, foundOcc){
+					Occupancy.findOne ({_id: selectedOcc._id}, {usage: 1, total: 1, price: 1,promocodes: 1, paymentMethod: 1, oriUsage: 1}, function (err, foundOcc){
 						if (err){
 							console.log (err);
 						}
@@ -1058,11 +1063,13 @@ describe ('Checkout', function (){
 						foundOcc.should.to.exist;
 						foundOcc.total.should.to.equal (150000);
 						foundOcc.usage.should.to.equal (2);
+						foundOcc.oriUsage.should.to.equal (2);
 						foundOcc.price.should.to.equal (150000);
 						foundOcc.promocodes.should.to.have.length.of.at.least (1);	
 
 						foundOcc.paymentMethod.length.should.to.equal (1);
-						foundOcc.paymentMethod[0].paid.should.to.equal (2);
+						foundOcc.paymentMethod[0].paidAmount.should.to.equal (2);
+						foundOcc.paymentMethod[0].paidTotal.should.to.equal (150000);
 						foundOcc.paymentMethod[0].name.should.to.equal ('account');
 
 						Accounts.findOne ({_id: selectedAcc._id}, function (err, foundAcc){
