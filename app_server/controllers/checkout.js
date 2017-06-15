@@ -207,8 +207,6 @@ function Checkout() {
 
 					if (occ){
 
-						console.log (occ)
-
 						// update acc if being used
 						// At this moment. Only one method is used at a time
 						if (occ.paymentMethod && occ.paymentMethod.length){
