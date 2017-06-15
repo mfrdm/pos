@@ -410,6 +410,8 @@ xdescribe('Checkout', function() {
         it('should not non-expired accounts, but amount is 0')
         it('should not non-expired accounts, but amount is 0')
 
+        it ('should return no account if no account can be used for such service')
+
         it('should renew and renewable account and reuturn it')
 
         it('should be invalid when two codes of the same priority is provided', function(done) {
@@ -1093,188 +1095,200 @@ describe('Checkout members with leader', function() {
                 isStudent: true,
                 checkinStatus: false,
             }];
-            mockOccs = [{
-                "total": 0,
-                "price": 150000,
-                "usage": 0,
-                "oriUsage": 0,
-                "checkoutTime": "2017-06-14T23:01:46.043Z",
-                "_id": "5941bffd8df45825fc15ba9d",
-                "createdAt": "2017-06-14T23:00:13.419Z",
-                "status": 1,
-                "customer": {
-                    "fullname": "NGUYỄN VĂN DƯƠNG",
-                    "_id": "5924168b164cb9030cee9590",
-                    "phone": "0961131414",
-                    "email": "duong260398@gmail.com",
-                    "isStudent": true
-                },
-                "orders": [],
-                "promocodes": [],
-                "service": {
-                    "name": "small group private",
+
+            mockOccs = [
+                {
+                    "total": 0,
                     "price": 150000,
-                    "label": "Nhóm riêng 15"
-                },
-                "checkinTime": "2017-06-14T23:00:08.633Z",
-                "paymentMethod": [],
-                "accounts": [],
-                "childrenIdList": [],
-                "note": ""
-            }, {
-                "total": 0,
-                "price": 150000,
-                "usage": 0,
-                "oriUsage": 0,
-                "checkoutTime": "2017-06-14T23:01:46.043Z",
-                "_id": "5941bffd8df45825fc15aa6d",
-                "createdAt": "2017-06-14T23:00:13.419Z",
-                "status": 1,
-                "customer": {
-                    "fullname": "NGUYỄN VĂN DƯƠNG",
-                    "_id": "5924168b164cb9030cee9590",
-                    "phone": "0961131414",
-                    "email": "duong260398@gmail.com",
-                    "isStudent": true
-                },
-                "orders": [],
-                "promocodes": [],
-                "service": {
-                    "name": "small group private",
+                    "usage": 0,
+                    "oriUsage": 0,
+                    "checkoutTime": "2017-06-14T23:01:46.043Z",
+                    "_id": "5941bffd8df45825fc15ba9d",
+                    "createdAt": "2017-06-14T23:00:13.419Z",
+                    "status": 1,
+                    "customer": {
+                        "fullname": "NGUYỄN VĂN DƯƠNG",
+                        "_id": "5924168b164cb9030cee9590",
+                        "phone": "0961131414",
+                        "email": "duong260398@gmail.com",
+                        "isStudent": true
+                    },
+                    "orders": [],
+                    "promocodes": [],
+                    "service": {
+                        "name": "small group private",
+                        "price": 150000,
+                        "label": "Nhóm riêng 15"
+                    },
+                    "checkinTime": "2017-06-14T23:00:08.633Z",
+                    "paymentMethod": [],
+                    "accounts": [],
+                    "childrenIdList": [],
+                    "note": ""
+                }, 
+                {
+                    "total": 0,
                     "price": 150000,
-                    "label": "Nhóm riêng 15"
-                },
-                "checkinTime": "2017-06-14T23:00:08.633Z",
-                "paymentMethod": [],
-                "accounts": [],
-                "childrenIdList": ["5941c00b8df45825fc15aa6e"],
-                "note": ""
-            }, {
-                "total": 0,
-                "price": 150000,
-                "usage": 1,
-                "oriUsage": 1,
-                "checkoutTime": "2017-06-14T23:10:53.450Z",
-                "_id": "5941c00b8df45825fc15aa6e",
-                "parent": "5941bffd8df45825fc15aa6d",
-                "createdAt": "2017-06-14T23:00:27.888Z",
-                "status": 1,
-                "customer": {
-                    "fullname": "PHẠM MINH DƯƠNG",
-                    "_id": "5924168b164cb9030cee970a",
-                    "phone": "0944373297",
-                    "email": "duongnt1904@gmail.com",
-                    "isStudent": true
-                },
-                "orders": [],
-                "promocodes": [],
-                "service": {
-                    "name": "small group private",
+                    "usage": 0,
+                    "oriUsage": 0,
+                    "checkoutTime": "2017-06-14T23:01:46.043Z",
+                    "_id": "5941bffd8df45825fc15aa6d",
+                    "createdAt": "2017-06-14T23:00:13.419Z",
+                    "status": 1,
+                    "customer": {
+                        "fullname": "NGUYỄN VĂN DƯƠNG",
+                        "_id": "5924168b164cb9030cee9590",
+                        "phone": "0961131414",
+                        "email": "duong260398@gmail.com",
+                        "isStudent": true
+                    },
+                    "orders": [],
+                    "promocodes": [],
+                    "service": {
+                        "name": "small group private",
+                        "price": 150000,
+                        "label": "Nhóm riêng 15"
+                    },
+                    "checkinTime": "2017-06-14T23:00:08.633Z",
+                    "paymentMethod": [],
+                    "accounts": [],
+                    "childrenIdList": ["5941c00b8df45825fc15aa6e"],
+                    "note": ""
+                }, 
+                {
+                    "total": 0,
                     "price": 150000,
-                    "label": "Nhóm riêng 15"
-                },
-                "checkinTime": "2017-06-14T23:00:26.352Z",
-                "paymentMethod": [],
-                "accounts": [],
-                "childrenIdList": [],
-                "note": ""
-            }, {
-                total: 150000,
-                price: 150000,
-                usage: 1,
-                oriUsage: 1,
-                checkoutTime: '2017-06-15T01:47:45.770Z',
-                _id: '5941dbd882dedd1a1ceb1044',
-                createdAt: '2017-06-15T00:59:04.561Z',
-                status: 1,
-                customer: {
-                    fullname: 'NGUYỄN THU THỦY',
-                    _id: '5924168b164cb9030cee931d',
-                    phone: '01644605955',
-                    email: 'thuyn9155@gmail.com',
-                    isStudent: true
-                },
-                orders: [],
-                promocodes: [],
-                service: {
-                    name: 'small group private',
+                    "usage": 1,
+                    "oriUsage": 1,
+                    "checkoutTime": "2017-06-14T23:10:53.450Z",
+                    "_id": "5941c00b8df45825fc15aa6e",
+                    "parent": "5941bffd8df45825fc15aa6d",
+                    "createdAt": "2017-06-14T23:00:27.888Z",
+                    "status": 1,
+                    "customer": {
+                        "fullname": "PHẠM MINH DƯƠNG",
+                        "_id": "5924168b164cb9030cee970a",
+                        "phone": "0944373297",
+                        "email": "duongnt1904@gmail.com",
+                        "isStudent": true
+                    },
+                    "orders": [],
+                    "promocodes": [],
+                    "service": {
+                        "name": "small group private",
+                        "price": 150000,
+                        "label": "Nhóm riêng 15"
+                    },
+                    "checkinTime": "2017-06-14T23:00:26.352Z",
+                    "paymentMethod": [],
+                    "accounts": [],
+                    "childrenIdList": [],
+                    "note": ""
+                }, 
+                {
+                    total: 150000,
                     price: 150000,
-                    label: 'Nhóm riêng 15'
-                },
-                checkinTime: '2017-06-15T00:59:02.757Z',
-                paymentMethod: [],
-                accounts: [],
-                note: ''
-            }, {
-                "_id": "5941dbe482dedd1a1ceb1045",
-                "parent": "5941dbd882dedd1a1ceb1044",
-                "updateAt": [],
-                "status": 1,
-                "customer": {
-                    "fullname": "NGUYỄN THỊ PHƯƠNG THẢO",
-                    "_id": "5924168b164cb9030cee9365",
-                    "phone": "0984731656",
-                    "email": "thaohvnh1212@gmail.com",
-                    "isStudent": true
-                },
-                "promocodes": [],
-                "service": {
-                    "name": "small group private",
+                    usage: 1,
+                    oriUsage: 1,
+                    checkoutTime: '2017-06-15T01:47:45.770Z',
+                    _id: '5941dbd882dedd1a1ceb1044',
+                    createdAt: '2017-06-15T00:59:04.561Z',
+                    status: 1,
+                    customer: {
+                        fullname: 'NGUYỄN THU THỦY',
+                        _id: '5924168b164cb9030cee931d',
+                        phone: '01644605955',
+                        email: 'thuyn9155@gmail.com',
+                        isStudent: true
+                    },
+                    orders: [],
+                    promocodes: [],
+                    service: {
+                        name: 'small group private',
+                        price: 150000,
+                        label: 'Nhóm riêng 15'
+                    },
+                    checkinTime: '2017-06-15T00:59:02.757Z',
+                    paymentMethod: [],
+                    accounts: [],
+                    note: ''
+                }, 
+                {
+                    "_id": "5941dbe482dedd1a1ceb1045",
+                    "parent": "5941dbd882dedd1a1ceb1044",
+                    "updateAt": [],
+                    "status": 1,
+                    "customer": {
+                        "fullname": "NGUYỄN THỊ PHƯƠNG THẢO",
+                        "_id": "5924168b164cb9030cee9365",
+                        "phone": "0984731656",
+                        "email": "thaohvnh1212@gmail.com",
+                        "isStudent": true
+                    },
+                    "promocodes": [],
+                    "service": {
+                        "name": "small group private",
+                        "price": 150000,
+                        "label": "Nhóm riêng 15"
+                    },
+                    "checkinTime": "2017-06-15T00:59:15.302Z",
+                    "paymentMethod": [],
+                }
+            ];
+
+            group = [
+                {
+                    "total": 150000,
                     "price": 150000,
-                    "label": "Nhóm riêng 15"
-                },
-                "checkinTime": "2017-06-15T00:59:15.302Z",
-                "paymentMethod": [],
-            }];
-            group = [{
-                "total": 150000,
-                "price": 150000,
-                "usage": 1,
-                "oriUsage": 1,
-                "checkoutTime": "2017-06-15T01:47:45.770Z",
-                "_id": "5941dbd882dedd1a1ceb1044",
-                "__v": 0,
-                "createdAt": "2017-06-15T00:59:04.561Z",
-                "status": 1,
-                "customer": {
-                    "fullname": "NGUYỄN THU THỦY",
-                    "_id": "5924168b164cb9030cee931d",
-                    "phone": "01644605955",
-                    "email": "thuyn9155@gmail.com",
-                    "isStudent": true
-                },
-                "orders": [],
-                "promocodes": [],
-                "service": {
-                    "name": "small group private",
-                    "price": 150000,
-                    "label": "Nhóm riêng 15"
-                },
-                "checkinTime": "2017-06-15T00:59:02.757Z",
-                "paymentMethod": [],
-                "accounts": [],
-                "note": ""
-            }, {
-                "_id": "5941dbe482dedd1a1ceb1045",
-                "parent": "5941dbd882dedd1a1ceb1044",
-                "updateAt": [],
-                "status": 1,
-                "customer": {
-                    "fullname": "NGUYỄN THỊ PHƯƠNG THẢO",
-                    "_id": "5924168b164cb9030cee9365",
-                    "phone": "0984731656",
-                    "email": "thaohvnh1212@gmail.com",
-                    "isStudent": true
-                },
-                "promocodes": [],
-                "service": {
-                    "name": "small group private",
-                    "price": 150000,
-                    "label": "Nhóm riêng 15"
-                },
-                "checkinTime": "2017-06-15T00:59:15.302Z",
-                "paymentMethod": [],
-            }]
+                    "usage": 1,
+                    "oriUsage": 1,
+                    "checkoutTime": "2017-06-15T01:47:45.770Z",
+                    "_id": "5941dbd882dedd1a1ceb1044",
+                    "__v": 0,
+                    "createdAt": "2017-06-15T00:59:04.561Z",
+                    "status": 1,
+                    "customer": {
+                        "fullname": "NGUYỄN THU THỦY",
+                        "_id": "5924168b164cb9030cee931d",
+                        "phone": "01644605955",
+                        "email": "thuyn9155@gmail.com",
+                        "isStudent": true
+                    },
+                    "orders": [],
+                    "promocodes": [],
+                    "service": {
+                        "name": "small group private",
+                        "price": 150000,
+                        "label": "Nhóm riêng 15"
+                    },
+                    "checkinTime": "2017-06-15T00:59:02.757Z",
+                    "paymentMethod": [],
+                    "accounts": [],
+                    "note": ""
+                }, 
+                {
+                    "_id": "5941dbe482dedd1a1ceb1045",
+                    "parent": "5941dbd882dedd1a1ceb1044",
+                    "updateAt": [],
+                    "status": 1,
+                    "customer": {
+                        "fullname": "NGUYỄN THỊ PHƯƠNG THẢO",
+                        "_id": "5924168b164cb9030cee9365",
+                        "phone": "0984731656",
+                        "email": "thaohvnh1212@gmail.com",
+                        "isStudent": true
+                    },
+                    "promocodes": [],
+                    "service": {
+                        "name": "small group private",
+                        "price": 150000,
+                        "label": "Nhóm riêng 15"
+                    },
+                    "checkinTime": "2017-06-15T00:59:15.302Z",
+                    "paymentMethod": [],
+                }
+            ];
+
             Customers.insertMany(mockCustomers, function(err, cus) {
                 if (err) {
                     console.log(err)
@@ -1316,7 +1330,7 @@ describe('Checkout members with leader', function() {
             });
         });
 
-        it('should confirm checkout for leader without memeber successfully', function(done) {
+        it('should confirm checkout for leader without member successfully', function(done) {
             chai.request(server)
                 .post('/checkout')
                 .send({ data: mockOccs[0] })

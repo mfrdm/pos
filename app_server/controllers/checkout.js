@@ -36,6 +36,7 @@ function Checkout() {
 						match: 	{
 							start: {$lte: new Date ()},
 							end: {$gte: new Date ()},
+							services: foundOcc.service.name.toLowerCase (), 
 							$or: [{amount: {$gt: 0}}, {$and: [{'recursive.isRecursive': true}, {amount: {$lte: 0}}]}]
 							
 						},
