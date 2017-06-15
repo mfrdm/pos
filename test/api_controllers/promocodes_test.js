@@ -2,7 +2,7 @@ var chai = require ('chai');
 var chaiHttp = require ('chai-http');
 var server = require ('../../app');
 var mongoose = require ('mongoose');
-var Promocodes = mongoose.model ('promocodes');
+var Promocodes = mongoose.model ('Promocodes');
 var should = chai.should ();
 
 describe ('Promotion codes', function (){

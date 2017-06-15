@@ -928,7 +928,7 @@
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////// Checkout ///////////////////////////////////////////////
-        
+        vm.model.temporary.occMembers = []
         // check if occ has no parent, will show checkbox
         function showCheckbox(occupancy){
             if(!occupancy.parent && expectedServiceNames.indexOf(occupancy.service.name.toLowerCase ()) > 1){
@@ -947,6 +947,16 @@
                     }else{
                         vm.model.temporary.disableChildren.push(ele)
                     }
+                }
+            })
+        }
+
+        function getOccMembers(leader, listMember){
+            vm.model.temporary.occMembers.push(leader)
+            vm.model.checkedinList.data.map(function(ele){
+                console.log(ele._id)
+                if(listMember.indexOf(ele._id) > -1){
+                    vm.model.temporary.occMembers.push(ele)
                 }
             })
         }
@@ -983,7 +993,7 @@
                     vm.ctrl.hideLoader ();
                     vm.model.checkingout.occupancy = res.data.data;
 
-                    vm.model.checkingout.occupancy.childrenIdList = []
+                    vm.model.temporary.childrenIdList = []
                     vm.model.checkingout.occupancy.note = vm.model.temporary.note; // likely to REMOVE later
 
                     vm.ctrl.checkout.getPromocodeNames ();
@@ -1026,18 +1036,31 @@
             if (vm.model.temporary.checkout.selectedAccount._id){
                 vm.model.checkingout.occupancy.paymentMethod = [vm.model.temporary.checkout.prepaidTotal.acc];
             }
-
+            getOccMembers(vm.model.checkingout.occupancy, vm.model.temporary.childrenIdList)
             vm.ctrl.showLoader ();
-
-            CheckinService.checkout(vm.model.checkingout.occupancy)
-                .then(function success(res){
-                    vm.ctrl.hideLoader ();
-                    vm.ctrl.reset();
-                }, function error(err){
-                    vm.ctrl.hideLoader ();
-                    console.log(err);
-                    // show message
-                })
+            if(vm.model.temporary.occMembers.length <= 1){
+                CheckinService.checkout(vm.model.checkingout.occupancy)
+                    .then(function success(res){
+                        vm.ctrl.hideLoader ();
+                        vm.ctrl.reset();
+                    }, function error(err){
+                        vm.ctrl.hideLoader ();
+                        console.log(err);
+                        // show message
+                    })
+            }else{
+                console.log(vm.model.temporary.occMembers)
+                CheckinService.checkoutGroup(vm.model.temporary.occMembers)
+                    .then(function success(res){
+                        vm.ctrl.hideLoader ();
+                        vm.ctrl.reset();
+                    }, function error(err){
+                        vm.ctrl.hideLoader ();
+                        console.log(err);
+                        // show message
+                    })
+            }
+            
         };
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -335,7 +335,7 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 						th Members chưa checkout
 						td
 							label(ng-repeat='avaiChild in vm.model.temporary.availableChildren')
-								input(type='checkbox' checklist-model='vm.model.checkingout.occupancy.childrenIdList' checklist-value='avaiChild._id')
+								input(type='checkbox' checklist-model='vm.model.temporary.childrenIdList' checklist-value='avaiChild._id')
 								span {{avaiChild.customer.fullname}}
 					tr(ng-show='vm.model.dom.checkboxDiv' ng-if='vm.model.temporary.disableChildren.length > 0')
 						th Members đã checkout
