@@ -1049,7 +1049,6 @@
                         // show message
                     })
             }else{
-                console.log(vm.model.temporary.occMembers)
                 CheckinService.checkoutGroup(vm.model.temporary.occMembers)
                     .then(function success(res){
                         vm.ctrl.hideLoader ();

@@ -319,7 +319,6 @@ function Checkout() {
 
 								});
 							}
-
 						}
 						else{
 							Customers.update({'_id':{$in:memberCusId}}, {$set:{checkinStatus:false}}, function(err, cus){
@@ -334,9 +333,9 @@ function Checkout() {
 										usage: usage, 
 										oriUsage: oriUsage,
 										price: price,
-										promocodes: promocodes,
+										// promocodes: promocodes,
 										checkoutTime: checkoutTime,
-										paymentMethod: paymentMethods,
+										// paymentMethod: paymentMethods,
 										note: note
 									}
 									Occupancies.update({'_id':{$in:membersId}}, {$set: updateOccMember}, {new: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function(err, occ){
@@ -352,7 +351,6 @@ function Checkout() {
 						}
 					}
 					else{
-						
 						next ();
 					}
 
