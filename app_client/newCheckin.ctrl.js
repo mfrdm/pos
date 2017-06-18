@@ -1018,7 +1018,6 @@
             CheckoutService.withdrawOneAccount (occ, accId).then(
                 function success (res){
                     vm.ctrl.hideLoader ();
-                    
                     vm.model.temporary.checkout.prepaidTotal = res.data.data;
                 },
                 function error (err){

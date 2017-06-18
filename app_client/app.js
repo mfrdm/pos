@@ -20,14 +20,14 @@ function config ($locationProvider, $routeProvider){
 			controller: 'LoginCtrl',
 			controllerAs: 'vm',			
 		})
-		.when ('/register', {
-			templateUrl: '/register',
-			resolve: {
-				'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
-			},			
-			controller: 'RegisterCtrl',
-			controllerAs: 'vm',
-		})
+		// .when ('/register', {
+		// 	templateUrl: '/register',
+		// 	resolve: {
+		// 		'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
+		// 	},			
+		// 	controller: 'RegisterCtrl',
+		// 	controllerAs: 'vm',
+		// })
 		.when('/checkin', {
 			templateUrl : "/template/newCheckin",
 			resolve: {
