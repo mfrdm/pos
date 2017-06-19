@@ -5,6 +5,7 @@ var Occupancies = mongoose.model ('Occupancies')
 var Customers = mongoose.model ('customers');
 var Promocodes = mongoose.model ('Promocodes');
 var moment = require ('moment');
+var request = require ('request');
 
 module.exports = new OrdersCtrl();
 
@@ -28,7 +29,28 @@ function OrdersCtrl() {
 				return
 			}
 
-			res.json ({data: newOrder});
+			// deal with storage
+			var storage = {};
+			storage.itemList = [];
+		    req.body.data.orderline.map(function(ele){
+		    	var item = {};
+		    	item.name = ele.productName;
+		    	item.itemId = ele._id;
+		    	item.quantity = -ele.quantity;
+		    	storage.itemList.push(item)
+		    })
+		    var reqOptions =({
+		    	url: 'http://localhost:3000/storages/create',
+				method: 'POST',
+				body:{data:storage},
+				json: true
+		    })
+			request (reqOptions, function(err, res, body){
+				if(err){
+					console.log(err)
+				}
+				res.json ({data: newOrder});
+			})
 		})		
 	};
 

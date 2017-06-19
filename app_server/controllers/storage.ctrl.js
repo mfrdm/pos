@@ -89,7 +89,7 @@ function StorageCtrl (){
 	// Storage
 	this.createStorage = function(req, res, next){
 		var newStorage= new Storages (req.body.data);
-
+		console.log(req.body.data)
 		newStorage.save (function (err, storage){
 			if (err){
 				next (err);
