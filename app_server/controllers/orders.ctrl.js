@@ -39,13 +39,18 @@ function OrdersCtrl() {
 		    	item.quantity = -ele.quantity;
 		    	storage.itemList.push(item)
 		    })
+		    if (process.env.NODE_ENV === 'development'){
+				var host = process.env.LOCAL_HOST;
+			}else{
+				var host = process.env.REMOTE_HOST;
+			}
 		    var reqOptions =({
-		    	url: 'http://localhost:3000/storages/create',
+		    	url: host+'/storages/create',
 				method: 'POST',
 				body:{data:storage},
 				json: true
 		    })
-			request (reqOptions, function(err, res, body){
+			request (reqOptions, function(err, response, body){
 				if(err){
 					console.log(err)
 				}
