@@ -3,8 +3,23 @@ angular.module ('posApp')
 
 function StorageService ($http){
 	// get storage list
-	this.readStorageList = function(){
-		return $http.get('/storages')
+	this.readStorageList = function(startTime, endTime){
+		return $http.get('/storages', {params:{start:JSON.stringify(startTime), end:JSON.stringify(endTime)}})
+	}
+
+	// add product
+	this.createProduct = function(data){
+		return $http.post('/products/create', {data:data})
+	}
+
+	// read all products
+	this.readProducts = function(){
+		return $http.get('/products')
+	}
+
+	// add storage
+	this.createStorage = function(data){
+		return $http.post('/storages/create', {data:data})
 	}
 	
 }

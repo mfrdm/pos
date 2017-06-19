@@ -962,7 +962,6 @@
         function getOccMembers(leader, listMember){
             vm.model.temporary.occMembers.push(leader)
             vm.model.checkedinList.data.map(function(ele){
-                console.log(ele._id)
                 if(listMember.indexOf(ele._id) > -1){
                     vm.model.temporary.occMembers.push(ele)
                 }
@@ -1000,7 +999,7 @@
                 function success(res){
                     vm.ctrl.hideLoader ();
                     vm.model.checkingout.occupancy = res.data.data;
-
+                    console.log(vm.model.checkingout.occupancy)
                     vm.model.temporary.childrenIdList = []
                     vm.model.checkingout.occupancy.note = vm.model.temporary.note; // likely to REMOVE later
 

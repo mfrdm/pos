@@ -62,7 +62,7 @@ function Checkout() {
 
 						foundOcc = foundOcc.toObject (); // convert to add data
 						foundOcc.accounts = cus.accounts ? cus.accounts : [];
-
+						console.log(foundOcc)
 						res.json ({data: foundOcc});
 					});
 

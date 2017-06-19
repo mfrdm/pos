@@ -58,7 +58,7 @@ xdescribe ('Search checking-in customers', function (){
 		});
 	});
 
-	it ('should successfully return non-checked-in customers given customer fullname', function (done){
+	xit ('should successfully return non-checked-in customers given customer fullname', function (done){
 		chai.request (server)
 			.get ('/checkin/search-customers')
 			.query ({input: 'C B A'})
@@ -75,7 +75,7 @@ xdescribe ('Search checking-in customers', function (){
 			});
 	});
 
-	it ('should successfully return non-checked-in customers given customer email', function (done){
+	xit ('should successfully return non-checked-in customers given customer email', function (done){
 		chai.request (server)
 			.get ('/checkin/search-customers')
 			.query ({input: customer.email})
@@ -94,7 +94,7 @@ xdescribe ('Search checking-in customers', function (){
 	});
 
 
-	it ('should successfully return non-checked-in customers given customer phone', function (done){
+	xit ('should successfully return non-checked-in customers given customer phone', function (done){
 		chai.request (server)
 			.get ('/checkin/search-customers')
 			.query ({input: customer.phone})
@@ -112,8 +112,8 @@ xdescribe ('Search checking-in customers', function (){
 			});
 	});	
 
-	it ('should return active customers')
-	it ('should be invalid when required input not found')
+	xit ('should return active customers')
+	xit ('should be invalid when required input not found')
 });
 
 xdescribe ('Filter checked-in customers', function (){
