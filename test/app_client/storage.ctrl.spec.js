@@ -48,6 +48,15 @@ describe('Controller: StorageCtrl', function() {
             ]
         }
     ]
+
+    var editedProduct = {
+            name: 'RedBull',
+            price: 10000,
+            category: 'Soft Drink',
+            _id: '5946ca5ee23c6302f701077d',
+            updatedAt: [],
+            createdAt: '2017-06-18T18:51:14.861Z'
+        }
     // start time and end time
     var startTime = '2017-06-18T13:40:42.278Z';
     var endTime = '2017-06-18T14:50:42.280Z';
@@ -104,12 +113,21 @@ describe('Controller: StorageCtrl', function() {
                 vm.ctrl.getStorageList();
                 $httpBackend.flush();
             }
+
+            // add product
+            createProduct = function(vm, product){
+                $httpBackend.when('POST', /\/products\/create.*/).respond({
+                    data: product
+                });
+                vm.ctrl.addProduct();
+                $httpBackend.flush();
+            }
         }
     ));
 
     describe('Show list of storages (transactions)', function() {
 
-        describe('Show without filter and with time filter', function(){
+        xdescribe('Show without filter and with time filter', function(){
             it('should display list of transactions/storages without time filter (default)', function() {
                 var layout = createLayout();
                 var vm = createController();
@@ -119,25 +137,59 @@ describe('Controller: StorageCtrl', function() {
             })
         })
         
-
-        xit('should display correctly with time filter', function() {
-
+        describe('Toggle between Product and Storage Mode', function(){
+            it('should display Products list when click button show product', function(){
+                var layout = createLayout();
+                var vm = createController();
+                vm.model.dom.productList = false;
+                vm.ctrl.toogleList()
+                expect(vm.model.dom.productList).toBeTruthy()
+            })
+            it('should display Storages list by default and when click button show product again', function(){
+                var layout = createLayout();
+                var vm = createController();
+                vm.model.dom.storageList = true;
+                vm.ctrl.toogleList()
+                expect(vm.model.dom.storageList).toBeFalsy();
+                vm.ctrl.toogleList()
+                expect(vm.model.dom.storageList).toBeTruthy();
+            })
         })
 
     })
 
-    xdescribe('Toggle Filter Div', function() {
+    describe('Toggle Filter Div', function() {
 
         it('should hide filter div when click filter button (if closed before)', function() {
-
+            var layout = createLayout();
+            var vm = createController();
+            vm.model.dom.filterDiv = true;
+            vm.ctrl.toggleFilter()
+            expect(vm.model.dom.filterDiv).toBeFalsy();
         })
 
         it('should show filter div when click filter button (if opened before)', function() {
-
+            var layout = createLayout();
+            var vm = createController();
+            vm.ctrl.toggleFilter();
+            expect(vm.model.dom.filterDiv).toBeTruthy()
         })
 
         it('should reset all fields and return to default select when close filter div', function() {
-
+            var layout = createLayout();
+            var vm = createController();
+            vm.model.dom.filterDiv = true;
+            vm.model.filter.productName = 'cuong';
+            vm.model.filter.category = 2;
+            vm.model.filter.time = 2;
+            vm.model.filter.startTime = new Date();
+            vm.model.filter.endTime = new Date();
+            vm.ctrl.toggleFilter();
+            expect(vm.model.filter.productName).toEqual('');
+            expect(vm.model.filter.category).toEqual('All');
+            expect(vm.model.filter.time).toEqual(1)
+            expect(vm.model.filter.startTime).toEqual('')
+            expect(vm.model.filter.endTime).toEqual('')
         })
 
     })
@@ -145,35 +197,57 @@ describe('Controller: StorageCtrl', function() {
     xdescribe('Add new assets/products', function() {
 
         it('should open add items form when click add item', function() {
-
+            var layout = createLayout();
+            var vm = createController();
+            vm.ctrl.openCreateProduct();
+            expect(vm.model.dom.addProductDiv).toBeTruthy()
         })
 
         it('should not submit if not fill all required fields', function() {
-
+            var layout = createLayout();
+            var vm = createController();
+            createProduct(vm, 'xxx');
+            expect(vm.model.product.category).toBeDefined();
+            expect(vm.model.product.name).toBeDefined();
+            expect(vm.model.product.price).toBeDefined();
         })
 
-        it('should display successful add message', function() {
-
-        })
+        // it('should reset all fields and back to product list page', function() {
+        //     var layout = createLayout();
+        //     var vm = createController();
+        //     expect(vm.model.product.category).toBeDefined();
+        //     expect(vm.model.product.name).toBeDefined();
+        //     expect(vm.model.product.price).toBeDefined();
+        // })
 
     })
 
-    xdescribe('Edit Products/Assets', function() {
+    describe('Edit Products/Assets', function() {
 
         it('should open edit items form when click edit', function() {
-
+            var layout = createLayout();
+            var vm = createController();
+            expect(vm.model.dom.editStorageDiv).toBeFalsy();
+            vm.ctrl.openEditStorage();
+            expect(vm.model.dom.editStorageDiv).toBeTruthy();
         })
 
         it('should fetch correctly data from that item to the form', function() {
-
+            var layout = createLayout();
+            var vm = createController();
+            vm.ctrl.openEditProduct(editedProduct);
+            expect(vm.model.editProduct.name).toEqual('RedBull')
+            expect(vm.model.editProduct.category).toEqual(2)
         })
 
-        it('should not submit if not fill all required fields', function() {
-
+        xit('should not submit if not fill all required fields', function() {
+            var layout = createLayout();
+            var vm = createController();
         })
 
-        it('should display successfull edit message', function() {
-
+        xit('should display successfull edit message', function() {
+            var layout = createLayout();
+            var vm = createController();
         })
 
     })

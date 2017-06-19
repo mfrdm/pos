@@ -21,5 +21,20 @@ function StorageService ($http){
 	this.createStorage = function(data){
 		return $http.post('/storages/create', {data:data})
 	}
+
+	// read all products in storage
+	this.readProductsQuantity = function(startTime, endTime){
+		return $http.get('/storages/total', {params:{start:JSON.stringify(startTime), end:JSON.stringify(endTime)}})
+	}
+
+	// edit product
+	this.editProduct = function(id, data){
+		return $http.post('/products/product/'+id+'/edit', {data:data})
+	}
+
+	// edit storage
+	this.editStorage = function(id, data){
+		return $http.post('/storages/storage/'+id+'/edit', {data:data})
+	}
 	
 }

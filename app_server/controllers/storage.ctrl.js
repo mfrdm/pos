@@ -103,6 +103,7 @@ function StorageCtrl (){
 	};
 
 	this.editStorage = function(req, res, next){
+		console.log(req.body.data)
 		Storages.findByIdAndUpdate(req.params.storageId, req.body.data, {new: true}, function(err, storage){
 			if (err){
 				next (err)
