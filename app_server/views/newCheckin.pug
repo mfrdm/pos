@@ -315,7 +315,7 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 		h2 GREEN SPACE
 		h3 Check-out confirmation
 	div(class="column small-12 paddingB20")
-		div(class="column small-12 large-6 large-push-3")
+		div(class="column small-12 large-8 large-push-2")
 			table(class="hover unstriped stack")
 				tbody
 					tr
@@ -336,7 +336,7 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 						td
 							label(ng-repeat='avaiChild in vm.model.temporary.availableChildren')
 								input(type='checkbox' checklist-model='vm.model.temporary.childrenIdList' checklist-value='avaiChild._id')
-								span {{avaiChild.customer.fullname}}
+								span {{$index+1}}. {{avaiChild.customer.fullname}} // {{avaiChild.customer.email}} // {{avaiChild.customer.phone}}
 					tr(ng-show='vm.model.dom.checkboxDiv' ng-if='vm.model.temporary.disableChildren.length > 0')
 						th Members đã checkout
 						td
