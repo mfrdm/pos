@@ -1,11 +1,186 @@
 div(class="row columns")
 	div(class="column small-12")
 		h2 Storage
-	div(class='column small-12 paddingT30')
-		//- select(ng-options='option.value as option.label for option in vm.model.options' ng-model='vm.model.filter' ng-change='vm.ctrl.filter()' ng-init='vm.model.filter=2')
-		//- label(ng-repeat='option in vm.model.options') 
-		//- 	input(type='radio' ng-model='vm.model.filter' name='test' value='{{option.value}}' ng-change='vm.ctrl.filter()')
-		//- 	span {{option.label}}
-		div(ng-repeat='item in vm.model.items | filter:vm.model.filter')
-			p {{item.name}} {{item.age}}
-		//- input(type='submit' value='submit' ng-click='vm.ctrl.filter()')
+	// SETTING
+	div(class="row column")
+		div(class="column small-6")
+			ul(class="menu")
+				li
+					a(class="button primary" ng-click="vm.ctrl.toogleList()") 
+						span() Product/Storage
+				li(class='paddingL15')
+					a(class="button primary" ng-click="vm.ctrl.openCreateProduct()") 
+						span() Add Product
+				li(class='paddingL15')
+					a(class="button primary" ng-click="vm.ctrl.openCreateStorage()") 
+						span() Add Storage
+		div(class="column small-6")
+			ul(class="menu clearfix")
+				li(class="float-right marginL15")
+					<a class="button primary" ng-click="vm.ctrl.toggleFilter()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
+				li(class="float-right")
+					ul(class="menu")
+						li: label(class="paddingR15 show-for-large") Sorting
+						li: select()
+	// FILTER. 
+	div(class="column" ng-show="vm.model.dom.filterDiv")
+		div(class="borderT newBox row column")
+			div(class='marginB15 column small-12 large-4')
+				legend Search By Product Name
+				input(type='text' ng-model='vm.model.filter.productName')
+			div(class="marginB15 column small-12 large-4")
+				legend Category
+				select(ng-options='option.label as option.label for option in vm.model.categoryOptionsFilter' ng-model='vm.model.filter.category')
+			div(class='marginB15 column small-12 large-4')
+				legend Time
+				select(ng-options='option.value as option.label for option in vm.model.timeOptions' ng-model='vm.model.filter.time' ng-change='vm.ctrl.timeChange()')
+		div(class='row column' ng-if='vm.model.filter.time == 2')
+			div(class='column small-6')
+				label Start Time
+					input(type="date" ng-model='vm.model.filter.startTime' ng-change='vm.ctrl.timeChange()')
+			div(class='column small-6')
+				label End Time
+					input(type="date" ng-model='vm.model.filter.endTime' ng-change='vm.ctrl.timeChange()')
+	// Storage list
+	div(class="column" ng-show="vm.model.dom.storageList")
+		div(class="table-scroll newBox")
+			table(class="borderAll")
+				thead
+					tr
+						th No
+						th Product Name
+						th Bought Quantity
+						th Sold Quantity
+						//- th Edit
+				tbody
+					tr(ng-repeat='storage in vm.model.dom.storage.list | filter: vm.model.filter.productName')
+						th {{$index+1}}
+						th {{storage.name}}
+						th {{storage.quantity}}
+						th
+						//- th
+						//- 	input(class="button" type="submit" value="Edit" ng-click='vm.ctrl.openEditStorage(storage)')
+	// Product list 
+	div(class="column" ng-show="vm.model.dom.productList")
+		div(class="table-scroll newBox")
+			table(class="borderAll")
+				thead
+					tr
+						th No
+						th Category
+						th Name
+						th Quantity
+						th Value
+						th Edit
+				tbody
+					tr(ng-repeat='product in vm.model.dom.product.list | filter: vm.model.filter.productName | filterCategory: vm.model.filter.category')
+						th {{$index+1}}
+						th {{product.category}}
+						th {{product.name}}
+						th {{product.totalQuantity}}
+						th {{product.totalValue}}
+						th
+							input(class="button" type="submit" value="Edit" ng-click='vm.ctrl.openEditProduct(product)')
+	// Add product			
+	div(class="column row" ng-show='vm.model.dom.addProductDiv')
+		form(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-submit='vm.ctrl.addProduct()')
+			div(class='small-12 large-6 large-push-3')
+				div(class="row column text-center paddingB15")
+					h3 Add Product
+				div(class="row column")
+					div(class="column small-12 paddingLR0")
+						label Name
+							input(type="text" ng-model='vm.model.product.name' required)
+					div(class="column small-12 paddingLR0")
+						label Price
+							input(type="number" ng-model='vm.model.product.price' required)
+					div(class="column small-12 paddingLR0")
+						label Category
+							select(ng-options='option.value as option.label for option in vm.model.categoryOptions' ng-model='vm.model.product.category')
+					div(class="column small-12 paddingLR0")
+						label Location
+							select()
+
+				div(class="row column paddingT15")
+					input(class="button" type="submit" value="Submit")
+					a(class="button float-right" ng-click='vm.ctrl.reset()') Cancel
+	
+	// Add storage			
+	div(class="column row" ng-show='vm.model.dom.addStorageDiv')
+		form(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-submit='vm.ctrl.addStorage()')
+			div(class='small-12 large-6 large-push-3')
+				div(class="row column text-center paddingB15")
+					h3 Add Storage
+				div(class="row column")
+					table
+						tr
+							th Name
+							th Quantity
+							th Delete
+						tr(ng-repeat='item in vm.model.storage.itemList')
+							td {{item.name}}
+							td {{item.quantity}}
+							td
+								div(class='column small-centered text-center')
+									a(class="button primary marginB0")
+										i(class="material-icons customIcon") clear
+				div(class="row column")
+					div(class="column small-5 paddingL0")
+						label Name
+							select(ng-options='option.value as option.label for option in vm.model.productOptions' ng-model='vm.model.temporary.itemId')
+					div(class="column small-5")
+						label Quantity
+							input(type="number" ng-model='vm.model.temporary.quantity' required)
+					div(class="column small-2")
+						div(class='column small-centered text-center')
+							a(class="button primary marginB0" ng-click='vm.ctrl.addToItemList()')
+								i(class="material-icons customIcon") add
+				div(class="row column")
+					div(class="column small-12 paddingLR0")
+						label Location
+							select()
+
+				div(class="row column paddingT15")
+					input(class="button" type="submit" value="Submit")
+					a(class="button float-right" ng-click='vm.ctrl.reset()') Cancel
+	// Edit storage			
+	// div(class="column row" ng-show='vm.model.dom.editStorageDiv')
+		form(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-submit='vm.ctrl.editStorage()')
+			div(class='small-12 large-6 large-push-3')
+				div(class="row column text-center paddingB15")
+					h3 Edit Storage
+				div(class="row column")
+					table
+						tr
+							th Name
+							th Quantity
+						tr
+							td
+								input(type='text' ng-model='vm.model.editStorage.name')
+							td
+								input(type='text' ng-model='vm.model.editStorage.quantity')
+				div(class="row column paddingT15")
+					input(class="button" type="submit" value="Save")
+					a(class="button float-right" ng-click='vm.ctrl.reset()') Cancel
+	// Edit Product			
+	div(class="column row" ng-show='vm.model.dom.editProductDiv')
+		form(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-submit='vm.ctrl.editProduct()')
+			div(class='small-12 large-6 large-push-3')
+				div(class="row column text-center paddingB15")
+					h3 Edit Product
+				div(class="row column")
+					table
+						tr
+							th Name
+							th Price
+							th Category
+						tr
+							td
+								input(type='text' ng-model='vm.model.editProduct.name')
+							td
+								input(type='text' ng-model='vm.model.editProduct.price')
+							td
+								select(ng-options='option.value as option.label for option in vm.model.categoryOptions' ng-model='vm.model.editProduct.category')
+				div(class="row column paddingT15")
+					input(class="button" type="submit" value="Save")
+					a(class="button float-right" ng-click='vm.ctrl.reset()') Cancel

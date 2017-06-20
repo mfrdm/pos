@@ -27,6 +27,7 @@ require('./customers');
 require('./companies');
 require('./depts');
 require('./products');
+require('./storage.model');
 require('./promocodes.model');
 require('./orders');
 require('./occupancies.model');

@@ -13,7 +13,7 @@ var should = chai.should ();
 
 chai.use (chaiHttp);
 
-describe ('Checkout', function (){
+xdescribe ('Checkout', function (){
 	this.timeout(3000);
 	xdescribe ('Create invoice', function (){
 		var occupancies, customers;
@@ -537,19 +537,14 @@ describe ('Checkout', function (){
 					}
 				},
 				{
-					price: 350000,
-					amount: 0,
+					price: 60000,
+					amount: 1,
 					unit: 'hour',
 					start: moment (),
-					end: moment().add (30, 'day'),					
+					end: moment().hour(23).minute (59),					
 					services: ['group common', 'individual common'],
 					recursive: {
-						isRecursive: true,
-						lastRenewDate: moment ().add (-1, 'day'),
-						recursiveType: 1,
-						renewNum: 3,
-						maxRenewNum: 3,
-						baseAmount: 3				
+						isRecursive: false				
 					}
 				},
 			]
@@ -637,7 +632,7 @@ describe ('Checkout', function (){
 
 		});
 		
-		it ('should return correct total, remain, and paid when withdraw from an HOUR account when the amount in account is less than or equal being-paid amount', function (done){
+		xit ('should return correct total, remain, and paid when withdraw from an HOUR account when the amount in account is less than or equal being-paid amount', function (done){
 			chai.request (server)
 				.get ('/checkout/account/withdraw/' + newAcc[1]._id.toString ())
 				.query ({occ: JSON.stringify (newOcc)})
@@ -650,13 +645,14 @@ describe ('Checkout', function (){
 					res.body.data.should.to.exist;
 					res.body.data.occ.total.should.equal (15000);
 					res.body.data.acc.remain.should.equal (0);
-					res.body.data.acc.paid.should.equal (2);
+					res.body.data.acc.paidAmount.should.equal (2);
+					res.body.data.acc.paidTotal.should.equal (30000);
 
 					done ();
 				});				
 		});
 
-		it ('should return correct total, remain, and paid when withdraw from an HOUR account when the amount in account is greater than being-paid amount', function (done){
+		xit ('should return correct total, remain, and paid when withdraw from an HOUR account when the amount in account is greater than being-paid amount', function (done){
 			chai.request (server)
 				.get ('/checkout/account/withdraw/' + newAcc[0]._id.toString ())
 				.query ({occ: JSON.stringify (newOcc)})
@@ -669,13 +665,13 @@ describe ('Checkout', function (){
 					res.body.data.should.to.exist;
 					res.body.data.occ.total.should.equal (0);
 					res.body.data.acc.remain.should.equal (7);
-					res.body.data.acc.paid.should.equal (3);
-
+					res.body.data.acc.paidAmount.should.equal (3);
+					res.body.data.acc.paidTotal.should.equal (45000);
 					done ();
 				});				
 		})	
 
-		it ('should return correct total, remain, and paid when withdraw from an CASH account when the amount in account is less than or equal being-paid amount', function (done){
+		xit ('should return correct total, remain, and paid when withdraw from an CASH account when the amount in account is less than or equal being-paid amount', function (done){
 			chai.request (server)
 				.get ('/checkout/account/withdraw/' + newAcc[4]._id.toString ())
 				.query ({occ: JSON.stringify (newOcc)})
@@ -688,13 +684,13 @@ describe ('Checkout', function (){
 					res.body.data.should.to.exist;
 					res.body.data.occ.total.should.equal (15000);
 					res.body.data.acc.remain.should.equal (0);
-					res.body.data.acc.paid.should.equal (30000);
-
+					res.body.data.acc.paidAmount.should.equal (30000);
+					res.body.data.acc.paidTotal.should.equal (30000);
 					done ();
 				});				
 		})
 
-		it ('should return correct total, remain, and paid when withdraw from an CASH account when the amount in account is greater than being-paid amount', function (done){
+		xit ('should return correct total, remain, and paid when withdraw from an CASH account when the amount in account is greater than being-paid amount', function (done){
 			chai.request (server)
 				.get ('/checkout/account/withdraw/' + newAcc[5]._id.toString ())
 				.query ({occ: JSON.stringify (newOcc)})
@@ -707,13 +703,13 @@ describe ('Checkout', function (){
 					res.body.data.should.to.exist;
 					res.body.data.occ.total.should.equal (0);
 					res.body.data.acc.remain.should.equal (55000);
-					res.body.data.acc.paid.should.equal (45000);
-
+					res.body.data.acc.paidAmount.should.equal (45000);
+					res.body.data.acc.paidTotal.should.equal (45000);
 					done ();
 				});				
 		})
 
-		it ('should return correct total when withdraw from a 1 day common combo account', function (done){
+		xit ('should return correct total when withdraw from a 1 day common combo account', function (done){
 			chai.request (server)	
 				.get ('/checkout/account/withdraw/' + newAcc[2]._id.toString ())
 				.query ({occ: JSON.stringify (newOcc)})
@@ -726,13 +722,13 @@ describe ('Checkout', function (){
 					res.body.data.should.to.exist;
 					res.body.data.occ.total.should.equal (0);
 					res.body.data.acc.remain.should.equal (21);
-					res.body.data.acc.paid.should.equal (3);
-
+					res.body.data.acc.paidAmount.should.equal (3);
+					res.body.data.acc.paidTotal.should.equal (45000);
 					done ();
 				});			
 		})
 
-		it ('should return correct total when withdraw from a 3h-1-month common combo account', function (done){
+		xit ('should return correct total when withdraw from a 3h-1-month common combo account', function (done){
 			chai.request (server)	
 				.get ('/checkout/account/withdraw/' + newAcc[3]._id.toString ())
 				.query ({occ: JSON.stringify (newOcc)})
@@ -745,13 +741,13 @@ describe ('Checkout', function (){
 					res.body.data.should.to.exist;
 					res.body.data.occ.total.should.equal (0);
 					res.body.data.acc.remain.should.equal (0);
-					res.body.data.acc.paid.should.equal (3);
-
+					res.body.data.acc.paidAmount.should.equal (3);
+					res.body.data.acc.paidTotal.should.equal (45000);
 					done ();
 				});
 		});
 
-		it ('should renew an account when the account is valid', function (done){
+		it ('should update an an account when the account is renewed', function (done){
 			var now = moment ();
 			chai.request (server)	
 				.get ('/checkout/account/withdraw/' + newAcc[6]._id.toString ())
@@ -765,7 +761,8 @@ describe ('Checkout', function (){
 					res.body.data.should.to.exist;
 					res.body.data.occ.total.should.equal (0);
 					res.body.data.acc.remain.should.equal (0);
-					res.body.data.acc.paid.should.equal (3);
+					res.body.data.acc.paidAmount.should.equal (3);
+					res.body.data.acc.paidTotal.should.equal (45000);					
 
 					Accounts.findOne ({_id: res.body.data.acc._id}, {amount: 1, 'recursive.lastRenewDate': 1, 'recursive.renewNum': 1}, function (err, foundAcc){
 
@@ -783,9 +780,7 @@ describe ('Checkout', function (){
 				});
 		})
 
-		it ('should not renew an account when it is not valid', function (done){
-			var now = moment ();
-
+		it ('should not update an account when it is not renewable', function (done){
 			chai.request (server)	
 				.get ('/checkout/account/withdraw/' + newAcc[7]._id.toString ())
 				.query ({occ: JSON.stringify (newOcc)})
@@ -796,19 +791,19 @@ describe ('Checkout', function (){
 
 					res.should.to.have.status (200);
 					res.body.data.should.to.exist;
-					res.body.data.occ.total.should.equal (45000);
+					res.body.data.occ.total.should.equal (30000);
 					res.body.data.acc.remain.should.equal (0);
-					res.body.data.acc.paid.should.equal (0);
+					res.body.data.acc.paidAmount.should.equal (1);
+					res.body.data.acc.paidTotal.should.equal (15000);
 
-					Accounts.findOne ({_id: res.body.data.acc._id}, {amount: 1, 'recursive.lastRenewDate': 1, 'recursive.renewNum': 1}, function (err, foundAcc){
+					Accounts.findOne ({_id: res.body.data.acc._id}, {amount: 1, 'recursive.isRecursive': 1}, function (err, foundAcc){
 
 						if (err){
 							console.log (err);
 						}
 
-						foundAcc.amount.should.to.equal (0);
-						moment(foundAcc.recursive.lastRenewDate).isBefore (now).should.to.equal (true);
-						foundAcc.recursive.renewNum.should.to.equal (3);
+						foundAcc.amount.should.to.equal (1);
+						foundAcc.recursive.isRecursive.should.to.equal (false);
 						done ();
 					})
 
@@ -817,7 +812,7 @@ describe ('Checkout', function (){
 		})
 	})
 
-	describe ('Confirm checkout', function (){
+	xdescribe ('Confirm checkout', function (){
 		var occupancy, customer;
 		var newOcc, newCustomer;
 		var accounts, newAcc;
@@ -997,7 +992,7 @@ describe ('Checkout', function (){
 			});
 		});
 
-		xit ('should checkout successfully when no account is used', function (done){
+		it ('should checkout successfully when no account is used', function (done){
 		
 			chai.request (server)
 				.post ('/checkout/')
@@ -1088,5 +1083,334 @@ describe ('Checkout', function (){
 				});
 		});
 	});
+
 })
 
+describe('Checkout members with leader', function() {
+    this.timeout(3000);
+    describe('Leader without members', function() {
+        var mockOccs, mockCustomers, newOcc, newCustomer, group, selectedAcc;
+        beforeEach(function(done) {
+            mockCustomers = [
+	            {
+	                firstname: 'p',
+	                middlename: 'q',
+	                lastname: 'k',
+	                birthday: '1988-09-25',
+	                phone: '0965999997',
+	                edu: {},
+	                email: 'hgf@gmail.com',
+	                isStudent: true,
+	                checkinStatus: false,
+	            },
+	            {
+	                firstname: 'g',
+	                middlename: 'f',
+	                lastname: 's',
+	                birthday: '1988-09-25',
+	                phone: '0984731656',
+	                edu: {},
+	                email: 'hsdff@gmail.com',
+	                isStudent: true,
+	                checkinStatus: false,
+	            }
+            ];
+
+            mockAccounts = [
+	            {
+	                amount: 10,
+	                unit: 'hour',
+	                start: moment(),
+	                end: moment().add(5, 'day'),
+	                services: ['group common', 'individual common']
+	            }, {
+	                amount: 2,
+	                unit: 'hour',
+	                start: moment(),
+	                end: moment().add(5, 'day'),
+	                services: ['group common', 'individual common']
+	            }, {
+	                amount: 24,
+	                unit: 'hour',
+	                start: moment(),
+	                end: moment().hour(23).minute(59),
+	                services: ['group common', 'individual common']
+	            }, {
+	                amount: 3,
+	                unit: 'hour',
+	                start: moment(),
+	                end: moment().hour(23).minute(59),
+	                services: ['group common', 'individual common']
+	            }, {
+	                amount: 10,
+	                unit: 'hour',
+	                start: moment(),
+	                end: moment().add(30, 'day'),
+	                services: ['small group private', 'individual common']
+	            }
+            ];
+
+            mockOccs = [
+	            {
+	            	_id: '5941dbd882dedd1a1ceb1044',
+	                createdAt: '2017-06-15T00:59:04.561Z',
+	                status: 1,
+	                customer: {},
+	                promocodes: [],
+	                service: {
+	                    name: 'small group private',
+	                    price: 150000,
+	                },
+	                paymentMethod: [],
+	                checkinTime: moment().add(-3, 'hour'),
+                	checkoutTime: moment(),
+	            }, {
+	                "_id": "5941dbe482dedd1a1ceb1045",
+	                "parent": "5941dbd882dedd1a1ceb1044",
+	                "updateAt": [],
+	                "status": 1,
+	                "customer": {},
+	                "promocodes": [],
+	                "service": {
+	                    "name": "small group private",
+	                    "price": 150000,
+	                },
+	                "paymentMethod": [],
+	                checkinTime: moment().add(-3, 'hour'),
+                	checkoutTime: moment(),
+	            }, {
+	            	_id: '5941dbd882dedd1a1ceb1046',
+	                createdAt: '2017-06-15T00:59:04.561Z',
+	                status: 1,
+	                customer: {},
+	                promocodes: [],
+	                service: {
+	                    name: 'small group private',
+	                    price: 150000,
+	                },
+	                paymentMethod: [{name:'account', paid:2}],
+	                checkinTime: moment().add(-3, 'hour'),
+                	checkoutTime: moment(),
+	            },{
+	            	_id: '5941dbd882dedd1a1ceb1047',
+	            	"parent": "5941dbd882dedd1a1ceb1046",
+	                createdAt: '2017-06-15T00:59:04.561Z',
+	                status: 1,
+	                customer: {},
+	                promocodes: [],
+	                service: {
+	                    name: 'small group private',
+	                    price: 150000,
+	                },
+	                paymentMethod: [],
+	                checkinTime: moment().add(-3, 'hour'),
+                	checkoutTime: moment(),
+	            }
+            ];
+
+            Customers.insertMany(mockCustomers, function(err, cus) {
+                if (err) {
+                    console.log(err)
+                    return
+                }
+
+                newCustomer = cus;
+                mockOccs[0].customer = cus[0];
+                mockOccs[1].customer = cus[1];
+                mockOccs[2].customer = cus[0];
+                mockOccs[3].customer = cus[1];
+
+                Occupancy.insertMany(mockOccs, function(err, occ) {
+                    if (err) {
+                        console.log(err)
+                        return
+                    }
+
+                    newOcc = occ;
+                    newOcc[0].getTotal();
+                    newOcc[1].getTotal();
+                    newOcc[2].getTotal();
+                    newOcc[3].getTotal();
+
+                    mockAccounts.map(function(x, i, arr) {
+                        x.customer = newCustomer[0]._id;
+                    });
+
+                    Accounts.insertMany(mockAccounts, function(err, acc) {
+                        if (err) {
+                            console.log(err)
+                            return
+                        }
+
+                        newAcc = acc;
+                        var newAccIds = newAcc.map(function(x, i, arr) {
+                            return x._id;
+                        })
+                        selectedAcc = newAcc[4];
+
+			            newOcc[2].paymentMethod = [{
+			                _id: selectedAcc._id,
+							name: 'account',
+							unit: selectedAcc.unit,
+							paidTotal: 150000,
+							paidAmount: 2,
+							remain: 8,
+			            }];
+
+                        Customers.update({ _id: newCustomer[0]._id }, { $set: { accounts: newAccIds } }, function(err, cus) {
+                            if (err) {
+                                console.log(err)
+                                return
+                            }
+
+                            done();
+                        });
+
+                    });
+
+
+                });
+            });
+        });
+
+        afterEach(function(done) {
+            var accIds = newAcc.map(function(x, i, arr) {
+                return x._id;
+            });
+
+            var cusIds = newCustomer.map(function(x, i, arr) {
+                return x._id;
+            });
+
+            var occIds = newOcc.map(function(x, i, arr) {
+                return x._id;
+            });
+
+            Occupancy.remove({ _id: { $in: occIds } }, function(err, data) {
+                if (err) {
+                    // console.log (err)
+                    return
+                }
+                Customers.remove({ _id: { $in: cusIds } }, function(err, data) {
+                    if (err) {
+                        // console.log (err)
+                        return
+                    }
+
+                    Accounts.remove({ _id: { $in: accIds } }, function(err, result) {
+                        if (err) {
+                            // console.log (err)
+                            return
+                        }
+
+                        done();
+                    });
+
+
+                });
+
+            });
+
+        });
+
+        it('should confirm checkout for leader with member successfully', function(done) {
+            chai.request(server)
+                .post('/checkout/group')
+                .send({ data: newOcc.slice(0,2) })
+                .end(function(err, res) {
+                    if (err) {
+                        console.log(err);
+                    }
+
+                    // find all occupancies at once, then test
+                    // Similarly, find all customers at once, then test
+
+                    // test status
+                    res.body.data.message.should.equal('success')
+                    Occupancy.findById({_id:newOcc[0]._id}, function(err, occ){
+                    	if (err) {
+                            return
+                        }
+                        
+                        // test all things updated
+                        occ.status.should.equal(2);
+                        Customers.findById({ _id: newCustomer[0]._id }, function(err, cus) {
+                            if (err) {
+                                return
+                            }
+
+                            // test all things updated
+                            cus.checkinStatus.should.equal(false);
+                            Occupancy.findById({ _id: newOcc[1]._id }, function(err, occ) {
+		                        if (err) {
+		                            return
+		                        }
+
+
+		                        occ.status.should.equal(2);
+		                        Customers.findById({ _id: newCustomer[1]._id }, function(err, cus) {
+		                            if (err) {
+		                                return
+		                            }
+
+		                            cus.checkinStatus.should.equal(false);
+		                            done()
+		                        })
+		                    });
+                        })
+                    })
+                    
+                });
+        })
+
+        it ('should confirm checkout for leader and member with account', function(done){
+        	chai.request(server)
+                .post('/checkout/group')
+                .send({ data: newOcc.slice(2) })
+                .end(function(err, res) {
+                    if (err) {
+                        console.log(err);
+                    }
+
+                    res.body.data.message.should.equal('success')
+                    Occupancy.findById({_id:newOcc[2]._id}, function(err, occ){
+                    	if (err) {
+                            return
+                        }
+                        occ.status.should.equal(2);
+
+                        Customers.findById({ _id: newCustomer[0]._id }, function(err, cus) {
+                            if (err) {
+                                return
+                            }
+
+                            cus.checkinStatus.should.equal(false);
+                            Accounts.findOne({ _id: selectedAcc._id }, function(err, foundAcc) {
+                                if (err) {
+                                    console.log(err);
+                                }
+
+                                foundAcc.amount.should.to.equal(8);
+                            
+                                Occupancy.findById({ _id: newOcc[3]._id }, function(err, occ) {
+    		                        if (err) {
+    		                            return
+    		                        }
+    		                        occ.status.should.equal(2);
+    		                        Customers.findById({ _id: newCustomer[1]._id }, function(err, cus) {
+    		                            if (err) {
+    		                                return
+    		                            }
+
+    		                            cus.checkinStatus.should.equal(false);
+    		                            done()
+    		                        })
+    		                    });
+                            })
+                        })
+                    })
+                    
+                });
+        })
+    })
+})

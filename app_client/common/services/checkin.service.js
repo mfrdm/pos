@@ -77,6 +77,14 @@ function CheckinService ($http, $q){
 		})
 	};
 
+	this.checkoutGroup = function(occList){
+		return $http({
+			url:'/checkout/group',
+			method:'POST',
+			data:JSON.stringify({data:occList})
+		})
+	}
+
 	this.readInvoice = function(id){
 		return $http({
 			url: '/checkout/invoice/'+ id,

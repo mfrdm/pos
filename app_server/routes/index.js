@@ -62,6 +62,7 @@ router.get ('/checkin/validate-promotion-code', CheckinCtrl.validatePromocodes);
 
 router.get('/checkout/invoice/:occId', checkoutCtrl.createInvoice);
 router.post('/checkout', checkoutCtrl.confirmCheckout);
+router.post('/checkout/group', checkoutCtrl.checkoutGroup);
 router.get('/checkout/account/withdraw/:accId', checkoutCtrl.withdrawUsageHourAccount);
 
 router.get ('/occupancies/', CheckinCtrl.readOccupancies);
@@ -114,11 +115,11 @@ router.post('/company/depts/create', deptsCtrl.createOneDept);
 router.post('/company/depts/dept/:deptId/edit', deptsCtrl.updateOneDept);
 router.get('/angular/depts', deptsCtrl.readAngularDepts);
 
-router.get('/products', productsCtrl.readSomeProducts);
-router.post('/products/create', productsCtrl.createOneProduct);
-router.get('/products/product/:productId', productsCtrl.readOneProductById);
-router.post('/products/product/:productId/edit', productsCtrl.updateOneProduct);
-router.get('/angular/products', productsCtrl.readAngularProducts);
+// router.get('/products', productsCtrl.readSomeProducts);
+// router.post('/products/create', productsCtrl.createOneProduct);
+// router.get('/products/product/:productId', productsCtrl.readOneProductById);
+// router.post('/products/product/:productId/edit', productsCtrl.updateOneProduct);
+// router.get('/angular/products', productsCtrl.readAngularProducts);
 
 router.get('/angular/attendances', OthersCtrl.readAngularAttendance);
 
@@ -134,14 +135,19 @@ router.get ('/deposits/account/default', DepositsCtrl.readDefaultAccounts);
 router.get ('/deposits/invoice', DepositsCtrl.readInvoice);
 router.get ('/deposits/groupon', DepositsCtrl.readGroupon);
 
+// Deal with product and storage
+// Product
+router.post ('/products/create', StorageCtrl.createProduct);// create new Product
+router.post ('/products/product/:productId/edit', StorageCtrl.editProduct);// create new Product
+router.get ('/products/product/:productId', StorageCtrl.readOneProduct);// get one product by its id
+router.get ('/products', StorageCtrl.readProducts);// read all products
 // Storage
-// router.post ('/storage/create', StorageCtrl.createOneStorage) // Each store gonna have only one storage, and each product/ asset created will be saved in Storage too (after save in their own model)
-// router.post ('/storage/create/product', StorageCtrl.createProduct) // update storage, after create one type of product, its id will be stored in storage
-// router.post ('/storage/create/asset', StorageCtrl.createAsset) // update storage, after create one type of asset, its id will be stored in storage
-// router.get ('/storage/items', StorageCtrl.readSomeItems)// get all products/ assets from storage to display in storage list in view
-// router.get ('/storage/sold/products', StorageCtrl.readSoldProducts)// get quantity, name, total money of sold product in any duration // need to pass params include duration time
-
-
+router.post ('/storages/create', StorageCtrl.createStorage);// create new Storage
+router.post ('/storages/storage/:storageId/edit', StorageCtrl.editStorage);// Edit storage
+router.get ('/storages', StorageCtrl.readSomeStorages);
+router.get ('/storages/storage', StorageCtrl.readOneStorage);// get closest storage with given time
+router.get ('/storages/total', StorageCtrl.totalStorage);// calculate how many products between 2 time point
+///////////////////////////////////////////////////////////////////////////////////
 // Others
 router.get ('/components/template/message', OthersCtrl.getMessageTemplate);
 router.get ('/components/template/asset', OthersCtrl.getAssetTemplate);

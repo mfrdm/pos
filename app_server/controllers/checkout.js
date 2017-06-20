@@ -36,7 +36,7 @@ function Checkout() {
 						match: 	{
 							start: {$lte: new Date ()},
 							end: {$gte: new Date ()},
-							services: foundOcc.service.name.toLowerCase (), 
+							$or: [{services: foundOcc.service.name.toLowerCase ()}, {services: 'all'}], 
 							$or: [{amount: {$gt: 0}}, {$and: [{'recursive.isRecursive': true}, {amount: {$lte: 0}}]}]
 							
 						},
@@ -47,8 +47,6 @@ function Checkout() {
 							console.log (err);
 							next (err);
 						}
-
-						// console.log (cus)
 
 						if (cus.accounts.length){
 							cus.accounts = cus.accounts.filter (function (acc, i, arr){
@@ -63,7 +61,6 @@ function Checkout() {
 
 						foundOcc = foundOcc.toObject (); // convert to add data
 						foundOcc.accounts = cus.accounts ? cus.accounts : [];
-
 						res.json ({data: foundOcc});
 					});
 
@@ -75,7 +72,7 @@ function Checkout() {
 		});
 	};
 
-	// assume call createInvoice beforehand
+	// assume call createInvoice beforehand, and an account passed is valid
 	// at this moment only allow paid by one account at a checkout time
 	// Apply only usage account, whose unit is hour
 	this.withdrawUsageHourAccount = function (req, res, next){
@@ -250,4 +247,136 @@ function Checkout() {
 			}
 		})
 	};
+
+	this.checkoutGroup =function(req, res, next){
+		var leader = req.body.data[0]
+		var members = req.body.data.slice(1)
+		var membersId = members.map(function(ele){
+			return ele._id
+		})
+		var memberCusId = members.map(function(ele){
+			return ele.customer._id
+		})
+		
+		var total = leader.total;
+		var usage = leader.usage;
+		var oriUsage = leader.oriUsage;
+		var price = leader.price;
+		var checkoutTime = leader.checkoutTime;
+		var promocodes = leader.promocodes;
+		var paymentMethods = leader.paymentMethod ? leader.paymentMethod : [];
+		var note = leader.note ? leader.note : ''; // optional
+		var status = 2;
+
+		Customers.findOneAndUpdate({_id:leader.customer._id}, {$set:{checkinStatus:false}}, function(err, cus){
+			if (err){
+				next (err)
+				return
+			}
+			else{
+				var updateOcc = {
+					status: status, 
+					total: total, 
+					usage: usage, 
+					oriUsage: oriUsage,
+					price: price,
+					promocodes: promocodes,
+					checkoutTime: checkoutTime,
+					paymentMethod: paymentMethods,
+					note: note
+				}
+				
+				Occupancies.findOneAndUpdate ({_id: leader._id}, {$set: updateOcc}, {new: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function (err, occ){
+					if (err){
+						next (err)
+						return
+					}
+
+					if (occ){
+						// update acc if being used
+						// At this moment. Only one method is used at a time
+						if (occ.paymentMethod && occ.paymentMethod.length){
+							var acc;
+							occ.paymentMethod.map (function (x, i, arr){
+								if (x.name == 'account'){
+									acc = x;
+								}
+							});
+
+							if (acc){
+								Accounts.findOneAndUpdate ({_id: acc._id}, {$inc: {amount: - acc.paidAmount}}, function (err, foundAcc){
+									if (err){
+										console.log (err);
+										next (err);
+										return
+									}
+
+									Customers.update({'_id':{$in:memberCusId}}, {$set:{checkinStatus:false}}, function(err, cus){
+										if(err){
+											next(err)
+											return
+										}else{
+
+											var updateOccMember = {
+												status:status,
+												total: 0, 
+												usage: usage, 
+												oriUsage: oriUsage,
+												price: price,
+												// promocodes: promocodes,
+												checkoutTime: checkoutTime,
+												// paymentMethod: paymentMethods,
+												note: note
+											}
+											Occupancies.update({'_id':{$in:membersId}}, {$set: updateOccMember}, {new: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function(err, occ){
+												if(err){
+													next(err)
+													return
+												}else{
+													res.json ({data: {message: 'success'}});
+												}
+											})
+										}
+									})
+								});
+							}
+						}
+						else{
+							Customers.update({'_id':{$in:memberCusId}}, {$set:{checkinStatus:false}}, function(err, cus){
+								if(err){
+									next(err)
+									return
+								}else{
+
+									var updateOccMember = {
+										status:status,
+										total: 0, 
+										usage: usage, 
+										oriUsage: oriUsage,
+										price: price,
+										// promocodes: promocodes,
+										checkoutTime: checkoutTime,
+										// paymentMethod: paymentMethods,
+										note: note
+									}
+									Occupancies.update({'_id':{$in:membersId}}, {$set: updateOccMember}, {new: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function(err, occ){
+										if(err){
+											next(err)
+											return
+										}else{
+											res.json ({data: {message: 'success'}});
+										}
+									})
+								}
+							})
+						}
+					}
+					else{
+						next ();
+					}
+
+				})
+			}
+		})
+	}
 };
