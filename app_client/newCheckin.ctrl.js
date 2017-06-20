@@ -43,7 +43,7 @@
             checkedinList: {
                 data: [],
                 pagination: {
-                    itemsEachPages: 10,
+                    itemsEachPages: 1,
                     numberOfPages: ''
                 },
             },
@@ -430,6 +430,53 @@
             return vm.model.temporary.displayedList.data
         }
 
+        function checkDisabledButton(){
+            var ind = 0;
+            vm.model.temporary.displayedList.number.map(function(ele, index){
+                if(ele.class == 'current'){
+                    ind = index
+                }
+            });
+            if(ind+1 == vm.model.temporary.displayedList.number.length){
+                vm.model.nextClass = "pagination-next disabled";
+                vm.model.goNextText = 'Next'
+            }else{
+                vm.model.nextClass = "pagination-next";
+                vm.model.goNextText = ''
+            };
+            if(ind == 0){
+                vm.model.previousClass = "pagination-previous disabled";
+                vm.model.goPreviousText = 'Previous'
+            }else{
+                vm.model.previousClass = "pagination-previous";
+                vm.model.goPreviousText = ''
+            }
+        }
+
+        vm.ctrl.goNext = function(){
+            var ind = 0;
+            vm.model.temporary.displayedList.number.map(function(ele, index){
+                if(ele.class == 'current'){
+                    ind = index
+                }
+            });
+            if(ind+2 <= vm.model.temporary.displayedList.number.length){
+                vm.ctrl.sliceCheckinList(ind+2)
+            }
+        }
+
+        vm.ctrl.goPrevious = function(){
+            var ind = 0;
+            vm.model.temporary.displayedList.number.map(function(ele, index){
+                if(ele.class == 'current'){
+                    ind = index
+                }
+            });
+            if(ind >= 1){
+                vm.ctrl.sliceCheckinList(ind)
+            }
+        }
+
         // Paginate
         vm.ctrl.paginate = function (afterFilterList){
             vm.model.temporary.displayedList.number = []
@@ -442,7 +489,9 @@
             vm.model.temporary.displayedList.number.map(function(ele, index, array){
                 array[0].class = 'current'
             })
-
+            
+            checkDisabledButton()
+            
             vm.model.checkinListEachPage.data = afterFilterList.slice(0, vm.model.checkedinList.pagination.itemsEachPages)
             vm.ctrl.sliceCheckinList = function(i){
                 vm.model.checkinListEachPage.data = afterFilterList.slice((i-1)*vm.model.checkedinList.pagination.itemsEachPages,i*vm.model.checkedinList.pagination.itemsEachPages)
@@ -452,8 +501,9 @@
                     }else{
                         array[index].class = ''
                     }
-                    
-                })
+                });
+                
+                checkDisabledButton()
             }
 
             vm.ctrl.showInPage = function(occ){
