@@ -228,18 +228,16 @@ div(class="columns row")
 						td(ng-if='occupancy.status != 1') {{occupancy.note}}
 			div(ng-if='vm.model.temporary.displayedList.data.length > vm.model.checkedinList.pagination.itemsEachPages')
 				ul(class="pagination text-center" role="navigation" aria-label="Pagination")
-					li(class="pagination-previous disabled") Previous
-						//- span(class="show-for-sr") page
-					//- li(class='current')
-					//- 	span(class="show-for-sr") You're on page
-					//- 	span 1
+					li(ng-class='vm.model.previousClass' ng-click='vm.ctrl.goPrevious()') {{vm.model.goPreviousText}}
+						a(aria-label="Previous page" ng-if='vm.model.goPreviousText != "Previous"') Previous
+							span(class="show-for-sr") page
+
 					li(ng-repeat="item in vm.model.temporary.displayedList.number track by $index" class='{{item.class}}')
 						a(href ='' ng-click='vm.ctrl.sliceCheckinList(item.number)') {{item.number}}
 					
-					//- li(class="ellipsis" aria-hidden="true")
-					li(class="pagination-next disabled") Next
-						//- a(aria-label="Next page") Next
-							//- span(class="show-for-sr") page
+					li(ng-class='vm.model.nextClass' ng-click='vm.ctrl.goNext()') {{vm.model.goNextText}}
+						a(aria-label="Next page" ng-if='vm.model.goNextText != "Next"') Next
+							span(class="show-for-sr") page
 		div(class='emptyResult text-center' ng-if='vm.model.checkinListEachPage.data.length == 0 || vm.model.temporary.displayedList.data.length == 0')
 			p {{vm.model.dom.data.selected.checkinList.body.message.notFound}}
 
@@ -315,7 +313,7 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 		h2 GREEN SPACE
 		h3 Check-out confirmation
 	div(class="column small-12 paddingB20")
-		div(class="column small-12 large-6 large-push-3")
+		div(class="column small-12 large-8 large-push-2")
 			table(class="hover unstriped stack")
 				tbody
 					tr
@@ -336,13 +334,13 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 						td
 							label(ng-repeat='avaiChild in vm.model.temporary.availableChildren')
 								input(type='checkbox' checklist-model='vm.model.temporary.childrenIdList' checklist-value='avaiChild._id')
-								span {{avaiChild.customer.fullname}}
+								span {{$index+1}}. {{avaiChild.customer.fullname}} // {{avaiChild.customer.email}} // {{avaiChild.customer.phone}}
 					tr(ng-show='vm.model.dom.checkboxDiv' ng-if='vm.model.temporary.disableChildren.length > 0')
 						th Members đã checkout
 						td
 							label(ng-repeat='disableChild in vm.model.temporary.disableChildren')
 								input(type='checkbox' checklist-model='vm.model.temporary.disableChild' checklist-value='disableChild' disabled)
-								span {{disableChild.customer.fullname}}
+								span {{$index+1}}. {{disableChild.customer.fullname}} // {{disableChild.customer.email}} // {{disableChild.customer.phone}}
 					tr
 						th Checkin
 						td {{ vm.model.checkingout.occupancy.checkinTime | date:'dd/MM/yyyy'}} {{ vm.model.checkingout.occupancy.checkinTime | date:'shortTime'}}				

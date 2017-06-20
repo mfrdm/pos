@@ -1327,36 +1327,26 @@ describe('Checkout members with leader', function() {
 
                     // test status
                     res.body.data.message.should.equal('success')
-                    Occupancy.findById({_id:newOcc[0]._id}, function(err, occ){
+                    Occupancy.find({}, function(err, occ){
                     	if (err) {
                             return
                         }
                         
                         // test all things updated
-                        occ.status.should.equal(2);
-                        Customers.findById({ _id: newCustomer[0]._id }, function(err, cus) {
+                        console.log(occ)
+                        occ[0].status.should.equal(2);// only [0][1] checkout
+                        occ[1].status.should.equal(2);
+                        occ[2].status.should.equal(1);
+                        occ[3].status.should.equal(1);
+                        Customers.find({}, function(err, cus) {
                             if (err) {
                                 return
                             }
-
+                            console.log(cus)
                             // test all things updated
-                            cus.checkinStatus.should.equal(false);
-                            Occupancy.findById({ _id: newOcc[1]._id }, function(err, occ) {
-		                        if (err) {
-		                            return
-		                        }
-
-
-		                        occ.status.should.equal(2);
-		                        Customers.findById({ _id: newCustomer[1]._id }, function(err, cus) {
-		                            if (err) {
-		                                return
-		                            }
-
-		                            cus.checkinStatus.should.equal(false);
-		                            done()
-		                        })
-		                    });
+                            cus[0].checkinStatus.should.equal(false);
+                            cus[1].checkinStatus.should.equal(false);
+                            done()
                         })
                     })
                     
@@ -1373,39 +1363,31 @@ describe('Checkout members with leader', function() {
                     }
 
                     res.body.data.message.should.equal('success')
-                    Occupancy.findById({_id:newOcc[2]._id}, function(err, occ){
+                    Occupancy.find({}, function(err, occ){
                     	if (err) {
                             return
                         }
-                        occ.status.should.equal(2);
 
-                        Customers.findById({ _id: newCustomer[0]._id }, function(err, cus) {
+                        console.log(occ)
+                        occ[0].status.should.equal(1);
+                        occ[1].status.should.equal(1);
+                        occ[2].status.should.equal(2);
+                        occ[3].status.should.equal(2);
+
+                        Customers.find({}, function(err, cus) {
                             if (err) {
                                 return
                             }
 
-                            cus.checkinStatus.should.equal(false);
+                            cus[0].checkinStatus.should.equal(false);
+                            cus[1].checkinStatus.should.equal(false);
                             Accounts.findOne({ _id: selectedAcc._id }, function(err, foundAcc) {
                                 if (err) {
                                     console.log(err);
                                 }
 
                                 foundAcc.amount.should.to.equal(8);
-                            
-                                Occupancy.findById({ _id: newOcc[3]._id }, function(err, occ) {
-    		                        if (err) {
-    		                            return
-    		                        }
-    		                        occ.status.should.equal(2);
-    		                        Customers.findById({ _id: newCustomer[1]._id }, function(err, cus) {
-    		                            if (err) {
-    		                                return
-    		                            }
-
-    		                            cus.checkinStatus.should.equal(false);
-    		                            done()
-    		                        })
-    		                    });
+                                done()
                             })
                         })
                     })
