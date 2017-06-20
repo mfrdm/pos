@@ -342,7 +342,7 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 						td
 							label(ng-repeat='disableChild in vm.model.temporary.disableChildren')
 								input(type='checkbox' checklist-model='vm.model.temporary.disableChild' checklist-value='disableChild' disabled)
-								span {{disableChild.customer.fullname}}
+								span {{$index+1}}. {{disableChild.customer.fullname}} // {{disableChild.customer.email}} // {{disableChild.customer.phone}}
 					tr
 						th Checkin
 						td {{ vm.model.checkingout.occupancy.checkinTime | date:'dd/MM/yyyy'}} {{ vm.model.checkingout.occupancy.checkinTime | date:'shortTime'}}				
