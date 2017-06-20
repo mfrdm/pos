@@ -4,6 +4,7 @@
 
     function StorageCtrl (DataPassingService, StorageService, $scope, $window, $route){
     	var vm = this;
+        var LayoutCtrl = DataPassingService.get('layout');
     	/* Model description
     	
     	// dom
@@ -44,6 +45,7 @@
     			filterDiv:false,
     			addStorageDiv:false,
                 addProductDiv:false,
+                returnStorageDiv:false,
     			editStorageDiv:false,
                 editProductDiv:false,
                 productList:false,
@@ -72,7 +74,8 @@
                 category:'All',
                 time:1,
                 startTime:'',
-                endTime:''
+                endTime:'',
+                sorting:'name',
             },
     		sorting:{},
     		storage:{
@@ -85,7 +88,6 @@
     	}
 
         vm.model.categoryOptions = [
-            {label:'Services', value:1},
             {label:'Soft Drink', value:2},
             {label:'Fast Food', value:3},
             {label:'Snack', value:4},
@@ -93,12 +95,11 @@
         ];
 
         vm.model.categoryOptionsFilter = [
-            {label:'Services', value:1},
             {label:'Soft Drink', value:2},
             {label:'Fast Food', value:3},
             {label:'Snack', value:4},
             {label:'Asset', value:5},
-            {label:'All', value:6}
+            {label:'All', value:1000}
         ];
 
         vm.model.productOptions = []
@@ -106,6 +107,15 @@
         vm.model.timeOptions = [
             {label:'Now', value:1},
             {label:'In a Duration', value:2}
+        ]
+
+        vm.model.locationOptions = [
+            {label:LayoutCtrl.model.dept.name, value:LayoutCtrl.model.dept._id},
+        ]
+
+        vm.model.sortingOptions = [
+            {label:'Name A-Z', value:'name'},
+            {label:'Name Z-A', value:'-name'}
         ]
 
         /////////////////////////////////////Initial///////////////////////////////////
@@ -117,6 +127,7 @@
 
         // Function
         function getProductName (id){
+            console.log(id, vm.model.productOptions)
             return vm.model.productOptions.filter(function(ele){
                 return ele.value == id
             })[0].label
@@ -176,6 +187,10 @@
             vm.model.dom.addStorageDiv = true;
         }
 
+        vm.ctrl.openReturnStorage = function(){
+            vm.model.dom.returnStorageDiv = true;
+        }
+
         vm.ctrl.toogleList = function(){
             if(vm.model.dom.productList){
                 vm.model.dom.storageList = true;
@@ -195,14 +210,13 @@
             vm.model.dom.editProductDiv = true;
             vm.model.editProduct = product;
             vm.model.editProduct.category = getCategoryInNumber(product.category)
-            console.log(vm.model.editProduct)
         }
 
         vm.ctrl.toggleFilter = function(){
             if(vm.model.dom.filterDiv){
                 vm.model.dom.filterDiv = false;
                 vm.model.filter.productName = ''
-                vm.model.filter.category = 0
+                vm.model.filter.category = 'All'
                 vm.model.filter.time = 1
                 vm.model.filter.startTime = ''
                 vm.model.filter.endTime = ''
@@ -216,10 +230,12 @@
         vm.ctrl.getAllProducts = function(){
             StorageService.readProducts().then(function(res){
                 res.data.data.map(function(ele){
-                    vm.model.productOptions.push({
-                        label:ele.name,
-                        value:ele._id
-                    })
+                    if(ele.category > 1){
+                        vm.model.productOptions.push({
+                            label:ele.name,
+                            value:ele._id
+                        })
+                    }
                 })
             })
         }
@@ -236,20 +252,57 @@
 
         // add product to itemList
         vm.ctrl.addToItemList = function(){
+            if(vm.model.temporary.itemId && vm.model.temporary.quantity){
+                if(vm.model.storage.itemList.length > 0){
+                    var temporaryList = vm.model.storage.itemList.filter(function(ele){
+                        return ele.itemId == vm.model.temporary.itemId
+                    });
+                    if(temporaryList.length == 0){
+                        vm.model.storage.itemList.push({
+                            name: getProductName(vm.model.temporary.itemId),
+                            itemId:vm.model.temporary.itemId,
+                            quantity:vm.model.temporary.quantity
+                        })
+                    }
+                }else{
+                    vm.model.storage.itemList.push({
+                        name: getProductName(vm.model.temporary.itemId),
+                        itemId:vm.model.temporary.itemId,
+                        quantity:vm.model.temporary.quantity
+                    })
+                }
+            }
             
-            vm.model.storage.itemList.push({
-                name: getProductName(vm.model.temporary.itemId),
-                itemId:vm.model.temporary.itemId,
-                quantity:vm.model.temporary.quantity
+        }
+
+        // remove from list
+        vm.ctrl.removeStorageFromList = function(item){
+            vm.model.storage.itemList = vm.model.storage.itemList.filter(function(ele){
+                return ele.itemId != item.itemId
             })
         }
 
         // add storage
         vm.ctrl.addStorage = function(){
-            vm.model.storage.itemList.push()
-            StorageService.createStorage(vm.model.storage).then(function(res){
-                vm.ctrl.reset()
-            })
+            if(vm.model.storage.itemList.length && vm.model.storage.storeId){
+                StorageService.createStorage(vm.model.storage).then(function(res){
+                    vm.ctrl.reset()
+                })
+            }
+        }
+
+        vm.ctrl.returnStorage = function(){
+            if(vm.model.storage.itemList.length && vm.model.storage.storeId){
+                var returnObj = Object.assign({}, vm.model.storage);
+                returnObj.itemList.map(function(ele){
+                    ele.quantity = -ele.quantity;
+                })
+                console.log(vm.model.storage.itemList)
+                console.log(returnObj)
+                StorageService.createStorage(returnObj).then(function(res){
+                    vm.ctrl.reset()
+                })
+            }
         }
 
     	///////////////////////////// Storage List ////////////////////////////////////
@@ -259,12 +312,14 @@
             var end = new Date();
             end.setHours(23,59,59,999);
     		StorageService.readStorageList(start, end).then(function(res){
-                res.data.data.map(function(ele){
-                    ele.itemList.map(function(item){
-                        item.name = getProductName(item.itemId)
-                        vm.model.dom.storage.list.push(item)
+                if(res.data.data.length){
+                    res.data.data.map(function(ele){
+                        ele.itemList.map(function(item){
+                            item.name = getProductName(item.itemId)
+                            vm.model.dom.storage.list.push(item)
+                        })
                     })
-                })
+                }
     		})
     	};
 
