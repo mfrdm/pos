@@ -21,7 +21,9 @@ function Checkin() {
 			return;
 		}
 
-		var query = Promocodes.find ({name: {$in: q.codes}, start: {$lte: new Date ()}, end: {$gte: new Date ()}, excluded: false}, {name: 1, codeType: 1, priority: 1, services: 1, label:1, redeemData: 1});
+		console.log (q.codes)
+
+		var query = Promocodes.find ({name: q.codes, start: {$lte: new Date ()}, end: {$gte: new Date ()}, excluded: false}, {name: 1, codeType: 1, priority: 1, services: 1, label:1, redeemData: 1});
 
 		// FIX: find better solution. Not work if a code is used for more than one services
 		// query.$where ('this.services.indexOf ("' + q.service.toLowerCase () + '") != -1 || this.services.indexOf ("all") != -1');
@@ -36,6 +38,8 @@ function Checkin() {
 			// if (pc.length){
 			// 	pc = Promocodes.validateCodes (pc);
 			// }
+
+			console.log (pc)
 
 			res.json ({data: pc});
 
