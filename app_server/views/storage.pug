@@ -10,13 +10,13 @@ div(class="row columns")
 						span() Product/Storage
 				li(class='paddingL15')
 					a(class="button primary" ng-click="vm.ctrl.openCreateProduct()") 
-						span() Add Product
+						span() Add a new product
 				li(class='paddingL15')
 					a(class="button primary" ng-click="vm.ctrl.openCreateStorage()") 
-						span() Add Storage
+						span() Inbound
 				li(class='paddingL15')
 					a(class="button primary" ng-click="vm.ctrl.openReturnStorage()") 
-						span() Return Storage
+						span() Outbound
 		div(class="column small-4")
 			ul(class="menu clearfix")
 				li(class="float-right marginL15")
@@ -91,7 +91,7 @@ div(class="row columns")
 		form(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-submit='vm.ctrl.addProduct()')
 			div(class='small-12 large-6 large-push-3')
 				div(class="row column text-center paddingB15")
-					h3 Add Product
+					h3 Add a new product
 				div(class="row column")
 					div(class="column small-12 paddingLR0")
 						label Name
@@ -115,7 +115,7 @@ div(class="row columns")
 		form(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-submit='vm.ctrl.addStorage()')
 			div(class='small-12 large-6 large-push-3')
 				div(class="row column text-center paddingB15")
-					h3 Add Storage
+					h3 Inbound
 				div(class="row column" ng-if='vm.model.storage.itemList.length > 0')
 					table
 						tr
@@ -151,7 +151,7 @@ div(class="row columns")
 		form(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-submit='vm.ctrl.returnStorage()')
 			div(class='small-12 large-6 large-push-3')
 				div(class="row column text-center paddingB15")
-					h3 Return Storage
+					h3 Outbound
 				div(class="row column" ng-if='vm.model.storage.itemList.length > 0')
 					table
 						tr

@@ -145,7 +145,6 @@ function StorageCtrl (){
 				productList = list;
 				Storages.find({createdAt:{$gte:start, $lte:end}}, function(err, data){
 					storageList = data;
-					console.log(storageList)
 					res.json({data:calculate(productList, storageList)})
 				})
 			}

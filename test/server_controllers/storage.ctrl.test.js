@@ -41,6 +41,7 @@ describe ('Product', function (){
 				done ();
 			});
 	});
+
 	afterEach (function(done){
 		Products.remove ({}, function (err, data){
 			if (err){
@@ -281,7 +282,7 @@ describe('Storage', function(){
 			});
 	})
 
-	xit('edit storage successfully', function(done){
+	it('edit storage successfully', function(done){
 		var editedStorage = {
 			itemList:[
 				{
@@ -332,7 +333,7 @@ describe('Storage', function(){
 			});
 	});
 
-	xit('should return all storages made in during a specific duration', function(done){
+	it('should return all storages made in during a specific duration', function(done){
 		var startTime = moment ().add (-10, 'hour')
 		var endTime = moment ().add (-2, 'hour')
 		chai.request (server)
@@ -354,7 +355,7 @@ describe('Storage', function(){
 			});
 	})
 
-	xit('should return current number of products with given start, end time', function(done){
+	it('should return current number of products with given start, end time', function(done){
 		var startTime = moment ().add (-10, 'hour')
 		var endTime = moment ().add (-2, 'hour')
 		chai.request (server)
