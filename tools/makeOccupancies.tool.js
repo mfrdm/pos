@@ -1,4 +1,3 @@
-process.env.NODE_ENV = 'test'
 var server = require ('../bin/www');
 var mongoose = require ('mongoose');
 var Customers = mongoose.model ('customers');
