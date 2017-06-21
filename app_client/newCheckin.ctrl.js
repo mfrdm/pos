@@ -43,7 +43,7 @@
             checkedinList: {
                 data: [],
                 pagination: {
-                    itemsEachPages: 1,
+                    itemsEachPages: 5,
                     numberOfPages: ''
                 },
             },

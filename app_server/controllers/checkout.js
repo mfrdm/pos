@@ -167,6 +167,7 @@ function Checkout() {
 	};
 
 	this.confirmCheckout = function(req, res, next) {
+
 		var total = req.body.data.total;
 		var usage = req.body.data.usage;
 		var oriUsage = req.body.data.oriUsage;
@@ -179,6 +180,7 @@ function Checkout() {
 
 		Customers.findOneAndUpdate({_id:req.body.data.customer._id}, {$set:{checkinStatus:false}}, function(err, cus){
 			if (err){
+				console.log (err)
 				next (err)
 				return
 			}
@@ -198,6 +200,7 @@ function Checkout() {
 
 				Occupancies.findOneAndUpdate ({_id: req.body.data._id}, {$set: updateOcc}, {new: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function (err, occ){
 					if (err){
+						console.log (err)
 						next (err)
 						return
 					}
@@ -248,7 +251,39 @@ function Checkout() {
 		})
 	};
 
-	this.checkoutGroup =function(req, res, next){
+	// Automate process 
+	// FIX: handle when prepaid by account
+	this.creatOccupancies = function (req, res, next){
+		var occ = req.body.data;
+		newOcc = new Occupancies (occ);
+		newOcc.getTotal ();
+		newOcc.status = 2;
+		newOcc.save (function (err, returnedOcc){
+			if (err){
+				console.log (err);
+				next (err);
+				return
+			}
+
+			Customers.findOneAndUpdate ({_id: returnedOcc.customer._id}, {$push: {occupancy: returnedOcc._id}}, function (err, cus){
+				if (err){
+					console.log (err);
+					next (err);
+					return;
+				} 
+
+				if (cus){
+					res.json ({data: {message: 'success'}});
+				}
+				else{
+					next ();
+				}
+				
+			});
+		})
+	}
+
+	this.checkoutGroup = function(req, res, next){
 		var leader = req.body.data[0]
 		var members = req.body.data.slice(1)
 		var membersId = members.map(function(ele){
