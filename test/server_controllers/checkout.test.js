@@ -1316,7 +1316,7 @@ describe('Checkout members with leader', function() {
         it('should confirm checkout for leader with member successfully', function(done) {
             chai.request(server)
                 .post('/checkout/group')
-                .send({ data: newOcc.slice(0,2) })
+                .send({ data: newOcc.slice(0,3) })
                 .end(function(err, res) {
                     if (err) {
                         console.log(err);
@@ -1336,7 +1336,7 @@ describe('Checkout members with leader', function() {
                         console.log(occ)
                         occ[0].status.should.equal(2);// only [0][1] checkout
                         occ[1].status.should.equal(2);
-                        occ[2].status.should.equal(1);
+                        occ[2].status.should.equal(2);
                         occ[3].status.should.equal(1);
                         Customers.find({}, function(err, cus) {
                             if (err) {

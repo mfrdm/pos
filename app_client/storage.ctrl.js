@@ -284,7 +284,9 @@
         }
 
         // Paginate
-        
+        vm.ctrl.change = function(){
+            console.log(vm.model.dom.product.list)
+        }
 
         ///////////////////////////////////// Product /////////////////////////////////
         // get all products

@@ -31,10 +31,10 @@ div(class="row columns")
 		div(class="borderT newBox row column")
 			div(class='marginB15 column small-12 large-4')
 				legend Search By Product Name
-				input(type='text' ng-model='vm.model.filter.productName')
+				input(type='text' ng-model='vm.model.filter.productName' ng-change='vm.ctrl.change()')
 			div(class="marginB15 column small-12 large-4")
 				legend Category
-				select(ng-options='option.label as option.label for option in vm.model.categoryOptionsFilter' ng-model='vm.model.filter.category')
+				select(ng-options='option.label as option.label for option in vm.model.categoryOptionsFilter' ng-model='vm.model.filter.category' ng-change='vm.ctrl.change()')
 			div(class='marginB15 column small-12 large-4')
 				legend Time
 				select(ng-options='option.value as option.label for option in vm.model.timeOptions' ng-model='vm.model.filter.time' ng-change='vm.ctrl.timeChange()')
