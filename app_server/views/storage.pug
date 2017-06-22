@@ -129,18 +129,7 @@ div(class="row columns")
 		form(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-submit='vm.ctrl.addStorage()')
 			div(class='small-12 large-6 large-push-3')
 				div(class="row column text-center paddingB15")
-					h3 Inbound
-				div(class="row column" ng-if='vm.model.storage.itemList.length > 0')
-					table(class="unstriped")
-						tr
-							th Name
-							th Quantity
-							th(class='text-center') Delete
-						tr(ng-repeat='item in vm.model.storage.itemList')
-							td {{item.name}}
-							td {{item.quantity}}
-							td(class='text-center deleteIcon')
-								i(class="material-icons customIcon" ng-click="vm.ctrl.removeStorageFromList(item)") close
+					h3 INBOUND
 				div(class="row column")
 					div(class="column small-6 large-4 paddingL0")
 						label Name
@@ -179,18 +168,7 @@ div(class="row columns")
 		form(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-submit='vm.ctrl.returnStorage()')
 			div(class='small-12 large-6 large-push-3')
 				div(class="row column text-center paddingB15")
-					h3 Outbound
-				div(class="row column" ng-if='vm.model.storage.itemList.length > 0')
-					table(class="unstriped")
-						tr
-							th Name
-							th Quantity
-							th(class='text-center') Delete
-						tr(ng-repeat='item in vm.model.storage.itemList')
-							td {{item.name}}
-							td {{item.quantity}}
-							td(class='text-center deleteIcon')
-								i(class="material-icons customIcon" ng-click="vm.ctrl.removeStorageFromList(item)") close
+					h3 OUTBOUND
 				div(class="row column")
 					div(class="column small-6 large-4 paddingL0")
 						label Name
