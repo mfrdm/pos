@@ -89,7 +89,6 @@ function getTotal (){
 	if (occ.parent){
 		occ.total = 0;
 	}
-
 	else{
 		// the context in strategy design
 		var context = getCodeContext (occ); 

@@ -706,6 +706,8 @@
                             vm.model.dom.data.selected.edit.promoteCode = {}
                             vm.model.dom.data.selected.edit.promoteCode.codes = vm.ctrl.selectCodesForService(vm.model.edit.occupancy.service.name, vm.model.dom.data.selected.checkin.promoteCode.original)
                         }
+
+                        console.log (vm.model.dom.data.selected.checkin.promoteCode.codes)
                     }
                     else {
                         // do nothing
@@ -744,7 +746,9 @@
                     isStudent: vm.model.checkingin.occupancy.customer.isStudent,
                     service: vm.model.checkingin.occupancy.service.name
                 };
+
                 vm.ctrl.showLoader ();
+
                 CheckinService.validatePromoteCode(data).then(
                     function success(res){
                         vm.ctrl.hideLoader ();
@@ -758,7 +762,7 @@
                         });
                         if(vm.model.checkingin.occupancy.promocodes){// show if code valid or not
                             vm.model.checkingin.occupancy.promocodes.map(function(item){
-                                if(vm.model.temporary.checkin.codeNames.indexOf(item.name.toLowerCase()) != -1){
+                                if(vm.model.temporary.checkin.codeNames.indexOf(item.name) != -1){
                                     item.status = 3;
                                 }else{
                                     item.status = 2;
@@ -889,6 +893,8 @@
             var subCodes = original.filter(function(ele){
                 return (ele.services.indexOf(selectedService) > -1 || ele.services[0] == 'all')
             })
+
+            console.log (subCodes)
 
             return subCodes
         }
@@ -1226,7 +1232,6 @@
             CheckinService.validatePromoteCode(data).then(
                 function success(res){
                     vm.ctrl.hideLoader ();
-                    console.log('test', res.data.data)
                     var foundCodes = res.data.data;
                     vm.model.edit.occupancy.promocodes = foundCodes;
                     vm.model.temporary.edit.codeNames = [];
@@ -1234,9 +1239,10 @@
                     foundCodes.map (function (x, i, arr){
                         vm.model.temporary.edit.codeNames.push (x.name);
                     });
+
                     if(vm.model.edit.occupancy.promocodes){// show if code valid or not
                         vm.model.edit.occupancy.promocodes.map(function(item){
-                            if(vm.model.temporary.edit.codeNames.indexOf(item.name.toLowerCase()) != -1){
+                            if(vm.model.temporary.edit.codeNames.indexOf(item.name) != -1){
                                 item.status = 3;
                             }else{
                                 item.status = 2;

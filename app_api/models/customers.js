@@ -11,12 +11,12 @@ var eduSchema = new mongoose.Schema({
 
 
 var customersSchema = mongoose.Schema({
-	firstname: {type:String, required: true},
+	firstname: {type:String},
 	middlename: {type:String},
-	lastname: {type:String, required: true},
+	lastname: {type:String},
 	fullname: {type: String},
 	gender: Number,
-	birthday: {type: Date, required: true},
+	birthday: {type: Date},
 	phone: [{type: String}],
 	email: [{type: String}], // manuallt required in some cases
 	edu: [eduSchema],

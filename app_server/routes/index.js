@@ -66,6 +66,8 @@ router.post('/checkout', checkoutCtrl.confirmCheckout);
 router.post('/checkout/group', checkoutCtrl.checkoutGroup);
 router.get('/checkout/account/withdraw/:accId', checkoutCtrl.withdrawUsageHourAccount);
 
+router.post ('/checkout/create-occupancy', checkoutCtrl.creatOccupancies); // Careful! Automatically create occupancies only
+
 router.get ('/occupancies/', CheckinCtrl.readOccupancies);
 // router.get ('/occupancies/occupancy/:occId', CheckinCtrl.readOneOccupancy);
 

@@ -3,6 +3,7 @@ var moment = require ('moment');
 
 // used to create an account for a customer
 var getDefaultAccounts = function (){
+
 	var oneDayCommon = {
 		name: '1dCommon',
 		price: 80000, // 

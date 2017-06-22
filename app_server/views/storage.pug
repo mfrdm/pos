@@ -11,17 +11,14 @@ div(class="row columns")
 						i(class="material-icons customIcon hide-for-large") compare_arrows
 				li(class=' float-left marginB15 paddingLR15 large-paddingL0')
 					a(class="button primary" ng-click="vm.ctrl.openCreateProduct()") 
-						span(class="show-for-large") Add a new product
-						i(class="material-icons customIcon hide-for-large") add
-				li(class=' float-left marginB15 paddingLR15 large-paddingL0')
+						span() Add a new product
+				li(class='paddingL15')
 					a(class="button primary" ng-click="vm.ctrl.openCreateStorage()") 
-						span(class="show-for-large") INBOUND
-						i(class="material-icons customIcon hide-for-large") shopping_cart
-				li(class=' float-left paddingLR15 large-paddingL0')
+						span() INBOUND
+				li(class='paddingL15')
 					a(class="button primary" ng-click="vm.ctrl.openReturnStorage()") 
-						span(class="show-for-large") OUTBOUND
-						i(class="material-icons customIcon hide-for-large") remove_shopping_cart
-		div(class="column small-4 large-4")
+						span() OUTBOUND
+		div(class="column small-4")
 			ul(class="menu clearfix")
 				li(class="float-right marginL15 marginB15")
 					<a class="button primary" ng-click="vm.ctrl.toggleFilter()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
@@ -132,6 +129,7 @@ div(class="row columns")
 							label Quantity
 								input(type="number" ng-model='vm.model.temporary.quantity' min='1' required)
 						div(class="column large-2 small-12 text-center")
+
 							a(class="button full-width-small" style="margin-top: 28px; display: block;" ng-click="vm.ctrl.addToItemList (); $event.preventDefault()") Add
 					// SELECTED ITEMS
 					div(class="row column")
