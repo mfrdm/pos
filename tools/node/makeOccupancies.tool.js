@@ -135,7 +135,7 @@ fastcsv.fromPath (fpath)
 		occList.push (data);
 	})
 	.on ('end', function (){
-
+		
 		var maker = new MakeOccupancies ();
 		var occ = maker.model (occList.slice (1));
 		occ = maker.addCode (occ);
