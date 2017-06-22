@@ -14,10 +14,10 @@ div(class="row columns")
 						span() Add a new product
 				li(class='paddingL15')
 					a(class="button primary" ng-click="vm.ctrl.openCreateStorage()") 
-						span() Inbound
+						span() INBOUND
 				li(class='paddingL15')
 					a(class="button primary" ng-click="vm.ctrl.openReturnStorage()") 
-						span() Outbound
+						span() OUTBOUND
 		div(class="column small-4")
 			ul(class="menu clearfix")
 				li(class="float-right marginL15 marginB15")
@@ -116,7 +116,6 @@ div(class="row columns")
 		form(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-submit='vm.ctrl.addStorage()')
 			div(class='small-12 large-6 large-push-3')
 				div(class="row column text-center paddingB15")
-<<<<<<< HEAD
 					h3 Inbound
 				div(class="row column" ng-if='vm.model.storage.itemList.length > 0')
 					table(class="unstriped")
@@ -138,6 +137,7 @@ div(class="row columns")
 							input(type="number" ng-model='vm.model.temporary.quantity' min='1' required)
 					div(class="column large-4 show-for-large paddingR0")
 						div(class="column small-12 paddingR0")
+
 							a(class="button full-width-small" style="margin-top: 28px; display: block;" ng-click="vm.ctrl.addToItemList (); $event.preventDefault()") Add
 					// SELECTED ITEMS
 					div(class="row column")
@@ -166,7 +166,6 @@ div(class="row columns")
 		form(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-submit='vm.ctrl.returnStorage()')
 			div(class='small-12 large-6 large-push-3')
 				div(class="row column text-center paddingB15")
-<<<<<<< HEAD
 					h3 Outbound
 				div(class="row column" ng-if='vm.model.storage.itemList.length > 0')
 					table(class="unstriped")
