@@ -40,11 +40,11 @@ function MakeOccupancies (){
 	}
 
 	this.addCode = function (data){
-		var studentprice = { 
+		var STUDENTPRICE = { 
 			"redeemData" : { "price" : { "value" : 10000 } }, 
 			"priority" : 1, 
 			"codeType" : 2, 
-			"name" : "studentprice"
+			"name" : "STUDENTPRICE"
 		}
 
 		var FSC_01H_052017 = { 
@@ -88,7 +88,7 @@ function MakeOccupancies (){
 			GS5: GS5,
 			FSC_02H_052017: FSC_02H_052017,
 			FSC_01H_052017: FSC_01H_052017,
-			studentprice: studentprice
+			STUDENTPRICE: STUDENTPRICE
 		}
 
 
@@ -100,7 +100,7 @@ function MakeOccupancies (){
 			}
 
 			if (x.customer.isStudent){
-				x.promocodes.push (codes['studentprice']);
+				x.promocodes.push (codes['STUDENTPRICE']);
 			}
 			
 		})	
