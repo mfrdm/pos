@@ -51,6 +51,7 @@ router.get('/template/newCustomers', OthersCtrl.getNewCustomersTemplate);
 router.get('/template/newBookings', OthersCtrl.getNewBookingTemplate);
 router.get('/template/deposit', OthersCtrl.getDepositTemplate);
 router.get('/template/storage', OthersCtrl.getStorageTemplate);
+router.get('/template/promocodes', OthersCtrl.getPromocodesTemplate);
 
 // Checkin
 router.get('/checkin', CheckinCtrl.readCheckinList);

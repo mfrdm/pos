@@ -68,6 +68,14 @@ function config ($locationProvider, $routeProvider){
 			controller: "DepositCtrl",
 			controllerAs: 'vm'
 		})
+		.when('/promocodes', {
+			templateUrl: "/template/promocodes",
+			resolve: {
+				'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
+			},			
+			controller: "PromocodesCtrl",
+			controllerAs: 'vm'
+		})
 		.when('/storage', {
 			templateUrl: "/template/storage",
 			resolve: {
