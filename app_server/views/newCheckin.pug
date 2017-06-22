@@ -231,10 +231,8 @@ div(class="columns row")
 					li(ng-class='vm.model.previousClass' ng-click='vm.ctrl.goPrevious()') {{vm.model.goPreviousText}}
 						a(aria-label="Previous page" ng-if='vm.model.goPreviousText != "Previous"') Previous
 							span(class="show-for-sr") page
-
 					li(ng-repeat="item in vm.model.temporary.displayedList.number track by $index" class='{{item.class}}')
 						a(href ='' ng-click='vm.ctrl.sliceCheckinList(item.number)') {{item.number}}
-					
 					li(ng-class='vm.model.nextClass' ng-click='vm.ctrl.goNext()') {{vm.model.goNextText}}
 						a(aria-label="Next page" ng-if='vm.model.goNextText != "Next"') Next
 							span(class="show-for-sr") page
