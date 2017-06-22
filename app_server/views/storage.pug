@@ -66,6 +66,7 @@ div(class="row columns")
 						th
 						//- th
 						//- 	input(class="button" type="submit" value="Edit" ng-click='vm.ctrl.openEditStorage(storage)')
+
 	// Product list 
 	div(class="column" ng-show="vm.model.dom.productList" ng-if='vm.model.dom.product.list.length > 0')
 		div(class="table-scroll newBox")
@@ -87,6 +88,18 @@ div(class="row columns")
 						th {{product.totalValue}}
 						th
 							input(class="button" type="submit" value="Edit" ng-click='vm.ctrl.openEditProduct(product)')
+			//- div(ng-if='vm.model.temporary.displayedList.data.length > vm.model.pagination.itemsEachPages')
+			//- 	ul(class="pagination text-center" role="navigation" aria-label="Pagination")
+			//- 		li(ng-class='vm.model.previousClass' ng-click='vm.ctrl.goPrevious()') {{vm.model.goPreviousText}}
+			//- 			a(aria-label="Previous page" ng-if='vm.model.goPreviousText != "Previous"') Previous
+			//- 				span(class="show-for-sr") page
+
+			//- 		li(ng-repeat="item in vm.model.temporary.displayedList.number track by $index" class='{{item.class}}')
+			//- 			a(href ='' ng-click='vm.ctrl.sliceCheckinList(item.number)') {{item.number}}
+					
+			//- 		li(ng-class='vm.model.nextClass' ng-click='vm.ctrl.goNext()') {{vm.model.goNextText}}
+			//- 			a(aria-label="Next page" ng-if='vm.model.goNextText != "Next"') Next
+			//- 				span(class="show-for-sr") page
 	// Add product			
 	div(class="column row" ng-show='vm.model.dom.addProductDiv')
 		form(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-submit='vm.ctrl.addProduct()')

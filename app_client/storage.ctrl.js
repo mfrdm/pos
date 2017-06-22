@@ -225,6 +225,67 @@
             }
         }
 
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////// Paginate ///////////////////////////////////////////////////
+        vm.model.temporary.displayedList = {
+            data:[],
+            number:[]
+        };
+        vm.model.pagination = {
+            itemsEachPages:5,
+            numberOfPages:''
+        }
+
+        function checkDisabledButton(){
+            var ind = 0;
+            vm.model.temporary.displayedList.number.map(function(ele, index){
+                if(ele.class == 'current'){
+                    ind = index
+                }
+            });
+            if(ind+1 == vm.model.temporary.displayedList.number.length){
+                vm.model.nextClass = "pagination-next disabled";
+                vm.model.goNextText = 'Next'
+            }else{
+                vm.model.nextClass = "pagination-next";
+                vm.model.goNextText = ''
+            };
+            if(ind == 0){
+                vm.model.previousClass = "pagination-previous disabled";
+                vm.model.goPreviousText = 'Previous'
+            }else{
+                vm.model.previousClass = "pagination-previous";
+                vm.model.goPreviousText = ''
+            }
+        }
+
+        vm.ctrl.goNext = function(){
+            var ind = 0;
+            vm.model.temporary.displayedList.number.map(function(ele, index){
+                if(ele.class == 'current'){
+                    ind = index
+                }
+            });
+            if(ind+2 <= vm.model.temporary.displayedList.number.length){
+                vm.ctrl.sliceCheckinList(ind+2)
+            }
+        }
+
+        vm.ctrl.goPrevious = function(){
+            var ind = 0;
+            vm.model.temporary.displayedList.number.map(function(ele, index){
+                if(ele.class == 'current'){
+                    ind = index
+                }
+            });
+            if(ind >= 1){
+                vm.ctrl.sliceCheckinList(ind)
+            }
+        }
+
+        // Paginate
+        
+
         ///////////////////////////////////// Product /////////////////////////////////
         // get all products
         vm.ctrl.getAllProducts = function(){
