@@ -317,58 +317,116 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 			table(class="hover unstriped stack")
 				tbody
 					tr
-						th Khách hàng
+						th(width='385') Khách hàng
 						td {{ vm.model.checkingout.occupancy.customer.fullname }} 
 					tr(ng-if="vm.model.checkingout.occupancy.accounts.length")
-						th Tài khoản trả trước
+						th(width='385') Tài khoản trả trước
 						td
 							select(ng-model="vm.model.temporary.checkout.selectedAccount._id" ng-options="acc._id as acc.label.vn for acc in vm.model.checkingout.occupancy.accounts" ng-change="vm.ctrl.checkout.accChangeHandler ()")
 					tr
-						th Dịch vụ
+						th(width='385') Dịch vụ
 						td {{ vm.model.checkingout.occupancy.service.label }}
 					tr(ng-if="vm.model.checkingout.occupancy.parent")
-						th Nhóm
+						th(width='385') Nhóm
 						td {{vm.model.temporary.groupParent}}
-					tr(ng-show='vm.model.dom.checkboxDiv' ng-if='vm.model.temporary.availableChildren.length > 0')
-						th Members chưa checkout
-						td
-							label(ng-repeat='avaiChild in vm.model.temporary.availableChildren')
-								input(type='checkbox' checklist-model='vm.model.temporary.childrenIdList' checklist-value='avaiChild._id')
-								span {{$index+1}}. {{avaiChild.customer.fullname}} // {{avaiChild.customer.email}} // {{avaiChild.customer.phone}}
-					tr(ng-show='vm.model.dom.checkboxDiv' ng-if='vm.model.temporary.disableChildren.length > 0')
-						th Members đã checkout
-						td
-							label(ng-repeat='disableChild in vm.model.temporary.disableChildren')
-								input(type='checkbox' checklist-model='vm.model.temporary.disableChild' checklist-value='disableChild' disabled)
-								span {{$index+1}}. {{disableChild.customer.fullname}} // {{disableChild.customer.email}} // {{disableChild.customer.phone}}
+				tbody(ng-if='vm.model.temporary.availableChildren.length == 0 &&  vm.model.temporary.availableChildren.length == 0')
 					tr
-						th Checkin
+						th(width='385') Checkin
 						td {{ vm.model.checkingout.occupancy.checkinTime | date:'dd/MM/yyyy'}} {{ vm.model.checkingout.occupancy.checkinTime | date:'shortTime'}}				
 					tr
-						th Checkout
+						th(width='385') Checkout
 						td {{ vm.model.checkingout.occupancy.checkoutTime | date:'dd/MM/yyyy'}} {{ vm.model.checkingout.occupancy.checkoutTime | date:'shortTime'}}
 					tr
-						th Thời gian
+						th(width='385') Thời gian
 						td {{ vm.model.checkingout.occupancy.oriUsage | number: 1 }} Giờ
 					tr
-						th Giá
+						th(width='385') Giá
 						td {{ vm.model.checkingout.occupancy.price | number}} VNĐ
 					tr(ng-if="vm.model.checkingout.occupancy.promocodes && vm.model.checkingout.occupancy.promocodes.length")
-						th Codes
+						th(width='385') Codes
 						td {{ vm.model.temporary.checkout.invoice.codeNames }}
 					tr
-						th Tổng
+						th(width='385') Tổng
 						td {{ vm.model.checkingout.occupancy.total | number }} VNĐ
 					tr(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.paidAmount")
-						th Tài khoản đã dùng
+						th(width='385') Tài khoản đã dùng
 						td(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.unit == 'hour'") {{ vm.model.temporary.checkout.prepaidTotal.acc.paidAmount | number: 1}} Giờ
 						td(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.unit == 'vnd'") {{ vm.model.temporary.checkout.prepaidTotal.acc.paidAmount | number }} VNĐ
 					tr(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.remain || vm.model.temporary.checkout.prepaidTotal.acc.remain == 0")
-						th Tài khoản còn
+						th(width='385') Tài khoản còn
 						td(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.unit == 'hour'") {{ vm.model.temporary.checkout.prepaidTotal.acc.remain | number: 1}} Giờ
 						td(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.unit == 'vnd'") {{ vm.model.temporary.checkout.prepaidTotal.acc.remain }} VNĐ						
 					tr(ng-if="vm.model.temporary.checkout.prepaidTotal.occ.total || vm.model.temporary.checkout.prepaidTotal.occ.total == 0")
-						th Tổng trừ trả trước
+						th(width='385') Tổng trừ trả trước
+						td {{ vm.model.temporary.checkout.prepaidTotal.occ.total | number}} VNĐ
+					tr
+						td(colspan=2)
+							textarea(type='text' ng-model='vm.model.checkingout.occupancy.note' placeholder="Ghi chú")
+			table(class="hover unstriped stack" ng-if='vm.model.temporary.availableChildren.length > 0')
+				tbody
+					tr(ng-show='vm.model.dom.checkboxDiv')
+						th(colspan="2") Members chưa checkout
+					
+			table(class="hover unstriped stack" ng-if='vm.model.temporary.availableChildren.length > 0' )
+				tbody
+					tr(ng-show='vm.model.dom.checkboxDiv' ng-repeat='avaiChild in vm.model.temporary.availableChildren')
+						td(width='10' class='text-center paddingLR15')
+							span {{$index+1}}
+						td(width='20' class='text-center paddingLR15')
+							input(type='checkbox' checklist-model='vm.model.temporary.childrenIdList' checklist-value='avaiChild._id' class='marginB0')
+						td(width='300' class='text-center paddingLR15')
+							span {{avaiChild.customer.fullname}}
+						td
+							span {{avaiChild.customer.email}}
+						td
+							span {{avaiChild.customer.phone}}
+			table(class="hover unstriped stack" ng-if='vm.model.temporary.disableChildren.length > 0')
+				tbody
+					tr(ng-show='vm.model.dom.checkboxDiv')
+						th(colspan="2") Members đã checkout
+			table(class="hover unstriped stack" ng-if='vm.model.temporary.disableChildren.length > 0' ng-repeat='disableChild in vm.model.temporary.disableChildren')
+				tbody
+					tr(ng-show='vm.model.dom.checkboxDiv' )
+						td(width='10' class='text-center paddingLR15')
+							span {{$index+1}}
+						td(width='20' class='text-center paddingLR15')
+							input(type='checkbox' checklist-model='vm.model.temporary.disableChild' checklist-value='disableChild' disabled)
+						td(width='300' class='text-center paddingLR15')
+							span {{disableChild.customer.fullname}}
+						td
+							span {{disableChild.customer.email}}
+						td
+							span {{disableChild.customer.phone}}
+			table(class="hover unstriped stack" ng-if='vm.model.temporary.availableChildren.length > 0 ||  vm.model.temporary.availableChildren.length > 0')
+				tbody
+					tr
+						th(width='385') Checkin
+						td {{ vm.model.checkingout.occupancy.checkinTime | date:'dd/MM/yyyy'}} {{ vm.model.checkingout.occupancy.checkinTime | date:'shortTime'}}				
+					tr
+						th(width='385') Checkout
+						td {{ vm.model.checkingout.occupancy.checkoutTime | date:'dd/MM/yyyy'}} {{ vm.model.checkingout.occupancy.checkoutTime | date:'shortTime'}}
+					tr
+						th(width='385') Thời gian
+						td {{ vm.model.checkingout.occupancy.oriUsage | number: 1 }} Giờ
+					tr
+						th(width='385') Giá
+						td {{ vm.model.checkingout.occupancy.price | number}} VNĐ
+					tr(ng-if="vm.model.checkingout.occupancy.promocodes && vm.model.checkingout.occupancy.promocodes.length")
+						th(width='385') Codes
+						td {{ vm.model.temporary.checkout.invoice.codeNames }}
+					tr
+						th(width='385') Tổng
+						td {{ vm.model.checkingout.occupancy.total | number }} VNĐ
+					tr(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.paidAmount")
+						th(width='385') Tài khoản đã dùng
+						td(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.unit == 'hour'") {{ vm.model.temporary.checkout.prepaidTotal.acc.paidAmount | number: 1}} Giờ
+						td(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.unit == 'vnd'") {{ vm.model.temporary.checkout.prepaidTotal.acc.paidAmount | number }} VNĐ
+					tr(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.remain || vm.model.temporary.checkout.prepaidTotal.acc.remain == 0")
+						th(width='385') Tài khoản còn
+						td(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.unit == 'hour'") {{ vm.model.temporary.checkout.prepaidTotal.acc.remain | number: 1}} Giờ
+						td(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.unit == 'vnd'") {{ vm.model.temporary.checkout.prepaidTotal.acc.remain }} VNĐ						
+					tr(ng-if="vm.model.temporary.checkout.prepaidTotal.occ.total || vm.model.temporary.checkout.prepaidTotal.occ.total == 0")
+						th(width='385') Tổng trừ trả trước
 						td {{ vm.model.temporary.checkout.prepaidTotal.occ.total | number}} VNĐ
 					tr
 						td(colspan=2)

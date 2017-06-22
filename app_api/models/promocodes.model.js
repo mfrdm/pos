@@ -142,7 +142,7 @@ var getAccountDefaultCodes = function (){
 // use temporary. Need to move all or part of them to database.
 var getServiceDefaultCodes = function (){
 	var studendPrice = {
-		name: 'studentprice',
+		name: 'STUDENTPRICE',
 		desc: {type: 'Price of common service for students'},
 		label: {
 			vn: 'Giá cho sinh viên',
@@ -159,7 +159,7 @@ var getServiceDefaultCodes = function (){
 	}
 
 	var smallPrivateDiscountPrice = {
-		name: 'smallprivatediscountprice',
+		name: "SMALLPRIVATEDISCOUNTPRICE",
 		desc: {type: 'Discount the price for small private service after the first hour'},
 		label: {
 			vn: 'Giảm giá sau giờ đầu phòng riêng 15',
@@ -177,7 +177,7 @@ var getServiceDefaultCodes = function (){
 	}
 
 	var mediumPrivateDiscountPrice = {
-		name: 'mediumprivatediscountprice',
+		name: "MEDIUMPRIVATEDISCOUNTPRICE",
 		desc: {type: 'Discount the price for medium private service after the first hour'},
 		label: {
 			vn: 'Giảm giá sau giờ đầu phòng riêng 30',
@@ -195,7 +195,7 @@ var getServiceDefaultCodes = function (){
 	};
 
 	var largePrivateDiscountPrice = {
-		name: 'largeprivatediscountprice',
+		name: "LARGEPRIVATEDISCOUNTPRICE",
 		desc: {type: 'Discount the price for large private service after the first hour'},
 		label: {
 			vn: 'Giảm giá sau giờ đầu phòng riêng 40',

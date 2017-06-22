@@ -1,4 +1,4 @@
-var server = require ('../bin/www');
+var server = require ('../../bin/www');
 var mongoose = require ('mongoose');
 var Customers = mongoose.model ('customers');
 var Promocodes = mongoose.model ('Promocodes');

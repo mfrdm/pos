@@ -125,7 +125,7 @@ describe('Controller: StorageCtrl', function() {
         }
     ));
 
-    describe('Show list of storages (transactions)', function() {
+    xdescribe('Show list of storages (transactions)', function() {
 
         xdescribe('Show without filter and with time filter', function(){
             it('should display list of transactions/storages without time filter (default)', function() {
@@ -158,7 +158,7 @@ describe('Controller: StorageCtrl', function() {
 
     })
 
-    describe('Toggle Filter Div', function() {
+    xdescribe('Toggle Filter Div', function() {
 
         it('should hide filter div when click filter button (if closed before)', function() {
             var layout = createLayout();
@@ -222,7 +222,7 @@ describe('Controller: StorageCtrl', function() {
 
     })
 
-    describe('Edit Products/Assets', function() {
+    xdescribe('Edit Products/Assets', function() {
 
         it('should open edit items form when click edit', function() {
             var layout = createLayout();

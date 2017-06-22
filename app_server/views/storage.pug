@@ -116,6 +116,7 @@ div(class="row columns")
 		form(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-submit='vm.ctrl.addStorage()')
 			div(class='small-12 large-6 large-push-3')
 				div(class="row column text-center paddingB15")
+<<<<<<< HEAD
 					h3 Inbound
 				div(class="row column" ng-if='vm.model.storage.itemList.length > 0')
 					table(class="unstriped")
@@ -138,9 +139,20 @@ div(class="row columns")
 					div(class="column large-4 show-for-large paddingR0")
 						div(class="column small-12 paddingR0")
 							a(class="button full-width-small" style="margin-top: 28px; display: block;" ng-click="vm.ctrl.addToItemList (); $event.preventDefault()") Add
-				div(class="row column show-for-small")
-					div(class="column small-12 text-center paddingLR0")
-						a(class="button full-width-small" style="margin-top: 28px; display: block;" ng-click="vm.ctrl.addToItemList (); $event.preventDefault()") Add
+					// SELECTED ITEMS
+					div(class="row column")
+						div(class='column small-12 large-10')
+							table(ng-if='vm.model.storage.itemList.length > 0' class="unstriped")
+								thead
+									tr
+										th Name
+										th Quantity
+								tbody 
+									tr(ng-repeat='item in vm.model.storage.itemList')
+										td {{item.name}}
+										td {{item.quantity}}
+										td(class='text-center deleteIcon')
+											i(class="material-icons customIcon" ng-click="vm.ctrl.removeStorageFromList(item)") close
 				div(class="row column")
 					div(class="column small-12 paddingLR0")
 						label Location
@@ -154,6 +166,7 @@ div(class="row columns")
 		form(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-submit='vm.ctrl.returnStorage()')
 			div(class='small-12 large-6 large-push-3')
 				div(class="row column text-center paddingB15")
+<<<<<<< HEAD
 					h3 Outbound
 				div(class="row column" ng-if='vm.model.storage.itemList.length > 0')
 					table(class="unstriped")
@@ -176,9 +189,20 @@ div(class="row columns")
 					div(class="column large-4 show-for-large paddingR0")
 						div(class="column small-12 paddingR0")
 							a(class="button full-width-small" style="margin-top: 28px; display: block;" ng-click="vm.ctrl.addToItemList (); $event.preventDefault()") Add
-				div(class="row column hide-for-large")
-					div(class="column small-12 text-center paddingLR0")
-						a(class="button full-width-small" style="margin-top: 28px; display: block;" ng-click="vm.ctrl.addToItemList (); $event.preventDefault()") Add
+					// SELECTED ITEMS
+					div(class="row column")
+						div(class='column small-12 large-10')
+							table(ng-if='vm.model.storage.itemList.length > 0' class="unstriped")
+								thead
+									tr
+										th Name
+										th Quantity
+								tbody 
+									tr(ng-repeat='item in vm.model.storage.itemList')
+										td {{item.name}}
+										td {{item.quantity}}
+										td(class='text-center deleteIcon')
+											i(class="material-icons customIcon" ng-click="vm.ctrl.removeStorageFromList(item)") close
 				div(class="row column")
 					div(class="column small-12 paddingLR0")
 						label Location
