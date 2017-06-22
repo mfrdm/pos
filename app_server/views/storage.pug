@@ -120,30 +120,33 @@ div(class="row columns")
 			div(class='small-12 large-6 large-push-3')
 				div(class="row column text-center paddingB15")
 					h3 INBOUND
-				div(class="row column" ng-if='vm.model.storage.itemList.length > 0')
-					table(class="unstriped")
-						tr
-							th Name
-							th Quantity
-							th(class='text-center') Delete
-						tr(ng-repeat='item in vm.model.storage.itemList')
-							td {{item.name}}
-							td {{item.quantity}}
-							td(class='text-center deleteIcon')
-								i(class="material-icons customIcon" ng-click="vm.ctrl.removeStorageFromList(item)") close
-				div(class="row column")
-					div(class="column small-6 large-4 paddingL0")
-						label Name
-							select(ng-options='option.value as option.label for option in vm.model.productOptions' ng-model='vm.model.temporary.itemId')
-					div(class="column small-6 large-4 paddingR0")
-						label Quantity
-							input(type="number" ng-model='vm.model.temporary.quantity' min='1' required)
-					div(class="column large-4 show-for-large paddingR0")
-						div(class="column small-12 paddingR0")
+				div(class='basicBox row column paddingTB15 marginB15' )
+					// ADD ITEMS
+					div(class="column row")
+						h3(class="paddingLR15 fontSize20 fontWeight600") Add item
+					div(class="column row")
+						div(class="column large-8 small-12")
+							label Name
+								select(ng-options='option.value as option.label for option in vm.model.productOptions' ng-model='vm.model.temporary.itemId')
+						div(class="column large-2 small-12")
+							label Quantity
+								input(type="number" ng-model='vm.model.temporary.quantity' min='1' required)
+						div(class="column large-2 small-12 text-center")
 							a(class="button full-width-small" style="margin-top: 28px; display: block;" ng-click="vm.ctrl.addToItemList (); $event.preventDefault()") Add
-				div(class="row column show-for-small")
-					div(class="column small-12 text-center paddingLR0")
-						a(class="button full-width-small" style="margin-top: 28px; display: block;" ng-click="vm.ctrl.addToItemList (); $event.preventDefault()") Add
+					// SELECTED ITEMS
+					div(class="row column")
+						div(class='column small-12 large-10')
+							table(ng-if='vm.model.storage.itemList.length > 0' class="unstriped")
+								thead
+									tr
+										th Name
+										th Quantity
+								tbody 
+									tr(ng-repeat='item in vm.model.storage.itemList')
+										td {{item.name}}
+										td {{item.quantity}}
+										td(class='text-center deleteIcon')
+											i(class="material-icons customIcon" ng-click="vm.ctrl.removeStorageFromList(item)") close
 				div(class="row column")
 					div(class="column small-12 paddingLR0")
 						label Location
@@ -158,30 +161,33 @@ div(class="row columns")
 			div(class='small-12 large-6 large-push-3')
 				div(class="row column text-center paddingB15")
 					h3 OUTBOUND
-				div(class="row column" ng-if='vm.model.storage.itemList.length > 0')
-					table(class="unstriped")
-						tr
-							th Name
-							th Quantity
-							th(class='text-center') Delete
-						tr(ng-repeat='item in vm.model.storage.itemList')
-							td {{item.name}}
-							td {{item.quantity}}
-							td(class='text-center deleteIcon')
-								i(class="material-icons customIcon" ng-click="vm.ctrl.removeStorageFromList(item)") close
-				div(class="row column")
-					div(class="column small-6 large-4 paddingL0")
-						label Name
-							select(ng-options='option.value as option.label for option in vm.model.productOptions' ng-model='vm.model.temporary.itemId')
-					div(class="column small-6 large-4 paddingR0")
-						label Quantity
-							input(type="number" ng-model='vm.model.temporary.quantity' min='1' required)
-					div(class="column large-4 show-for-large paddingR0")
-						div(class="column small-12 paddingR0")
+				div(class='basicBox row column paddingTB15 marginB15' )
+					// ADD ITEMS
+					div(class="column row")
+						h3(class="paddingLR15 fontSize20 fontWeight600") Add item
+					div(class="column row")
+						div(class="column large-8 small-12")
+							label Name
+								select(ng-options='option.value as option.label for option in vm.model.productOptions' ng-model='vm.model.temporary.itemId')
+						div(class="column large-2 small-12")
+							label Quantity
+								input(type="number" ng-model='vm.model.temporary.quantity' min='1' required)
+						div(class="column large-2 small-12 text-center")
 							a(class="button full-width-small" style="margin-top: 28px; display: block;" ng-click="vm.ctrl.addToItemList (); $event.preventDefault()") Add
-				div(class="row column hide-for-large")
-					div(class="column small-12 text-center paddingLR0")
-						a(class="button full-width-small" style="margin-top: 28px; display: block;" ng-click="vm.ctrl.addToItemList (); $event.preventDefault()") Add
+					// SELECTED ITEMS
+					div(class="row column")
+						div(class='column small-12 large-10')
+							table(ng-if='vm.model.storage.itemList.length > 0' class="unstriped")
+								thead
+									tr
+										th Name
+										th Quantity
+								tbody 
+									tr(ng-repeat='item in vm.model.storage.itemList')
+										td {{item.name}}
+										td {{item.quantity}}
+										td(class='text-center deleteIcon')
+											i(class="material-icons customIcon" ng-click="vm.ctrl.removeStorageFromList(item)") close
 				div(class="row column")
 					div(class="column small-12 paddingLR0")
 						label Location
