@@ -1,8 +1,8 @@
 (function (){
 	angular.module('posApp')
-		.controller('NewOrdersCtrl', ['DataPassingService', 'OrderService', 'CustomerService', '$scope', '$window','$route', NewOrdersCtrl])
+		.controller('NewOrdersCtrl', ['DataPassingService', 'OrderService', 'CustomerService', '$scope', '$window','$route','StorageService', NewOrdersCtrl])
 
-	function NewOrdersCtrl (DataPassingService, OrderService, CustomerService, $scope, $window, $route){
+	function NewOrdersCtrl (DataPassingService, OrderService, CustomerService, $scope, $window, $route, StorageService){
 		var LayoutCtrl = DataPassingService.get ('layout');
 		var vm = this;
 
@@ -49,6 +49,9 @@
 						
 					},
 					customer: [],
+					message:{
+						notEnough:false
+					}
 				},
 				filterDiv: true,	
 				data: {}//data about translate
@@ -129,8 +132,6 @@
 				},	
 			}
 		};
-
-
 
 		// FIX format
 		vm.model.dom.data.vn = {
@@ -402,26 +403,42 @@
 			vm.ctrl.order.resetSearchCustomerDiv ();
 		};
 
+		//Hide storage message if not enough products
+		vm.ctrl.hideOrderMessage = function(){
+            vm.model.dom.order.message.notEnough = false;
+        }
+
 		vm.ctrl.order.addItem = function (){
 			if (vm.model.temporary.ordering.item.quantity && vm.model.temporary.ordering.item.name && vm.model.ordering.customer){
-				vm.model.items.map (function (x, i, arr){
+				var end = new Date();
+                StorageService.readProductsQuantity(0, end).then(function(res){
+                    var selectedProduct = res.data.data.filter(function(ele){
+                        return ele.name == vm.model.temporary.ordering.item.name
+                    })[0]
+                    if(selectedProduct.totalQuantity < vm.model.temporary.ordering.item.quantity){
+                        vm.model.dom.order.message.notEnough = true;
+                    }else{
+                    	vm.model.dom.order.message.notEnough = false;
+						vm.model.items.map (function (x, i, arr){
 
-					if (x.name == vm.model.temporary.ordering.item.name && vm.model.temporary.ordering.addedItem.indexOf (x.name) == -1){
-						var obj = Object.assign({},{
-							quantity: vm.model.temporary.ordering.item.quantity,
-							_id: x._id,
-							productName: x.name,
-							price: x.price
+							if (x.name == vm.model.temporary.ordering.item.name && vm.model.temporary.ordering.addedItem.indexOf (x.name) == -1){
+								var obj = Object.assign({},{
+									quantity: vm.model.temporary.ordering.item.quantity,
+									_id: x._id,
+									productName: x.name,
+									price: x.price
+								});
+
+								vm.model.ordering.orderline.push (obj);
+								vm.model.temporary.ordering.item = {};
+								vm.model.temporary.ordering.addedItem.push (x.name);
+
+								return;
+							}
+							else{
+								// display message
+							}
 						});
-
-						vm.model.ordering.orderline.push (obj);
-						vm.model.temporary.ordering.item = {};
-						vm.model.temporary.ordering.addedItem.push (x.name);
-
-						return;
-					}
-					else{
-						// display message
 					}
 				});
 			}

@@ -97,6 +97,13 @@ div(class="columns row")
 									input( ng-model="vm.model.temporary.checkin.item.quantity" string-to-number type="number" min='0')
 							div(class="column large-2 small-12 text-center")
 								a(class="button full-width-small" style="margin-top: 28px; display: block;" ng-click="vm.ctrl.checkin.addItem (); $event.preventDefault()") Add
+						// WARNING IF NOT ENOUGH PRODUCTS TO ORDER
+						div(ng-show='vm.model.dom.checkin.order.message.notEnough' class='column row')
+							div(class="column small-12")
+								div(class='callout alert')
+									span {{ vm.model.temporary.checkin.item.name + ' không đủ để order' }}
+									button(class="close-button" aria-label="Dismiss alert" type="button" ng-click='vm.ctrl.hideOrderMessage()')
+										span(aria-hidden="true") &times;
 						// SELECTED ITEMS
 						div(class="row column")
 							div(class='column small-12 large-10')

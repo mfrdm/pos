@@ -1,8 +1,8 @@
 (function() {
     angular.module('posApp')
-        .controller('NewCheckinCtrl', ['$http', 'DataPassingService', 'CheckinService', 'OrderService', 'checkoutService', '$scope', '$window', '$route', NewCheckinCtrl])
+        .controller('NewCheckinCtrl', ['$http', 'DataPassingService', 'CheckinService', 'OrderService', 'checkoutService', '$scope', '$window', '$route', 'StorageService', NewCheckinCtrl])
 
-    function NewCheckinCtrl ($http, DataPassingService, CheckinService, OrderService, CheckoutService, $scope, $window, $route){
+    function NewCheckinCtrl ($http, DataPassingService, CheckinService, OrderService, CheckoutService, $scope, $window, $route, StorageService){
         var LayoutCtrl = DataPassingService.get('layout');
         var vm = this;
 
@@ -75,6 +75,11 @@
                     },
                     invalidCode: false,
                     products: [],
+                    order:{
+                        message:{
+                            notEnough:false
+                        }
+                    }
                 },
                 checkedinList: true,
                 checkInEditDiv: false,
@@ -909,27 +914,43 @@
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////// Select Orders //////////////////////////////////////////////////
-
+        vm.ctrl.hideOrderMessage = function(){
+            vm.model.dom.checkin.order.message.notEnough = false;
+        }
         // Add item to order
         vm.ctrl.checkin.addItem = function (){
             if (vm.model.temporary.checkin.item.quantity && vm.model.temporary.checkin.item.name && vm.model.checkingin.occupancy.customer){
-                vm.model.items.map (function (x, i, arr){
-                    if (x.name == vm.model.temporary.checkin.item.name && vm.model.temporary.checkin.selectedItems.indexOf (x.name) == -1){
-                        var obj = Object.assign({},{
-                            quantity: vm.model.temporary.checkin.item.quantity,
-                            _id: x._id,
-                            productName: x.name,
-                            price: x.price
+                // check if store has enough products for making order
+                //vm.model.temporary.checkin.item.name and vm.model.temporary.checkin.item.quantity
+                var end = new Date();
+                StorageService.readProductsQuantity(0, end).then(function(res){
+                    var selectedProduct = res.data.data.filter(function(ele){
+                        return ele.name == vm.model.temporary.checkin.item.name
+                    })[0]
+                    if(selectedProduct.totalQuantity < vm.model.temporary.checkin.item.quantity){
+                        vm.model.dom.checkin.order.message.notEnough = true;
+                    }else{
+                        vm.model.dom.checkin.order.message.notEnough = false;
+                        vm.model.items.map (function (x, i, arr){
+                            if (x.name == vm.model.temporary.checkin.item.name && vm.model.temporary.checkin.selectedItems.indexOf (x.name) == -1){
+                                var obj = Object.assign({},{
+                                    quantity: vm.model.temporary.checkin.item.quantity,
+                                    _id: x._id,
+                                    productName: x.name,
+                                    price: x.price
+                                });
+                                vm.model.checkingin.order.orderline.push (obj);
+                                vm.model.temporary.checkin.item = {};
+                                vm.model.temporary.checkin.selectedItems.push (x.name);
+                                return;
+                            }
+                            else{
+                                // display message
+                            }
                         });
-                        vm.model.checkingin.order.orderline.push (obj);
-                        vm.model.temporary.checkin.item = {};
-                        vm.model.temporary.checkin.selectedItems.push (x.name);
-                        return;
                     }
-                    else{
-                        // display message
-                    }
-                });
+                })
+                
             }
         };
 

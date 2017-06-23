@@ -128,9 +128,11 @@
         // Function
         function getProductName (id){
             console.log(id, vm.model.productOptions)
-            return vm.model.productOptions.filter(function(ele){
-                return ele.value == id
-            })[0].label
+            if(vm.model.productOptions.length && vm.model.productOptions.length>0){
+                return vm.model.productOptions.filter(function(ele){
+                    return ele.value == id
+                })[0].label
+            }
         }
 
         function getCategoryInNumber (cate){
