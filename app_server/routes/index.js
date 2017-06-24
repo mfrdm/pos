@@ -131,6 +131,9 @@ router.get ('/promo-codes/code/:codeId', promoCodesCtrl.readOneCodeById);
 router.post ('/promo-codes/create', promoCodesCtrl.createOneCode);
 router.post ('/promo-codes/code/:codeId', promoCodesCtrl.updateOneCode);
 
+router.get ('/promocodes/code/info', promoCodesCtrl.readCodeInfo);
+router.get ('/promocodes/code/all', promoCodesCtrl.readAllCodes);
+
 router.get ('/deposits', DepositsCtrl.readDeposits);
 router.post ('/deposits/create', DepositsCtrl.createOneDeposit);
 router.post ('/deposits/deposit/:depositId/edit', DepositsCtrl.updateOneDeposit);
