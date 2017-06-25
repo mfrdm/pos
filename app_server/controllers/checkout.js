@@ -346,7 +346,7 @@ function Checkout() {
 										return
 									}
 
-									Customers.update({'_id':{$in:memberCusId}}, {$set:{checkinStatus:false}}, function(err, cus){
+									Customers.update({'_id':{$in:memberCusId}}, {$set:{checkinStatus:false}}, {multi: true},function(err, cus){
 										if(err){
 											next(err)
 											return
@@ -363,7 +363,7 @@ function Checkout() {
 												// paymentMethod: paymentMethods,
 												note: note
 											}
-											Occupancies.update({'_id':{$in:membersId}}, {$set: updateOccMember}, {new: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function(err, occ){
+											Occupancies.update({'_id':{$in:membersId}}, {$set: updateOccMember}, {new: true, multi: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function(err, occ){
 												if(err){
 													next(err)
 													return
@@ -377,7 +377,7 @@ function Checkout() {
 							}
 						}
 						else{
-							Customers.update({'_id':{$in:memberCusId}}, {$set:{checkinStatus:false}}, function(err, cus){
+							Customers.update({'_id':{$in:memberCusId}}, {$set:{checkinStatus:false}},{multi: true}, function(err, cus){
 								if(err){
 									next(err)
 									return
@@ -394,7 +394,7 @@ function Checkout() {
 										// paymentMethod: paymentMethods,
 										note: note
 									}
-									Occupancies.update({'_id':{$in:membersId}}, {$set: updateOccMember}, {new: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function(err, occ){
+									Occupancies.update({'_id':{$in:membersId}}, {$set: updateOccMember}, {new: true, multi: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function(err, occ){
 										if(err){
 											next(err)
 											return

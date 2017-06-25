@@ -92,6 +92,13 @@ div(class="row columns")
 											td {{ ord.quantity }}
 											td(class='text-center deleteIcon')
 												i(class="material-icons customIcon" ng-click="vm.ctrl.order.removeItem ($index)") close
+						// WARNING IF NOT ENOUGH PRODUCTS TO ORDER
+						div(ng-show='vm.model.dom.order.message.notEnough' class='column row')
+							div(class="column small-12")
+								div(class='callout alert')
+									span {{ vm.model.temporary.ordering.item.name + ' không đủ để order' }}
+									button(class="close-button" aria-label="Dismiss alert" type="button" ng-click='vm.ctrl.hideOrderMessage()')
+										span(aria-hidden="true") &times;
 					div(class="row column")
 						input(class="button" type="submit" value="Submit")
 						button(class="button float-right primary" ng-click='vm.ctrl.reset(); event.preventDefault()') Cancel

@@ -1,5 +1,5 @@
 describe('Controller: NewCheckinCtrl', function() {
-    var CheckinService, OrderService, $scope, createController, $rootScope, $httpBackend, DataPassingService, $window, $route, $location, authentication, getInvoiceCtrl;
+    var CheckinService, OrderService, $scope, createController, $rootScope, $httpBackend, DataPassingService, $window, $route, $location, authentication,StorageService, getInvoiceCtrl;
 
     // Note: anything end with 'List' means an array contains many conditions the test should cover
     // anything start with 'mock' means 1 single example for a single case
@@ -90,6 +90,7 @@ describe('Controller: NewCheckinCtrl', function() {
             CheckinService = $injector.get('CheckinService');
             DataPassingService = $injector.get('DataPassingService');
             OrderService = $injector.get('OrderService');
+            StorageService = $injector.get('StorageService');
             authentication = $injector.get('authentication')
 
             var $controller = $injector.get('$controller');
@@ -101,6 +102,7 @@ describe('Controller: NewCheckinCtrl', function() {
                     DataPassingService: DataPassingService,
                     CheckinService: CheckinService,
                     OrderService: OrderService,
+                    StorageService:StorageService,
                     $scope: $scope,
                     $window: $window,
                     $route: $route

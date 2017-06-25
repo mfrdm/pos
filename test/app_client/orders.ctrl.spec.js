@@ -1,5 +1,5 @@
 describe('Controller: NewOrdersCtrl', function() {
-    var CustomerService, OrderService, $scope, createController, $rootScope, $httpBackend, DataPassingService, $window, $route, $location, authentication;
+    var CustomerService, OrderService, $scope, createController, $rootScope, $httpBackend, DataPassingService, $window, $route, $location, authentication, StorageService;
 
     var mockSearchCustomers = [
         { "_id": "5924168b164cb9030cee9305", "__v": 0, "fullname": "ĐÀO THỊ THU HÀ", "firstname": "HÀ", "lastname": "ĐÀO", "middlename": "THỊ THU", "gender": 2, "birthday": "1997-02-04T00:00:00Z", "checkinStatus": false, "bookings": [], "occupancy": [], "updatedAt": [], "createdAt": "2017-05-23T11:01:31.410Z", "isStudent": false, "edu": [{ "title": "Khác", "_id": "5924168b164cb9030cee9307" }, { "school": "-1", "_id": "5924168b164cb9030cee9306" }], "email": ["ancol245@gmail.com"], "phone": ["0989669896"] },
@@ -182,6 +182,7 @@ describe('Controller: NewOrdersCtrl', function() {
             CustomerService = $injector.get('CustomerService');
             OrderService = $injector.get('OrderService');
             DataPassingService = $injector.get('DataPassingService');
+            StorageService = $injector.get('StorageService');
             authentication = $injector.get('authentication')
 
             var $controller = $injector.get('$controller');
@@ -193,6 +194,7 @@ describe('Controller: NewOrdersCtrl', function() {
                     DataPassingService: DataPassingService,
                     OrderService: OrderService,
                     CustomerService: CustomerService,
+                    StorageService:StorageService,
                     $scope: $scope,
                     $window: $window,
                     $route: $route,

@@ -127,10 +127,11 @@
 
         // Function
         function getProductName (id){
-            console.log(id, vm.model.productOptions)
-            return vm.model.productOptions.filter(function(ele){
-                return ele.value == id
-            })[0].label
+            if(vm.model.productOptions.length && vm.model.productOptions.length>0){
+                return vm.model.productOptions.filter(function(ele){
+                    return ele.value == id
+                })[0].label
+            }
         }
 
         function getCategoryInNumber (cate){
@@ -226,7 +227,7 @@
         }
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////// Paginate ///////////////////////////////////////////////////
+        ////////////////////////////////////////// Paginate for product ///////////////////////////////////////
         vm.model.temporary.displayedList = {
             data:[],
             number:[]
@@ -234,6 +235,23 @@
         vm.model.pagination = {
             itemsEachPages:5,
             numberOfPages:''
+        }
+        vm.model.listEachPage = {}
+
+
+        // Slice list after filter
+        vm.ctrl.getFilteredCheckinList = function (){
+            // Input
+            vm.model.temporary.displayedList.data = vm.model.dom.product.list.filter(function(ele){
+                    if(vm.model.filter.category == 'All'){
+                        return ele
+                    }else{
+                        return ele.category == vm.model.filter.category
+                    }
+                }).filter(function(item){
+                    return (item.name).includes(vm.model.filter.productName)
+                })
+            return vm.model.temporary.displayedList.data
         }
 
         function checkDisabledButton(){
@@ -284,7 +302,173 @@
         }
 
         // Paginate
-        
+        vm.ctrl.paginate = function (afterFilterList){
+            vm.model.temporary.displayedList.number = []
+            vm.model.pagination.numberOfPages = Math.ceil(
+                afterFilterList.length/vm.model.pagination.itemsEachPages)
+            
+            for(var i = 1; i<vm.model.pagination.numberOfPages+1; i++){
+                vm.model.temporary.displayedList.number.push({number:i, class:''})
+            }
+            vm.model.temporary.displayedList.number.map(function(ele, index, array){
+                array[0].class = 'current'
+            })
+            
+            checkDisabledButton()
+            vm.model.listEachPage.data = afterFilterList.slice(0, vm.model.pagination.itemsEachPages)
+            vm.ctrl.sliceCheckinList = function(i){
+                vm.model.listEachPage.data = afterFilterList.slice((i-1)*vm.model.pagination.itemsEachPages,i*vm.model.pagination.itemsEachPages)
+                console.log(vm.model.listEachPage.data)
+                vm.model.temporary.displayedList.number.map(function(ele, index, array){
+                    if(index == i-1){
+                        array[index].class = 'current'
+                    }else{
+                        array[index].class = ''
+                    }
+                });
+                
+                checkDisabledButton()
+            }
+
+            vm.ctrl.showInPage = function(product){
+                var testArr = vm.model.listEachPage.data.filter(function(ele){
+                    return ele.createdAt == product.createdAt
+                })
+                if(testArr.length > 0){
+                    return true
+                }else{
+                    return false
+                }
+            }
+        }
+
+        // // Paginate after filter
+        vm.ctrl.filterPaginate = function (){
+            var afterFilterList = vm.ctrl.getFilteredCheckinList();
+            vm.ctrl.paginate(afterFilterList)
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////// Paginate for storage ///////////////////////////////////////
+        vm.model.temporary.displayedList = {
+            storage:[],
+            storageNumber:[]
+        };
+        vm.model.pagination = {
+            storage:{
+                itemsEachPages:5,
+                numberOfPages:''
+            }
+        }
+        vm.model.listEachPageStorage = {}
+        vm.ctrl.storage = {}
+        vm.model.storagePage = {}
+
+
+        // Slice list after filter
+        vm.ctrl.storage.getFilteredCheckinList = function (){
+            // Input
+            if(vm.model.dom.storage.list.length && vm.model.dom.storage.list.length > 0){
+                vm.model.temporary.displayedList.storage = vm.model.dom.storage.list.filter(function(item){
+                    return (item.name).includes(vm.model.filter.productName)
+                })
+                return vm.model.temporary.displayedList.storage
+            }
+        }
+
+        function checkDisabledButtonStorage(){
+            var ind = 0;
+            vm.model.temporary.displayedList.storageNumber.map(function(ele, index){
+                if(ele.class == 'current'){
+                    ind = index
+                }
+            });
+            if(ind+1 == vm.model.temporary.displayedList.storageNumber.length){
+                vm.model.storagePage.nextClass = "pagination-next disabled";
+                vm.model.storagePage.goNextText = 'Next'
+            }else{
+                vm.model.storagePage.nextClass = "pagination-next";
+                vm.model.storagePage.goNextText = ''
+            };
+            if(ind == 0){
+                vm.model.storagePage.previousClass = "pagination-previous disabled";
+                vm.model.storagePage.goPreviousText = 'Previous'
+            }else{
+                vm.model.storagePage.previousClass = "pagination-previous";
+                vm.model.storagePage.goPreviousText = ''
+            }
+        }
+
+        vm.ctrl.storage.goNext = function(){
+            var ind = 0;
+            vm.model.temporary.displayedList.storageNumber.map(function(ele, index){
+                if(ele.class == 'current'){
+                    ind = index
+                }
+            });
+            if(ind+2 <= vm.model.temporary.displayedList.storageNumber.length){
+                vm.ctrl.storage.sliceCheckinList(ind+2)
+            }
+        }
+
+        vm.ctrl.storage.goPrevious = function(){
+            var ind = 0;
+            vm.model.temporary.displayedList.storageNumber.map(function(ele, index){
+                if(ele.class == 'current'){
+                    ind = index
+                }
+            });
+            if(ind >= 1){
+                vm.ctrl.storage.sliceCheckinList(ind)
+            }
+        }
+
+        // Paginate
+        vm.ctrl.storage.paginate = function (afterFilterList){
+            vm.model.temporary.displayedList.storageNumber = []
+            vm.model.pagination.storage.numberOfPages = Math.ceil(
+                afterFilterList.length/vm.model.pagination.storage.itemsEachPages)
+            
+            for(var i = 1; i<vm.model.pagination.storage.numberOfPages+1; i++){
+                vm.model.temporary.displayedList.storageNumber.push({number:i, class:''})
+            }
+            vm.model.temporary.displayedList.storageNumber.map(function(ele, index, array){
+                array[0].class = 'current'
+            })
+            
+            checkDisabledButtonStorage()
+            vm.model.listEachPageStorage.storage = afterFilterList.slice(0, vm.model.pagination.storage.itemsEachPages)
+            vm.ctrl.storage.sliceCheckinList = function(i){
+                vm.model.listEachPageStorage.storage = afterFilterList.slice((i-1)*vm.model.pagination.storage.itemsEachPages,i*vm.model.pagination.storage.itemsEachPages)
+                vm.model.temporary.displayedList.storageNumber.map(function(ele, index, array){
+                    if(index == i-1){
+                        array[index].class = 'current'
+                    }else{
+                        array[index].class = ''
+                    }
+                });
+                
+                checkDisabledButtonStorage()
+            }
+
+            vm.ctrl.storage.showInPage = function(product){
+                var testArr = vm.model.listEachPageStorage.storage.filter(function(ele){
+                    return ele.name == product.name && ele.createdAt == product.createdAt
+                })
+                if(testArr.length > 0){
+                    return true
+                }else{
+                    return false
+                }
+            }
+        }
+
+        // // Paginate after filter
+        vm.ctrl.storage.filterPaginate = function (){
+            var afterFilterList = vm.ctrl.storage.getFilteredCheckinList();
+            vm.ctrl.storage.paginate(afterFilterList)
+        }
+
 
         ///////////////////////////////////// Product /////////////////////////////////
         // get all products
@@ -295,8 +479,9 @@
                         vm.model.productOptions.push({
                             label:ele.name,
                             value:ele._id
-                        })
-                    }
+                        });
+                    };
+
                 })
             })
         }
@@ -358,8 +543,6 @@
                 returnObj.itemList.map(function(ele){
                     ele.quantity = -ele.quantity;
                 })
-                console.log(vm.model.storage.itemList)
-                console.log(returnObj)
                 StorageService.createStorage(returnObj).then(function(res){
                     vm.ctrl.reset()
                 })
@@ -377,10 +560,12 @@
                     res.data.data.map(function(ele){
                         ele.itemList.map(function(item){
                             item.name = getProductName(item.itemId)
+                            item.createdAt = ele.createdAt
                             vm.model.dom.storage.list.push(item)
                         })
                     })
-                }
+                };
+                vm.ctrl.storage.filterPaginate()
     		})
     	};
 
@@ -394,8 +579,9 @@
                             ele.category = item.label
                             vm.model.dom.product.list.push(ele)
                         }
-                    })
-                })
+                    });
+                });
+                vm.ctrl.filterPaginate()
             })
         };
 
