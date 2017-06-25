@@ -1086,7 +1086,7 @@ xdescribe ('Checkout', function (){
 
 })
 
-describe('Checkout members with leader', function() {
+xdescribe('Checkout members with leader', function() {
     this.timeout(3000);
     describe('Leader without members', function() {
         var mockOccs, mockCustomers, newOcc, newCustomer, group, selectedAcc;

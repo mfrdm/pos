@@ -166,6 +166,39 @@ describe ('Get total', function (){
 		newOcc.promocodes.length.should.to.be.at.least (2);				
 	});
 
+	it ('should return correct total when 1 code price, 1 code total provided, and service is private', function (){
+		occ.promocodes = [
+			{
+				name: 'code 3',
+				codeType: 2,
+				services: ['medium group private'],
+				priority: 2,
+				redeemData: {
+					price: {
+						value: 150000,
+					}
+				}				
+			},
+
+		];
+
+		occ.service = {
+			name: 'Medium group private',
+			price: 220000
+		}
+
+		occ.customer.isStudent = true;
+		var newOcc = new Occupancies (occ);
+		newOcc.getTotal ();
+
+		newOcc.total.should.to.equal (150000 * 3.5);
+		newOcc.oriUsage.should.to.equal (3.5);
+		newOcc.usage.should.to.equal (3.5);
+		newOcc.price.should.to.equal (150000);	
+		newOcc.promocodes.length.should.to.be.at.least (1);				
+	});
+
+
 	it ('should return correct total when 1 code usage and 1 code total provided', function (){
 		occ.promocodes = [
 			{
@@ -229,7 +262,8 @@ describe ('Get total', function (){
 		newOcc.usage.should.to.equal (3.5);
 		newOcc.price.should.to.equal (150000);
 		newOcc.promocodes.length.should.to.be.at.least (1);		
-	})
+	});
+
 });
 
 xdescribe ('Get usage', function (){

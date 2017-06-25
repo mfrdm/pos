@@ -289,7 +289,8 @@ var addAccountDefaultCodes = function (context){
 
 	if (!higherType2 && isStudent){
 		var targetCodes = [
-			defaultCodes ['studentCommon3days']
+			defaultCodes ['studentCommon3days'],
+			defaultCodes ['studentCommon3h1d30d'],
 		];
 
 		targetCodes.map (function (x, i, arr){
@@ -299,8 +300,7 @@ var addAccountDefaultCodes = function (context){
 
 	if (!higherType2 && isStudent && !isGroupon){
 		var targetCodes = [
-			defaultCodes ['studentCommon1day'],
-			defaultCodes ['studentCommon3h1d30d'],
+			defaultCodes ['studentCommon1day']
 		];
 
 		targetCodes.map (function (x, i, arr){
@@ -360,6 +360,7 @@ var addServiceDefaultCodes = function (context){
 		}
 	});
 
+	// FIX: build a function to evaluate conditions like add default accounts
 	// student price code
 	if (!higherType2 && isStudent && (defaultCodes ['studentprice'].services.indexOf (service) != -1)){
 		promocodes.push (defaultCodes ['studentprice']);
@@ -439,6 +440,7 @@ var redeemQuantity = function (context){
 	return result;
 }
 
+// Mixin: price, usage, and total can be set by default
 var redeemTotal = function (context){
 	var result = {};
 	var price = context.getPrice ? context.getPrice () : null;
@@ -452,6 +454,14 @@ var redeemTotal = function (context){
 	// multiple total with x % 
 	else if (this.redeemData.total.formula == 2){
 		result.total = price * usage * this.redeemData.total.value;
+	}
+	else if (this.redeemData.total.formula == 3){
+		if (usage < this.redeemData.usage.min){
+			usage = this.redeemData.usage.min;
+		}
+
+		result.total = this.redeemData.price.value * usage;
+		result.price = this.redeemData.price.value;
 	}
 	else{
 		result.total = this.redeemData.total.value;
@@ -557,18 +567,22 @@ var PromocodesSchema = mongoose.Schema ({
 	redeemData: {
 		price: {
 			value: Number,
+			min: Number,
 			formula: String,
 		},
 		quantity: {
 			value: Number,
+			min: Number,
 			formula: String,
 		},
 		total: {
 			value: Number,
+			min: Number,
 			formula: String,			
 		},
 		usage: {
 			value: Number,
+			min: Number,
 			formula: String,				
 		}
 	},

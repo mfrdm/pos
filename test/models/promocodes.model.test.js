@@ -6,7 +6,7 @@ var Promocodes = require ('../../app_api/models/promocodes.model');
 var Occupancies = require ('../../app_api/models/occupancies.model');
 var Deposits = require ('../../app_api/models/deposit.model')
 
-describe ('redeem', function (){
+xdescribe ('redeem', function (){
 	var codes, context;
 	beforeEach (function (){
 		context = {
@@ -58,7 +58,7 @@ describe ('redeem', function (){
 						formula: 1
 					}
 				}				
-			},								
+			}								
 		]
 	});
 
@@ -91,10 +91,11 @@ describe ('redeem', function (){
 		result.should.not.to.have.property ('usage ');
 		result.should.not.to.have.property ('quantity');
 		result.should.not.to.have.property ('price');
-	})
+	});
+
 });
 
-describe ('Redeem price', function (){
+xdescribe ('Redeem price', function (){
 	var codes, context;
 	beforeEach (function (){
 		context = {
@@ -143,7 +144,7 @@ describe ('Redeem price', function (){
 xdescribe ('Redeem quantity', function (){
 });
 
-describe ('Redeem usage', function (){
+xdescribe ('Redeem usage', function (){
 	var codes, context;
 	beforeEach (function (){
 		context = {
@@ -307,7 +308,23 @@ describe ('Redeem total', function (){
 					}
 				}				
 			},										
-
+			{
+				name: 'code 6',
+				codeType: 3,
+				services: ['medium group private'],
+				priority: 2,
+				redeemData: {
+					total: {
+						formula: 3
+					},
+					price: {
+						value: 150000
+					},
+					usage: {
+						min: 5
+					}
+				}					
+			}
 		]
 	});
 
@@ -353,10 +370,22 @@ describe ('Redeem total', function (){
 		result.should.not.to.have.property ('usage');
 		result.should.not.to.have.property ('price');
 		result.should.not.to.have.property ('quantity');
+	});
+
+	it ('should return expected total when formula 3 is used', function (){
+		var result = new Promocodes (codes[5]).redeemTotal (context);
+
+		result.total.should.to.equal (150000 * 5);
+
+		result.should.not.to.have.property ('usage');
+		result.should.to.have.property ('price');
+		result.should.not.to.have.property ('quantity');
+
+		result.price.should.to.equal (150000);		
 	})
 });
 
-describe ('Add account default code', function (){
+xdescribe ('Add account default code', function (){
 	var context, deposit;
 	beforeEach (function (){
 		deposit = [
