@@ -31,7 +31,7 @@ var getDefaultAccounts = function (){
 		services: ['group common', 'individual common'], // name of service applied
 		label: {
 			vn: "Combo 3 ngày",
-			en: "1 day commbo",
+			en: "3 day commbo",
 		},
 		recursive: {
 			isRecursive: true,
@@ -101,7 +101,7 @@ var getDefaultAccounts = function (){
 
 var renew = function (){
 	var acc = this;
-	var today = moment ().hour (0).minute (0);
+	var today = moment ().hour (0).minute (0); // Review and remove later
 	var renewable = acc.isRenewable ();
 	if (renewable && acc.recursive.recursiveType == 1){
 		acc.amount = acc.recursive.baseAmount;
