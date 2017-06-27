@@ -360,7 +360,7 @@
         };
         vm.model.pagination = {
             storage:{
-                itemsEachPages:5,
+                itemsEachPages:1,
                 numberOfPages:''
             }
         }
@@ -487,7 +487,6 @@
                             value:ele._id
                         });
                     };
-
                 })
             })
         }

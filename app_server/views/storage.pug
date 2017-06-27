@@ -97,7 +97,7 @@ div(class="row columns")
 						th {{product.category}}
 						th {{product.name}}
 						th {{product.totalQuantity}}
-						th {{product.totalValue}}
+						th {{product.totalValue | number}}
 						th
 							input(class="button" type="submit" value="Edit" ng-click='vm.ctrl.openEditProduct(product)')
 			div(ng-if='vm.model.temporary.displayedList.data.length > vm.model.pagination.itemsEachPages')

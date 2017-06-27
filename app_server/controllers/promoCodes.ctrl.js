@@ -71,10 +71,23 @@ function PromoCodesCtrl() {
 	this.readCodeInfo = function(req, res, next){
 		var info = {};
 		info.codeType = [
-			{value:1, 'label':'usage'},
-			{value:2, 'label':'price'},
-			{'value':3, 'label':'total'},
-			{'value':4, 'label':'quantity'}
+			{value:1, 'label':'usage', formula:[
+				{value:'1', label:'Giảm thời gian sử dụng'},
+				{value:'', label:'Đặt thời gian sử dụng'}
+			]},
+			{value:2, 'label':'price', formula:[
+				{value:'1', label:'Giảm phần trăm giá gốc'},
+				{value:'', label:'Đặt giá mới'}
+			]},
+			{'value':3, 'label':'total', formula:[
+				{value:'1', label:'Giảm giá giờ đầu'},
+				{value:'2', label:'Giảm giá theo %'},
+				{value:'', label:'Đặt tổng tiền thanh toán mới'}
+			]},
+			{'value':4, 'label':'quantity', formula:[
+				{value:'1', label:'Giảm số lượng'},
+				{value:'', label:'Đặt số lượng mới'}
+			]}
 		];
 		info.excluded = [
 			{'value':true, 'label':'True'},
@@ -87,9 +100,9 @@ function PromoCodesCtrl() {
 		info.services = [
 			{'value':'group common', 'label':'Nhóm chung'},
 			{'value':'individual common', 'label':'Cá nhân'},
-			{'value':'small group private', 'label':'Nhóm nhỏ'},
-			{'value':'medium group private', 'label':'Nhóm vừa'},
-			{'value':'large group private', 'label':'Nhóm lớn'}
+			{'value':'small group private', 'label':'Nhóm riêng 15'},
+			{'value':'medium group private', 'label':'Nhóm riêng 30'}
+			// {'value':'large group private', 'label':'Nhóm riêng 40'}
 		]
 		res.json ({data: info});
 	}
