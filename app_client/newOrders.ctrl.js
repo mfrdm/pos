@@ -413,7 +413,7 @@
 				var end = new Date();
                 StorageService.readProductsQuantity(0, end).then(function(res){
                     var selectedProduct = res.data.data.filter(function(ele){
-                        return ele.name == vm.model.temporary.ordering.item.name
+                        return ele.name.toLowerCase() == vm.model.temporary.ordering.item.name.toLowerCase()
                     })[0]
                     if(selectedProduct.totalQuantity < vm.model.temporary.ordering.item.quantity){
                         vm.model.dom.order.message.notEnough = true;
