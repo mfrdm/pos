@@ -41,6 +41,7 @@
     		filter:{}
     	};
     	vm.model = {
+            title:"Storage",
     		dom:{
     			filterDiv:false,
     			addStorageDiv:false,
@@ -196,9 +197,11 @@
             if(vm.model.dom.productList){
                 vm.model.dom.storageList = true;
                 vm.model.dom.productList = false;
+                vm.model.title = "Storage"
             }else{
                 vm.model.dom.storageList = false;
                 vm.model.dom.productList = true;
+                vm.model.title = "Product"
             }
         }
 
@@ -303,41 +306,42 @@
 
         // Paginate
         vm.ctrl.paginate = function (afterFilterList){
-            vm.model.temporary.displayedList.number = []
-            vm.model.pagination.numberOfPages = Math.ceil(
-                afterFilterList.length/vm.model.pagination.itemsEachPages)
-            
-            for(var i = 1; i<vm.model.pagination.numberOfPages+1; i++){
-                vm.model.temporary.displayedList.number.push({number:i, class:''})
-            }
-            vm.model.temporary.displayedList.number.map(function(ele, index, array){
-                array[0].class = 'current'
-            })
-            
-            checkDisabledButton()
-            vm.model.listEachPage.data = afterFilterList.slice(0, vm.model.pagination.itemsEachPages)
-            vm.ctrl.sliceCheckinList = function(i){
-                vm.model.listEachPage.data = afterFilterList.slice((i-1)*vm.model.pagination.itemsEachPages,i*vm.model.pagination.itemsEachPages)
-                console.log(vm.model.listEachPage.data)
+            if(afterFilterList.length){
+                vm.model.temporary.displayedList.number = []
+                vm.model.pagination.numberOfPages = Math.ceil(
+                    afterFilterList.length/vm.model.pagination.itemsEachPages)
+                
+                for(var i = 1; i<vm.model.pagination.numberOfPages+1; i++){
+                    vm.model.temporary.displayedList.number.push({number:i, class:''})
+                }
                 vm.model.temporary.displayedList.number.map(function(ele, index, array){
-                    if(index == i-1){
-                        array[index].class = 'current'
-                    }else{
-                        array[index].class = ''
-                    }
-                });
+                    array[0].class = 'current'
+                })
                 
                 checkDisabledButton()
-            }
+                vm.model.listEachPage.data = afterFilterList.slice(0, vm.model.pagination.itemsEachPages)
+                vm.ctrl.sliceCheckinList = function(i){
+                    vm.model.listEachPage.data = afterFilterList.slice((i-1)*vm.model.pagination.itemsEachPages,i*vm.model.pagination.itemsEachPages)
+                    vm.model.temporary.displayedList.number.map(function(ele, index, array){
+                        if(index == i-1){
+                            array[index].class = 'current'
+                        }else{
+                            array[index].class = ''
+                        }
+                    });
+                    
+                    checkDisabledButton()
+                }
 
-            vm.ctrl.showInPage = function(product){
-                var testArr = vm.model.listEachPage.data.filter(function(ele){
-                    return ele.createdAt == product.createdAt
-                })
-                if(testArr.length > 0){
-                    return true
-                }else{
-                    return false
+                vm.ctrl.showInPage = function(product){
+                    var testArr = vm.model.listEachPage.data.filter(function(ele){
+                        return ele.createdAt == product.createdAt
+                    })
+                    if(testArr.length > 0){
+                        return true
+                    }else{
+                        return false
+                    }
                 }
             }
         }
@@ -425,40 +429,42 @@
 
         // Paginate
         vm.ctrl.storage.paginate = function (afterFilterList){
-            vm.model.temporary.displayedList.storageNumber = []
-            vm.model.pagination.storage.numberOfPages = Math.ceil(
-                afterFilterList.length/vm.model.pagination.storage.itemsEachPages)
-            
-            for(var i = 1; i<vm.model.pagination.storage.numberOfPages+1; i++){
-                vm.model.temporary.displayedList.storageNumber.push({number:i, class:''})
-            }
-            vm.model.temporary.displayedList.storageNumber.map(function(ele, index, array){
-                array[0].class = 'current'
-            })
-            
-            checkDisabledButtonStorage()
-            vm.model.listEachPageStorage.storage = afterFilterList.slice(0, vm.model.pagination.storage.itemsEachPages)
-            vm.ctrl.storage.sliceCheckinList = function(i){
-                vm.model.listEachPageStorage.storage = afterFilterList.slice((i-1)*vm.model.pagination.storage.itemsEachPages,i*vm.model.pagination.storage.itemsEachPages)
+            if(afterFilterList){
+                vm.model.temporary.displayedList.storageNumber = []
+                vm.model.pagination.storage.numberOfPages = Math.ceil(
+                    afterFilterList.length/vm.model.pagination.storage.itemsEachPages)
+                
+                for(var i = 1; i<vm.model.pagination.storage.numberOfPages+1; i++){
+                    vm.model.temporary.displayedList.storageNumber.push({number:i, class:''})
+                }
                 vm.model.temporary.displayedList.storageNumber.map(function(ele, index, array){
-                    if(index == i-1){
-                        array[index].class = 'current'
-                    }else{
-                        array[index].class = ''
-                    }
-                });
+                    array[0].class = 'current'
+                })
                 
                 checkDisabledButtonStorage()
-            }
+                vm.model.listEachPageStorage.storage = afterFilterList.slice(0, vm.model.pagination.storage.itemsEachPages)
+                vm.ctrl.storage.sliceCheckinList = function(i){
+                    vm.model.listEachPageStorage.storage = afterFilterList.slice((i-1)*vm.model.pagination.storage.itemsEachPages,i*vm.model.pagination.storage.itemsEachPages)
+                    vm.model.temporary.displayedList.storageNumber.map(function(ele, index, array){
+                        if(index == i-1){
+                            array[index].class = 'current'
+                        }else{
+                            array[index].class = ''
+                        }
+                    });
+                    
+                    checkDisabledButtonStorage()
+                }
 
-            vm.ctrl.storage.showInPage = function(product){
-                var testArr = vm.model.listEachPageStorage.storage.filter(function(ele){
-                    return ele.name == product.name && ele.createdAt == product.createdAt
-                })
-                if(testArr.length > 0){
-                    return true
-                }else{
-                    return false
+                vm.ctrl.storage.showInPage = function(product){
+                    var testArr = vm.model.listEachPageStorage.storage.filter(function(ele){
+                        return ele.name == product.name && ele.createdAt == product.createdAt
+                    })
+                    if(testArr.length > 0){
+                        return true
+                    }else{
+                        return false
+                    }
                 }
             }
         }

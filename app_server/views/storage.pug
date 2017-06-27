@@ -1,6 +1,6 @@
 div(class="row columns")
 	div(class="column small-12")
-		h2 Storage
+		h2 {{vm.model.title}}
 	// SETTING
 	div(class="row column")
 		div(class="column small-8 large-8")
@@ -130,7 +130,7 @@ div(class="row columns")
 							select(ng-options='option.value as option.label for option in vm.model.categoryOptions' ng-model='vm.model.product.category')
 					div(class="column small-12 paddingLR0")
 						label Location
-							select(ng-options='option.value as option.label for option in vm.model.locationOptions' ng-model='vm.model.product.storeId')
+							select(ng-options='option.value as option.label for option in vm.model.locationOptions' ng-model='vm.model.product.storeId' ng-init="vm.model.product.storeId=vm.model.locationOptions[0].value")
 
 				div(class="row column paddingT15")
 					input(class="button" type="submit" value="Submit")
@@ -170,7 +170,7 @@ div(class="row columns")
 				div(class="row column")
 					div(class="column small-12 paddingLR0")
 						label Location
-							select(ng-options='option.value as option.label for option in vm.model.locationOptions' ng-model='vm.model.storage.storeId')
+							select(ng-options='option.value as option.label for option in vm.model.locationOptions' ng-model='vm.model.storage.storeId' ng-init="vm.model.storage.storeId=vm.model.locationOptions[0].value")
 
 				div(class="row column paddingT15")
 					input(class="button" type="submit" value="Submit")
@@ -208,7 +208,7 @@ div(class="row columns")
 				div(class="row column")
 					div(class="column small-12 paddingLR0")
 						label Location
-							select(ng-options='option.value as option.label for option in vm.model.locationOptions' ng-model='vm.model.storage.storeId')
+							select(ng-options='option.value as option.label for option in vm.model.locationOptions' ng-model='vm.model.storage.storeId' ng-init="vm.model.product.storeId=vm.model.locationOptions[0].value")
 
 				div(class="row column paddingT15")
 					input(class="button" type="submit" value="Submit")
