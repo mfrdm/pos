@@ -456,12 +456,24 @@ var redeemTotal = function (context){
 		result.total = price * usage * this.redeemData.total.value;
 	}
 	else if (this.redeemData.total.formula == 3){
-		if (usage < this.redeemData.usage.min){
+		if (usage <= this.redeemData.usage.min){
 			usage = this.redeemData.usage.min;
 		}
 
 		result.total = this.redeemData.price.value * usage;
 		result.price = this.redeemData.price.value;
+	}
+	else if (this.redeemData.total.formula == 4){
+		if (usage <= this.redeemData.usage.max){
+			price = 0;
+		}
+		else {
+			price = this.redeemData.price.value;
+			usage = usage - this.redeemData.usage.max;
+		}
+
+		result.total = price * usage ;
+		result.price = price;
 	}
 	else{
 		result.total = this.redeemData.total.value;
@@ -568,21 +580,25 @@ var PromocodesSchema = mongoose.Schema ({
 		price: {
 			value: Number,
 			min: Number,
+			max: Number,
 			formula: String,
 		},
 		quantity: {
 			value: Number,
 			min: Number,
+			max: Number,
 			formula: String,
 		},
 		total: {
 			value: Number,
 			min: Number,
+			max: Number,
 			formula: String,			
 		},
 		usage: {
 			value: Number,
 			min: Number,
+			max: Number,
 			formula: String,				
 		}
 	},

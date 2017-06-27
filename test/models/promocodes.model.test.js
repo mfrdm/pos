@@ -324,7 +324,24 @@ describe ('Redeem total', function (){
 						min: 5
 					}
 				}					
-			}
+			},
+			{
+				name: 'code 7',
+				codeType: 3,
+				services: ['large group private'],
+				priority: 2,
+				redeemData: {
+					total: {
+						formula: 4
+					},
+					price: {
+						value: 220000
+					},
+					usage: {
+						max: 6
+					}
+				}					
+			},			
 		]
 	});
 
@@ -382,7 +399,33 @@ describe ('Redeem total', function (){
 		result.should.not.to.have.property ('quantity');
 
 		result.price.should.to.equal (150000);		
-	})
+	});
+
+	it ('should return expected total when formula 4 is used', function (){
+		var result = new Promocodes (codes[6]).redeemTotal (context);
+
+		result.total.should.to.equal (0);
+
+		result.should.not.to.have.property ('usage');
+		result.should.to.have.property ('price');
+		result.should.not.to.have.property ('quantity');
+
+		result.price.should.to.equal (0);		
+	});	
+
+	it ('should return expected total when formula 4 is used', function (){
+		context.usage = 10;
+		var result = new Promocodes (codes[6]).redeemTotal (context);
+
+		result.total.should.to.equal (220000 * 4);
+
+		result.should.not.to.have.property ('usage');
+		result.should.to.have.property ('price');
+		result.should.not.to.have.property ('quantity');
+
+		result.price.should.to.equal (220000);		
+	});
+
 });
 
 xdescribe ('Add account default code', function (){
