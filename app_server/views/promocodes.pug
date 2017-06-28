@@ -94,11 +94,11 @@ div(class="row columns")
 						div(class='column borderAll')
 							div(class='column small-12 large-6 paddingLR0')
 								label(ng-repeat='service in vm.model.codeInfo.services.slice(0,3)' class='paddingTB15') 
-									input(type='checkbox' checklist-model='vm.model.promocode.services' checklist-value='service.value' class='marginB0' required)
+									input(type='checkbox' checklist-model='vm.model.promocode.services' checklist-value='service.value' class='marginB0')
 									span {{service.label}}
 							div(class='column small-12 large-6 paddingLR0')
 								label(ng-repeat='service in vm.model.codeInfo.services.slice(3)' class='paddingTB15') 
-									input(type='checkbox' checklist-model='vm.model.promocode.services' checklist-value='service.value' class='marginB0' required)
+									input(type='checkbox' checklist-model='vm.model.promocode.services' checklist-value='service.value' class='marginB0')
 									span {{service.label}}
 
 				div(class='row column basicBox')
