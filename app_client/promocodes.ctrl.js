@@ -140,12 +140,12 @@
 
         	vm.model.editPromocode.start = new Date(vm.model.editPromocode.start);
         	vm.model.editPromocode.end = new Date(vm.model.editPromocode.end);
-            // if(vm.model.editPromocode.services[0] == 'all'){
-            //     vm.model.editPromocode.services = []
-            //     vm.model.codeInfo.services.map(function(item){
-            //         vm.model.editPromocode.services.push(item.value)
-            //     })
-            // }
+            if(vm.model.editPromocode.services[0] == 'all'){
+                vm.model.editPromocode.services = []
+                vm.model.codeInfo.services.map(function(item){
+                    vm.model.editPromocode.services.push(item.value)
+                })
+            }
         }
 
         vm.ctrl.editCode = function(){

@@ -101,8 +101,8 @@ function PromoCodesCtrl() {
 			{'value':'group common', 'label':'Nhóm chung'},
 			{'value':'individual common', 'label':'Cá nhân'},
 			{'value':'small group private', 'label':'Nhóm riêng 15'},
-			{'value':'medium group private', 'label':'Nhóm riêng 30'}
-			// {'value':'large group private', 'label':'Nhóm riêng 40'}
+			{'value':'medium group private', 'label':'Nhóm riêng 30'},
+			{'value':'large group private', 'label':'Nhóm riêng 40'}
 		]
 		res.json ({data: info});
 	}

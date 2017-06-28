@@ -69,99 +69,84 @@ div(class="row columns")
 				div(class="row column")
 					div(class="column small-12 paddingLR0")
 						label Name
-							input(type="text" ng-model='vm.model.promocode.name')
+							input(type="text" ng-model='vm.model.promocode.name' required)
 					div(class="column small-12 paddingLR0")
 						label Description
-							input(type="text" ng-model='vm.model.promocode.desc')
-				div(class="row column")
+							input(type="text" ng-model='vm.model.promocode.desc' required)
+				div(class="row column borderAll paddingLR15")
 					div(class="column small-6 paddingL0")
 						label Label VN
-							input(type="text" ng-model='vm.model.promocode.label.vn')
+							input(type="text" ng-model='vm.model.promocode.label.vn' required)
 					div(class="column small-6 paddingR0")
 						label Label EN
 							input(type="text" ng-model='vm.model.promocode.label.en')
-				div(class="row column")
-					div(class="column small-6 paddingL0")
+				div(class="row column paddingT15")
+					div(class="column small-12 paddingLR0")
 						label Code Type
 							select(ng-options='option.value as (option.label | uppercase) for option in vm.model.codeInfo.codeType' ng-model='vm.model.promocode.codeType' ng-change='vm.ctrl.selectRedeem()')
-					div(class="column small-6 paddingR0")
+				div(class="row column")
+					div(class="column small-12 paddingLR0")
 						label Priority
 							select(ng-options='option.value as option.label for option in vm.model.codeInfo.priority' ng-model='vm.model.promocode.priority')
 				div(class="row column")
-					div(class="column small-12 borderAll marginB15")
-						div(class='column small-12 paddingLR0 paddingT15')
-							label Services
-						div(class='column small-12 large-6 paddingLR0')
-							label(ng-repeat='service in vm.model.codeInfo.services.slice(0,2)' class='paddingTB15') 
-								input(type='checkbox' checklist-model='vm.model.promocode.services' checklist-value='service.value' class='marginB0')
-								span {{service.label}}
-						div(class='column small-12 large-6 paddingLR0')
-							label(ng-repeat='service in vm.model.codeInfo.services.slice(2)' class='paddingTB15') 
-								input(type='checkbox' checklist-model='vm.model.promocode.services' checklist-value='service.value' class='marginB0')
-								span {{service.label}}
+					div(class="column small-12 paddingLR0 marginB15")
+						label Services
+						div(class='column borderAll')
+							div(class='column small-12 large-6 paddingLR0')
+								label(ng-repeat='service in vm.model.codeInfo.services.slice(0,3)' class='paddingTB15') 
+									input(type='checkbox' checklist-model='vm.model.promocode.services' checklist-value='service.value' class='marginB0' required)
+									span {{service.label}}
+							div(class='column small-12 large-6 paddingLR0')
+								label(ng-repeat='service in vm.model.codeInfo.services.slice(3)' class='paddingTB15') 
+									input(type='checkbox' checklist-model='vm.model.promocode.services' checklist-value='service.value' class='marginB0' required)
+									span {{service.label}}
 				div(class="row column")
 					div(class="column small-6 paddingL0")
 						label Start time
-							input(type="date" ng-model='vm.model.promocode.start')
+							input(type="date" ng-model='vm.model.promocode.start' required)
 					div(class="column small-6 paddingR0")
 						label End time
-							input(type="date" ng-model='vm.model.promocode.end')
+							input(type="date" ng-model='vm.model.promocode.end' required)
 				div(class="row column" ng-if='vm.model.temporary.redeem == "price"')
 					div(class="column small-12 paddingLR0")
-						label Redeem By {{vm.model.temporary.redeem}}
-							table
-								thead
-									tr
-										th Value
-										th Formula
-								tbody
-									tr
-										td
-											input(type="number" min='0' ng-model='vm.model.promocode.redeemData.price.value')
-										td
-											select(ng-options='option.value as option.label for option in vm.model.temporary.formula' ng-model='vm.model.promocode.redeemData.price.formula')
+						label Redeem By {{vm.model.temporary.redeem | uppercase}}
+						div(class="row column borderAll paddingLR15")
+							div(class="column small-6 paddingL0")
+								label Value
+									input(type="number" min='0' ng-model='vm.model.promocode.redeemData.price.value' required)
+							div(class="column small-6 paddingR0")
+								label Formula
+									select(ng-options='option.value as option.label for option in vm.model.temporary.formula' ng-model='vm.model.promocode.redeemData.price.formula')
 				div(class="row column" ng-if='vm.model.temporary.redeem == "usage"')
 					div(class="column small-12 paddingLR0")
-						label Redeem By {{vm.model.temporary.redeem}}
-							table
-								thead
-									tr
-										th Value
-										th Formula
-								tbody
-									tr
-										td
-											input(type="number" min='0' ng-model='vm.model.promocode.redeemData.usage.value')
-										td
-											select(ng-options='option.value as option.label for option in vm.model.temporary.formula' ng-model='vm.model.promocode.redeemData.usage.formula')
+						label Redeem By {{vm.model.temporary.redeem | uppercase}}
+						div(class="row column borderAll paddingLR15")
+							div(class="column small-6 paddingL0")
+								label Value
+									input(type="number" min='0' ng-model='vm.model.promocode.redeemData.usage.value' required)
+							div(class="column small-6 paddingR0")
+								label Formula
+									select(ng-options='option.value as option.label for option in vm.model.temporary.formula' ng-model='vm.model.promocode.redeemData.usage.formula')
 				div(class="row column" ng-if='vm.model.temporary.redeem == "quantity"')
 					div(class="column small-12 paddingLR0")
-						label Redeem By {{vm.model.temporary.redeem}}
-							table
-								thead
-									tr
-										th Value
-										th Formula
-								tbody
-									tr
-										td
-											input(type="number" min='0' ng-model='vm.model.promocode.redeemData.quantity.value')
-										td
-											select(ng-options='option.value as option.label for option in vm.model.temporary.formula' ng-model='vm.model.promocode.redeemData.quantity.formula')
+						label Redeem By {{vm.model.temporary.redeem | uppercase}}
+						div(class="row column borderAll paddingLR15")
+							div(class="column small-6 paddingL0")
+								label Value
+									input(type="number" min='0' ng-model='vm.model.promocode.redeemData.quantity.value' required)
+							div(class="column small-6 paddingR0")
+								label Formula
+									select(ng-options='option.value as option.label for option in vm.model.temporary.formula' ng-model='vm.model.promocode.redeemData.quantity.formula')
 				div(class="row column" ng-if='vm.model.temporary.redeem == "total"')
 					div(class="column small-12 paddingLR0")
-						label Redeem By {{vm.model.temporary.redeem}}
-							table
-								thead
-									tr
-										th Value
-										th Formula
-								tbody
-									tr
-										td
-											input(type="number" min='0' ng-model='vm.model.promocode.redeemData.total.value')
-										td
-											select(ng-options='option.value as option.label for option in vm.model.temporary.formula' ng-model='vm.model.promocode.redeemData.total.formula')
+						label Redeem By {{vm.model.temporary.redeem | uppercase}}
+						div(class="row column borderAll paddingLR15")
+							div(class="column small-6 paddingL0")
+								label Value
+									input(type="number" min='0' ng-model='vm.model.promocode.redeemData.total.value' required)
+							div(class="column small-6 paddingR0")
+								label Formula
+									select(ng-options='option.value as option.label for option in vm.model.temporary.formula' ng-model='vm.model.promocode.redeemData.total.formula')
 				//- div(class="row column")
 				//- 	div(class="column small-12 paddingLR0")
 				//- 		label Excluded
@@ -198,17 +183,17 @@ div(class="row columns")
 						label Priority
 							select(ng-options='option.value as option.label for option in vm.model.codeInfo.priority' ng-model='vm.model.editPromocode.priority')
 				div(class="row column")
-					div(class="column small-12 borderAll marginB15")
-						div(class='column small-12 paddingLR0 paddingT15')
-							label Services
-						div(class='column small-12 large-6 paddingLR0')
-							label(ng-repeat='service in vm.model.codeInfo.services.slice(0,2)' class='paddingTB15') 
-								input(type='checkbox' checklist-model='vm.model.editPromocode.services' checklist-value='service.value' class='marginB0')
-								span {{service.label}}
-						div(class='column small-12 large-6 paddingLR0')
-							label(ng-repeat='service in vm.model.codeInfo.services.slice(2)' class='paddingTB15') 
-								input(type='checkbox' checklist-model='vm.model.editPromocode.services' checklist-value='service.value' class='marginB0')
-								span {{service.label}}
+					div(class="column small-12 paddingLR0 marginB15")
+						label Services
+						div(class='column borderAll')
+							div(class='column small-12 large-6 paddingLR0')
+								label(ng-repeat='service in vm.model.codeInfo.services.slice(0,3)' class='paddingTB15') 
+									input(type='checkbox' checklist-model='vm.model.editPromocode.services' checklist-value='service.value' class='marginB0' required)
+									span {{service.label}}
+							div(class='column small-12 large-6 paddingLR0')
+								label(ng-repeat='service in vm.model.codeInfo.services.slice(3)' class='paddingTB15') 
+									input(type='checkbox' checklist-model='vm.model.editPromocode.services' checklist-value='service.value' class='marginB0' required)
+									span {{service.label}}
 				div(class="row column")
 					div(class="column small-6 paddingL0")
 						label Start time
@@ -218,60 +203,44 @@ div(class="row columns")
 							input(type="date" ng-model='vm.model.editPromocode.end')
 				div(class="row column" ng-if='vm.model.temporary.redeem == "price"')
 					div(class="column small-12 paddingLR0")
-						label Redeem By {{vm.model.temporary.redeem}}
-							table
-								thead
-									tr
-										th Value
-										th Formula
-								tbody
-									tr
-										td
-											input(type="number" ng-model='vm.model.editPromocode.redeemData.price.value')
-										td
-											select(ng-options='option.value as option.label for option in vm.model.temporary.formula' ng-model='vm.model.editPromocode.redeemData.price.formula')
+						label Redeem By {{vm.model.temporary.redeem | uppercase}}
+						div(class="row column borderAll paddingLR15")
+							div(class="column small-6 paddingL0")
+								label Value
+									input(type="number" min='0' ng-model='vm.model.editPromocode.redeemData.price.value' required)
+							div(class="column small-6 paddingR0")
+								label Formula
+									select(ng-options='option.value as option.label for option in vm.model.temporary.formula' ng-model='vm.model.editPromocode.redeemData.price.formula')
 				div(class="row column" ng-if='vm.model.temporary.redeem == "usage"')
 					div(class="column small-12 paddingLR0")
-						label Redeem By {{vm.model.temporary.redeem}}
-							table
-								thead
-									tr
-										th Value
-										th Formula
-								tbody
-									tr
-										td
-											input(type="number" ng-model='vm.model.editPromocode.redeemData.usage.value')
-										td
-											select(ng-options='option.value as option.label for option in vm.model.temporary.formula' ng-model='vm.model.editPromocode.redeemData.usage.formula')
+						label Redeem By {{vm.model.temporary.redeem | uppercase}}
+						div(class="row column borderAll paddingLR15")
+							div(class="column small-6 paddingL0")
+								label Value
+									input(type="number" min='0' ng-model='vm.model.editPromocode.redeemData.usage.value' required)
+							div(class="column small-6 paddingR0")
+								label Formula
+									select(ng-options='option.value as option.label for option in vm.model.temporary.formula' ng-model='vm.model.editPromocode.redeemData.usage.formula')
 				div(class="row column" ng-if='vm.model.temporary.redeem == "quantity"')
 					div(class="column small-12 paddingLR0")
-						label Redeem By {{vm.model.temporary.redeem}}
-							table
-								thead
-									tr
-										th Value
-										th Formula
-								tbody
-									tr
-										td
-											input(type="number" ng-model='vm.model.editPromocode.redeemData.quantity.value')
-										td
-											select(ng-options='option.value as option.label for option in vm.model.temporary.formula' ng-model='vm.model.editPromocode.redeemData.quantity.formula')
+						label Redeem By {{vm.model.temporary.redeem | uppercase}}
+						div(class="row column borderAll paddingLR15")
+							div(class="column small-6 paddingL0")
+								label Value
+									input(type="number" min='0' ng-model='vm.model.editPromocode.redeemData.quantity.value' required)
+							div(class="column small-6 paddingR0")
+								label Formula
+									select(ng-options='option.value as option.label for option in vm.model.temporary.formula' ng-model='vm.model.editPromocode.redeemData.quantity.formula')
 				div(class="row column" ng-if='vm.model.temporary.redeem == "total"')
 					div(class="column small-12 paddingLR0")
-						label Redeem By {{vm.model.temporary.redeem}}
-							table
-								thead
-									tr
-										th Value
-										th Formula
-								tbody
-									tr
-										td
-											input(type="number" ng-model='vm.model.editPromocode.redeemData.total.value')
-										td
-											select(ng-options='option.value as option.label for option in vm.model.temporary.formula' ng-model='vm.model.editPromocode.redeemData.total.formula')
+						label Redeem By {{vm.model.temporary.redeem | uppercase}}
+						div(class="row column borderAll paddingLR15")
+							div(class="column small-6 paddingL0")
+								label Value
+									input(type="number" min='0' ng-model='vm.model.editPromocode.redeemData.total.value' required)
+							div(class="column small-6 paddingR0")
+								label Formula
+									select(ng-options='option.value as option.label for option in vm.model.temporary.formula' ng-model='vm.model.editPromocode.redeemData.total.formula')
 				//- div(class="row column")
 				//- 	div(class="column small-12 paddingLR0")
 				//- 		label Excluded
