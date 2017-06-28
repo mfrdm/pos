@@ -31,10 +31,10 @@ div(class="row columns")
 		div(class="borderT newBox row column")
 			div(class='marginB15 column small-12 large-4')
 				legend Search By Product Name
-				input(type='text' ng-model='vm.model.filter.productName' ng-change='vm.ctrl.filterPaginate()')
+				input(type='text' ng-model='vm.model.filter.productName' ng-change='vm.ctrl.product.filterPaginate()')
 			div(class="marginB15 column small-12 large-4")
 				legend Category
-				select(ng-options='option.label as option.label for option in vm.model.categoryOptionsFilter' ng-model='vm.model.filter.category' ng-change='vm.ctrl.filterPaginate()')
+				select(ng-options='option.label as option.label for option in vm.model.categoryOptionsFilter' ng-model='vm.model.filter.category' ng-change='vm.ctrl.product.filterPaginate()')
 			div(class='marginB15 column small-12 large-4')
 				legend Time
 				select(ng-options='option.value as option.label for option in vm.model.timeOptions' ng-model='vm.model.filter.time' ng-change='vm.ctrl.timeChange()')
@@ -92,7 +92,7 @@ div(class="row columns")
 						th Value
 						th Edit
 				tbody
-					tr(ng-repeat='product in vm.model.dom.product.list | filterByName: vm.model.filter.productName | filterCategory: vm.model.filter.category | orderBy: vm.model.filter.sorting' ng-show='vm.ctrl.showInPage(product)')
+					tr(ng-repeat='product in vm.model.dom.product.list | filterByName: vm.model.filter.productName | filterCategory: vm.model.filter.category | orderBy: vm.model.filter.sorting' ng-show='vm.ctrl.product.showInPage(product)')
 						th {{$index+1}}
 						th {{product.category}}
 						th {{product.name}}
@@ -100,17 +100,17 @@ div(class="row columns")
 						th {{product.totalValue | number}}
 						th
 							input(class="button" type="submit" value="Edit" ng-click='vm.ctrl.openEditProduct(product)')
-			div(ng-if='vm.model.temporary.displayedList.data.length > vm.model.pagination.itemsEachPages')
+			div(ng-if='vm.model.temporary.displayedList.product.length > vm.model.pagination.product.itemsEachPages')
 				ul(class="pagination text-center" role="navigation" aria-label="Pagination")
-					li(ng-class='vm.model.previousClass' ng-click='vm.ctrl.goPrevious()') {{vm.model.goPreviousText}}
-						a(aria-label="Previous page" ng-if='vm.model.goPreviousText != "Previous"') Previous
+					li(ng-class='vm.model.productPage.previousClass' ng-click='vm.ctrl.product.goPrevious()') {{vm.model.productPage.goPreviousText}}
+						a(aria-label="Previous page" ng-if='vm.model.productPage.goPreviousText != "Previous"') Previous
 							span(class="show-for-sr") page
 
-					li(ng-repeat="item in vm.model.temporary.displayedList.number track by $index" class='{{item.class}}')
-						a(href ='' ng-click='vm.ctrl.sliceCheckinList(item.number)') {{item.number}}
+					li(ng-repeat="item in vm.model.temporary.displayedList.productNumber track by $index" class='{{item.class}}')
+						a(href ='' ng-click='vm.ctrl.product.sliceCheckinList(item.number)') {{item.number}}
 					
-					li(ng-class='vm.model.nextClass' ng-click='vm.ctrl.goNext()') {{vm.model.goNextText}}
-						a(aria-label="Next page" ng-if='vm.model.goNextText != "Next"') Next
+					li(ng-class='vm.model.productPage.nextClass' ng-click='vm.ctrl.product.goNext()') {{vm.model.productPage.goNextText}}
+						a(aria-label="Next page" ng-if='vm.model.productPage.goNextText != "Next"') Next
 							span(class="show-for-sr") page
 	// Add product			
 	div(class="column row" ng-show='vm.model.dom.addProductDiv')

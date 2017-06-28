@@ -232,20 +232,31 @@
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////// Paginate for product ///////////////////////////////////////
         vm.model.temporary.displayedList = {
-            data:[],
-            number:[]
+            product:[],
+            productNumber:[],
+            storage:[],
+            storageNumber:[]
         };
         vm.model.pagination = {
-            itemsEachPages:5,
-            numberOfPages:''
+            product:{
+                itemsEachPages:5,
+                numberOfPages:''
+            },
+            storage:{
+                itemsEachPages:5,
+                numberOfPages:''
+            }
         }
-        vm.model.listEachPage = {}
+        vm.model.listEachPageProduct = {}
+        vm.ctrl.product = {}
+        vm.model.productPage = {}
 
 
         // Slice list after filter
-        vm.ctrl.getFilteredCheckinList = function (){
+        vm.ctrl.product.getFilteredCheckinList = function (){
             // Input
-            vm.model.temporary.displayedList.data = vm.model.dom.product.list.filter(function(ele){
+            if(vm.model.dom.product.list.length && vm.model.dom.product.list.length > 0){
+                vm.model.temporary.displayedList.product = vm.model.dom.product.list.filter(function(ele){
                     if(vm.model.filter.category == 'All'){
                         return ele
                     }else{
@@ -254,75 +265,76 @@
                 }).filter(function(item){
                     return (item.name).includes(vm.model.filter.productName)
                 })
-            return vm.model.temporary.displayedList.data
+                return vm.model.temporary.displayedList.product
+            }
         }
 
-        function checkDisabledButton(){
+        function checkDisabledButtonProduct(){
             var ind = 0;
-            vm.model.temporary.displayedList.number.map(function(ele, index){
+            vm.model.temporary.displayedList.productNumber.map(function(ele, index){
                 if(ele.class == 'current'){
                     ind = index
                 }
             });
-            if(ind+1 == vm.model.temporary.displayedList.number.length){
-                vm.model.nextClass = "pagination-next disabled";
-                vm.model.goNextText = 'Next'
+            if(ind+1 == vm.model.temporary.displayedList.productNumber.length){
+                vm.model.productPage.nextClass = "pagination-next disabled";
+                vm.model.productPage.goNextText = 'Next'
             }else{
-                vm.model.nextClass = "pagination-next";
-                vm.model.goNextText = ''
+                vm.model.productPage.nextClass = "pagination-next";
+                vm.model.productPage.goNextText = ''
             };
             if(ind == 0){
-                vm.model.previousClass = "pagination-previous disabled";
-                vm.model.goPreviousText = 'Previous'
+                vm.model.productPage.previousClass = "pagination-previous disabled";
+                vm.model.productPage.goPreviousText = 'Previous'
             }else{
-                vm.model.previousClass = "pagination-previous";
-                vm.model.goPreviousText = ''
+                vm.model.productPage.previousClass = "pagination-previous";
+                vm.model.productPage.goPreviousText = ''
             }
         }
 
-        vm.ctrl.goNext = function(){
+        vm.ctrl.product.goNext = function(){
             var ind = 0;
-            vm.model.temporary.displayedList.number.map(function(ele, index){
+            vm.model.temporary.displayedList.productNumber.map(function(ele, index){
                 if(ele.class == 'current'){
                     ind = index
                 }
             });
-            if(ind+2 <= vm.model.temporary.displayedList.number.length){
-                vm.ctrl.sliceCheckinList(ind+2)
+            if(ind+2 <= vm.model.temporary.displayedList.productNumber.length){
+                vm.ctrl.product.sliceCheckinList(ind+2)
             }
         }
 
-        vm.ctrl.goPrevious = function(){
+        vm.ctrl.product.goPrevious = function(){
             var ind = 0;
-            vm.model.temporary.displayedList.number.map(function(ele, index){
+            vm.model.temporary.displayedList.productNumber.map(function(ele, index){
                 if(ele.class == 'current'){
                     ind = index
                 }
             });
             if(ind >= 1){
-                vm.ctrl.sliceCheckinList(ind)
+                vm.ctrl.product.sliceCheckinList(ind)
             }
         }
 
         // Paginate
-        vm.ctrl.paginate = function (afterFilterList){
-            if(afterFilterList.length){
-                vm.model.temporary.displayedList.number = []
-                vm.model.pagination.numberOfPages = Math.ceil(
-                    afterFilterList.length/vm.model.pagination.itemsEachPages)
+        vm.ctrl.product.paginate = function (afterFilterList){
+            if(afterFilterList){
+                vm.model.temporary.displayedList.productNumber = []
+                vm.model.pagination.product.numberOfPages = Math.ceil(
+                    afterFilterList.length/vm.model.pagination.product.itemsEachPages)
                 
-                for(var i = 1; i<vm.model.pagination.numberOfPages+1; i++){
-                    vm.model.temporary.displayedList.number.push({number:i, class:''})
+                for(var i = 1; i<vm.model.pagination.product.numberOfPages+1; i++){
+                    vm.model.temporary.displayedList.productNumber.push({number:i, class:''})
                 }
-                vm.model.temporary.displayedList.number.map(function(ele, index, array){
+                vm.model.temporary.displayedList.productNumber.map(function(ele, index, array){
                     array[0].class = 'current'
                 })
                 
-                checkDisabledButton()
-                vm.model.listEachPage.data = afterFilterList.slice(0, vm.model.pagination.itemsEachPages)
-                vm.ctrl.sliceCheckinList = function(i){
-                    vm.model.listEachPage.data = afterFilterList.slice((i-1)*vm.model.pagination.itemsEachPages,i*vm.model.pagination.itemsEachPages)
-                    vm.model.temporary.displayedList.number.map(function(ele, index, array){
+                checkDisabledButtonProduct()
+                vm.model.listEachPageProduct.product = afterFilterList.slice(0, vm.model.pagination.product.itemsEachPages)
+                vm.ctrl.product.sliceCheckinList = function(i){
+                    vm.model.listEachPageProduct.product = afterFilterList.slice((i-1)*vm.model.pagination.product.itemsEachPages,i*vm.model.pagination.product.itemsEachPages)
+                    vm.model.temporary.displayedList.productNumber.map(function(ele, index, array){
                         if(index == i-1){
                             array[index].class = 'current'
                         }else{
@@ -330,12 +342,12 @@
                         }
                     });
                     
-                    checkDisabledButton()
+                    checkDisabledButtonProduct()
                 }
 
-                vm.ctrl.showInPage = function(product){
-                    var testArr = vm.model.listEachPage.data.filter(function(ele){
-                        return ele.createdAt == product.createdAt
+                vm.ctrl.product.showInPage = function(product){
+                    var testArr = vm.model.listEachPageProduct.product.filter(function(ele){
+                        return ele.name == product.name && ele.createdAt == product.createdAt
                     })
                     if(testArr.length > 0){
                         return true
@@ -347,23 +359,13 @@
         }
 
         // // Paginate after filter
-        vm.ctrl.filterPaginate = function (){
-            var afterFilterList = vm.ctrl.getFilteredCheckinList();
-            vm.ctrl.paginate(afterFilterList)
+        vm.ctrl.product.filterPaginate = function (){
+            var afterFilterList = vm.ctrl.product.getFilteredCheckinList();
+            vm.ctrl.product.paginate(afterFilterList)
         }
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////// Paginate for storage ///////////////////////////////////////
-        vm.model.temporary.displayedList = {
-            storage:[],
-            storageNumber:[]
-        };
-        vm.model.pagination = {
-            storage:{
-                itemsEachPages:1,
-                numberOfPages:''
-            }
-        }
         vm.model.listEachPageStorage = {}
         vm.ctrl.storage = {}
         vm.model.storagePage = {}
@@ -586,7 +588,7 @@
                         }
                     });
                 });
-                vm.ctrl.filterPaginate()
+                vm.ctrl.product.filterPaginate();
             })
         };
 
