@@ -341,7 +341,7 @@ describe ('Redeem total', function (){
 						max: 6
 					}
 				}					
-			},			
+			},		
 		]
 	});
 

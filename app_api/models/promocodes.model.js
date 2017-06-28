@@ -392,6 +392,7 @@ var redeemPrice = function (context){
 		result.price = price * this.redeemData.price.value;
 	}
 	else{
+		console.log (1231231)
 		result.price = this.redeemData.price.value;
 	}
 
@@ -573,6 +574,7 @@ var PromocodesSchema = mongoose.Schema ({
 	},	
 	codeType: Number,
 	services: [String],
+	customers: [mongoose.Schema.Types.ObjectId],
 	priority: Number,
 	start: {type: Date, required: true},
 	end: {type: Date, required: true},

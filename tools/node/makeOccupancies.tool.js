@@ -82,13 +82,37 @@ function MakeOccupancies (){
 			"name" : "MARKETING_01h_052017"
 		};	
 
+		var PRIVATE_2H_052017 = {
+			"redeemData" : { "usage" : { "value" : 2, "formula" : "1" } }, 
+			"priority" : 2, 
+			"codeType" : 1, 
+			"name" : "PRIVATE_2H_052017"			
+		}
+
+		var PRIVATE_VIP_NEVENTS = {
+			"redeemData" : { "usage" : { "value" : 3, "formula" : "1" } }, 
+			"priority" : 2, 
+			"codeType" : 1, 
+			"name" : "PRIVATE_VIP_NEVENTS"
+		}
+
+		var PRIVATE_VIP_GEC = {
+			"redeemData" : { "usage" : { "value" : 3, "formula" : "1" } }, 
+			"priority" : 2, 
+			"codeType" : 1, 
+			"name" : "PRIVATE_VIP_GEC"
+		}
+
 		var codes = {
 			MARKETING_01h_052017: MARKETING_01h_052017,
 			WEDNESDAY_01h_052017: WEDNESDAY_01h_052017,
 			GS5: GS5,
 			FSC_02H_052017: FSC_02H_052017,
 			FSC_01H_052017: FSC_01H_052017,
-			STUDENTPRICE: STUDENTPRICE
+			STUDENTPRICE: STUDENTPRICE,
+			PRIVATE_2H_052017: PRIVATE_2H_052017,
+			PRIVATE_VIP_NEVENTS: PRIVATE_VIP_NEVENTS,
+			PRIVATE_VIP_GEC: PRIVATE_VIP_GEC
 		}
 
 
@@ -128,7 +152,8 @@ function MakeOccupancies (){
 
 }
 
-var fpath = 'data/20170507_20170523/fixed_occupancies.csv';
+// var fpath = 'data/20170507_20170523/fixed_occupancies.csv';
+var fpath = 'data/20170507_20170523/fixed_occupancies_private_only.csv'
 var occList = [];
 fastcsv.fromPath (fpath)
 	.on ('data', function (data){
