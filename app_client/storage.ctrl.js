@@ -572,6 +572,7 @@
                         })
                     })
                 };
+                console.log(vm.model.dom.storage.list[0])
                 vm.ctrl.storage.filterPaginate()
     		})
     	};

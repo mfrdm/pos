@@ -53,17 +53,16 @@ div(class="row columns")
 					tr
 						th No
 						th Product Name
-						th Bought Quantity
-						th Sold Quantity
+						th Category
+						th Quantity
 						//- th Edit
 				tbody
-					tr(ng-repeat='storage in vm.model.dom.storage.list | filter: vm.model.filter.productName | orderBy: vm.model.filter.sorting' ng-show='vm.ctrl.storage.showInPage(storage)')
+					tr(ng-repeat='storage in vm.model.dom.storage.list | filter: vm.model.filter.productName | orderBy: "-createdAt"' ng-show='vm.ctrl.storage.showInPage(storage)')
 						th {{$index+1}}
 						th {{storage.name}}
-						th(ng-if='storage.quantity > 0') {{storage.quantity}}
-						th(ng-if='storage.quantity < 0') 
-						th(ng-if='storage.quantity < 0')  {{-storage.quantity}}
-						th
+						th(ng-if='storage.quantity > 0') Bought
+						th(ng-if='storage.quantity < 0') Sold
+						th {{storage.quantity}}
 						//- th
 						//- 	input(class="button" type="submit" value="Edit" ng-click='vm.ctrl.openEditStorage(storage)')
 			div(ng-if='vm.model.temporary.displayedList.storage.length > vm.model.pagination.storage.itemsEachPages')
