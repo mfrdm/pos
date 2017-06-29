@@ -286,23 +286,24 @@
 		};
 
 		vm.ctrl.deposit.resetCashAccount = function (){
-			delete vm.model.temporary.depositing.account.amount
+			delete vm.model.temporary.depositing.account.amount;
 		}
 
+		// FIX: reset amount when change cash amount several time
 		vm.ctrl.deposit.accountChangeHandler = function (){
-			if (vm.model.temporary.depositing.account.start || vm.model.temporary.depositing.account.label){		
+			if (vm.model.temporary.depositing.account.start || vm.model.temporary.depositing.account.label || (vm.model.temporary.depositing.account.amount && vm.model.temporary.depositing.name == 'cash')){		
 				vm.ctrl.deposit.resetSelectedAccount ();
 				
 				if (vm.model.temporary.depositing.account.label){
 					vm.ctrl.deposit.resetTemporaryGroupon ();					
-				}
-
-				if (vm.model.temporary.depositing.account.amount && vm.model.temporary.depositing.name == 'cash'){
-
 				}		
 			}
 
 			if (vm.model.temporary.depositing.account.start && vm.model.temporary.depositing.account.label){
+				if (vm.model.temporary.depositing.account.name == 'cash' && !vm.model.temporary.depositing.account.amount){
+					return
+				}
+				
 				vm.ctrl.deposit.addAccount ();
 				vm.ctrl.deposit.setAccountPrice ();
 				vm.ctrl.deposit.resetSelectedGroupon ();
@@ -335,6 +336,7 @@
 
 				var obj = Object.assign(vm.model.depositing.account, vm.model.temporary.depositing.account);
 
+				vm.model.temporary.depositing.account.amount = vm.model.temporary.depositing.account.name == 'cash' ? null : vm.model.temporary.depositing.account.amount; // important!!
 				vm.model.temporary.depositing.account.start = null; // important!!
 				vm.model.temporary.depositing.account = {};
 			}
