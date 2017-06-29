@@ -148,6 +148,9 @@
 
 		};
 
+		// FIX: move it to server or database
+		vm.model.dom.data.vn.deposit.defaultCashAmount = [50000, 100000, 200000];
+
 		// OTHER
 		vm.ctrl.toggleDepositDiv = function (){
 			if (!vm.model.dom.deposit.depositDiv){		
@@ -275,20 +278,33 @@
 			vm.model.depositing.groupon = {};
 		}
 
+		// Only for cash account
+		vm.ctrl.deposit.setAccountPrice = function (){
+			if (vm.model.depositing.account.name == 'cash'){
+				vm.model.depositing.account.price = vm.model.depositing.account.amount;
+			}
+		};
+
+		vm.ctrl.deposit.resetCashAccount = function (){
+			delete vm.model.temporary.depositing.account.amount
+		}
+
 		vm.ctrl.deposit.accountChangeHandler = function (){
 			if (vm.model.temporary.depositing.account.start || vm.model.temporary.depositing.account.label){		
 				vm.ctrl.deposit.resetSelectedAccount ();
 				
 				if (vm.model.temporary.depositing.account.label){
 					vm.ctrl.deposit.resetTemporaryGroupon ();					
-				}				
+				}
+
+				if (vm.model.temporary.depositing.account.amount && vm.model.temporary.depositing.name == 'cash'){
+
+				}		
 			}
 
 			if (vm.model.temporary.depositing.account.start && vm.model.temporary.depositing.account.label){
 				vm.ctrl.deposit.addAccount ();
-
-
-
+				vm.ctrl.deposit.setAccountPrice ();
 				vm.ctrl.deposit.resetSelectedGroupon ();
 
 				if (vm.model.depositing.account.grouponable){
@@ -298,6 +314,8 @@
 					vm.ctrl.deposit.disableGroupon ();
 				}
 			}
+
+
 		}
 
 		vm.ctrl.deposit.fixAccStartDate = function (date){

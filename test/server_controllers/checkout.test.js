@@ -13,7 +13,7 @@ var should = chai.should ();
 
 chai.use (chaiHttp);
 
-xdescribe ('Checkout', function (){
+describe ('Checkout', function (){
 	this.timeout(3000);
 	xdescribe ('Create invoice', function (){
 		var occupancies, customers;
@@ -671,7 +671,7 @@ xdescribe ('Checkout', function (){
 				});				
 		})	
 
-		xit ('should return correct total, remain, and paid when withdraw from an CASH account when the amount in account is less than or equal being-paid amount', function (done){
+		it ('should return correct total, remain, and paid when withdraw from an CASH account when the amount in account is less than or equal being-paid amount', function (done){
 			chai.request (server)
 				.get ('/checkout/account/withdraw/' + newAcc[4]._id.toString ())
 				.query ({occ: JSON.stringify (newOcc)})
@@ -690,7 +690,7 @@ xdescribe ('Checkout', function (){
 				});				
 		})
 
-		xit ('should return correct total, remain, and paid when withdraw from an CASH account when the amount in account is greater than being-paid amount', function (done){
+		it ('should return correct total, remain, and paid when withdraw from an CASH account when the amount in account is greater than being-paid amount', function (done){
 			chai.request (server)
 				.get ('/checkout/account/withdraw/' + newAcc[5]._id.toString ())
 				.query ({occ: JSON.stringify (newOcc)})

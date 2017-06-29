@@ -359,7 +359,7 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 					tr(ng-if="vm.model.temporary.checkout.prepaidTotal.acc.remain || vm.model.temporary.checkout.prepaidTotal.acc.remain == 0")
 						th(colspan=3) Tài khoản còn
 						td(colspan='2' ng-if="vm.model.temporary.checkout.prepaidTotal.acc.unit == 'hour'") {{ vm.model.temporary.checkout.prepaidTotal.acc.remain | number: 1}} Giờ
-						td(colspan='2' ng-if="vm.model.temporary.checkout.prepaidTotal.acc.unit == 'vnd'") {{ vm.model.temporary.checkout.prepaidTotal.acc.remain }} VNĐ						
+						td(colspan='2' ng-if="vm.model.temporary.checkout.prepaidTotal.acc.unit == 'vnd'") {{ vm.model.temporary.checkout.prepaidTotal.acc.remain | number}} VNĐ						
 					tr(ng-if="vm.model.temporary.checkout.prepaidTotal.occ.total || vm.model.temporary.checkout.prepaidTotal.occ.total == 0")
 						th(colspan=3) Tổng trừ trả trước
 						td(colspan=2) {{ vm.model.temporary.checkout.prepaidTotal.occ.total | number}} VNĐ

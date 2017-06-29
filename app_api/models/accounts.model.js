@@ -3,6 +3,23 @@ var moment = require ('moment');
 
 // used to create an account for a customer
 var getDefaultAccounts = function (){
+	var cash = {
+		name: 'cash',
+		price: undefined,
+		amount: undefined,		
+		unit: 'vnd',
+		desc: "",
+		services: ['small group private', 'medium group private', 'large group private'],
+		label: {
+			vn: "Tiền mặt",
+			en: "Cash"
+		},
+		recursive: {
+			isRecursive: false
+		},		
+		expireDateNum: 30,
+		grouponable: false,
+	};
 
 	var oneDayCommon = {
 		name: '1dCommon',
@@ -95,7 +112,8 @@ var getDefaultAccounts = function (){
 		oneDayCommon: oneDayCommon,
 		threeDaysCommon: threeDaysCommon,
 		threeHourOneDayThirtyDaysCommon: threeHourOneDayThirtyDaysCommon,
-		sixHourOneDayThirtyDaysCommon: sixHourOneDayThirtyDaysCommon
+		sixHourOneDayThirtyDaysCommon: sixHourOneDayThirtyDaysCommon,
+		cash: cash
 	}
 }
 

@@ -7,13 +7,13 @@ module.exports = new PromoCodesCtrl();
 function PromoCodesCtrl() {
 	this.createOneCode = function (req, res, next){
 		var pc = new PromoCodes (req.body.data);
-		pc.save (function (err, data){
+		pc.save (function (err, newCode){
 			if (err){
 				next (err);
 				return
 			}
-			if (Object.keys (data).length){
-				res.json ({data: data});
+			if (newCode){
+				res.json ({data: newCode});
 			}
 			else {
 				next ();

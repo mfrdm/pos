@@ -392,7 +392,6 @@ var redeemPrice = function (context){
 		result.price = price * this.redeemData.price.value;
 	}
 	else{
-		console.log (1231231)
 		result.price = this.redeemData.price.value;
 	}
 
