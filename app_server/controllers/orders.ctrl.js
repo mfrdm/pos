@@ -6,6 +6,7 @@ var Customers = mongoose.model ('customers');
 var Promocodes = mongoose.model ('Promocodes');
 var moment = require ('moment');
 var request = require ('request');
+var MakeTransaction = require('../../tools/node/makeTransaction.tool');
 
 module.exports = new OrdersCtrl();
 
@@ -28,7 +29,6 @@ function OrdersCtrl() {
 				next (err);
 				return
 			}
-
 			// deal with storage
 			var storage = {};
 			storage.itemList = [];
@@ -38,6 +38,7 @@ function OrdersCtrl() {
 		    	item.itemId = ele._id;
 		    	item.quantity = -ele.quantity;
 		    	storage.itemList.push(item)
+		    	
 		    })
 		    if (process.env.NODE_ENV === 'development'){
 				var host = process.env.LOCAL_HOST;
@@ -54,7 +55,7 @@ function OrdersCtrl() {
 				if(err){
 					console.log(err)
 				}
-				res.json ({data: newOrder});
+				MakeTransaction.makeTrans(2,'order trans',newOrder.total,newOrder._id, res)
 			})
 		})		
 	};

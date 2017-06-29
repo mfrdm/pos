@@ -52,6 +52,7 @@ router.get('/template/newBookings', OthersCtrl.getNewBookingTemplate);
 router.get('/template/deposit', OthersCtrl.getDepositTemplate);
 router.get('/template/storage', OthersCtrl.getStorageTemplate);
 router.get('/template/promocodes', OthersCtrl.getPromocodesTemplate);
+router.get('/template/transaction', OthersCtrl.getTransactionTemplate);
 
 // Checkin
 router.get('/checkin', CheckinCtrl.readCheckinList);
@@ -109,7 +110,9 @@ router.get('/customers/exist', CustomersCtrl.checkExist);
 // router.get('/fin/costs/cost/:costId', finCtrl.readOneCostById);
 // router.post('/fin/costs/cost/:costId/edit', finCtrl.updateOneCost);
 
-router.post ('/transactions/create', TransactionCtrl.createATrans);
+router.post ('/transactions/create', TransactionCtrl.createTrans);
+router.get ('/transactions', TransactionCtrl.readTrans);
+router.post ('/transactions/edit/:transId', TransactionCtrl.editTrans);
 
 router.get('/company', companiesCtrl.readOneCompById);
 router.get('/company/depts', deptsCtrl.readSomeDepts);

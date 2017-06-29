@@ -83,6 +83,14 @@ function config ($locationProvider, $routeProvider){
 			},			
 			controller: "StorageCtrl",
 			controllerAs: 'vm'
+		})
+		.when('/transaction', {
+			templateUrl: "/template/transaction",
+			resolve: {
+				'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
+			},			
+			controller: "TransactionCtrl",
+			controllerAs: 'vm'
 		})			
 		// .when ('/assets', {
 		// 	templateUrl: '/assets',

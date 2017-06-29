@@ -36,12 +36,16 @@ function Others() {
 		res.render('promocodes')
 	}
 
+	this.getTransactionTemplate = function(req, res, next){
+		res.render('transaction')
+	}
+
 	this.angularApp = function (req, res){
 
 		// load company and dept data and sent to client
 
-		var ctrFileNames = ['layout', 'newCheckin', 'checkout','products', 'assets', 'costs', 'home', 'depts', 'employees', 'login', 'register', 'newBooking', 'attendance', 'newOrders', 'newCustomers', 'deposit', 'storage', 'promocodes'];
-		var serviceFileNames = ['common', 'checkin', 'checkout', 'products','customers', 'assets', 'costs', 'home', 'depts','employees','authentication', 'socket', 'attendance', 'booking', 'other', 'combo', 'order', 'deposit', 'storage', 'promocodes'];
+		var ctrFileNames = ['layout', 'newCheckin', 'checkout','products', 'assets', 'costs', 'home', 'depts', 'employees', 'login', 'register', 'newBooking', 'attendance', 'newOrders', 'newCustomers', 'deposit', 'storage', 'promocodes', 'transaction'];
+		var serviceFileNames = ['common', 'checkin', 'checkout', 'products','customers', 'assets', 'costs', 'home', 'depts','employees','authentication', 'socket', 'attendance', 'booking', 'other', 'combo', 'order', 'deposit', 'storage', 'promocodes', 'transaction'];
 		var directiveFileNames = ['components'];
 		var filterFileNames = ['myFilter'];
 

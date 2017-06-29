@@ -3,6 +3,7 @@ var mongoose = require ('mongoose');
 var Products = mongoose.model('products');
 var Storages = mongoose.model('storages');
 var moment = require ('moment');
+var MakeTransaction = require('../../tools/node/makeTransaction.tool');
 
 module.exports = new StorageCtrl();
 
@@ -89,15 +90,38 @@ function StorageCtrl (){
 	// Storage
 	this.createStorage = function(req, res, next){
 		var newStorage= new Storages (req.body.data);
-		console.log(req.body.data)
 		newStorage.save (function (err, storage){
 			if (err){
 				next (err);
 				return 
 			}
 			else{
-				res.json ({data: storage});
-				return
+				var productIds = []
+				storage.itemList.map(function(item){
+					productIds.push(item.itemId)
+				})
+				Products.find({_id:{$in:productIds}}, function(err, products){
+					if(err){
+						throw err
+					}
+					console.log(products)
+					console.log(storage.itemList)
+					var total = 0;
+					products.map(function(item){
+						storage.itemList.map(function(ele){
+							if(item._id.toString() == ele.itemId.toString()){
+								console.log('test')
+								total += item.price*ele.quantity
+							}
+						})
+					})
+					console.log(total)
+					if(total >= 0){
+						MakeTransaction.makeTrans(4,'outbound trans',total,storage._id, res)
+					}else{
+						MakeTransaction.makeTrans(3,'inbound trans',total,storage._id, res)
+					}
+				})
 			}
 		});
 	};
