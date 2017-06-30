@@ -57,7 +57,7 @@ div(class="row columns")
 						th Quantity
 						//- th Edit
 				tbody
-					tr(ng-repeat='storage in vm.model.dom.storage.list | filter: vm.model.filter.productName | orderBy: "-createdAt"' ng-show='vm.ctrl.storage.showInPage(storage)')
+					tr(ng-repeat='storage in vm.model.dom.storage.list | filter: vm.model.filter.productName | orderBy: "createdAt"' ng-show='vm.ctrl.storage.showInPage(storage)')
 						th {{$index+1}}
 						th {{storage.name}}
 						th(ng-if='storage.quantity > 0') Bought
