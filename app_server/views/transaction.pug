@@ -60,7 +60,7 @@ div(class="row columns")
 						th {{tran.transType}}
 						th {{tran.category}}
 						th {{tran.desc}}
-						th(class='float-right') {{tran.amount | number}}
+						th(class='text-right') {{tran.amount | number}}
 						th
 							input(class="button" type="submit" value="Edit" ng-click='vm.ctrl.openEditTrans(tran)')
 
