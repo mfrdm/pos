@@ -4,8 +4,6 @@ node_modules/
 
 *.log.*
 
-client_secret_service_account.json
-
 backup/*
 
 nohup.out
