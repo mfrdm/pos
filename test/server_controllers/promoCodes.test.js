@@ -10,7 +10,7 @@ var moment = require ('moment');
 
 chai.use (chaiHttp);
 
-describe ('PromoCode', function (){
+describe ('Promocodes', function (){
 	this.timeout(3000);
 
 	xdescribe ('Create a promoCode', function (){

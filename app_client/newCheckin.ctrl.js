@@ -679,7 +679,8 @@
             if((vm.model.checkingin.occupancy.customer && vm.model.checkingin.occupancy.service.name) || vm.model.edit.service.name){// condition to not disable
                 vm.model.dom.data.selected.checkin.promoteCode.codes.map(function(ele){
                     return ele.disabled = false;
-                })
+                });
+
             }else{
                 vm.model.dom.data.selected.checkin.promoteCode.codes.map(function(ele){
                     return ele.disabled = true;
@@ -688,6 +689,7 @@
         }   
 
         // Get promocodes
+        // FIX: create promise, to seperate get promocode and whatever actions should be call right after select codes matching with service when checkin a booking
         vm.ctrl.checkin.getPromocodes = function (){
             if (vm.model.dom.data.selected.checkin && vm.model.dom.data.selected.checkin.promoteCode.codes.length){
                 return;
@@ -705,14 +707,21 @@
                                 return a.selectedLabel > b.selectedLabel;
                             }
                         );
+
                         vm.ctrl.disablePromocodes() // check disable
                         
+                        // when open edit.
+                        // FIX
                         if(vm.model.dom.checkInEditDiv){
                             vm.model.dom.data.selected.edit.promoteCode = {}
                             vm.model.dom.data.selected.edit.promoteCode.codes = vm.ctrl.selectCodesForService(vm.model.edit.occupancy.service.name, vm.model.dom.data.selected.checkin.promoteCode.original)
                         }
 
-                        console.log (vm.model.dom.data.selected.checkin.promoteCode.codes)
+                        // when checkin a booking
+                        if (vm.model.checkingin.occupancy.customer && vm.model.checkingin.occupancy.service.name){
+                            vm.model.dom.data.selected.checkin.promoteCode.codes = vm.ctrl.selectCodesForService(vm.model.checkingin.occupancy.service.name, vm.model.dom.data.selected.checkin.promoteCode.original);                  
+                        }
+
                     }
                     else {
                         // do nothing
@@ -898,8 +907,6 @@
             var subCodes = original.filter(function(ele){
                 return (ele.services.indexOf(selectedService) > -1 || ele.services[0] == 'all')
             })
-
-            console.log (subCodes)
 
             return subCodes
         }

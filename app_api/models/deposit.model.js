@@ -7,6 +7,7 @@ function normalizeTotal (total){
 
 function getContext (){
 	var deposit = this;
+	var minGrouponNumber = 3; // IMPORTANT
 
 	return {
 		productName: 'account',
@@ -18,7 +19,7 @@ function getContext (){
 		getPromocodes: function (){ return deposit.promocodes },
 		setPromocodes: function (codes) { deposit.promocodes = codes },
 		isStudent: function (){ return deposit.customer.isStudent },
-		isGroupon: function (){ return deposit.groupon && deposit.groupon.quantity && deposit.groupon.quantity >= 2 ? true : false },	
+		isGroupon: function (){ return deposit.groupon && deposit.groupon.quantity && deposit.groupon.quantity >= minGrouponNumber ? true : false },	
 		getGroupMemberNumber: function (){ return this.isGroupon () ? deposit.groupon.quantity : 0},
 		getPrice: function (){return this.price},
 		getTotal: function (){return this.total},

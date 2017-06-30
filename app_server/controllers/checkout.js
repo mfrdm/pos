@@ -260,6 +260,7 @@ function Checkout() {
 		newOcc = new Occupancies (occ);
 		newOcc.getTotal ();
 		newOcc.status = 2;
+
 		newOcc.save (function (err, returnedOcc){
 			if (err){
 				console.log (err);
@@ -275,6 +276,7 @@ function Checkout() {
 				} 
 
 				if (cus){
+
 					res.json ({data: {message: 'success'}});
 				}
 				else{

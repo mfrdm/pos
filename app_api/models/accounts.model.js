@@ -3,6 +3,23 @@ var moment = require ('moment');
 
 // used to create an account for a customer
 var getDefaultAccounts = function (){
+	var cash = {
+		name: 'cash',
+		price: undefined,
+		amount: undefined,		
+		unit: 'vnd',
+		desc: "",
+		services: ['small group private', 'medium group private', 'large group private'],
+		label: {
+			vn: "Tiền mặt",
+			en: "Cash"
+		},
+		recursive: {
+			isRecursive: false
+		},		
+		expireDateNum: 30,
+		grouponable: false,
+	};
 
 	var oneDayCommon = {
 		name: '1dCommon',
@@ -31,7 +48,7 @@ var getDefaultAccounts = function (){
 		services: ['group common', 'individual common'], // name of service applied
 		label: {
 			vn: "Combo 3 ngày",
-			en: "1 day commbo",
+			en: "3 day commbo",
 		},
 		recursive: {
 			isRecursive: true,
@@ -95,13 +112,14 @@ var getDefaultAccounts = function (){
 		oneDayCommon: oneDayCommon,
 		threeDaysCommon: threeDaysCommon,
 		threeHourOneDayThirtyDaysCommon: threeHourOneDayThirtyDaysCommon,
-		sixHourOneDayThirtyDaysCommon: sixHourOneDayThirtyDaysCommon
+		sixHourOneDayThirtyDaysCommon: sixHourOneDayThirtyDaysCommon,
+		cash: cash
 	}
 }
 
 var renew = function (){
 	var acc = this;
-	var today = moment ().hour (0).minute (0);
+	var today = moment ().hour (0).minute (0); // Review and remove later
 	var renewable = acc.isRenewable ();
 	if (renewable && acc.recursive.recursiveType == 1){
 		acc.amount = acc.recursive.baseAmount;

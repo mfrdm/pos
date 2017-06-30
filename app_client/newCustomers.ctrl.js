@@ -107,6 +107,7 @@
 				    {'label':'Đại học Thăng Long', 'value':29},
 				    {'label':'Đại học Thương Mại', 'value':30},
 				    {'label':'Đại học kinh doanh công nghệ', 'value':31},
+				    {'label':'Viện đại học mở', 'value':32},
 				    {'label':'Trường khác', 'value': -1},
 				],
 				customer:{

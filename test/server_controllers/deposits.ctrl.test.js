@@ -12,7 +12,7 @@ var moment = require ('moment');
 
 chai.use (chaiHttp);
 
-xdescribe ('Create one account', function (){
+describe ('Create one account', function (){
 
 	var customer, deposits, newCustomer, newAcc, newDeposit, accounts;
 	beforeEach (function (done){
@@ -67,7 +67,23 @@ xdescribe ('Create one account', function (){
 					baseAmount: 24
 				},
 				expireDateNum: 7,
-			}
+			},
+			{
+				name: 'cash',
+				price: 200000, // 
+				amount: 200000,
+				unit: 'cash',
+				desc: "",
+				services: ['all'], // name of service applied
+				label: {
+					vn: "Tài khoàn tiền mặt 200,000 vnđ",
+					en: "Cash account",
+				},
+				recursive: {
+					isRecursive: false
+				},
+				expireDateNum: 30,
+			},			
 		];
 
 		deposits = [
@@ -78,7 +94,11 @@ xdescribe ('Create one account', function (){
 			{
 				account: accounts[1],
 				customer: {}
-			},			
+			},
+			{
+				account: accounts[2],
+				customer: {}
+			}			
 		];
 
 
@@ -135,7 +155,7 @@ xdescribe ('Create one account', function (){
 	});
 
 
-	it ('should successfully create an account, update customer, and create a deposit', function (done){
+	it ('should successfully create an hour account, update customer, and create a deposit', function (done){
 		chai.request (server)
 			.post ('/deposits/create')
 			.send ({data: deposits[0]})
@@ -185,13 +205,63 @@ xdescribe ('Create one account', function (){
 			});		
 	});
 
+	it ('should successfully create an cash account, update customer, and create a deposit', function (done){
+		chai.request (server)
+			.post ('/deposits/create')
+			.send ({data: deposits[2]})
+			.end (function (err, res){
+				if (err) {
+					console.log (err);
+				}
+
+				res.should.have.status (200);
+				res.body.data.should.to.exist;
+				res.body.data.message.should.to.equal ('success');
+
+				newDeposit = { _id: res.body.data._id};
+
+				Deposits.findOne ({_id: newDeposit._id}, function (err, foundDeposit){
+					if (err){
+						console.log (err);
+					}
+
+					foundDeposit.total.should.to.equal (200000);
+					foundDeposit.quantity.should.to.equal (1);
+					foundDeposit.status.should.to.equal (1);
+
+					Accounts.findOne ({_id: foundDeposit.account._id}, function (err, foundAcc){
+
+						if (err){
+							console.log (err);
+						}
+
+						newAcc = foundAcc;
+						foundAcc.should.to.exist;
+
+						Customers.findOne ({_id: newCustomer._id}, function (err, foundCus){
+							if (err) {
+								console.log (err)
+							}
+
+							foundCus.should.to.exist;
+							foundCus.accounts.should.include (foundAcc._id.toString ());
+
+							done ();
+
+						});
+					});
+				});
+
+			});	
+	})
+
 });
 
-describe ('Read invoice', function (){
+xdescribe ('Read invoice', function (){
 	//
 })
 
-describe ('Read groupon', function (){
+xdescribe ('Read groupon', function (){
 	var deposits, newDeposit, query;
 	beforeEach (function (done){
 		deposits = [
