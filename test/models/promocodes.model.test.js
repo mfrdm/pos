@@ -231,7 +231,7 @@ xdescribe ('Redeem usage', function (){
 	})
 });
 
-describe ('Redeem total', function (){
+xdescribe ('Redeem total', function (){
 	var codes, context;
 	beforeEach (function (){
 		context = {
@@ -456,8 +456,6 @@ describe ('Redeem total', function (){
 		result.should.not.to.have.property ('quantity');
 		
 	});
-
-
 });
 
 xdescribe ('Add account default code', function (){
@@ -594,9 +592,53 @@ xdescribe ('Add account default code', function (){
 			x.name.should.to.equal ('group5_common1d');
 		});			
 	})
-
 })
 
-xdescribe ('Add service default code')
+describe ('Add service default code', function (){
+	var context, occ, newOcc;
+	beforeEach (function (){
+		occ = {
+			service: {
+				name: 'Small group private',
+				price: 150000
+			},
+			promocodes: [],
+			customer: {
+				isStudent: false,
+			},
+			usage: 5
+		};
+
+		newOcc = new Occupancies (occ);
+		context = Occupancies.getCodeContext (newOcc);
+
+	});
+
+	it ('should add discount code when a customer use small group private and not expired', function (){
+		Promocodes.addDefaultCodes (context);
+		newOcc.promocodes.should.to.have.lengthOf (1);
+		newOcc.promocodes[0].name.should.to.equal ('SMALLPRIVATEDISCOUNTPRICE')
+	})
+
+	it ('should add discount code when a customer use medium group private and not expired', function (){
+		newOcc.service.name = 'Medium group private';
+		newOcc.service.price = 200000;
+
+		Promocodes.addDefaultCodes (context);
+
+		newOcc.promocodes.should.to.have.lengthOf (1);
+		newOcc.promocodes[0].name.should.to.equal ('MEDIUMPRIVATEDISCOUNTPRICE')		
+	})
+
+	it ('should add discount code when a customer use large group private and not expired', function (){
+		newOcc.service.name = 'Large group private';
+		newOcc.service.price = 500000;
+			
+		Promocodes.addDefaultCodes (context);
+
+		newOcc.promocodes.should.to.have.lengthOf (1);
+		newOcc.promocodes[0].name.should.to.equal ('LARGEPRIVATEDISCOUNTPRICE')			
+	})	
+});
 
 xdescribe ('Resolve code conflicts')

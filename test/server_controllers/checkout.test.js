@@ -15,7 +15,7 @@ chai.use (chaiHttp);
 
 describe ('Checkout', function (){
 	this.timeout(3000);
-	xdescribe ('Create invoice', function (){
+	describe ('Create invoice', function (){
 		var occupancies, customers;
 		var newOcc, newCustomer;
 		var newAcc;

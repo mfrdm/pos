@@ -155,7 +155,7 @@ var getServiceDefaultCodes = function (){
 			price: {
 				value: 10000
 			}
-		}			
+		}				
 	}
 
 	var smallPrivateDiscountPrice = {
@@ -173,7 +173,10 @@ var getServiceDefaultCodes = function (){
 				value: 120000,
 				formula: 1
 			}
-		}			
+		},
+		createdAt: moment ('2017-05-07'),
+		start: moment ('2017-05-07'),
+		end: moment ('2017-06-30 23:59:00')					
 	}
 
 	var mediumPrivateDiscountPrice = {
@@ -191,7 +194,10 @@ var getServiceDefaultCodes = function (){
 				value: 200000,
 				formula: 1
 			}
-		}			
+		},
+		createdAt: moment ('2017-05-07'),
+		start: moment ('2017-05-07'),
+		end: moment ('2017-06-30 23:59:00')					
 	};
 
 	var largePrivateDiscountPrice = {
@@ -209,7 +215,10 @@ var getServiceDefaultCodes = function (){
 				value: 200000,
 				formula: 1
 			}
-		}			
+		},
+		createdAt: moment ('2017-05-07'),
+		start: moment ('2017-05-07'),
+		end: moment ('2017-06-30 23:59:00')					
 	};
 
 	return {
@@ -360,6 +369,22 @@ var addServiceDefaultCodes = function (context){
 		}
 	});
 
+	function _addDefaultCodes (targetCode){
+		var today = moment ();
+		var targetService = false;
+
+		if (!today.isBetween (targetCode.start, targetCode.end, null, '[]')){
+			return
+		}
+
+		targetService = targetCode.services.indexOf (service) == -1 ? targetService : true;
+		
+		if (targetService){
+			promocodes.push (targetCode);
+		}
+
+	}
+
 	// FIX: build a function to evaluate conditions like add default accounts
 	// student price code
 	if (!higherType2 && isStudent && (defaultCodes ['studentprice'].services.indexOf (service) != -1)){
@@ -367,21 +392,30 @@ var addServiceDefaultCodes = function (context){
 	}
 
 	// discount price for small group private
-	if (!higherType1 && !higherType2 && !higherType3 && usage > 1 && (defaultCodes ['smallprivatediscountprice'].services.indexOf (service) != -1)){
-		promocodes.push (defaultCodes ['smallprivatediscountprice']);
+	if (!higherType1 && !higherType2 && !higherType3 && usage > 1){
+		var targetCodes = [
+			defaultCodes ['smallprivatediscountprice'],
+			defaultCodes ['mediumprivatediscountprice'],
+			defaultCodes ['largeprivatediscountprice'],
+		];		
+
+		targetCodes.map (function (x, i, arr){
+			_addDefaultCodes (x)
+		});
 	}
 
-	// discount price for medium group private
-	if (!higherType1 && !higherType2 && !higherType3 && usage > 1 && (defaultCodes ['mediumprivatediscountprice'].services.indexOf (service) != -1)){
-		promocodes.push (defaultCodes ['mediumprivatediscountprice']);
-	}
+	// // discount price for medium group private
+	// if (!higherType1 && !higherType2 && !higherType3 && usage > 1 && (defaultCodes ['mediumprivatediscountprice'].services.indexOf (service) != -1)){
+	// 	promocodes.push (defaultCodes ['mediumprivatediscountprice']);
+	// }
 
-	// discount price for large group private
-	if (!higherType1 && !higherType2 && !higherType3 && usage > 1 && (defaultCodes ['largeprivatediscountprice'].services.indexOf (service) != -1)){
-		promocodes.push (defaultCodes['largeprivatediscountprice']);
-	}
+	// // discount price for large group private
+	// if (!higherType1 && !higherType2 && !higherType3 && usage > 1 && (defaultCodes ['largeprivatediscountprice'].services.indexOf (service) != -1)){
+	// 	promocodes.push (defaultCodes['largeprivatediscountprice']);
+	// }
 
 	context.setPromocodes (promocodes);
+
 }
 
 var redeemPrice = function (context){

@@ -178,5 +178,6 @@ var OccupanciesSchema = new mongoose.Schema({
 OccupanciesSchema.methods.getUsageTime = getUsageTime;
 OccupanciesSchema.methods.getTotal = getTotal;
 OccupanciesSchema.methods.getAccContext = getAccContext;
+OccupanciesSchema.statics.getCodeContext = getCodeContext;
 
 module.exports = mongoose.model ('Occupancies', OccupanciesSchema);
