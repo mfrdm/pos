@@ -475,6 +475,15 @@ var redeemTotal = function (context){
 		result.total = price * usage ;
 		result.price = price;
 	}
+	else if (this.redeemData.total.formula == 5){
+		if (usage <= this.redeemData.usage.value){
+			result.total = usage * this.redeemData.price.value;
+		}
+		else{
+			remainUsage = usage - this.redeemData.usage.value;
+			result.total = this.redeemData.usage.value * this.redeemData.price.value + remainUsage * price;
+		}
+	}
 	else{
 		result.total = this.redeemData.total.value;
 	}

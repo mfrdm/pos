@@ -85,34 +85,34 @@ var getDefaultAccounts = function (){
 		grouponable: false,
 	};	
 
-	var sixHourOneDayThirtyDaysCommon = {
-		name: '6h1d30dCommon',
-		price: 800000, // 
-		amount: 6,
-		unit: 'hour',
-		desc: "",
-		services: ['group common', 'individual common'], // name of service applied
-		label: {
-			vn: "Combo 30 ngày / 6 giờ 1 ngày",
-			en: "Combo 30 days / 6 hours per day",
-		},
-		recursive: {
-			isRecursive: true,
-			lastRenewDate: new Date (),
-			renewNum: 0, // number of renew
-			maxRenewNum: 29, // 
-			recursiveType: 1, // daily: 1, monthly: 2, annually: 3
-			baseAmount: 6
-		},
-		expireDateNum: 30,
-		grouponable: false,
-	};
+	// var sixHourOneDayThirtyDaysCommon = {
+	// 	name: '6h1d30dCommon',
+	// 	price: 800000, // 
+	// 	amount: 6,
+	// 	unit: 'hour',
+	// 	desc: "",
+	// 	services: ['group common', 'individual common'], // name of service applied
+	// 	label: {
+	// 		vn: "Combo 30 ngày / 6 giờ 1 ngày",
+	// 		en: "Combo 30 days / 6 hours per day",
+	// 	},
+	// 	recursive: {
+	// 		isRecursive: true,
+	// 		lastRenewDate: new Date (),
+	// 		renewNum: 0, // number of renew
+	// 		maxRenewNum: 29, // 
+	// 		recursiveType: 1, // daily: 1, monthly: 2, annually: 3
+	// 		baseAmount: 6
+	// 	},
+	// 	expireDateNum: 30,
+	// 	grouponable: false,
+	// };
 
 	return {
 		oneDayCommon: oneDayCommon,
 		threeDaysCommon: threeDaysCommon,
 		threeHourOneDayThirtyDaysCommon: threeHourOneDayThirtyDaysCommon,
-		sixHourOneDayThirtyDaysCommon: sixHourOneDayThirtyDaysCommon,
+		// sixHourOneDayThirtyDaysCommon: sixHourOneDayThirtyDaysCommon,
 		cash: cash
 	}
 }

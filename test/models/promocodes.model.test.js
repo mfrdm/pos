@@ -58,7 +58,7 @@ xdescribe ('redeem', function (){
 						formula: 1
 					}
 				}				
-			}								
+			}										
 		]
 	});
 
@@ -341,7 +341,25 @@ describe ('Redeem total', function (){
 						max: 6
 					}
 				}					
-			},		
+			},
+			{
+				name: 'code 8',
+				codeType: 3,
+				services: ['medium group private'],
+				priority: 2,
+				redeemData: {
+					total: {
+						formula: 5
+					},
+					usage: {
+						value: 2.75
+					},
+					price: {
+						value: 100000
+					}
+				}				
+			},	
+
 		]
 	});
 
@@ -425,6 +443,20 @@ describe ('Redeem total', function (){
 
 		result.price.should.to.equal (220000);		
 	});
+
+	it ('should return expected total when formula 5 is used', function (){
+		context.usage = 10;
+		context.price = 220000;
+		var result = new Promocodes (codes[7]).redeemTotal (context);
+
+		result.total.should.to.equal (2.75 * 100000 + 7.25 * 220000);
+
+		result.should.not.to.have.property ('usage');
+		result.should.not.to.have.property ('price');
+		result.should.not.to.have.property ('quantity');
+		
+	});
+
 
 });
 
