@@ -128,6 +128,22 @@ var getAccountDefaultCodes = function (){
 		}	
 	};
 
+	var studentCommon20h7d = {
+		name: 'student_common20h7d',
+		desc: {type: 'Price of 20-hour-7-day common for students'},
+		label: {
+			vn: 'Combo 20 giờ trong 7 ngày cho sinh viên',
+		},	
+		codeType: 2,
+		accounts: ['20h7dCommon'],
+		priority: 1,
+		redeemData: {
+			price: {
+				value:  145000
+			}
+		}			
+	}
+
 	return {
 		studentCommon1day: studentCommon1day,
 		studentCommon3days: studentCommon3days,
@@ -135,7 +151,8 @@ var getAccountDefaultCodes = function (){
 		studentGroup5Common1day: studentGroup5Common1day,
 		group3Common1day: group3Common1day,
 		group5Common1day: group5Common1day,
-		studentCommon3h1d30d: studentCommon3h1d30d
+		studentCommon3h1d30d: studentCommon3h1d30d,
+		studentCommon20h7d: studentCommon20h7d
 	}
 }
 
@@ -300,6 +317,7 @@ var addAccountDefaultCodes = function (context){
 		var targetCodes = [
 			defaultCodes ['studentCommon3days'],
 			defaultCodes ['studentCommon3h1d30d'],
+			defaultCodes ['studentCommon20h7d'],
 		];
 
 		targetCodes.map (function (x, i, arr){

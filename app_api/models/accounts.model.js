@@ -62,7 +62,7 @@ var getDefaultAccounts = function (){
 		grouponable: false,
 	};
 
-	var threeHourOneDayThirtyDaysCommon = {
+	var threeHoursOneDayThirtyDaysCommon = {
 		name: '3h1d30dCommon',
 		price: 400000, // 
 		amount: 3,
@@ -85,16 +85,16 @@ var getDefaultAccounts = function (){
 		grouponable: false,
 	};	
 
-	// var sixHourOneDayThirtyDaysCommon = {
-	// 	name: '6h1d30dCommon',
+	// var fiveHoursOneDayThirtyDaysCommon = {
+	// 	name: '5h1d30dCommon',
 	// 	price: 800000, // 
 	// 	amount: 6,
 	// 	unit: 'hour',
 	// 	desc: "",
 	// 	services: ['group common', 'individual common'], // name of service applied
 	// 	label: {
-	// 		vn: "Combo 30 ngày / 6 giờ 1 ngày",
-	// 		en: "Combo 30 days / 6 hours per day",
+	// 		vn: "Combo 30 ngày / 5 giờ 1 ngày",
+	// 		en: "Combo 30 days / 5 hours per day",
 	// 	},
 	// 	recursive: {
 	// 		isRecursive: true,
@@ -108,11 +108,30 @@ var getDefaultAccounts = function (){
 	// 	grouponable: false,
 	// };
 
+
+	var twentyHoursCommon = {
+		name: '20h7dCommon',
+		price: 225000, // 
+		amount: 20,
+		unit: 'hour',
+		desc: "",
+		services: ['group common', 'individual common'], // name of service applied
+		label: {
+			vn: "Combo 20 giờ / 7 ngày",
+			en: "Combo 20 hours / 7 day",
+		},
+		recursive: {
+			isRecursive: false,
+		},
+		expireDateNum: 7,
+		grouponable: false,
+	}
+
 	return {
 		oneDayCommon: oneDayCommon,
 		threeDaysCommon: threeDaysCommon,
-		threeHourOneDayThirtyDaysCommon: threeHourOneDayThirtyDaysCommon,
-		// sixHourOneDayThirtyDaysCommon: sixHourOneDayThirtyDaysCommon,
+		threeHoursOneDayThirtyDaysCommon: threeHoursOneDayThirtyDaysCommon,
+		twentyHoursCommon: twentyHoursCommon,
 		cash: cash
 	}
 }
@@ -178,7 +197,7 @@ var withdraw = function (context){
 
 
 var initAccount = function (){
-	this.end = moment (this.start).add (this.expireDateNum - 1, 'day').hour (24).minute (0);
+	this.end = moment (this.start).add (this.expireDateNum - 1, 'day').hour (23).minute (59);
 }
 
 // Represent a pre paid amount of cash or hour usage number. Can be used later to pay for service usage
