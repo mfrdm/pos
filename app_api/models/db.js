@@ -8,7 +8,10 @@ else if (process.env.NODE_ENV === 'test'){
 	var host = '127.0.0.1';
 	var db = process.env.TEST_DB_NAME;
 }
-
+else if (process.env.NODE_ENV === 'analysis'){
+	var host = '127.0.0.1';
+	var db = process.env.ANA_DB_NAME;	
+}
 else if (process.env.NODE_ENV === 'production'){
 	var host = process.env.DB_REMOTE_HOST;
 	var db = process.env.DB_NAME;

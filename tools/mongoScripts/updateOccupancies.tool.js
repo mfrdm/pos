@@ -1,12 +1,13 @@
 // updateCustomer ('gsanalysis');
-updateCodeNames ('gsanalysis');
-
+// updateCodeNames ('gsanalysis');
+updateCodeNames ('pos');
 
 function connect (dbname){
 	var conn = new Mongo ();
 	var db = conn.getDB (dbname);
 	return db
 };
+
 
 function updateCustomer (dbName){
 	var db = connect (dbName);

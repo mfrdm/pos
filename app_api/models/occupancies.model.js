@@ -127,6 +127,7 @@ function getTotal (){
 var OccupanciesSchema = new mongoose.Schema({
 	_id: {type: mongoose.Schema.Types.ObjectId, default: mongoose.Types.ObjectId},
 	total: {type: Number, min: 0},
+	paid: {type: Number, min: 0}, // amount actually paid by a customer
 	usage: {type: Number, min: 0}, // may be orignal or adjusted
 	oriUsage: {type: Number, min: 0},
 	price: {type: Number, min: 0}, // may be orignal or adjusted

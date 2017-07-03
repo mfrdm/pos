@@ -319,7 +319,7 @@
 
 		}
 
-		vm.ctrl.deposit.fixAccStartDate = function (date){
+		vm.ctrl.deposit.fixAccDate = function (date){
 			var curYear = new Date ().getFullYear ();
 			var targetYear = date.getFullYear ();
 
@@ -328,13 +328,17 @@
 			}
 		}
 
+		vm.ctrl.deposit.createEndDate = function (start){
+			var newStart = new Date (start);
+			vm.model.depositing.account.end = newStart.setDate(newStart.getDate() + vm.model.depositing.account.expireDateNum - 1);
+		}
+
 		// account is not deep copied. Need to reset default accounts
 		vm.ctrl.deposit.addAccount = function (){
 			if (vm.model.temporary.depositing.account.start){
-
-				vm.ctrl.deposit.fixAccStartDate (vm.model.temporary.depositing.account.start)
-
+				vm.ctrl.deposit.fixAccDate (vm.model.temporary.depositing.account.start)
 				var obj = Object.assign(vm.model.depositing.account, vm.model.temporary.depositing.account);
+				vm.ctrl.deposit.createEndDate (vm.model.temporary.depositing.account.start);
 
 				vm.model.temporary.depositing.account.amount = vm.model.temporary.depositing.account.name == 'cash' ? null : vm.model.temporary.depositing.account.amount; // important!!
 				vm.model.temporary.depositing.account.start = null; // important!!

@@ -1,3 +1,6 @@
+// updateCodeNames ('gsanalysis');
+updateCodeNames ('pos');
+
 function connect (dbname){
 	var conn = new Mongo ();
 	var db = conn.getDB (dbname);
@@ -75,5 +78,3 @@ function updateCodeNames (dbName){
 
 };
 
-
-updateCodeNames ('gsanalysis');

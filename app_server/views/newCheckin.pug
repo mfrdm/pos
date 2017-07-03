@@ -126,7 +126,7 @@ div(class="columns row")
 						div(class="column row")
 							div(class='column small-12')
 								label {{vm.model.dom.data.selected.checkin.promoteCode.label}}
-									select(ng-model="vm.model.temporary.checkin.codeName" ng-options="code.name as code.selectedLabel disable when code.disabled for code in vm.model.dom.data.selected.checkin.promoteCode.codes track by code.name" ng-change='vm.ctrl.checkin.addCode()')
+									select(ng-model="vm.model.temporary.checkin.codeName" ng-options="code.name as code.selectedLabel disable when code.disabled for code in vm.model.dom.data.selected.checkin.promoteCode.codes track by code._id" ng-change='vm.ctrl.checkin.addCode()')
 
 						div(class="column row")
 							div(class='column small-12 large-10')

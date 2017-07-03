@@ -123,7 +123,23 @@ var getAccountDefaultCodes = function (){
 		priority: 1,
 		redeemData: {
 			price: {
-				value: 300000
+				value: 279000
+			}
+		}	
+	};
+
+	var studentCommon5h1d30d = {
+		name: 'student_common5h1d30d',
+		desc: {type: 'Price of 3-hour-1-day-30-days common for students'},
+		label: {
+			vn: 'Combo 30 ngày / 3 giờ mỗi ngày cho sinh viên',
+		},	
+		codeType: 2,
+		accounts: ['5h1d30dCommon'],
+		priority: 1,
+		redeemData: {
+			price: {
+				value: 279000
 			}
 		}	
 	};
@@ -144,6 +160,22 @@ var getAccountDefaultCodes = function (){
 		}			
 	}
 
+	var studentCommon30d = {
+		name: 'student_common30d',
+		desc: {type: 'Price of 30-day common for students'},
+		label: {
+			vn: 'Combo 30 ngày cho sinh viên',
+		},	
+		codeType: 2,
+		accounts: ['30dCommon'],
+		priority: 1,
+		redeemData: {
+			price: {
+				value:  899000
+			}
+		}			
+	}
+
 	return {
 		studentCommon1day: studentCommon1day,
 		studentCommon3days: studentCommon3days,
@@ -152,7 +184,9 @@ var getAccountDefaultCodes = function (){
 		group3Common1day: group3Common1day,
 		group5Common1day: group5Common1day,
 		studentCommon3h1d30d: studentCommon3h1d30d,
-		studentCommon20h7d: studentCommon20h7d
+		studentCommon5h1d30d: studentCommon5h1d30d,
+		studentCommon20h7d: studentCommon20h7d,
+		studentCommon30d: studentCommon30d
 	}
 }
 
@@ -317,7 +351,9 @@ var addAccountDefaultCodes = function (context){
 		var targetCodes = [
 			defaultCodes ['studentCommon3days'],
 			defaultCodes ['studentCommon3h1d30d'],
+			defaultCodes ['studentCommon5h1d30d'],
 			defaultCodes ['studentCommon20h7d'],
+			defaultCodes ['studentCommon30d']
 		];
 
 		targetCodes.map (function (x, i, arr){
@@ -528,12 +564,13 @@ var redeemTotal = function (context){
 		result.price = price;
 	}
 	else if (this.redeemData.total.formula == 5){
-		if (usage <= this.redeemData.usage.value){
+		if (usage <= this.redeemData.usage.max){
+			usage = this.redeemData.usage.max
 			result.total = usage * this.redeemData.price.value;
 		}
 		else{
-			remainUsage = usage - this.redeemData.usage.value;
-			result.total = this.redeemData.usage.value * this.redeemData.price.value + remainUsage * price;
+			remainUsage = usage - this.redeemData.usage.max;
+			result.total = this.redeemData.usage.max * this.redeemData.price.value + remainUsage * price;
 		}
 	}
 	else{

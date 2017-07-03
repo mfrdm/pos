@@ -64,7 +64,7 @@ var getDefaultAccounts = function (){
 
 	var threeHoursOneDayThirtyDaysCommon = {
 		name: '3h1d30dCommon',
-		price: 400000, // 
+		price: 379000, // 
 		amount: 3,
 		unit: 'hour',
 		desc: "",
@@ -85,28 +85,28 @@ var getDefaultAccounts = function (){
 		grouponable: false,
 	};	
 
-	// var fiveHoursOneDayThirtyDaysCommon = {
-	// 	name: '5h1d30dCommon',
-	// 	price: 800000, // 
-	// 	amount: 6,
-	// 	unit: 'hour',
-	// 	desc: "",
-	// 	services: ['group common', 'individual common'], // name of service applied
-	// 	label: {
-	// 		vn: "Combo 30 ngày / 5 giờ 1 ngày",
-	// 		en: "Combo 30 days / 5 hours per day",
-	// 	},
-	// 	recursive: {
-	// 		isRecursive: true,
-	// 		lastRenewDate: new Date (),
-	// 		renewNum: 0, // number of renew
-	// 		maxRenewNum: 29, // 
-	// 		recursiveType: 1, // daily: 1, monthly: 2, annually: 3
-	// 		baseAmount: 6
-	// 	},
-	// 	expireDateNum: 30,
-	// 	grouponable: false,
-	// };
+	var fiveHoursOneDayThirtyDaysCommon = {
+		name: '5h1d30dCommon',
+		price: 479000, // 
+		amount: 5,
+		unit: 'hour',
+		desc: "",
+		services: ['group common', 'individual common'], // name of service applied
+		label: {
+			vn: "Combo 30 ngày / 5 giờ 1 ngày",
+			en: "Combo 30 days / 5 hours per day",
+		},
+		recursive: {
+			isRecursive: true,
+			lastRenewDate: new Date (),
+			renewNum: 0, // number of renew
+			maxRenewNum: 29, // 
+			recursiveType: 1, // daily: 1, monthly: 2, annually: 3
+			baseAmount: 5
+		},
+		expireDateNum: 30,
+		grouponable: false,
+	};
 
 
 	var twentyHoursCommon = {
@@ -127,11 +127,36 @@ var getDefaultAccounts = function (){
 		grouponable: false,
 	}
 
+	var thirtyDaysCommon = {
+		name: '30dCommon',
+		price: 1299000, // 
+		amount: 24,
+		unit: 'hour',
+		desc: "",
+		services: ['group common', 'individual common'], // name of service applied
+		label: {
+			vn: "Combo 30 ngày",
+			en: "30-day commbo",
+		},
+		recursive: {
+			isRecursive: true,
+			lastRenewDate: new Date (),
+			renewNum: 0, // number of renew
+			maxRenewNum: 30, // 
+			recursiveType: 1, // daily: 1, monthly: 2, annually: 3
+			baseAmount: 24
+		},
+		expireDateNum: 30,
+		grouponable: false,		
+	}
+
 	return {
 		oneDayCommon: oneDayCommon,
 		threeDaysCommon: threeDaysCommon,
 		threeHoursOneDayThirtyDaysCommon: threeHoursOneDayThirtyDaysCommon,
+		fiveHoursOneDayThirtyDaysCommon: fiveHoursOneDayThirtyDaysCommon,
 		twentyHoursCommon: twentyHoursCommon,
+		thirtyDaysCommon: thirtyDaysCommon,
 		cash: cash
 	}
 }

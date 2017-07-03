@@ -77,15 +77,16 @@ div(class="columns row")
 						div(class="column row")
 							h3(class="paddingLR15 fontSize20 fontWeight600") Chọn tài khoản trả trước
 						div(class="column row")
-							div(class="column small-12 large-8")
+							div(class="column small-12 large-6")
 								label Tài khoản
 									select(ng-change='vm.ctrl.deposit.accountChangeHandler ()' ng-model="vm.model.temporary.depositing.account" ng-options="account as account.label[vm.model.dom.data.selected.modelLanguage] for account in vm.model.dom.deposit.accounts.default")
-							div(class="column small-12 large-4")
+							div(class="column small-12 large-3")
+								label Số lượng
+									input(type='number' ng-model="vm.model.temporary.depositing.account.amount" ng-disabled="!(vm.model.temporary.depositing.account.name == 'cash')")
+									//select(ng-change='vm.ctrl.deposit.accountChangeHandler ()' ng-model="vm.model.temporary.depositing.account.amount" ng-options="(amount | number) for amount in vm.model.dom.data.vn.deposit.defaultCashAmount" ng-disabled="!vm.model.temporary.depositing.account.label")							
+							div(class="column small-12 large-3")
 								label Ngày sử dụng
 									input( ng-change="vm.ctrl.deposit.accountChangeHandler ()" ng-model="vm.model.temporary.depositing.account.start" type="date" ng-disabled="!vm.model.temporary.depositing.account.label")
-							div(class="column small-12" ng-if="vm.model.temporary.depositing.account.name == 'cash'")
-								label Số tiền nạp
-									select(ng-change='vm.ctrl.deposit.accountChangeHandler ()' ng-model="vm.model.temporary.depositing.account.amount" ng-options="(amount | number) for amount in vm.model.dom.data.vn.deposit.defaultCashAmount" ng-disabled="!vm.model.temporary.depositing.account.label")
 
 						// SELECTED ACCOUNT
 						div(class="row column")
@@ -96,6 +97,7 @@ div(class="columns row")
 											th Tài khoản
 											th(ng-if="vm.model.depositing.account.name=='cash'") Số tiền
 											th Ngày sử dụng
+											th Ngày hết hạn
 											th
 
 									tbody 
@@ -103,6 +105,7 @@ div(class="columns row")
 											td {{ vm.model.depositing.account.label.vn }}
 											td(ng-if="vm.model.depositing.account.name=='cash'") {{ vm.model.depositing.account.amount | number }} VNĐ
 											td {{ vm.model.depositing.account.start | date:'dd/MM/yyyy' }}
+											td {{ vm.model.depositing.account.end | date:'dd/MM/yyyy' }}
 											td(class='text-center deleteIcon')
 												i(class="material-icons customIcon" ng-click="vm.ctrl.deposit.removeAccount ()") close
 
