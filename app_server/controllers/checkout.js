@@ -167,16 +167,20 @@ function Checkout() {
 	};
 
 	this.confirmCheckout = function(req, res, next) {
-
+		var paid = req.body.data.total;
 		var total = req.body.data.total;
 		var usage = req.body.data.usage;
 		var oriUsage = req.body.data.oriUsage;
 		var price = req.body.data.price;
 		var checkoutTime = req.body.data.checkoutTime;
 		var promocodes = req.body.data.promocodes;
-		var paymentMethods = req.body.data.paymentMethod ? req.body.data.paymentMethod : [];
+		var paymentMethod = req.body.data.paymentMethod ? req.body.data.paymentMethod : [];
 		var note = req.body.data.note ? req.body.data.note : ''; // optional
 		var status = 2;
+
+		paymentMethod.map (function (x, i, arr){
+			paid = paid - x.paidTotal;
+		});
 
 		Customers.findOneAndUpdate({_id:req.body.data.customer._id}, {$set:{checkinStatus:false}}, function(err, cus){
 			if (err){
@@ -189,12 +193,13 @@ function Checkout() {
 				var updateOcc = {
 					status: status, 
 					total: total, 
+					paid: paid,
 					usage: usage, 
 					oriUsage: oriUsage,
 					price: price,
 					promocodes: promocodes,
 					checkoutTime: checkoutTime,
-					paymentMethod: paymentMethods,
+					paymentMethod: paymentMethod,
 					note: note
 				}
 
@@ -296,14 +301,19 @@ function Checkout() {
 		})
 		
 		var total = leader.total;
+		var paid = leader.total;
 		var usage = leader.usage;
 		var oriUsage = leader.oriUsage;
 		var price = leader.price;
 		var checkoutTime = leader.checkoutTime;
 		var promocodes = leader.promocodes;
-		var paymentMethods = leader.paymentMethod ? leader.paymentMethod : [];
+		var paymentMethod = leader.paymentMethod ? leader.paymentMethod : [];
 		var note = leader.note ? leader.note : ''; // optional
 		var status = 2;
+
+		paymentMethod.map (function (x, i, arr){
+			paid = paid - x.paidTotal;
+		});
 
 		Customers.findOneAndUpdate({_id:leader.customer._id}, {$set:{checkinStatus:false}}, function(err, cus){
 			if (err){
@@ -314,12 +324,13 @@ function Checkout() {
 				var updateOcc = {
 					status: status, 
 					total: total, 
+					paid: paid,
 					usage: usage, 
 					oriUsage: oriUsage,
 					price: price,
 					promocodes: promocodes,
 					checkoutTime: checkoutTime,
-					paymentMethod: paymentMethods,
+					paymentMethod: paymentMethod,
 					note: note
 				}
 				
@@ -357,12 +368,11 @@ function Checkout() {
 											var updateOccMember = {
 												status:status,
 												total: 0, 
+												paid: 0,
 												usage: usage, 
 												oriUsage: oriUsage,
 												price: price,
-												// promocodes: promocodes,
 												checkoutTime: checkoutTime,
-												// paymentMethod: paymentMethods,
 												note: note
 											}
 											Occupancies.update({'_id':{$in:membersId}}, {$set: updateOccMember}, {new: true, multi: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function(err, occ){
@@ -388,12 +398,13 @@ function Checkout() {
 									var updateOccMember = {
 										status:status,
 										total: 0, 
+										paid: 0,
 										usage: usage, 
 										oriUsage: oriUsage,
 										price: price,
 										// promocodes: promocodes,
 										checkoutTime: checkoutTime,
-										// paymentMethod: paymentMethods,
+										// paymentMethod: paymentMethod,
 										note: note
 									}
 									Occupancies.update({'_id':{$in:membersId}}, {$set: updateOccMember}, {new: true, multi: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function(err, occ){

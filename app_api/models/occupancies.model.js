@@ -136,6 +136,7 @@ var OccupanciesSchema = new mongoose.Schema({
 		name: {type: String}, // cash, card, account, ...
 		paidTotal: Number, // total paid using the account
 		paidAmount: Number, // amount withdraw from an account
+		amount: Number
 	}],
 	parent: mongoose.Schema.Types.ObjectId, // id of parent occ. used for group private
 	checkinTime: {type: Date, default: Date.now},

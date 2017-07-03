@@ -1,4 +1,4 @@
-// process.env.NODE_ENV = 'analysis';
+process.env.NODE_ENV = 'analysis';
 
 var server = require ('../../bin/www');
 var mongoose = require ('mongoose');
@@ -13,6 +13,24 @@ var async = require ('async');
 module.exports = new UpdateOccupancies ();
 
 function UpdateOccupancies (){
+	this.update = function (occ){
+		var newOcc = new Occupancy (occ);
+		newOcc.save (function (err, savedOcc){
+			if (err){
+				console.log (err);
+				return;
+			}
+
+			if (savedOcc.paymentMethod && savedOcc.paymentMethod.length){
+				console.log (savedOcc._id, savedOcc.paymentMethod[0].amount, savedOcc.paymentMethod[0].paidAmount, savedOcc.paymentMethod[0].paidTotal, savedOcc.paid)
+			}
+			else{
+				console.log (savedOcc._id, savedOcc.paid)
+			}		
+
+		});
+	}
+
 	this.updatePrivateTotal = function (){
 		Occupancy.find ({'service.name': /small|medium|large/i, $where: '!this.parent'}, function (err, foundOcc){
 			if (err){
@@ -22,7 +40,7 @@ function UpdateOccupancies (){
 
 			function _addCodes (occ){
 				if (occ.customer.fullname == 'NHỮ VÂN ANH'){
-					code = {"name" : "PRIVATE_VIP", "codeType" : 3, "priority" : 2, "services" : [ "small group private" ], "redeemData" : { "total" : { "formula" : 2, value: 0.5 }}};	
+					code = {"name" : "PRIVATE_VIP_NHUVANANH", "codeType" : 3, "priority" : 2, "services" : [ "small group private" ], "redeemData" : { "total" : { "formula" : 2, value: 0.5 }}};	
 					occ.promocodes = [code];	
 				}
 				else if (occ.customer.fullname == 'NGUYỄN THỊ BÍCH NGỌC'){
@@ -104,11 +122,93 @@ function UpdateOccupancies (){
 		});
 	}
 
-	this.updatePaidAmount = function (){
+	this.updatePaid = function (){
+		var uocc = this;
+		var _updatePaid = function (occ){
+			db.Occupancy.update ({_id: occ._id}, {$set: {paid: occ.paid}}, function (err, updatedOcc){
+				if (err){
+					console.log (err);
+					return
+				}
 
+			});
+		}
+
+		Occupancy.find ({'service.name': /common/i}, function (err, foundedOcc){
+			if (err){
+				console.log (err);
+				return;
+			}
+
+			foundedOcc.map (function (x, i, arr){
+				if (x.paymentMethod && x.paymentMethod.length){
+					newAcc = new Accounts ();
+
+					beforeTotal = x.total;
+					var context = occ.getAccContext ();
+					updatedAcc.withdraw (context);	
+
+					x.getTotal ();
+					beforeTotal = x.total;
+					paid = beforeTotal - afterTotal;
+				}
+				else {
+					x.paid = x.total;
+				}
+			});
+
+			// async.map (foundedOcc, uocc.update, function (err, result){
+			// 	// console.log (result)
+			// });					
+
+		});
+	}
+
+	this.updateAccount = function (){
+		var uocc = this;
+		function _updatePaid (occ){
+			var newOcc = new Occupancy (occ);
+			newOcc.save (function (err, result){
+				if (err){
+					console.log (err);
+					return;
+				}
+
+
+			});
+		}
+
+		Occupancy.find ({}, function (err, foundedOcc){
+			if (err){
+				console.log (err);
+				return;
+			}
+
+			foundedOcc.map (function (x, i, arr){
+				if (x.paymentMethod && x.paymentMethod.length && x.paymentMethod[0].name == 'account'){
+					if (x.paymentMethod[0].amount){
+						x.paymentMethod[0].paidAmount = x.paymentMethod[0].amount;
+					}
+
+					if (!x.paymentMethod[0].paidTotal){
+						// 
+						
+					}
+				}
+
+
+			});
+
+			async.map (foundedOcc, uocc.update, function (err, result){
+				// console.log (result)
+			});	
+
+		});
 	}
 }
 
 
 var updator = new UpdateOccupancies ();
-updator.updatePrivateTotal ();
+// updator.updatePrivateTotal ();
+// updator.updateAccount ()
+updator.updatePaid ();
