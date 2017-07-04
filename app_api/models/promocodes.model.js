@@ -564,7 +564,7 @@ var redeemTotal = function (context){
 		result.price = price;
 	}
 	else if (this.redeemData.total.formula == 5){
-		if (usage <= this.redeemData.usage.max){
+		if (usage <= this.redeemData.usage.max){	
 			usage = this.redeemData.usage.max
 			result.total = usage * this.redeemData.price.value;
 		}
@@ -573,6 +573,15 @@ var redeemTotal = function (context){
 			result.total = this.redeemData.usage.max * this.redeemData.price.value + remainUsage * price;
 		}
 	}
+	else if (this.redeemData.total.formula == 6){
+		if (usage <= this.redeemData.usage.max){
+			result.total = this.redeemData.total.min;
+		}
+		else{
+			remainUsage = usage - this.redeemData.usage.max;
+			result.total = this.redeemData.total.min + remainUsage * price;
+		}
+	}	
 	else{
 		result.total = this.redeemData.total.value;
 	}
