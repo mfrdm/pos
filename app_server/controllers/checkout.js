@@ -169,6 +169,7 @@ function Checkout() {
 	};
 
 	this.confirmCheckout = function(req, res, next) {
+		console.log(req.body)
 		var total = req.body.data.total;
 		var usage = req.body.data.usage;
 		var oriUsage = req.body.data.oriUsage;

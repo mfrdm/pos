@@ -216,13 +216,34 @@ div(class="row columns")
 								label(ng-repeat='service in vm.model.codeInfo.services.slice(3)' class='paddingTB15') 
 									input(type='checkbox' checklist-model='vm.model.editPromocode.services' checklist-value='service.value' class='marginB0' required)
 									span {{service.label}}
-				div(class="row column")
-					div(class="column small-6 paddingL0")
-						label Start time
-							input(type="date" ng-model='vm.model.editPromocode.start')
-					div(class="column small-6 paddingR0")
-						label End time
-							input(type="date" ng-model='vm.model.editPromocode.end')
+				//- div(class="row column")
+				//- 	div(class="column small-6 paddingL0")
+				//- 		label Start time
+				//- 			input(type="date" ng-model='vm.model.editPromocode.start')
+				//- 	div(class="column small-6 paddingR0")
+				//- 		label End time
+				//- 			input(type="date" ng-model='vm.model.editPromocode.end')
+				div(class='row column basicBox')
+					div(class='column small-12 large-6 large-paddingL15')
+						label Start Date
+							input(type='date' min='1' max='31' ng-model='vm.model.temporary.editPromocode.startDate' required ng-change="vm.ctrl.timeChangeHandlerEdit ()")
+					div(class='column small-12 large-3')
+						label Start Hour
+							input(type='number' min='0' max='23' ng-model='vm.model.temporary.editPromocode.startHour' required ng-change="vm.ctrl.timeChangeHandlerEdit ()")
+					div(class='column small-12 large-3 large-paddingR15')
+						label Start Minute
+							input(type='number' min='0' max='60' ng-model='vm.model.temporary.editPromocode.startMin' ng-change="vm.ctrl.timeChangeHandlerEdit ()")
+								
+				div(class='row column basicBox')
+					div(class='column small-12 large-6 large-paddingL15')
+						label End Date
+							input(type='date' min='1' max='31' ng-model='vm.model.temporary.editPromocode.endDate' required ng-change="vm.ctrl.timeChangeHandlerEdit ()")
+					div(class='column small-12 large-3')
+						label End Hour
+							input(type='number' min='0' max='23' ng-model='vm.model.temporary.editPromocode.endHour' required ng-change="vm.ctrl.timeChangeHandlerEdit ()")
+					div(class='column small-12 large-3 large-paddingR15')
+						label End Minute
+							input(type='number' min='0' max='60' ng-model='vm.model.temporary.editPromocode.endMin' ng-change="vm.ctrl.timeChangeHandlerEdit ()")
 				div(class="row column" ng-if='vm.model.temporary.redeem == "price"')
 					div(class="column small-12 paddingLR0")
 						label Redeem By {{vm.model.temporary.redeem | uppercase}}

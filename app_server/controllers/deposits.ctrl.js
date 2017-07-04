@@ -44,6 +44,7 @@ function DepositsCtrl (){
 					// function cb(newDeposit){
 					// 	res.json ({data: {message: 'success', _id: newDeposit._id}})
 					// }
+					console.log('testttt')
 					MakeTransaction.makeTrans(5,'deposit trans',newDeposit.total,newDeposit._id, res)
 				});
 

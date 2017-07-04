@@ -90,6 +90,7 @@ function StorageCtrl (){
 	// Storage
 	this.createStorage = function(req, res, next){
 		var newStorage= new Storages (req.body.data);
+		console.log(newStorage)
 		newStorage.save (function (err, storage){
 			if (err){
 				next (err);
@@ -104,8 +105,6 @@ function StorageCtrl (){
 					if(err){
 						throw err
 					}
-					console.log(products)
-					console.log(storage.itemList)
 					var total = 0;
 					products.map(function(item){
 						storage.itemList.map(function(ele){
@@ -115,7 +114,7 @@ function StorageCtrl (){
 							}
 						})
 					})
-					console.log(total)
+					console.log(storage._id)
 					if(total >= 0){
 						MakeTransaction.makeTrans(4,'outbound trans',total,storage._id, res)
 					}else{
