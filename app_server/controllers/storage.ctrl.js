@@ -90,7 +90,6 @@ function StorageCtrl (){
 	// Storage
 	this.createStorage = function(req, res, next){
 		var newStorage= new Storages (req.body.data);
-		console.log(newStorage)
 		newStorage.save (function (err, storage){
 			if (err){
 				next (err);
@@ -109,7 +108,6 @@ function StorageCtrl (){
 					products.map(function(item){
 						storage.itemList.map(function(ele){
 							if(item._id.toString() == ele.itemId.toString()){
-								console.log('test')
 								total += item.price*ele.quantity
 							}
 						})

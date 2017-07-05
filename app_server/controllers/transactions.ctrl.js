@@ -7,6 +7,7 @@ module.exports = new TransactionCtrl();
 
 function TransactionCtrl (){
 	this.createTrans = function (req, res, next){
+		console.log(req.body.data)
 		var newTrans= new Transactions (req.body.data);
 		newTrans.save (function (err, trans){
 			if (err){

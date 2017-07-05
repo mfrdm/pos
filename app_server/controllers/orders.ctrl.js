@@ -20,7 +20,6 @@ function OrdersCtrl() {
 	};
 
 	this.confirmCheckout = function (req, res, next){
-		console.log(req.body.data)
 		var order = new Orders (req.body.data);
 		order.status = 1;
 
@@ -30,7 +29,6 @@ function OrdersCtrl() {
 				next (err);
 				return
 			}
-			console.log(newOrder)
 			// deal with storage
 			var storage = {};
 			storage.itemList = [];

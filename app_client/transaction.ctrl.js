@@ -130,9 +130,7 @@
         }
 
         // Open report
-        vm.ctrl.openReport = function(){
-            
-            console.log(vm.model.dom.trans.list)
+        vm.ctrl.openReport = function(){            
             vm.model.dom.trans.list.map(function(item){
                 if(item.amount >=0){
                     vm.model.report.revenue += item.amount
@@ -141,7 +139,6 @@
                 }
             })
             vm.model.report.profit = vm.model.report.revenue + vm.model.report.cost;
-            console.log(vm.model.report)
             vm.model.dom.report = true;
         }
 

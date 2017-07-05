@@ -415,6 +415,7 @@
 			if (vm.model.depositing.account && vm.model.depositing.account.start && vm.model.depositing.account.label && vm.model.depositing.customer && vm.model.depositing.customer.fullname){
 
 				vm.ctrl.showLoader ();
+				console.log(vm.model.depositing)
 				DepositService.readInvoice (vm.model.depositing).then (
 					function success (res){
 						vm.ctrl.hideLoader ();
@@ -439,7 +440,6 @@
 
 		vm.ctrl.deposit.submit = function (){
 			vm.ctrl.showLoader ();
-
 			DepositService.createOneDeposit (vm.model.depositing).then (
 				function success (res){
 					vm.ctrl.hideLoader ();

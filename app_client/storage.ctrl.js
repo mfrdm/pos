@@ -128,9 +128,13 @@
         // Function
         function getProductName (id){
             if(vm.model.productOptions.length && vm.model.productOptions.length>0){
-                return vm.model.productOptions.filter(function(ele){
-                    return ele.value == id
-                })[0].label
+                if(vm.model.productOptions.filter(function(ele){
+                    return ele.value === id
+                }).length > 0){
+                    return vm.model.productOptions.filter(function(ele){
+                        return ele.value === id
+                    })[0].label
+                }
             }
         }
 
@@ -374,9 +378,14 @@
         vm.ctrl.storage.getFilteredCheckinList = function (){
             // Input
             if(vm.model.dom.storage.list.length && vm.model.dom.storage.list.length > 0){
-                vm.model.temporary.displayedList.storage = vm.model.dom.storage.list.filter(function(item){
-                    return (item.name).includes(vm.model.filter.productName)
-                })
+                if(!vm.model.filter.productName){
+                    vm.model.temporary.displayedList.storage = Object.assign([],vm.model.dom.storage.list)
+                }else{
+                    vm.model.temporary.displayedList.storage = vm.model.dom.storage.list.filter(function(item){
+                        return (item.name).includes(vm.model.filter.productName)
+                    })
+                }
+                
                 return vm.model.temporary.displayedList.storage
             }
         }
@@ -443,6 +452,7 @@
                 })
                 
                 checkDisabledButtonStorage()
+                console.log(afterFilterList)
                 vm.model.listEachPageStorage.storage = afterFilterList.slice(0, vm.model.pagination.storage.itemsEachPages)
                 vm.ctrl.storage.sliceCheckinList = function(i){
                     vm.model.listEachPageStorage.storage = afterFilterList.slice((i-1)*vm.model.pagination.storage.itemsEachPages,i*vm.model.pagination.storage.itemsEachPages)
@@ -537,6 +547,7 @@
 
         // add storage
         vm.ctrl.addStorage = function(){
+            console.log(vm.model.storage)
             if(vm.model.storage.itemList.length && vm.model.storage.storeId){
                 StorageService.createStorage(vm.model.storage).then(function(res){
                     vm.ctrl.reset()
@@ -562,12 +573,13 @@
             start.setHours(0,0,0,0);
             var end = new Date();
             end.setHours(23,59,59,999);
+            console.log(vm.model.productOptions)
     		StorageService.readStorageList(start, end).then(function(res){
+                console.log(res.data.data)
                 if(res.data.data.length){
                     res.data.data.map(function(ele){
                         ele.itemList.map(function(item){
                             item.name = getProductName(item.itemId)
-                            console.log(item.name)
                             item.createdAt = ele.createdAt
                             vm.model.dom.storage.list.push(item)
                         })
