@@ -181,7 +181,7 @@ describe('Test create new transaction', function() {
         })
     });
 
-    xit('should create new order transaction when make order', function(done){
+    it('should create new order transaction when make order', function(done){
         // create order
         var order = testTool.mockOrderBeforeInvoice;
         order.customer._id = newCustomer._id;
@@ -285,7 +285,7 @@ describe('Test create new transaction', function() {
         })
     })
 
-    it('should create new other transaction when occur any other actions related to cash in, cash out', function(done){
+    xit('should create new other transaction when occur any other actions related to cash in, cash out', function(done){
         // create inbound
         
         testTool.postRequest('/transactions/create', testTool.mockTrans, function(res){
@@ -297,6 +297,86 @@ describe('Test create new transaction', function() {
                 expect(trans[0].desc).to.equal('xxx');
                 expect(trans[0].amount).to.equal(10000);
                 done();
+            })
+        })
+    })
+});
+
+describe('Test edit one transaction', function() {
+    this.timeout(3000);
+    var newCustomer, newProducts;
+    
+    var mockCustomer = testTool.mockCustomer;
+
+    var mockProducts = testTool.mockProducts
+
+    beforeEach(function(done){
+        Customers.create(mockCustomer, function(err, data){
+            if(err){throw err};
+            newCustomer = data;
+            Products.insertMany(mockProducts, function(err, data){
+                if(err){throw err};
+                newProducts = data;
+                done()
+            })
+        })
+    })
+
+    afterEach(function(done){
+        Customers.remove({}, function(err, data){
+            if(err){throw err};
+            Products.remove({}, function(err, data){
+                if(err){throw err};
+                Occupancies.remove({}, function(err, data){
+                    if(err){throw err};
+                    Transactions.remove({}, function(err, data){
+                        if(err){throw err};
+                        Orders.remove({}, function(err, data){
+                            if(err){throw err};
+                            Deposits.remove({}, function(err, data){
+                                if(err){throw err};
+                                Storage.remove({}, function(err, data){
+                                    if(err){throw err};
+                                    done();
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+        })
+    })
+
+    it ('should edit order transaction info includes: total money, type, id of order', function(done){
+        // create order
+        var order = testTool.mockOrderBeforeInvoice;
+        order.customer._id = newCustomer._id;
+        order.orderline.map(function(item){
+            item._id = newProducts.filter(function(ele){
+                return ele.name == item.productName;
+            });
+        });
+        testTool.postRequest('/orders/checkout', order, function(res){
+            testTool.postRequest('/orders/confirm', res.body.data, function(res){
+                Transactions.findOne({}, function(err, tran){
+
+                    if(err){throw err};
+
+                    var editData = {
+                        transType: 3,
+                        desc: 'abc',
+                        amount: 2000,
+                    };
+
+                    testTool.postRequest('/transactions/edit/'+tran._id, editData, function(){
+                        Transactions.findOne({}, function(err, data){
+                            expect(data.transType).to.equal(3);
+                            expect(data.desc).to.equal('abc');
+                            expect(data.amount).to.equal(2000);
+                            done();
+                        })
+                    })
+                })
             })
         })
     })
