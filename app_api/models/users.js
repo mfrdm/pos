@@ -47,7 +47,7 @@ var usersSchema = mongoose.Schema({
 	workexp: [workexpSchema], // past working experience 
 	/////////////////////////////////// Sercurity
 	role: {type: Number, required: true}, //(staff, admin, manager)
-	permissions: [{type: Number, required: true}], // indicate which resource to be about to access
+	permissions: mongoose.Schema.Types.Mixed, // indicate which resource to be about to access
 	////////////////////////////////// Other info
 	createdAt: {type: Date, default: Date.now},
 	updatedAt: [{
@@ -57,8 +57,6 @@ var usersSchema = mongoose.Schema({
 	}],
 	active: {type: Boolean, default: true},
 	deactiveAt: {type: Date},
-	role: {type: Number, required: true, default:1}, //(staff, admin, manager), 1 is lowest
-	permissions: [{type: Number, required: true, default:1}], // indicate which resource to be about to access, 1 is lowest
 	edu: [eduSchema],
 	// workexp: [workexpSchema], // past working experience 
 	deptList: [{deptId: mongoose.Schema.Types.ObjectId, deptName: String, status: Number, in: Date, out: Date}],
@@ -106,6 +104,7 @@ usersSchema.methods.generateJwt = function (passwd, dayNum){
 			firstname: this.firstname,
 			lastname: this.lastname,
 			email: this.email ? this.email[0] : '',
+			permissions: this.permissions,
 			exp: parseInt(expiry.getTime() / 1000)
 		},
 		process.env.JWT_SECRET

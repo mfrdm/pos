@@ -3,7 +3,7 @@ var dbHelper = require('../../libs/node/dbHelper');
 var requestHelper = require('../../libs/node/requestHelper');
 var mongoose = require('mongoose');
 var BookingModel = mongoose.model('bookings');
-
+var Promise = require ('bluebird');
 
 module.exports = new Booking();
 
@@ -34,6 +34,7 @@ function Booking() {
 		// 	requestHelper.sendJsonRes (res, 400, {message: 'Start date must be less than or equal end date'});
 		// 	return
 		// }
+
 
 		dbHelper.findSome (req, res, BookingModel);
 	};

@@ -4,9 +4,11 @@
 
 	function NewOrdersCtrl (DataPassingService, OrderService, CustomerService, $scope, $window, $route, StorageService){
 		var LayoutCtrl = DataPassingService.get ('layout');
+		LayoutCtrl.ctrl.setCurrentController ({id: 2});
 		var vm = this;
 
 		vm.ctrl = {
+			layout: LayoutCtrl,
 			order:{
 			},
 		}

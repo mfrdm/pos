@@ -214,8 +214,7 @@ div(class="columns row")
 						th
 						th
 						th(ng-if='vm.model.dom.note') Note
-						
-						//th {{vm.model.dom.data.selected.headerEdit}}
+						th {{vm.model.dom.data.selected.headerEdit}}
 				tbody
 					tr(ng-repeat='occupancy in vm.model.checkedinList.data | myfilter:vm.model.filter.myfilter.status | orderBy: [vm.model.filter.orderBy] | filterName:vm.model.filter.others.customer.username' ng-show='vm.ctrl.showInPage(occupancy)')
 						td {{ $index + 1 }}
@@ -230,8 +229,7 @@ div(class="columns row")
 							a(ng-if='occupancy.status == 1' class="primary button" ng-click="vm.ctrl.checkout.getInvoice (occupancy)") Checkout
 							a(ng-if='occupancy.status == 2' class="disabled button") Checkout
 						td
-							a(ng-if='occupancy.status == 1' class="primary button" ng-click="vm.ctrl.edit.edit (occupancy)" disabled) Edit
-							a(ng-if='occupancy.status == 2' class="disabled button") Edit
+							a(class="primary button" ng-click="vm.ctrl.edit.edit (occupancy)" ng-disabled='!vm.ctrl.layout.ctrl.hasPermission ("editCheckedin")') Edit
 						td(ng-if='occupancy.status != 1') {{occupancy.note}}
 			div(ng-if='vm.model.temporary.displayedList.data.length > vm.model.checkedinList.pagination.itemsEachPages')
 				ul(class="pagination text-center" role="navigation" aria-label="Pagination")

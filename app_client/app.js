@@ -20,14 +20,14 @@ function config ($locationProvider, $routeProvider){
 			controller: 'LoginCtrl',
 			controllerAs: 'vm',			
 		})
-		.when ('/register', {
-			templateUrl: '/register',
-			resolve: {
-				'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
-			},			
-			controller: 'RegisterCtrl',
-			controllerAs: 'vm',
-		})
+		// .when ('/register', {
+		// 	templateUrl: '/register',
+		// 	resolve: {
+		// 		'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
+		// 	},			
+		// 	controller: 'RegisterCtrl',
+		// 	controllerAs: 'vm',
+		// })
 		.when('/checkin', {
 			templateUrl : "/template/newCheckin",
 			resolve: {
@@ -91,7 +91,10 @@ function config ($locationProvider, $routeProvider){
 			},			
 			controller: "TransactionCtrl",
 			controllerAs: 'vm'
-		})			
+		})
+		.when ('/404', {
+			template: '<h2>Ooop! Permission denied!</h2>'
+		})		
 		// .when ('/assets', {
 		// 	templateUrl: '/assets',
 		// 	resolve: {
@@ -156,15 +159,23 @@ function checkAuth ($q, authentication, $location, $rootScope) {
 		if ($location.path() != '/login' && $location.path() != '/register'){
 			Layout.model.dom.returnPage = $location.path();
 			$location.path ('/login');
-		}
-		
+		}		
 	}
 	else{
 		if ($location.path() == '/login' || $location.path() == '/register'){
 			$location.path (Layout.model.dom.returnPage);
 		}
 		else {
-			Layout.model.dom.returnPage = $location.path();
+			var returnPage = $location.path();
+			Layout.ctrl.setCurrentController ({id: returnPage.split ('/')[1]});
+			console.log (Layout.model.user)
+			if (Layout.ctrl.hasPermission  ('show')){
+				Layout.model.dom.returnPage = returnPage;	
+			}
+			else{
+				$location.path ('/404');
+			}
+			
 		}	
 	}
 

@@ -4,9 +4,12 @@
 
     function NewCheckinCtrl ($http, DataPassingService, CheckinService, OrderService, CheckoutService, $scope, $window, $route, StorageService){
         var LayoutCtrl = DataPassingService.get('layout');
+        LayoutCtrl.ctrl.setCurrentController ({id: 'checkin'});
+
         var vm = this;
 
         vm.ctrl = {
+            layout: LayoutCtrl,
             checkin: {},
             checkout: {},
             order: {},

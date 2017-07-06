@@ -64,6 +64,18 @@
 			$scope.layout.model.user = data;
 		};
 
+		// testing
+		$scope.layout.ctrl.setCurrentController = function (pageinfo){
+			$scope.layout.model.currController = pageinfo;
+		}	
+
+		$scope.layout.ctrl.hasPermission = function (actionName){
+			var pageId = $scope.layout.model.currController.id;
+			return $scope.layout.model.user.permissions[pageId].action[actionName]
+		}
+
+		// end testing
+
 		$scope.layout.ctrl.updateAfterLogin = function (){
 			$scope.layout.model.dom.loginBtn = false;
 			$scope.layout.model.dom.accountBtn = true;
@@ -169,16 +181,15 @@
 		
 		//=========================================================
 		DataPassingService.set ('layout', $scope.layout);
+
+		if (authentication.isLoggedIn ()){
+			$scope.layout.ctrl.addUser (authentication.getCurUser());
+			$scope.layout.ctrl.updateAfterLogin ();
+		}		
+
 		angular.element(document).ready(function () {
 			$scope.layout.ctrl.hideLoader ();
 			$("body").foundation();
-			if (authentication.isLoggedIn ()){
-				$scope.layout.ctrl.addUser (authentication.getCurUser());
-				$scope.layout.ctrl.updateAfterLogin ();
-			}
-
-			
-
 			$scope.$apply();
 		});
 

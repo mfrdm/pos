@@ -68,6 +68,7 @@
 					phone: thisObj.payload.phone,
 					firstname: thisObj.payload.firstname,
 					lastname: thisObj.payload.lastname,
+					permissions: this.payload.permissions,
 				}
 			}
 		};
