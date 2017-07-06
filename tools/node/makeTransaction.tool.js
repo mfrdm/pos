@@ -1,11 +1,7 @@
-var server = require ('../../bin/www');
-var mongoose = require ('mongoose');
-var Customers = mongoose.model ('customers');
-var Promocodes = mongoose.model ('Promocodes');
-var Occupancy = mongoose.model ('Occupancies');
-var Accounts = mongoose.model ('Accounts');
-var Orders = mongoose.model ('orders');
 var request = require ('request');
+var mongoose = require ('mongoose');
+var Transactions = mongoose.model('transactions');
+var moment = require ('moment');
 
 module.exports = new MakeTransaction ();
 
@@ -22,22 +18,34 @@ function MakeTransaction (){
 			amount: total,
 			sourceId: id
 		}
-		var reqOptions =({
-	    	url: host+'/transactions/create',
-			method: 'POST',
-			body:{data:trans},
-			json: true
-	    })
-		request (reqOptions, function(err, response, body){
-			if(err){
-				console.log(err)
+		console.log(trans)
+		// var reqOptions =({
+	 //    	url: host+'/transactions/create',
+		// 	method: 'POST',
+		// 	body:{data:trans},
+		// 	json: true
+	 //    })
+	    var newTrans= new Transactions (trans);
+		newTrans.save (function (err, trans){
+			if (err){
+				next (err);
+				return 
 			}
-			console.log(cb)
-			if(cb){
-				cb()
-			}else{
+			else{
 				res.json ({data: {message: 'success'}});
+				return
 			}
-		})
+		});
+		// request (reqOptions, function(err, response, body){
+		// 	if(err){
+		// 		console.log(err)
+		// 	}
+		// 	console.log(body.data)
+		// 	if(cb){
+		// 		cb()
+		// 	}else{
+		// 		res.json ({data: {message: 'success'}});
+		// 	}
+		// })
 	}
 }

@@ -10,7 +10,7 @@ var Promocodes = mongoose.model ('Promocodes');
 var Occupancy = mongoose.model ('Occupancies');
 var Accounts = mongoose.model ('Accounts');
 var should = chai.should ();
-
+console.log(process.cwd())
 chai.use (chaiHttp);
 
 xdescribe ('Checkout', function (){

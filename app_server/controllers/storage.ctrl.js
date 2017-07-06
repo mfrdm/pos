@@ -104,18 +104,15 @@ function StorageCtrl (){
 					if(err){
 						throw err
 					}
-					console.log(products)
-					console.log(storage.itemList)
 					var total = 0;
 					products.map(function(item){
 						storage.itemList.map(function(ele){
 							if(item._id.toString() == ele.itemId.toString()){
-								console.log('test')
 								total += item.price*ele.quantity
 							}
 						})
 					})
-					console.log(total)
+					console.log(storage._id)
 					if(total >= 0){
 						MakeTransaction.makeTrans(4,'outbound trans',total,storage._id, res)
 					}else{

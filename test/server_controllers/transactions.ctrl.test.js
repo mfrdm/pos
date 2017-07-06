@@ -7,248 +7,377 @@ var Transactions = mongoose.model('transactions');
 var Orders = mongoose.model('orders');
 var Occupancies = mongoose.model('Occupancies');
 var Customers = mongoose.model('customers');
+var Deposits = mongoose.model('Deposits');
+var Products = mongoose.model('products');
+var Storage = mongoose.model('storages');
 var should = chai.should();
 var moment = require('moment');
 var expect = chai.expect;
+var request = require('request');
+var testTool = require('../../tools/mongoScripts/testing.tool')
+var MakeTransaction = require('../../tools/node/makeTransaction.tool');
 
 chai.use(chaiHttp);
 
-describe('Test read transactions by given time', function() {
+// checkin and checkout for user no order
+function checkInOut (start, end, newCustomer, cb){
+    var occ = testTool.mockOccNotCheckin;
+    occ.customer = {}
+    occ.customer._id = newCustomer._id;
+    occ.checkinTime = moment().startOf('day').add(start,'h');
+    occ.checkoutTime = moment().startOf('day').add(end,'h');
+    testTool.postRequest('/checkin/customer/'+newCustomer._id, {occupancy:occ}, function(res){
+        testTool.getRequest('/checkout/invoice/'+res.body.data.occupancy._id, {}, function(res){
+            testTool.postRequest('/checkout', res.body.data, function(res){
+                cb();
+            })
+        })
+    })
+}
 
-    it('should return transactions by given time');
+// create transactions
+function addTrans (time, cb){
+    var mock = {
+        transType: 1,
+        desc: 'occ trans',
+        amount: 15000,
+        sourceId: '595c91bbb3195e2d7acc1b84',
+        createdAt: moment().startOf('day').add(time,'h'),
+    }
+    testTool.postRequest('/transactions/create', mock, function(){
+        cb();
+    })
+}
 
+xdescribe('Test read transactions by given time', function() {
+    this.timeout(3000);
+    var newCustomer, newProducts;
+    
+    var mockCustomer = testTool.mockCustomer;
+
+    var mockProducts = testTool.mockProducts
+
+    beforeEach(function(done){
+        Customers.create(mockCustomer, function(err, data){
+            if(err){throw err};
+            newCustomer = data;
+            Products.insertMany(mockProducts, function(err, data){
+                if(err){throw err};
+                newProducts = data;
+                done();
+            })
+        })
+    })
+
+    afterEach(function(done){
+        Customers.remove({}, function(err, data){
+            if(err){throw err};
+            Products.remove({}, function(err, data){
+                if(err){throw err};
+                Occupancies.remove({}, function(err, data){
+                    if(err){throw err};
+                    Transactions.remove({}, function(err, data){
+                        if(err){throw err};
+                        done();
+                    })
+                })
+            })
+        })
+    })
+    
+    it('should return transactions by given time', function(done){
+        addTrans(1, function(){
+            addTrans(2, function(){
+                addTrans(3, function(){
+                    addTrans(7, function(){
+                        // Get trans by given time
+                        var start = moment().startOf('day').add(1.5,'h');
+                        var end = moment().startOf('day').add(5,'h');
+                        testTool.getRequest('/transactions', {start:JSON.stringify(start), end:JSON.stringify(end)}, function(res){
+                            expect(res.body.data.length).to.equal(2);
+                            var created1 = +moment().startOf('day').add(2,'h');
+                            var start1 = new Date(res.body.data[0].createdAt);
+                            expect(+start1).to.equal(created1)
+
+                            var created2 = +moment().startOf('day').add(3,'h');
+                            var start2 = new Date(res.body.data[1].createdAt);
+                            expect(+start2).to.equal(created2)
+                            done();
+                        })
+                    })
+                })
+            })
+        })
+    });
 });
 
 describe('Test create new transaction', function() {
-
     this.timeout(3000);
-    var newCustomer;
-    beforeEach(function(done) {
-        orderTrans = {
-            staffId: '59537c721dc4f93d3a7a7cab',
-            note: '',
-            occupancyId: '5954860e29fd4402b95a45fe',
-            _id: '595478ee84d2217b2753f2be',
-            updateAt: [],
-            createdAt: '2017-06-29T03:50:06.030Z',
-            status: 2,
-            location: {
-                _id: '59203df203b00119ac8d77ff',
-                name: 'Green Space Chùa Láng'
-            },
-            customer: {
-                fullname: 'NGÔ MỸ LINH',
-                _id: '5924168b164cb9030cee92ed',
-                phone: '01656021313',
-                email: 'ngolinh0202@gmail.com'
-            },
-            promocodes: [],
-            orderline: [{
-                _id: '5948a7b54337ab19bc41d21b',
-                productName: 'mountain dew',
-                price: 8000,
-                subTotal: 32000,
-                quantity: '4',
-            }, {
-                _id: '59477a06906ff0639b52135b',
-                productName: 'sting',
-                price: 8000,
-                subTotal: 16000,
-                quantity: '2',
-            }],
-            total: 48000
-        }
+    var newCustomer, newProducts;
+    
+    var mockCustomer = testTool.mockCustomer;
 
-        otherTrans = {
-            transType: 1,
-            desc: 'occ trans', // explain
-            amount: 1000,
-        }
+    var mockProducts = testTool.mockProducts
 
-        customer = {
-			firstname: 'A',
-			middlename: 'B',
-			lastname: 'C',
-			fullname: 'C B A',
-			gender: 1,
-			birthday: new Date ('1989-09-25'),
-			phone: '0965999999',
-			edu: {},
-			email: 'huedino.231@gmail.com', // manuallt required in some cases
-			isStudent: true,
-			checkinStatus: false,
-		};
-
-        Customers.create (customer, function (err, cus){
-			if (err){
-				console.log (err)
-				return
-			}
-
-			newCustomer = cus;
-			occTrans = {
-	            _id: '5954860e29fd4402b95a45fe',
-	            __v: 0,
-	            note: '',
-	            checkoutTime: moment ().add (-1, 'hour'),
-	            price: 10000,
-	            oriUsage: 0,
-	            usage: 1,
-	            total: 10000,
-	            updateAt: [],
-	            status: 2,
-	            customer: {
-	                fullname: 'C B A',
-	                _id: newCustomer._id,
-	                phone: '0965999999',
-	                email: 'huedino.231@gmail.com',
-	                isStudent: true
-	            },
-	            promocodes: [{
-	                redeemData: [Object],
-	                priority: 1,
-	                codeType: 2,
-	                name: 'STUDENTPRICE'
-	            }],
-	            service: { name: 'individual common', price: 15000 },
-	            checkinTime: moment ().add (-2, 'hour'),
-	            paymentMethod: []
-	        }
-
-	        Occupancies.create(occTrans, function(err, occ){
-	        	if (err){
-					console.log (err)
-					return
-				}
-				done ();
-	        })
-		});
-    });
-    afterEach(function(done) {
-        Transactions.remove({}, function(err, data) {
-            if (err) {
-                console.log(err)
-                return
-            }
-            Orders.remove({}, function(err, data) {
-                if (err) {
-                    console.log(err)
-                    return
-                }
-                Occupancies.remove({}, function(err, data) {
-	                if (err) {
-	                    console.log(err)
-	                    return
-	                }
-	                Customers.remove({}, function(err, data) {
-		                if (err) {
-		                    console.log(err)
-		                    return
-		                }
-		                done()
-		            });
-	            });
-            });
-        });
+    beforeEach(function(done){
+        Customers.create(mockCustomer, function(err, data){
+            if(err){throw err};
+            newCustomer = data;
+            Products.insertMany(mockProducts, function(err, data){
+                if(err){throw err};
+                newProducts = data;
+                done();
+            })
+        })
     })
 
-    it('should create new order transaction when make order', function() {
-        chai.request(server)
-            .post('/orders/confirm')
-            .send({ data: orderTrans })
-            .end(function(err, res) {
-                if (err) {
-                    console.log(err);
-                } else {
-                	console.log(res.body.data)
-                    expect(res.body.data.message).to.equal('success')
-                    Transactions.findOne({}, function(err, trans) {
-                        if (err) {
-                            console.log(err)
-                            return
-                        }
-                        expect(trans.transType).equal(2)
-                        expect(trans.desc).equal('order trans')
-                        expect(trans.amount).equal(48000)
-                        Orders.findOne({}, function(err, order) {
-                            if (err) {
-                                console.log(err)
-                                return
-                            }
-                            expect(trans.sourceId).equal(order._id)
-                            done()
-                        })
-
-                    })
-                }
-            });
-    });
-
-    it('should create new occ transaction when checkout occ', function() {
-    	chai.request(server)
-            .post('/checkout')
-            .send({ data: occTrans })
-            .end(function(err, res) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    expect(res.body.data.message).to.equal('success')
-                    Transactions.findOne({}, function(err, trans) {
-                        if (err) {
-                            console.log(err)
-                            return
-                        }
-                        expect(trans.transType).equal(1)
-                        expect(trans.desc).equal('occ trans')
-                        expect(trans.amount).equal(10000)
-                        Occupancies.findOne({}, function(err, occ) {
-                            if (err) {
-                                console.log(err)
-                                return
-                            }
-                            expect(trans.sourceId).equal(occ._id)
-                            done()
+    afterEach(function(done){
+        Customers.remove({}, function(err, data){
+            if(err){throw err};
+            Products.remove({}, function(err, data){
+                if(err){throw err};
+                Occupancies.remove({}, function(err, data){
+                    if(err){throw err};
+                    Transactions.remove({}, function(err, data){
+                        if(err){throw err};
+                        Orders.remove({}, function(err, data){
+                            if(err){throw err};
+                            Deposits.remove({}, function(err, data){
+                                if(err){throw err};
+                                Storage.remove({}, function(err, data){
+                                    if(err){throw err};
+                                    done();
+                                })
+                            })
                         })
                     })
-                }
+                })
+            })
+        })
+    })
+    
+    xit('should create new occ transaction when checkout occ', function(done){
+        checkInOut(1,2,newCustomer, function(){ //Checkin-out 1st time
+            checkInOut(4,7,newCustomer, function(){ // Checkin-out 2nd time
+                // Should already have 2 transaction created by checkout action, and 2 occupancies
+                Occupancies.find({}, function(err, occ){
+                    Transactions.find({}, function(err, data){
+                        if(err){throw err};
+                        expect(data.length).to.equal(2);
+
+                        expect(data[0].transType).to.equal(1);
+                        expect(data[0].desc).to.equal('occ trans');
+                        expect(data[0].amount).to.equal(15000);
+                        expect(data[0].sourceId.toString()).to.equal(occ[0]._id.toString()); // occupancy[0] responding with trans[0]
+
+                        expect(data[1].transType).to.equal(1);
+                        expect(data[1].desc).to.equal('occ trans');
+                        expect(data[1].amount).to.equal(45000);
+                        expect(data[1].sourceId.toString()).to.equal(occ[1]._id.toString()); // occupancy[1] responding with trans[1]
+                        done();
+                    })
+                })
+            })
+        })
+    });
+
+    it('should create new order transaction when make order', function(done){
+        // create order
+        var order = testTool.mockOrderBeforeInvoice;
+        order.customer._id = newCustomer._id;
+        order.orderline.map(function(item){
+            item._id = newProducts.filter(function(ele){
+                return ele.name == item.productName;
             });
+        });
+        testTool.postRequest('/orders/checkout', order, function(res){
+            testTool.postRequest('/orders/confirm', res.body.data, function(res){
+                Orders.findOne({},function(err, order){
+                    if(err){throw err};
+                    // After create Order, should have transaction now
+                    Transactions.find({}, function(err, trans){
+                        if(err){throw err};
+                        expect(trans.length).to.equal(1);
+
+                        expect(trans[0].transType).to.equal(2);
+                        expect(trans[0].desc).to.equal('order trans');
+                        expect(trans[0].amount).to.equal(16000);
+                        expect(trans[0].sourceId.toString()).to.equal(order._id.toString())
+                        done();
+                    })
+                })
+            })
+        })
     });
 
-    it('should create new order transaction when checkout occ include order', function() {
+    xit('should create new deposit transaction when add new deposit', function(done){
+        // create deposit
+        var deposit = testTool.mockDeposit;
+        deposit.customer._id = newCustomer._id;
 
-    });
+        testTool.getRequest('/deposits/invoice', {deposit: JSON.stringify (deposit)}, function(res){
+            testTool.postRequest('/deposits/create', res.body.data, function(){
+                //After create deposit now should have 1 transaction
+                Deposits.findOne({}, function(err, deposit){
+                    if(err){throw err};
+                    Transactions.find({}, function(err, trans){
+                        if(err){throw err};
+                        expect(trans.length).to.equal(1);
 
-    it('should create new deposit transaction when add new deposit', function() {
+                        expect(trans[0].transType).to.equal(5);
+                        expect(trans[0].desc).to.equal('deposit trans');
+                        expect(trans[0].amount).to.equal(190000);
+                        expect(trans[0].sourceId.toString()).to.equal(deposit._id.toString())
+                        done();
+                    })
+                })
+            })
+        })
+    })
 
-    });
+    xit('should create new storage transaction when return storages (outbound)', function(done){
+        // create outbound
+        testTool.mockOutbound.itemList.map(function(item){
+            item.itemId = newProducts.filter(function(ele){
+                return item.name == ele.name;
+            })[0]._id
+        });
 
-    it('should create new deposit transaction when checkout with account', function() {
+        testTool.postRequest('/storages/create', testTool.mockOutbound, function(res){
+            Storage.findOne({}, function(err, storage){
+                if(err){throw err};
+                Transactions.find({}, function(err, trans){
+                    if(err){throw err};
+                    expect(trans.length).to.equal(1);
 
-    });
+                    expect(trans[0].transType).to.equal(4);
+                    expect(trans[0].desc).to.equal('outbound trans');
+                    expect(trans[0].amount).to.equal(32000);
+                    expect(trans[0].sourceId.toString()).to.equal(storage._id.toString())
+                    done();
+                })
+            })
+        })
+    })
 
-    it('should create new storage transaction when add storages (inbound)', function() {
+    xit('should create new storage transaction when add storages (inbound)', function(done){
+        // create inbound
+        testTool.mockInbound.itemList.map(function(item){
+            item.itemId = newProducts.filter(function(ele){
+                return item.name == ele.name;
+            })[0]._id
+        });
 
-    });
+        testTool.postRequest('/storages/create', testTool.mockInbound, function(res){
+            Storage.findOne({}, function(err, storage){
+                if(err){throw err};
+                Transactions.find({}, function(err, trans){
+                    if(err){throw err};
+                    expect(trans.length).to.equal(1);
 
-    it('should create new storage transaction when return storages (outbound)', function() {
+                    expect(trans[0].transType).to.equal(3);
+                    expect(trans[0].desc).to.equal('inbound trans');
+                    expect(trans[0].amount).to.equal(-32000);
+                    expect(trans[0].sourceId.toString()).to.equal(storage._id.toString())
+                    done();
+                })
+            })
+        })
+    })
 
-    });
+    xit('should create new other transaction when occur any other actions related to cash in, cash out', function(done){
+        // create inbound
+        
+        testTool.postRequest('/transactions/create', testTool.mockTrans, function(res){
+            Transactions.find({}, function(err, trans){
+                if(err){throw err};
+                expect(trans.length).to.equal(1);
 
-    it('should create new other transaction when occur any other actions related to cash in, cash out', function(done) {
-        chai.request(server)
-            .post('/transactions/create')
-            .send({ data: otherTrans })
-            .end(function(err, res) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    res.should.to.have.status(200);
-                    expect(res.body.data.tranType).to.equal(1)
-                    expect(res.body.data.desc).to.equal('occ trans')
-                    expect(res.body.data.amount).to.equal(1000)
-                }
+                expect(trans[0].transType).to.equal(6);
+                expect(trans[0].desc).to.equal('xxx');
+                expect(trans[0].amount).to.equal(10000);
                 done();
-            });
-    });
+            })
+        })
+    })
+});
 
+describe('Test edit one transaction', function() {
+    this.timeout(3000);
+    var newCustomer, newProducts;
+    
+    var mockCustomer = testTool.mockCustomer;
+
+    var mockProducts = testTool.mockProducts
+
+    beforeEach(function(done){
+        Customers.create(mockCustomer, function(err, data){
+            if(err){throw err};
+            newCustomer = data;
+            Products.insertMany(mockProducts, function(err, data){
+                if(err){throw err};
+                newProducts = data;
+                done()
+            })
+        })
+    })
+
+    afterEach(function(done){
+        Customers.remove({}, function(err, data){
+            if(err){throw err};
+            Products.remove({}, function(err, data){
+                if(err){throw err};
+                Occupancies.remove({}, function(err, data){
+                    if(err){throw err};
+                    Transactions.remove({}, function(err, data){
+                        if(err){throw err};
+                        Orders.remove({}, function(err, data){
+                            if(err){throw err};
+                            Deposits.remove({}, function(err, data){
+                                if(err){throw err};
+                                Storage.remove({}, function(err, data){
+                                    if(err){throw err};
+                                    done();
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+        })
+    })
+
+    it ('should edit order transaction info includes: total money, type, id of order', function(done){
+        // create order
+        var order = testTool.mockOrderBeforeInvoice;
+        order.customer._id = newCustomer._id;
+        order.orderline.map(function(item){
+            item._id = newProducts.filter(function(ele){
+                return ele.name == item.productName;
+            });
+        });
+        testTool.postRequest('/orders/checkout', order, function(res){
+            testTool.postRequest('/orders/confirm', res.body.data, function(res){
+                Transactions.findOne({}, function(err, tran){
+
+                    if(err){throw err};
+
+                    var editData = {
+                        transType: 3,
+                        desc: 'abc',
+                        amount: 2000,
+                    };
+
+                    testTool.postRequest('/transactions/edit/'+tran._id, editData, function(){
+                        Transactions.findOne({}, function(err, data){
+                            expect(data.transType).to.equal(3);
+                            expect(data.desc).to.equal('abc');
+                            expect(data.amount).to.equal(2000);
+                            done();
+                        })
+                    })
+                })
+            })
+        })
+    })
 });

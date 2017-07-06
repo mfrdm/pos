@@ -474,6 +474,7 @@
 		vm.ctrl.order.getInvoice = function (){
 			vm.ctrl.showLoader ();
 			if(vm.model.ordering.orderline.length > 0 && vm.model.ordering.customer){
+				console.log(vm.model.ordering)
 				OrderService.getInvoice (vm.model.ordering).then (
 					function success (res){
 						vm.ctrl.hideLoader ();

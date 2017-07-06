@@ -4,7 +4,7 @@
   "description": "POS",
   "scripts": {
     "start": "node ./bin/www",
-    "test": "mocha --ui tdd --recursive"
+    "test": "mocha"
   },
   "author": "Hiep Pham <phammanhhiep89@gmail.com>",
   "contributors": [

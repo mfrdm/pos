@@ -1,8 +1,8 @@
 (function() {
     angular.module('posApp')
-        .controller('PromocodesCtrl', ['DataPassingService', 'PromocodesService', '$scope', '$window', '$route', PromocodesCtrl])
+        .controller('PromocodesCtrl', ['DataPassingService', 'PromocodesService', '$scope', '$window', '$route','moment', PromocodesCtrl])
 
-    function PromocodesCtrl (DataPassingService, PromocodesService, $scope, $window, $route){
+    function PromocodesCtrl (DataPassingService, PromocodesService, $scope, $window, $route, moment){
     	var vm = this;
         var LayoutCtrl = DataPassingService.get('layout');
 
@@ -24,7 +24,8 @@
         	},
         	temporary:{
         		redeem:'',
-                formula:[]
+                formula:[],
+                editPromocode:{}
         	},
         	codeInfo:{},
         	promocode:{},
@@ -119,27 +120,30 @@
         /////////////////// Edit code //////////////////////////////////////
         vm.ctrl.openEditCode = function(code){
         	vm.model.dom.editCodeDiv =  true;
-            
         	
         	vm.model.editPromocode = vm.model.dom.code.list.filter(function(ele){
         		return ele._id == code._id
         	})[0];
-            
+
             vm.model.temporary.formula = vm.model.codeInfo.codeType.filter(function(ele){
                 return ele.label == vm.model.editPromocode.codeType;
             })[0].formula;
 
             vm.model.temporary.redeem = vm.model.editPromocode.codeType;
 
-
-
             var typeValue = vm.model.codeInfo.codeType.filter(function(item){
                 return item.label == vm.model.editPromocode.codeType
             })[0].value;
+
             vm.model.editPromocode.codeType = typeValue;
 
-        	vm.model.editPromocode.start = new Date(vm.model.editPromocode.start);
-        	vm.model.editPromocode.end = new Date(vm.model.editPromocode.end);
+        	vm.model.temporary.editPromocode.startDate = new Date(vm.model.editPromocode.start);
+            vm.model.temporary.editPromocode.startHour = vm.model.temporary.editPromocode.startDate.getHours();
+            vm.model.temporary.editPromocode.startMin = vm.model.temporary.editPromocode.startDate.getMinutes();
+            vm.model.temporary.editPromocode.endDate = new Date(vm.model.editPromocode.end);
+            vm.model.temporary.editPromocode.endHour = vm.model.temporary.editPromocode.endDate.getHours();
+            vm.model.temporary.editPromocode.endMin = vm.model.temporary.editPromocode.endDate.getMinutes();
+
             if(vm.model.editPromocode.services[0] == 'all'){
                 vm.model.editPromocode.services = []
                 vm.model.codeInfo.services.map(function(item){
@@ -169,6 +173,15 @@
                 vm.model.promocode.end = new Date (vm.model.temporary.promocode.endDate.toDateString () + ' ' + vm.model.temporary.promocode.endHour + ':' + (vm.model.temporary.promocode.endMin ? vm.model.temporary.promocode.endMin : '0'));
             }
         };
+
+        vm.ctrl.timeChangeHandlerEdit = function(){
+            if (vm.model.temporary.editPromocode.startMin && vm.model.temporary.editPromocode.startHour){
+                vm.model.editPromocode.start = new Date (vm.model.temporary.editPromocode.startDate.toDateString () + ' ' + vm.model.temporary.editPromocode.startHour + ':' + (vm.model.temporary.editPromocode.startMin ? vm.model.temporary.editPromocode.startMin : '0'));
+            };
+            if (vm.model.temporary.editPromocode.endMin && vm.model.temporary.editPromocode.endHour){
+                vm.model.editPromocode.end = new Date (vm.model.temporary.editPromocode.endDate.toDateString () + ' ' + vm.model.temporary.editPromocode.endHour + ':' + (vm.model.temporary.editPromocode.endMin ? vm.model.temporary.editPromocode.endMin : '0'));
+            }
+        }
 
         ////////////////////////////////////////// Paginate for promocode ///////////////////////////////////////
         vm.model.temporary.displayedList = {
