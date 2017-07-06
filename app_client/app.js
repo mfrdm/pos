@@ -168,7 +168,6 @@ function checkAuth ($q, authentication, $location, $rootScope) {
 		else {
 			var returnPage = $location.path();
 			Layout.ctrl.setCurrentController ({id: returnPage.split ('/')[1]});
-			console.log (Layout.model.user)
 			if (Layout.ctrl.hasPermission  ('show')){
 				Layout.model.dom.returnPage = returnPage;	
 			}
