@@ -219,16 +219,70 @@ function Checkin() {
 
 	this.updateCheckin = function(req, res, next) {
 		var updateQuery = {}; 
-
-		Occupancies.findByIdAndUpdate (req.params.occId, req.body, {new: true}, function (err, updatedOcc){
+		console.log(req.body);
+		Occupancies.findById(req.params.occId, function(err, occ){
 			if (err){
 				console.log (err);
 				next (err);
 				return;
-			}
+			};
 
-			res.json ({data: updatedOcc});
-		});	
+			// If no change in customer
+			if(occ.customer._id == req.body['$set'].customer._id){
+				Occupancies.findByIdAndUpdate (req.params.occId, req.body, {new: true}, function (err, updatedOcc){
+					if (err){
+						console.log (err);
+						next (err);
+						return;
+					}
+
+					res.json ({data: updatedOcc});
+				});
+			}else{
+
+				// Find old customer
+				Customers.findById(occ.customer._id, function(err, oldCus){
+					if (err){
+						console.log (err);
+						next (err);
+						return;
+					};
+					var newOccArr = oldCus.occupancy.filter(function(ele){
+						return ele != req.params.occId
+					});
+
+					// Update old customer
+					Customers.findByIdAndUpdate(occ.customer._id, {$set:{occupancy:newOccArr, 'checkinStatus':false}}, function(err, data){
+						if (err){
+							console.log (err);
+							next (err);
+							return;
+						};
+
+						// Update new customer
+						Customers.findByIdAndUpdate(req.body['$set'].customer._id, {$push:{occupancy:req.params.occId}, $set:{'checkinStatus':true}}, function(err, newCustomer){
+							if (err){
+								console.log (err);
+								next (err);
+								return;
+							};
+							Occupancies.findByIdAndUpdate (req.params.occId, req.body, {new: true}, function (err, updatedOcc){
+								if (err){
+									console.log (err);
+									next (err);
+									return;
+								}
+
+								res.json ({data: updatedOcc});
+							});
+						})
+						
+					})
+				})
+			}
+		})
+
+			
 	};
 
 	this.cancelCheckin = function (req, res) {
