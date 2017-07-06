@@ -89,14 +89,22 @@
                 note: false,
                 filterDiv: true,
                 data: {},
-                edit: {},
+                edit: {
+                    search:{
+                        message:{},
+                    },
+                },
                 checkboxDiv: false // Div contain checkbox to add member to checkout with leader
             },
             search: {
                 checkin: {
                     username: '',
                     customers: [],
-                }
+                },
+                edit: {
+                    username: '',
+                    customers: [],
+                },
             },
             temporary: {
                 checkin: {
@@ -564,8 +572,7 @@
             else vm.model.dom.filterDiv = false;
         };
 
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////
-        /////////////////////////////// Get group leaders /////////////////////////////////////////////////////
+        ///////////// Get group leaders /////////////
         
         vm.ctrl.checkin.initCheckinDiv = function (){
             vm.model.dom.checkin.checkinDiv = true;
@@ -589,8 +596,7 @@
             });
         }
 
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////Search customer to checkin//////////////////////////////////////
+        ////////////Search customer to checkin////////////
         
         // Search customer
         vm.ctrl.checkin.searchCustomer =  function (){
@@ -658,8 +664,7 @@
             }
         }
 
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////
-        /////////////////////////////// Get promocodes ////////////////////////////////////////////////////////
+        ///// Get promocodes ///////
         // vm.model.dom.data.selected.checkin.promoteCode.original: all the codes get from db, 
         // vm.model.dom.data.selected.checkin.promoteCode.codes: codes for each kind of service; each time we select a service, this will change
 
@@ -737,8 +742,7 @@
             )
         }
 
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////// Select Promocodes ////////////////////////////////////////////////
+        /////// Select Promocodes ////////
 
         // Select and add code
         vm.ctrl.checkin.addCode = function (){
@@ -804,8 +808,7 @@
             vm.model.temporary.checkin.codeName = ''
         };
 
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////
-        /////////////////////////////////////Get services and products ///////////////////////////////////////
+        //////////Get services and products ////////////////
         // vm.model.services: all services from db, need to add label
         // vm.model.items: all items
         // vm.model.dom.data.selected.services: use for dom selection, equal vm.model.services
@@ -875,8 +878,7 @@
             }                                                           
         }
 
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////// Select services ////////////////////////////////////////////////
+        /////// Select services //////////////
 
         // Handle when select sevice
         vm.ctrl.checkin.serviceChangeHandler = function (){
@@ -922,8 +924,7 @@
             }
         };
 
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////// Select Orders //////////////////////////////////////////////////
+        ////////// Select Orders //////////////
         vm.ctrl.hideOrderMessage = function(){
             vm.model.dom.checkin.order.message.notEnough = false;
         }
@@ -972,8 +973,7 @@
             }
         };
 
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////// Checkin ////////////////////////////////////////////////
+        ////////// Checkin ////////
 
         //Confirm checkin
         vm.ctrl.checkin.confirm = function(){
@@ -1021,8 +1021,7 @@
             )
         };
 
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////// Checkout ///////////////////////////////////////////////
+        //// Checkout ///////
         vm.model.temporary.occMembers = []
         // check if occ has no parent, will show checkbox
         function showCheckbox(occupancy){
@@ -1155,8 +1154,7 @@
             
         };
 
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////// Edit ///////////////////////////////////////////////////
+        ///////////// Edit ////////////////
 
         // vm.model.edit.occupancy: editing data will be sent to server
         // vm.model.dom.data.selected.edit.services: all services (same as checkin but for editing). Initial: []
@@ -1164,6 +1162,12 @@
         vm.ctrl.edit.edit = function(occupancy){
             vm.model.dom.checkInEditDiv = true;
             vm.model.edit.occupancy = Object.assign({}, occupancy);
+            vm.model.search.edit.username = vm.ctrl.edit.createUsernameInitial(vm.model.edit.occupancy.customer);
+            // Setup time
+            vm.model.temporary.date = new Date(vm.model.edit.occupancy.checkinTime);
+            vm.model.temporary.hour = vm.model.temporary.date.getHours();
+            vm.model.temporary.min = vm.model.temporary.date.getMinutes();
+
             vm.ctrl.edit.getItems();
             vm.ctrl.checkin.getGroupPrivateLeader ();// Get group leader use with checkin
             if(vm.model.edit.occupancy.promocodes.length > 0){
@@ -1238,10 +1242,8 @@
         // Promocodes for edit
         // Select and add code
         vm.ctrl.edit.addCode = function (){
-
             vm.model.edit.occupancy.promocodes = [{name: vm.model.temporary.edit.codeName, status:1}];
             vm.model.temporary.edit.codeNames = [vm.model.temporary.edit.codeName];
-            console.log(vm.model.edit.occupancy.promocodes, vm.model.temporary.edit.codeNames)
             vm.ctrl.edit.validateCodes ();
         };
 
@@ -1294,7 +1296,96 @@
             vm.model.temporary.edit.codeName = ''
         };
 
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////Search customer to edit////////////
+        
+        // Search customer
+        vm.ctrl.edit.searchCustomer =  function (){
+            vm.ctrl.showLoader ();
+            CheckinService.searchCustomers (vm.model.search.edit.username).then(
+                function success (res){
+                    if (!res.data){
+                        // unexpected result. should never exist
+                    }
+                    else{
+                        if (res.data.data.length){
+                            vm.model.search.edit.customers = res.data.data;
+                            vm.model.dom.edit.search.message.notFound = false;
+                            vm.model.dom.edit.customerSearchResultDiv = true;
+                        }
+                        else{
+                            vm.model.dom.edit.search.message.notFound = true;
+                            vm.model.dom.edit.customerSearchResultDiv = false;
+                        }
+                    }
+                    vm.ctrl.hideLoader ();
+                }, 
+                function error (err){
+                    console.log(err);
+                    vm.ctrl.hideLoader ();
+                }
+            );
+        };
+
+        // Select one customer to edit
+        vm.ctrl.edit.selectCustomer = function (index){
+            var selectedCustomer = vm.model.search.edit.customers [index];
+            vm.model.edit.occupancy.customer = {
+                fullname: selectedCustomer.fullname,
+                _id: selectedCustomer._id,
+                phone: selectedCustomer.phone[0],
+                email: selectedCustomer.email[0],
+                isStudent: selectedCustomer.isStudent,
+            }
+            vm.model.search.edit.username = vm.ctrl.edit.createUsername(selectedCustomer);// display selected customer on search input
+            // vm.model.services = []
+            // vm.model.items = []
+            vm.ctrl.edit.resetSearchCustomerDiv ();// After select we remove search result div
+            // vm.ctrl.disablePromocodes()// Check to disable promocodes
+        }
+
+        // Display info of selected customer on search input bar
+        vm.ctrl.edit.createUsername = function (customer){
+            return customer.fullname + (customer.email[0] ? ' / ' + customer.email[0] : '') + (customer.phone[0] ? ' / ' + customer.phone[0] : '');
+        };
+
+        vm.ctrl.edit.createUsernameInitial = function (customer){
+            return customer.fullname + (customer.email ? ' / ' + customer.email : '') + (customer.phone ? ' / ' + customer.phone : '');
+        };
+
+        // remove search results
+        vm.ctrl.edit.resetSearchCustomerDiv = function (){
+            vm.model.dom.edit.customerSearchResultDiv = false;
+            vm.model.search.edit.customers = [];
+        };
+
+        //Clear search result when search input is empty
+        vm.ctrl.edit.validateSearchInput = function(){
+            if(!vm.model.search.edit.username){
+                vm.model.dom.edit.customerSearchResultDiv = false;
+                vm.model.edit.occupancy.customer = {};
+            }
+        }
+
+        vm.ctrl.edit.selectGroup = function(){
+            // If select private group service
+            if (vm.model.temporary.edit.selectedGroupPrivate._id){// if select a parent
+                vm.model.edit.occupancy.parent = vm.model.temporary.edit.selectedGroupPrivate._id;
+                vm.model.edit.occupancy.service = vm.model.temporary.edit.selectedGroupPrivate.service;
+            }else{
+                vm.model.edit.occupancy.parent = ''
+            }
+        }
+
+        vm.ctrl.timeChangeHandler = function(){
+            vm.model.edit.occupancy.checkinTime = new Date (vm.model.temporary.date.toDateString () + ' ' + vm.model.temporary.hour + ':' + (vm.model.temporary.min ? vm.model.temporary.min : '0'));
+        }
+
+        vm.ctrl.edit.confirm = function(){
+            CheckinService.updateOne(vm.model.edit.occupancy._id, vm.model.edit.occupancy.service, vm.model.edit.occupancy.parent, vm.model.edit.occupancy.promocodes, vm.model.edit.occupancy.checkinTime, vm.model.edit.occupancy.customer).then(function(res){
+                vm.ctrl.reset();
+            })
+        }
+
         ////////////////////////////////////////////// Others /////////////////////////////////////////////////
 
         //Show note column

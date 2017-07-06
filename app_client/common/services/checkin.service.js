@@ -58,14 +58,25 @@ function CheckinService ($http, $q){
 		})
 	}
 	//Update new Order
-	this.updateOne = function(id, service, parent){
-		return $http({
-			method: 'POST',
-			url: '/checkin/customer/edit/'+id,
-			data: JSON.stringify({
-				$set: { service: service, parent:parent }
+	this.updateOne = function(id, service, parent, promocodes, checkinTime, customer){
+		if(parent){
+			return $http({
+				method: 'POST',
+				url: '/checkin/customer/edit/'+id,
+				data: JSON.stringify({
+					$set: { service: service, parent:parent, promocodes:promocodes, checkinTime:checkinTime, customer:customer }
+				})
 			})
-		})
+		}else{
+			return $http({
+				method: 'POST',
+				url: '/checkin/customer/edit/'+id,
+				data: JSON.stringify({
+					$set: { service: service, promocodes:promocodes, checkinTime:checkinTime, customer:customer },
+					$unset: {parent:''}
+				})
+			})
+		}
 	};
 
 	//Checkout for customer
