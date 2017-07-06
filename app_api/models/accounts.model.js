@@ -23,7 +23,7 @@ var getDefaultAccounts = function (){
 
 	var oneDayCommon = {
 		name: '1dCommon',
-		price: 80000, // 
+		price: 89000, // 
 		amount: 24,
 		unit: 'hour',
 		desc: "",

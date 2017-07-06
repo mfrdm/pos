@@ -122,7 +122,6 @@
         /////////////////////////////////////Initial///////////////////////////////////
         angular.element(document.getElementById ('mainContentDiv')).ready(function () {// after page load
             vm.ctrl.getAllProducts();
-            vm.ctrl.getStorageList();
             vm.ctrl.getProductQuantityList();
         });
 
@@ -489,7 +488,8 @@
                             value:ele._id
                         });
                     };
-                })
+                });
+                vm.ctrl.getStorageList();
             })
         }
         
@@ -567,12 +567,15 @@
                     res.data.data.map(function(ele){
                         ele.itemList.map(function(item){
                             item.name = getProductName(item.itemId)
+                            console.log(item.name)
                             item.createdAt = ele.createdAt
                             vm.model.dom.storage.list.push(item)
                         })
                     })
                 };
-                vm.ctrl.storage.filterPaginate()
+                if(vm.model.dom.storage.list.length){
+                    vm.ctrl.storage.filterPaginate()
+                }
     		})
     	};
 

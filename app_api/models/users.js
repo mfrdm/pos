@@ -28,6 +28,10 @@ var workexpSchema = new mongoose.Schema({
 	end: {type: Date},	
 });
 
+var setPermisions = function (){
+
+}
+
 var usersSchema = mongoose.Schema({
 	////////////////////////////////// Profile info
 	firstname: {type: String, required: true},
@@ -108,5 +112,8 @@ usersSchema.methods.generateJwt = function (passwd, dayNum){
 	);
 };
 
+usersSchema.methods.setPermisions = function (){
+	//
+}
 
 mongoose.model ('users', usersSchema);

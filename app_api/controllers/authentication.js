@@ -10,11 +10,11 @@ module.exports = new Authentication ();
 function Authentication () {
 
 	this.register = function (req, res, next){
-		/////////// NOT ALLOW TO CREATE A NEW USER ////////////
-		res.status (404);
-		res.json ({message: 'Not allow to create a new user'});
-		return
-		////////////////////// END ////////////////////////////
+		// /////////// NOT ALLOW TO CREATE A NEW USER ////////////
+		// res.status (404);
+		// res.json ({message: 'Not allow to create a new user'});
+		// return
+		// ////////////////////// END ////////////////////////////
 
 		// FIX: include other required data
 		function checkRequiredInput (data){

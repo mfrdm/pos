@@ -91,7 +91,7 @@ var getAccountDefaultCodes = function (){
 		priority: 1,
 		redeemData: {
 			price: {
-				value: 69000
+				value: 79000
 			}
 		}			
 	}
@@ -107,7 +107,7 @@ var getAccountDefaultCodes = function (){
 		priority: 1,
 		redeemData: {
 			price: {
-				value: 59000
+				value: 69000
 			}
 		}	
 	}

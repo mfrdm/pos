@@ -13,7 +13,7 @@ var should = chai.should ();
 
 chai.use (chaiHttp);
 
-describe ('Checkout', function (){
+xdescribe ('Checkout', function (){
 	this.timeout(3000);
 	describe ('Create invoice', function (){
 		var occupancies, customers;
@@ -1396,3 +1396,4 @@ xdescribe('Checkout members with leader', function() {
         })
     })
 })
+

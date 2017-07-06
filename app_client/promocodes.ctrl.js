@@ -160,6 +160,16 @@
         	})
         }
 
+        //////////////////////////////////Change Start End Time//////////////////////////
+        vm.ctrl.timeChangeHandler = function (){
+            if (vm.model.temporary.promocode.startMin && vm.model.temporary.promocode.startHour){
+                vm.model.promocode.start = new Date (vm.model.temporary.promocode.startDate.toDateString () + ' ' + vm.model.temporary.promocode.startHour + ':' + (vm.model.temporary.promocode.startMin ? vm.model.temporary.promocode.startMin : '0'));
+            };
+            if (vm.model.temporary.promocode.endMin && vm.model.temporary.promocode.endHour){
+                vm.model.promocode.end = new Date (vm.model.temporary.promocode.endDate.toDateString () + ' ' + vm.model.temporary.promocode.endHour + ':' + (vm.model.temporary.promocode.endMin ? vm.model.temporary.promocode.endMin : '0'));
+            }
+        };
+
         ////////////////////////////////////////// Paginate for promocode ///////////////////////////////////////
         vm.model.temporary.displayedList = {
             promocode:[],

@@ -5,6 +5,8 @@ var Orders = mongoose.model ('orders');
 var Customers = mongoose.model ('customers');
 var Occupancies = mongoose.model ('Occupancies');
 var Accounts = mongoose.model ('Accounts');
+var request = require ('request');
+var MakeTransaction = require('../../tools/node/makeTransaction.tool');
 
 module.exports = new Checkout();
 
@@ -209,43 +211,44 @@ function Checkout() {
 						next (err)
 						return
 					}
-
 					if (occ){
-
 						// update acc if being used
 						// At this moment. Only one method is used at a time
-						if (occ.paymentMethod && occ.paymentMethod.length){
-							var acc;
-							occ.paymentMethod.map (function (x, i, arr){
-								if (x.name == 'account'){
-									acc = x;
-								}
-							});
-
-							if (acc){
-								Accounts.findOneAndUpdate ({_id: acc._id}, {$inc: {amount: - acc.paidAmount}}, function (err, foundAcc){
-									if (err){
-										console.log (err);
-										next (err);
-										return
+						function cb(){
+							if (occ.paymentMethod && occ.paymentMethod.length){
+								var acc;
+								occ.paymentMethod.map (function (x, i, arr){
+									if (x.name == 'account'){
+										acc = x;
 									}
-
-									if (foundAcc){
-										res.json ({data: {message: 'success'}});
-									}
-									else{
-										next ();
-									}
-
-									return
-
 								});
-							}
 
+								if (acc){
+									Accounts.findOneAndUpdate ({_id: acc._id}, {$inc: {amount: - acc.paidAmount}}, function (err, foundAcc){
+										if (err){
+											console.log (err);
+											next (err);
+											return
+										}
+
+										if (foundAcc){
+											res.json ({data: {message: 'success'}});
+										}
+										else{
+											next ();
+										}
+
+										return
+
+									});
+								}
+
+							}
+							else{
+								res.json ({data: {message: 'success'}});
+							}
 						}
-						else{
-							res.json ({data: {message: 'success'}});
-						}
+						MakeTransaction.makeTrans(1,'occ trans',occ.total,occ._id, res, cb)
 					}
 					else{
 						next ();

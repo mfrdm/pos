@@ -4,6 +4,7 @@ var Deposits = mongoose.model ('Deposits');
 var Accounts = mongoose.model ('Accounts');
 var Customers = mongoose.model ('customers');
 var moment = require ('moment');
+var MakeTransaction = require('../../tools/node/makeTransaction.tool');
 
 module.exports = new DepositsCtrl();
 
@@ -40,9 +41,10 @@ function DepositsCtrl (){
 						next (err);
 						return
 					}
-
-					res.json ({data: {message: 'success', _id: newDeposit._id}})
-					
+					// function cb(newDeposit){
+					// 	res.json ({data: {message: 'success', _id: newDeposit._id}})
+					// }
+					MakeTransaction.makeTrans(5,'deposit trans',newDeposit.total,newDeposit._id, res)
 				});
 
 			})
