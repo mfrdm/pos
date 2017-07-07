@@ -6,44 +6,46 @@ div(class="row columns")
 		div(class="column small-8 large-8")
 			ul(class="menu clearfix")
 				li(class="float-left marginB15 paddingLR15 large-paddingL0")
-					a(class="button primary" ng-click="vm.ctrl.openCreateTrans()") 
+					a(class="button primary" ng-click="vm.ctrl.dom.openTransForm()") 
 						span(class="show-for-large") Add Transaction
 						i(class="material-icons customIcon hide-for-large") add
 				li(class="float-left marginB15 paddingLR15 large-paddingL0")
-					a(class="button primary" ng-click="vm.ctrl.openReport()") 
+					a(class="button primary" ng-click="vm.ctrl.dom.openReport()") 
 						span(class="show-for-large") Report
 						i(class="material-icons customIcon hide-for-large") assessment
 		div(class="column small-4")
 			ul(class="menu clearfix")
 				li(class="float-right marginL15 marginB15")
-					<a class="button primary" ng-click="vm.ctrl.toggleFilter()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
-	// FILTER. 
-	div(class="column" ng-show="vm.model.dom.filterDiv")
-		div(class="borderT newBox row column")
-			div(class='row column')
-				div(class='column small-12 large-6 large-paddingL15')
-					label Start Date
-						input(type='date' min='1' max='31' ng-model='vm.model.temporary.trans.startDate' required ng-change="vm.ctrl.timeChangeHandler ()")
-				div(class='column small-12 large-3')
-					label Start Hour
-						input(type='number' min='0' max='23' ng-model='vm.model.temporary.trans.startHour' required ng-change="vm.ctrl.timeChangeHandler ()")
-				div(class='column small-12 large-3 large-paddingR15')
-					label Start Minute
-						input(type='number' min='0' max='60' ng-model='vm.model.temporary.trans.startMin' ng-change="vm.ctrl.timeChangeHandler ()")
+					<a class="button primary" ng-click="vm.ctrl.dom.toggleDateColumn()"><span class="show-for-large">Date/Time</span><i class="material-icons customIcon hide-for-large">today</i></a>
+				li(class="float-right marginL15 marginB15")
+					<a class="button primary" ng-click="vm.ctrl.dom.toggleFilter()"><span class="show-for-large">Filters</span><i class="material-icons customIcon hide-for-large">filter_list</i></a>
+	//- // FILTER. 
+	//- div(class="column" ng-show="vm.model.dom.filterDiv")
+	//- 	div(class="borderT newBox row column")
+	//- 		div(class='row column')
+	//- 			div(class='column small-12 large-6 large-paddingL15')
+	//- 				label Start Date
+	//- 					input(type='date' min='1' max='31' ng-model='vm.model.temporary.trans.startDate' required ng-change="vm.ctrl.timeChangeHandler ()")
+	//- 			div(class='column small-12 large-3')
+	//- 				label Start Hour
+	//- 					input(type='number' min='0' max='23' ng-model='vm.model.temporary.trans.startHour' required ng-change="vm.ctrl.timeChangeHandler ()")
+	//- 			div(class='column small-12 large-3 large-paddingR15')
+	//- 				label Start Minute
+	//- 					input(type='number' min='0' max='60' ng-model='vm.model.temporary.trans.startMin' ng-change="vm.ctrl.timeChangeHandler ()")
 						
-			div(class='row column')
-				div(class='column small-12 large-6 large-paddingL15')
-					label End Date
-						input(type='date' min='1' max='31' ng-model='vm.model.temporary.trans.endDate' required ng-change="vm.ctrl.timeChangeHandler ()")
-				div(class='column small-12 large-3')
-					label End Hour
-						input(type='number' min='0' max='23' ng-model='vm.model.temporary.trans.endHour' required ng-change="vm.ctrl.timeChangeHandler ()")
-				div(class='column small-12 large-3 large-paddingR15')
-					label End Minute
-						input(type='number' min='0' max='60' ng-model='vm.model.temporary.trans.endMin' ng-change="vm.ctrl.timeChangeHandler ()")
+	//- 		div(class='row column')
+	//- 			div(class='column small-12 large-6 large-paddingL15')
+	//- 				label End Date
+	//- 					input(type='date' min='1' max='31' ng-model='vm.model.temporary.trans.endDate' required ng-change="vm.ctrl.timeChangeHandler ()")
+	//- 			div(class='column small-12 large-3')
+	//- 				label End Hour
+	//- 					input(type='number' min='0' max='23' ng-model='vm.model.temporary.trans.endHour' required ng-change="vm.ctrl.timeChangeHandler ()")
+	//- 			div(class='column small-12 large-3 large-paddingR15')
+	//- 				label End Minute
+	//- 					input(type='number' min='0' max='60' ng-model='vm.model.temporary.trans.endMin' ng-change="vm.ctrl.timeChangeHandler ()")
 
 	// Transaction List
-	div(class="column" ng-show="vm.model.dom.transList" ng-if='vm.model.dom.trans.list.length > 0')
+	div(class="column" ng-if='vm.model.data.transList.length > 0')
 		div(class="table-scroll newBox")
 			table(class="borderAll unstriped")
 				thead
@@ -52,77 +54,95 @@ div(class="row columns")
 						th Transaction Type
 						th Category
 						th Description
-						th Value
+						th(class='text-right') Value
+						th(class='text-right' ng-if='vm.model.dom.dateColumn') Time
+						th(class='text-right' ng-if='vm.model.dom.dateColumn') Date
 						th Edit
 				tbody
-					tr(ng-repeat='tran in vm.model.dom.trans.list')
+					tr(ng-repeat='tran in vm.model.data.listEachPage')
 						th {{$index+1}}
 						th {{tran.transType}}
 						th {{tran.category}}
 						th {{tran.desc}}
 						th(class='text-right') {{tran.amount | number}}
+						th(class='text-right' ng-if='vm.model.dom.dateColumn') {{tran.createdAt | date:'shortTime'}}
+						th(class='text-right' ng-if='vm.model.dom.dateColumn') {{tran.createdAt | date:'shortDate'}}
 						th
-							input(class="button" type="submit" value="Edit" ng-click='vm.ctrl.openEditTrans(tran)')
+							input(class="button" type="submit" value="Edit" ng-click='vm.ctrl.dom.openEditTransForm(tran)')
+			// Pagination
+			div(ng-if='vm.model.data.transList.length > vm.model.data.itemsEachPage')
+				ul(class="pagination text-center" role="navigation" aria-label="Pagination")
+					li(ng-class='vm.model.dom.previousClass' ng-click='vm.ctrl.support.goPrevious()') {{vm.model.dom.goPreviousText}}
+						a(aria-label="Previous page" ng-if='vm.model.dom.goPreviousText != "Previous"') Previous
+							span(class="show-for-sr") page
 
-	// Add Transaction			
-	div(class="column row" ng-show='vm.model.dom.addTransaction')
-		form(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-submit='vm.ctrl.addTrans()')
-			div(class='small-12 large-6 large-push-3')
-				div(class="row column text-center paddingB15")
-					h3 Add new transaction
-				div(class="row column")
-					div(class="column small-12 paddingLR0")
-						label Description
-							input(type="text" ng-model='vm.model.trans.desc')
-					div(class="column small-12 paddingLR0")
-						label Amount
-							input(type="number" min='0' ng-model='vm.model.trans.amount')
-				div(class="row column paddingT15")
-					input(class="button" type="submit" value="Submit")
-					a(class="button float-right" ng-click='vm.ctrl.reset()') Cancel
+					li(ng-repeat="item in vm.model.data.pageNumbers track by $index" class='{{item.class}}')
+						a(href ='' ng-click='vm.ctrl.support.handlePagination(vm.model.data.itemsEachPage,vm.model.data.transList,item.number)') {{item.number}}
+					
+					li(ng-class='vm.model.dom.nextClass' ng-click='vm.ctrl.support.goNext()') {{vm.model.dom.goNextText}}
+						a(aria-label="Next page" ng-if='vm.model.dom.goNextText != "Next"') Next
+							span(class="show-for-sr") page
 
-	// Add Transaction			
-	div(class="column row" ng-show='vm.model.dom.editTransaction')
-		form(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-submit='vm.ctrl.editTrans()')
-			div(class='small-12 large-6 large-push-3')
-				div(class="row column text-center paddingB15")
-					h3 Add new transaction
-				div(class="row column")
-					div(class="column small-12 paddingLR0")
-						label Type
-							select(ng-options='option.value as option.label for option in vm.model.temporary.transTypeList' ng-model='vm.model.editTrans.transType')
-					div(class="column small-12 paddingLR0")
-						label Description
-							input(type="text" ng-model='vm.model.editTrans.desc')
-					div(class="column small-12 paddingLR0")
-						label Amount
-							input(type="number" ng-model='vm.model.editTrans.amount')
-				div(class="row column paddingT15")
-					input(class="button" type="submit" value="Submit")
-					a(class="button float-right" ng-click='vm.ctrl.reset()') Cancel
 
-	// Report			
-	div(class="column row" ng-show='vm.model.dom.report')
-		div(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox")
-			div(class='small-12 large-6 large-push-3')
-				div(class="row column text-center paddingB15")
-					h3 Report
-				div(class="row column")
-					div(class="column small-6 paddingLR0")
-						p Revenue
-					div(class="column small-6 paddingLR0")
-						span(class='float-right') {{vm.model.report.revenue | number}}
-				div(class="row column")
-					div(class="column small-6 paddingLR0")
-						p Cost
-					div(class="column small-6 paddingLR0")
-						span(class='float-right') {{vm.model.report.cost | number}}
-				div(class="row column")
-					div(class="column small-6 paddingLR0")
-						p Profit
-					div(class="column small-6 paddingLR0")
-						span(class='float-right') {{vm.model.report.profit | number}}
-				div(class="row column small-12 large-4 large-push-4 paddingT15")
-					a(class="button float-center" ng-click='vm.ctrl.reset()') Cancel
+	//- // Add Transaction			
+	//- div(class="column row" ng-show='vm.model.dom.addTransaction')
+	//- 	form(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-submit='vm.ctrl.addTrans()')
+	//- 		div(class='small-12 large-6 large-push-3')
+	//- 			div(class="row column text-center paddingB15")
+	//- 				h3 Add new transaction
+	//- 			div(class="row column")
+	//- 				div(class="column small-12 paddingLR0")
+	//- 					label Description
+	//- 						input(type="text" ng-model='vm.model.trans.desc')
+	//- 				div(class="column small-12 paddingLR0")
+	//- 					label Amount
+	//- 						input(type="number" min='0' ng-model='vm.model.trans.amount')
+	//- 			div(class="row column paddingT15")
+	//- 				input(class="button" type="submit" value="Submit")
+	//- 				a(class="button float-right" ng-click='vm.ctrl.reset()') Cancel
 
-	
+	//- // Add Transaction			
+	//- div(class="column row" ng-show='vm.model.dom.editTransaction')
+	//- 	form(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox" ng-submit='vm.ctrl.editTrans()')
+	//- 		div(class='small-12 large-6 large-push-3')
+	//- 			div(class="row column text-center paddingB15")
+	//- 				h3 Add new transaction
+	//- 			div(class="row column")
+	//- 				div(class="column small-12 paddingLR0")
+	//- 					label Type
+	//- 						select(ng-options='option.value as option.label for option in vm.model.temporary.transTypeList' ng-model='vm.model.editTrans.transType')
+	//- 				div(class="column small-12 paddingLR0")
+	//- 					label Description
+	//- 						input(type="text" ng-model='vm.model.editTrans.desc')
+	//- 				div(class="column small-12 paddingLR0")
+	//- 					label Amount
+	//- 						input(type="number" ng-model='vm.model.editTrans.amount')
+	//- 			div(class="row column paddingT15")
+	//- 				input(class="button" type="submit" value="Submit")
+	//- 				a(class="button float-right" ng-click='vm.ctrl.reset()') Cancel
+
+	//- // Report			
+	//- div(class="column row" ng-show='vm.model.dom.report')
+	//- 	div(class="borderT row column paddingT30 large-paddingLR0 paddingLR30 fullBox")
+	//- 		div(class='small-12 large-6 large-push-3')
+	//- 			div(class="row column text-center paddingB15")
+	//- 				h3 Report
+	//- 			div(class="row column")
+	//- 				div(class="column small-6 paddingLR0")
+	//- 					p Revenue
+	//- 				div(class="column small-6 paddingLR0")
+	//- 					span(class='float-right') {{vm.model.report.revenue | number}}
+	//- 			div(class="row column")
+	//- 				div(class="column small-6 paddingLR0")
+	//- 					p Cost
+	//- 				div(class="column small-6 paddingLR0")
+	//- 					span(class='float-right') {{vm.model.report.cost | number}}
+	//- 			div(class="row column")
+	//- 				div(class="column small-6 paddingLR0")
+	//- 					p Profit
+	//- 				div(class="column small-6 paddingLR0")
+	//- 					span(class='float-right') {{vm.model.report.profit | number}}
+	//- 			div(class="row column small-12 large-4 large-push-4 paddingT15")
+	//- 				a(class="button float-center" ng-click='vm.ctrl.reset()') Cancel
+
+	//- 
