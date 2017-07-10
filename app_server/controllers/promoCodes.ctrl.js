@@ -69,8 +69,10 @@ function PromoCodesCtrl() {
 	}
 
 	this.readCodeInfo = function(req, res, next){
-		var info = {};
-		info.codeType = [
+		var defaultValues = {};
+
+		// REMOVE later
+		defaultValues.codeType = [
 			{value:1, 'label':'usage', formula:[
 				{value:'1', label:'Giảm thời gian sử dụng'},
 				{value:'', label:'Đặt thời gian sử dụng'}
@@ -89,22 +91,48 @@ function PromoCodesCtrl() {
 				{value:'', label:'Đặt số lượng mới'}
 			]}
 		];
-		info.excluded = [
+
+		// defaultValues.formulars = {
+		// 	total: [
+		// 		{label: {vn: 'Giảm giá sau X giờ'}, formula: 1},
+		// 		{label: {vn: 'Giảm phần trăm'}, formula: 2},
+		// 		{label: {vn: 'Đặt giá mới và thời gian tối thiểu'}, formula: 3},
+		// 		{label: {vn: 'Đặt giá mới và miễn phí 1 khoảng thời gian'}, formula: 4},
+		// 		{label: {vn: 'Đặt giá mới trong 1 khoảng thời gian'}, formula: 5},
+		// 		{label: {vn: 'Đặt tổng tiền tối thiểu trong 1 khoảng thời gian'}, formula: 6},
+		// 	],
+		// 	usage: [
+		// 		{label: {vn: 'Miễn phí giờ sử dụng'}, formula: 1},
+		// 		{label: {vn: 'Đặt thời gian sử dụng mới'}},			
+		// 	],
+		// 	price: [
+		// 		{label: {vn: 'Giảm phần trăm'}, formula: 1},
+		// 		{label: {vn: 'Đặt giá mới'}},
+		// 	],
+		// 	quantity: [
+		// 	]
+		// };
+
+		defaultValues.excluded = [
 			{'value':true, 'label':'True'},
 			{'value':false, 'label':'False'}
 		];
-		info.priority = [
+
+		defaultValues.priority = [
 			{'value':1, 'label':'Base priority'},
-			{'value':2, 'label':'High priority'}
+			{'value':2, 'label':'Priority 2'},
+			{'value':3, 'label':'Priority 3'},
 		];
-		info.services = [
+
+		defaultValues.services = [
 			{'value':'group common', 'label':'Nhóm chung'},
 			{'value':'individual common', 'label':'Cá nhân'},
 			{'value':'small group private', 'label':'Nhóm riêng 15'},
 			{'value':'medium group private', 'label':'Nhóm riêng 30'},
 			{'value':'large group private', 'label':'Nhóm riêng 40'}
-		]
-		res.json ({data: info});
+		];
+
+		res.json ({data: defaultValues});
 	}
 
 	this.readAllCodes = function (req, res, next){

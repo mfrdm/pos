@@ -125,6 +125,7 @@
                 },
                 note: "",
                 edit:{},
+                occMembers: [],
                 availableChildren:[], // not checkout children from allChildren
                 disableChildren:[] // all children which have been disable (coz checked out)
             },
@@ -1023,7 +1024,7 @@
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////// Checkout ///////////////////////////////////////////////
-        vm.model.temporary.occMembers = []
+        
         // check if occ has no parent, will show checkbox
         function showCheckbox(occupancy){
             if(!occupancy.parent && expectedServiceNames.indexOf(occupancy.service.name.toLowerCase ()) > 1){

@@ -110,20 +110,20 @@ var getDefaultAccounts = function (){
 
 
 	var twentyHoursCommon = {
-		name: '20h7dCommon',
+		name: '20h14dCommon',
 		price: 225000, // 
 		amount: 20,
 		unit: 'hour',
 		desc: "",
 		services: ['group common', 'individual common'], // name of service applied
 		label: {
-			vn: "Combo 20 giờ / 7 ngày",
-			en: "Combo 20 hours / 7 day",
+			vn: "Combo 20 giờ / 14 ngày",
+			en: "Combo 20 hours / 14 day",
 		},
 		recursive: {
 			isRecursive: false,
 		},
-		expireDateNum: 7,
+		expireDateNum: 14,
 		grouponable: false,
 	}
 

@@ -85,7 +85,7 @@ function OccupanciesCtrl (){
 			}, 
 			{
 				$group: {
-					_id: '$service.name', total: {$sum: "$total"}
+					_id: '$service.name', total: {$sum: "$paid"}
 				}
 			}
 		]);

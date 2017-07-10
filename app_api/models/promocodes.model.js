@@ -130,28 +130,28 @@ var getAccountDefaultCodes = function (){
 
 	var studentCommon5h1d30d = {
 		name: 'student_common5h1d30d',
-		desc: {type: 'Price of 3-hour-1-day-30-days common for students'},
+		desc: {type: 'Price of 5-hour-1-day-30-days common for students'},
 		label: {
-			vn: 'Combo 30 ngày / 3 giờ mỗi ngày cho sinh viên',
+			vn: 'Combo 30 ngày / 5 giờ mỗi ngày cho sinh viên',
 		},	
 		codeType: 2,
 		accounts: ['5h1d30dCommon'],
 		priority: 1,
 		redeemData: {
 			price: {
-				value: 279000
+				value: 379000
 			}
 		}	
 	};
 
-	var studentCommon20h7d = {
-		name: 'student_common20h7d',
-		desc: {type: 'Price of 20-hour-7-day common for students'},
+	var studentCommon20h14d = {
+		name: 'student_common20h14d',
+		desc: {type: 'Price of 20-hour-14-day common for students'},
 		label: {
-			vn: 'Combo 20 giờ trong 7 ngày cho sinh viên',
+			vn: 'Combo 20 giờ trong 14 ngày cho sinh viên',
 		},	
 		codeType: 2,
-		accounts: ['20h7dCommon'],
+		accounts: ['20h14dCommon'],
 		priority: 1,
 		redeemData: {
 			price: {
@@ -185,7 +185,7 @@ var getAccountDefaultCodes = function (){
 		group5Common1day: group5Common1day,
 		studentCommon3h1d30d: studentCommon3h1d30d,
 		studentCommon5h1d30d: studentCommon5h1d30d,
-		studentCommon20h7d: studentCommon20h7d,
+		studentCommon20h14d: studentCommon20h14d,
 		studentCommon30d: studentCommon30d
 	}
 }
@@ -352,7 +352,7 @@ var addAccountDefaultCodes = function (context){
 			defaultCodes ['studentCommon3days'],
 			defaultCodes ['studentCommon3h1d30d'],
 			defaultCodes ['studentCommon5h1d30d'],
-			defaultCodes ['studentCommon20h7d'],
+			defaultCodes ['studentCommon20h14d'],
 			defaultCodes ['studentCommon30d']
 		];
 
@@ -528,6 +528,7 @@ var redeemQuantity = function (context){
 	return result;
 }
 
+// FIX: the first formula does not have proper attribute. change from total value to price value
 // Mixin: price, usage, and total can be set by default
 var redeemTotal = function (context){
 	var result = {};
