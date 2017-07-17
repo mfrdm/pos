@@ -6,6 +6,7 @@ var Customers = mongoose.model ('customers');
 var Promocodes = mongoose.model ('Promocodes');
 var Bookings = mongoose.model ('bookings');
 var moment = require ('moment');
+var Promise = require ('bluebird')
 
 module.exports = new Checkin();
 
@@ -20,8 +21,6 @@ function Checkin() {
 			next ();
 			return;
 		}
-
-		console.log (q.codes)
 
 		var query = Promocodes.find ({name: q.codes, start: {$lte: new Date ()}, end: {$gte: new Date ()}, excluded: false}, {name: 1, codeType: 1, priority: 1, services: 1, label:1, redeemData: 1});
 
@@ -56,71 +55,97 @@ function Checkin() {
 			order.getTotal ();
 		};
 
-		occ.save (function (err, newOcc){
-			if (err){
-				console.log (err);
-				next (err);
-				return
-			}
+		var prepareCreateOcc = function (occ){
+			return function (resolve, reject){
+				return occ.save (function (err, newOcc){
+					if (err){
+						reject (err);
+						return;
+					}
 
-			var customerUpdate = {
-				$push: {occupancy: newOcc._id}, 
-				$set:{checkinStatus: true}
+					resolve (newOcc);
+				});
 			};
+		}
 
-			Customers.findByIdAndUpdate (req.params.cusId, customerUpdate, {upsert: true, new: true}, function (err, customer){
+		var prepareUpdateCus = function (newOcc, cusId){
+			return function (resolve, reject){
+				var update = {
+					$push: {occupancy: newOcc._id}, 
+					$set:{checkinStatus: true}
+				};	
+								
+				return Customers.findByIdAndUpdate (cusId, update, {upsert: true, new: true}, function (err, updatedCustomer){
 					if (err) {
-						// console.log (err);
-						next (err);
+						reject (err);
 						return
 					}
-					
-					if (!customer){
-						next ();
+					if (!updatedCustomer){
+						resolve ({});
 						return
 					}
 					else {
-						if (customer.checkinStatus == true && newOcc._id.equals (customer.occupancy.pop())){
-							if (newOcc.bookingId){
-								Bookings.update ({_id: newOcc.bookingId}, {status: 5}, function (err, b){
-									if (err){
-										console.log (err);
-										next (err);
-										return
-									}
+						resolve (updatedCustomer);
+					}
+				});	
+			}
+		};
 
-									if (order){
-										res.json ({data: {occupancy: newOcc, order: order}});
-										return
-									}
-									else {
-										res.json ({data: {occupancy: newOcc, order: null}});
-										return
-									}
-								});
+		var prepareUpdateBooking = function (newOcc, order){
+			return function (resolve, reject) {
+				return Bookings.update ({_id: newOcc.bookingId}, {status: 5}, function (err, updatedBooking){
+					if (err){
+						reject (err);
+						return;
+					}
+
+					resolve (updatedBooking);
+				});
+			};	
+		};
+
+		var getSaveOccPromise = prepareCreateOcc (occ);
+
+		new Promise (getSaveOccPromise).then (
+			function success (newOcc){
+				var getUpdateCusPromise = prepareUpdateCus (newOcc, req.params.cusId);
+				new Promise (getUpdateCusPromise).then (
+					function success (updatedCustomers){
+						var _getResponse = function (){
+							if (order){
+								res.json ({data: {occupancy: newOcc, order: order}});
+								return
 							}
-							else{
-								if (order){
-									res.json ({data: {occupancy: newOcc, order: order}});
-									return
+							else {
+								res.json ({data: {occupancy: newOcc, order: null}});
+								return
+							}								
+						};
+
+						if (newOcc.bookingId){
+							var getUpdateBooking = prepareUpdateBooking (newOcc, order);
+							new Promise (getUpdateBooking).then (
+								function success (updatedBooking){
+									_getResponse ();		
+								},
+								function error (err){
+									next (err)
 								}
-								else {
-									res.json ({data: {occupancy: newOcc, order: null}});
-									return
-								}
-							}
+							)
 						}
 						else{
-							next ();
-							return					
+							_getResponse ();							
 						}
-
-						
+					},
+					function error (err){
+						next (err);
 					}
-				}
-			)
-
-		});
+				);
+			},
+			function error (err){
+				next (err)
+			}
+		);
 	};
 
 	// Only return non-checked-in customers
@@ -214,21 +239,87 @@ function Checkin() {
 				}
 			}
 		); 
-
 	};
 
-	this.updateCheckin = function(req, res, next) {
-		var updateQuery = {}; 
+	this.updateCheckin = function (req, res, next){
+		console.log (req.body.data)
+		res.json ({})
+		return
+		
+		var update = {$set: {}};
 
-		Occupancies.findByIdAndUpdate (req.params.occId, req.body, {new: true}, function (err, updatedOcc){
-			if (err){
-				console.log (err);
-				next (err);
-				return;
+		if (!req.body.data._id){
+			next ();
+		}
+
+		if (req.body.data.customer){
+			update.$set.customer = req.body.data.customer;
+		}
+
+		var prepareUpdateOcc = function (occid, update){
+			return function (resolve, refuse){
+				return Occupancies.findByIdAndUpdate ({_id: occid}, update, function (err, updatedOcc){
+					if (err){
+						refuse (err);
+					}else{
+						resolve (updatedOcc);
+					}
+				})
 			}
+		};
 
-			res.json ({data: updatedOcc});
-		});	
+		var prepareUpdateUnselectedCustomer = function (cusid){
+			return function (resolve, refuse){
+				return Customers.findByIdAndUpdate ({_id: cusid}, {$pop: {occupancy: 1}}, function (err, cus){
+					if (err){
+						refuse (err);
+					}
+					else {
+						resolve (cus);
+					}
+				})
+			}
+		};
+
+		var prepareUpdateSelectedCustomer = function (cusid, occid){
+			return function (resolve, refuse){
+				return Customers.findByIdAndUpdate ({_id: cusid}, {$push: {occupancy: occid}}, function (err, cus){
+					if (err){
+						refuse (err);
+					}
+					else {
+						resolve (cus);
+					}
+				})
+			}
+		}
+
+		var updateOccPromise = prepareUpdateOcc (req.body.data._id, update);
+		new Promise (updateOccPromise)
+			.then (function success (updatedOcc){
+				var updateSelectedCustomer = prepareUpdateSelectedCustomer (req.body.data.customer._id, updatedOcc._id);
+
+				new Promise (updateSelectedCustomer)
+					.then (function success (selectedCustomer){
+						var updateUnselectedCustomer = prepareUpdateUnselectedCustomer (updatedOcc.customer._id);
+						new Promise (updateUnselectedCustomer)
+							.then (function success (unselectedCustomer){
+								updatedOcc.customer = selectedCustomer;
+								res.json ({data: updatedOcc});
+							}, function error (err){
+								next (err);
+							});
+						
+					},
+					function error (err){
+						next (err);
+					});
+
+				
+			},
+			function error (err){
+				next (err);
+			});
 	};
 
 	this.cancelCheckin = function (req, res) {

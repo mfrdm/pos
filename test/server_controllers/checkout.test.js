@@ -10,12 +10,11 @@ var Promocodes = mongoose.model ('Promocodes');
 var Occupancy = mongoose.model ('Occupancies');
 var Accounts = mongoose.model ('Accounts');
 var should = chai.should ();
-console.log(process.cwd())
 chai.use (chaiHttp);
 
 xdescribe ('Checkout', function (){
 	this.timeout(3000);
-	describe ('Create invoice', function (){
+	xdescribe ('Create invoice', function (){
 		var occupancies, customers;
 		var newOcc, newCustomer;
 		var newAcc;
@@ -1086,8 +1085,9 @@ xdescribe ('Checkout', function (){
 
 })
 
-xdescribe('Checkout members with leader', function() {
+describe('Checkout members with leader', function() {
     this.timeout(3000);
+
     describe('Leader without members', function() {
         var mockOccs, mockCustomers, newOcc, newCustomer, group, selectedAcc;
         beforeEach(function(done) {
@@ -1152,7 +1152,6 @@ xdescribe('Checkout members with leader', function() {
 
             mockOccs = [
 	            {
-	            	_id: '5941dbd882dedd1a1ceb1044',
 	                createdAt: '2017-06-15T00:59:04.561Z',
 	                status: 1,
 	                customer: {},
@@ -1333,7 +1332,6 @@ xdescribe('Checkout members with leader', function() {
                         }
                         
                         // test all things updated
-                        console.log(occ)
                         occ[0].status.should.equal(2);// only [0][1] checkout
                         occ[1].status.should.equal(2);
                         occ[2].status.should.equal(2);
@@ -1342,7 +1340,7 @@ xdescribe('Checkout members with leader', function() {
                             if (err) {
                                 return
                             }
-                            console.log(cus)
+
                             // test all things updated
                             cus[0].checkinStatus.should.equal(false);
                             cus[1].checkinStatus.should.equal(false);
@@ -1351,7 +1349,7 @@ xdescribe('Checkout members with leader', function() {
                     })
                     
                 });
-        })
+        });
 
         it ('should confirm checkout for leader and member with account', function(done){
         	chai.request(server)
@@ -1368,7 +1366,6 @@ xdescribe('Checkout members with leader', function() {
                             return
                         }
 
-                        console.log(occ)
                         occ[0].status.should.equal(1);
                         occ[1].status.should.equal(1);
                         occ[2].status.should.equal(2);

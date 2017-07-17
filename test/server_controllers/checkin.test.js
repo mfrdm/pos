@@ -366,20 +366,21 @@ xdescribe ('Check in', function (){
 
 	it ('should be invalid when a checked-in customer check in again. This could happen when a customers booking more than one time and then check-in')
 
-	xit ('should create an occupancy and update customer', function (done){
+	it ('should create an occupancy and update customer', function (done){
 		checkinData.occupancy.promocodes = [];
 		chai.request (server)
 			.post ('/checkin/customer/' + newCustomer._id)
 			.send ({data: checkinData})
 			.end (function (err, res){
 				if (err) {
-					console.log (err);
+					// console.log (err);
 				}
+
+				res.should.have.status (200); // this indicate updated customer
 
 				newOcc = res.body.data.occupancy;
 				newOrder = res.body.data.order;
 
-				res.should.have.status (200); // this indicate updated customer
 				newOcc.should.to.exist;
 				newOcc.customer.should.to.exist;
 				newOcc.staffId.should.to.exist;
@@ -433,127 +434,138 @@ xdescribe ('Check in', function (){
 	});
 });
 
-xdescribe ('Update checked-in', function (){
-	var order, customer, newCustomer, newOrder, newOcc, checkinData, editedOcc;
+describe ('Update checked-in', function (){
+	var newCustomer, newOcc;
 	beforeEach (function (done){
-		customer = {
-			firstname: 'Customer_Firstname',
-			middlename: 'Customer_Middlename',
-			lastname: 'Customer_Lastname',
-			gender: 1,
-			birthday: new Date ('1989-09-25'),
-			phone: ['0965999999', '0972999999'],
-			edu: {},
-			email: ['lastmiddlefirst@gmail.com', 'otheremail@gmail.com'], // manuallt required in some cases
-			isStudent: false,
-			checkinStatus: false,
-		};
-
-		checkinData = {
-			occupancy: {
-				service: {
-					price: 15000,
-					name: 'Group Common'
-				},
-				promocodes: [
-					{id: '58ff58e6e53ef40f4dd664cd', name: 'YEUGREENSPACE'}
-				],
-				customer: {},
-				storeId: "58eb474538671b4224745192",
-				staffId: "58eb474538671b4224745192",		
+		var mockcustomer = [
+			{
+				fullname: 'ABC',
+				gender: 1,
+				birthday: new Date ('1989-09-25'),
+				phone: '0965999999',
+				edu: {},
+				email: 'abc@gmail.com',
+				isStudent: false,
+				checkinStatus: false,
 			},
-			order: {
-				orderline: [  
-					{ "productName" : "Coca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 2, price: 10000 }, 
-					{ "productName" : "Poca", "_id" : "58ff58e6e53ef40f4dd664cd", "quantity" : 1, price: 10000 }
-				],
-				customer: {},
-				storeId: "58eb474538671b4224745192",
-				staffId: "58eb474538671b4224745192",
+			{
+				fullname: 'XYZ',
+				gender: 2,
+				birthday: new Date ('1988-09-25'),
+				phone: '0965999998',
+				edu: {},
+				email: 'xyz@gmail.com',
+				isStudent: false,
+				checkinStatus: false,
+			},			
+		];
+
+		var mockocc = {
+			service: {
+				price: 15000,
+				name: 'Group Common'
+			},
+			checkinTime: moment (),
+			promocodes: [{name: 'ACODE', codeType: 2, priority: 2, redeemData: {price: {value: 8000}}}],
+			customer: {}		
+		}
+
+		Customers.insertMany (mockcustomer, function (err, newCus){
+			if (err){
+				console.log (err);
+				return
 			}
 
-		};
+			newCustomer = newCus;
+			mockocc.customer = newCus[0];
 
-		chai.request (server)
-			.post ('/customers/create')
-			.send ({data: customer})
-			.end (function (err, res){
+			Occupancies.create (mockocc, function (err, occ){
 				if (err){
-					// console.log (err);
+					console.log (err);
 					return
 				}
 
-				newCustomer = res.body.data;
-				checkinData.order.customer = newCustomer;
-				checkinData.occupancy.customer = newCustomer;
-
-				chai.request (server)
-					.post ('/checkin/customer/' + newCustomer._id)
-					.send ({data: checkinData})
-					.end (function (err, res){
-						if (err){
-							// console.log (err)
-							return
-						}
-
-						newOcc = res.body.data.occupancy;
-						done ();
-					});
-
+				newOcc = occ;
+				done ();				
 			});
+		});
 
 	});
 
 	afterEach (function (done){
+		var cusIds = newCustomer.map (function (x, i, arr){
+			return x._id;
+		});
+
 		Occupancies.remove ({_id: newOcc._id}, function (err, data){
 			if (err) {
 				// console.log (err)
 				return
 			}
-			Customers.remove ({_id: newCustomer._id}, function (err, data){
+
+			Customers.remove ({_id: {$in: cusIds}}, function (err, data){
 				if (err) {
 					// console.log (err)
 					return
-				}				
-				if (newOrder && newOrder._id){
-					Orders.remove ({_id: newOrder._id}, function (err, data){
-						if (err) {
-							// console.log (err)
-							return
-						}
-						else {
-							done ();
-						}
-					});
 				}
-				else {
-					done ();
-				}
+
+				done ();
 			});
 
 		});
 
 	});
 
-	// Depricated. Only allow to update certain fields.
-	xit ('should successfully replace old data with new data of a checked-in record', function (done){
-		newOcc.service.name = 'Individual Common';		
+	it ('should update 1 occupancy and 2 customers when update who has been checked-in', function  (done){
+		var updatedOcc = {
+			_id: newOcc._id,
+			customer: newCustomer[1]
+		};
 
 		chai.request (server)
-			.post ('/checkin/customer/' + newCustomer._id + '/edit/' + newOcc._id)
-			.send ({data: newOcc})
+			.post ('/checkin/edit/' + newOcc._id.toString ())
+			.send ({data: updatedOcc})
 			.end (function (err, res){
-				if (err){
+				if (err) {
 					console.log (err);
 				}
 
-				res.should.have.status (200);
-				res.body.data.service.name.should.to.equal (newOcc.service.name);
-				done ();
+				res.should.to.have.status (200);
+				res.body.data.should.to.exist;
+				res.body.data.customer.should.to.exist;
+				res.body.data.customer.fullname.should.to.equal (newCustomer[1].fullname);
+
+				Customers.find ({_id: {$in: [newCustomer[1], newCustomer[0]]}}, function (err, foundCus){
+					if (err) {
+						console.log (err);
+					}
+
+					foundCus.should.to.exist;
+					foundCus.length.should.to.equal (2);
+					foundCus.map (function (x, i, arr){
+						if (x._id == res.body.data.customer._id){
+							x.occupancy[x.occupancy.length - 1].toString ().should.to.equal (newOcc._id.toString ());
+						}
+						else{
+							x.occupancy.length.should.to.equal (0);
+						}
+					});
+
+					done ();
+				})
 			});
 	});
 
-	it ('should update only allowed fields')
+	it ('should update parent of all member occupancies when update who is the leader', function (done){
+		done ();
+	});
+
+	it ('should update occupancy when update service')
+	it ('should update member occupancies when update service of leader')
+	it ('should remove parent when update service of a group member as common service')
+	it ('should update checked in time')
+	it ('should update promocode')
+
 });
 
 xdescribe ('Read check-in list', function (){

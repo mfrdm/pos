@@ -1,157 +1,207 @@
 (function() {
     angular.module('posApp')
-        .controller('TransactionCtrl', ['DataPassingService', 'TransactionService', '$scope', '$window', '$route', TransactionCtrl])
+        .controller('TransactionCtrl', ['DataPassingService', 'TransactionService', '$scope', '$window', '$route', TransactionCtrl]);
 
     function TransactionCtrl (DataPassingService, TransactionService, $scope, $window, $route){
-    	var vm = this;
+        
+        /*
+        Variables
+        */
+        var vm = this;
         var LayoutCtrl = DataPassingService.get('layout');
 
-        vm.ctrl = {};
-        vm.model = {
-            trans:{},
-            editTrans:{},
-            report:{
-                revenue:0,
-                cost:0,
-                profit:0
-            },
-            dom:{
-                filterDiv:false,
-                addTransaction : false,
-                editTransaction:false,
-                report:false,
-                transList:true,
-                trans:{
-                    list:[]
-                }
-            },
-            temporary:{
-                transTypeList:[],
-                trans:{}
-            },
-            filter:{
-                startTime:'',
-                endTime:'',
-                time:1,
-            }
+        vm.ctrl = {
+            get:{}, // functions help get data from server
+            dom:{}, // functions help open, toggle dom
+            support:{}, // functions supports for others funcs like paginate
         };
 
-        vm.model.temporary.transTypeList = [
+        vm.model = {
+            create:{}, // data to create trans
+            edit:{}, // data to edit trans
+            dom:{}, // data for showing div
+            filter:{}, // data for filtering
+            temporary:{}, // data to be manipulated, clear when reset
+            data:{}, // data to be stored after get from server or predefined
+            options:{},  // data for options list (for selecting).
+        };
+
+        // Dom model
+        vm.model.dom.dateColumn = false;
+
+        // Data model
+        vm.model.data.listEachPage = [];
+        vm.model.data.itemsEachPage = 5;
+
+        // Options model
+        vm.model.options.transType = [
             {value: 1, label:'Occupancy'},
             {value: 2, label:'Order'},
             {value: 3, label:'Inbound'},
             {value: 4, label:'Outbound'},
             {value: 5, label:'Deposit'},
-            {value: 6, label:'Others'}
-        ]
+            {value: 6, label:'Others'},
+        ];
 
-        // Initial
-        angular.element(document.getElementById ('mainContentDiv')).ready(function () {// after page load
-            vm.ctrl.getTransList();
-        });
+        /*
+        Dom functions
+        */
 
-        // Toggle Filter
-        vm.ctrl.toggleFilter = function(){
-            if(vm.model.dom.filterDiv){
-                vm.model.dom.filterDiv = false;
+        // Open add transaction form
+        vm.ctrl.dom.openTransForm = function(){
+
+        };
+
+        // Open edit transaction form
+        vm.ctrl.dom.openEditTransForm = function(){
+
+        };
+
+        // Open report
+        vm.ctrl.dom.openReport = function(){
+
+        };
+
+        // Toggle filter
+        vm.ctrl.dom.toggleFilter = function(){
+
+        };
+
+        // Toggle date/time column
+        vm.ctrl.dom.toggleDateColumn = function(){
+            if(vm.model.dom.dateColumn){
+                vm.model.dom.dateColumn = false;
             }else{
-                vm.model.dom.filterDiv = true;
-            }
-        }
-
-        // Time change
-        vm.ctrl.timeChangeHandler = function(){
-            if (vm.model.temporary.trans.startMin && vm.model.temporary.trans.startHour){
-                vm.model.temporary.trans.start = new Date (vm.model.temporary.trans.startDate.toDateString () + ' ' + vm.model.temporary.trans.startHour + ':' + (vm.model.temporary.trans.startMin ? vm.model.temporary.trans.startMin : '0'));
+                vm.model.dom.dateColumn = true;
             };
-            if (vm.model.temporary.trans.endMin && vm.model.temporary.trans.endHour){
-                vm.model.temporary.trans.end = new Date (vm.model.temporary.trans.endDate.toDateString () + ' ' + vm.model.temporary.trans.endHour + ':' + (vm.model.temporary.trans.endMin ? vm.model.temporary.trans.endMin : '0'));
-            };
-            getList(vm.model.temporary.trans.start, vm.model.temporary.trans.end)
-        }
+        };
 
-        // Function get trans list
-        function getList(start, end){
-            TransactionService.readTrans(start, end).then(function(res){
-                vm.model.dom.trans.list = []
-                res.data.data.map(function(ele){
-                    vm.model.temporary.transTypeList.map(function(item){
-                        if(ele.transType == item.value){
-                            ele.transType = item.label
-                        }
-                    })
-                    if(ele.amount >= 0){
-                        ele.category = 'Revenue'
-                    }else{
-                        ele.category = 'Cost'
-                    }
-                    vm.model.dom.trans.list.push(ele)
-                })
-            })
-        }
+        /*
+        Get functions
+        */
 
-        // Get trans list
-        vm.ctrl.getTransList = function(){
-            var start = new Date();
+        // Get transactions list to show
+        vm.ctrl.get.transList = function(){
+            vm.model.data.transList = [];
+            var start = new Date("07/06/2017");
             start.setHours(0,0,0,0);
             var end = new Date();
             end.setHours(23,59,59,999);
-            getList(start, end)
-        }
 
-        // Open add trans
-        vm.ctrl.openCreateTrans = function(){
-            vm.model.dom.addTransaction = true;
-        }
+            // Get transaction from db, then add transType label, category
+            TransactionService.readTrans(start, end).then(function(res){
+                res.data.data.map(function(item){
+                    vm.model.options.transType.map(function(type){
+                        if(item.transType === type.value){
+                            item.transType = type.label;
+                        };
+                    });
+                    if(item.amount >= 0){
+                        item.category = 'Revenue'
+                    }else{
+                        item.category = 'Cost'
+                    };
+                    vm.model.data.transList.push(item);
+                });
 
-        // Add trans
-        vm.ctrl.addTrans = function(){
-            vm.model.trans.transType = 6;
-            TransactionService.createTrans(vm.model.trans).then(function(res){
-                vm.ctrl.reset();
-            })
-        }
+                vm.ctrl.support.handlePagination(vm.model.data.itemsEachPage,vm.model.data.transList);
+            });
+        };
 
-        // Edit trans
-        vm.ctrl.openEditTrans = function(tran){
-            vm.model.dom.editTransaction = true;
-            vm.model.temporary.transTypeList.map(function(item){
-                if(tran.transType == item.label){
-                    tran.transType = item.value
-                }
-            })
-            vm.model.editTrans = tran;
-        }
+        /*
+        Support functions
+        */
 
-        vm.ctrl.editTrans = function(){
-            TransactionService.editTrans(vm.model.editTrans._id, vm.model.editTrans).then(function(res){
-                vm.ctrl.reset();
-            })
-        }
+        // Pagination
+        vm.ctrl.support.handlePagination = function(itemsEachPage, filteredList, index){
+            if(filteredList && filteredList.length){
 
-        // Open report
-        vm.ctrl.openReport = function(){            
-            vm.model.dom.trans.list.map(function(item){
-                if(item.amount >=0){
-                    vm.model.report.revenue += item.amount
+                // Array to keep track page number, where the page is
+                vm.model.data.pageNumbers = [];
+
+                // List in each page
+                vm.model.data.listEachPage = [];
+
+                // return number of pages
+                var numberOfPages = Math.ceil(filteredList.length/itemsEachPage)
+
+                for(var j = 1; j<numberOfPages+1; j++){
+                    vm.model.data.pageNumbers.push({number:j, class:''})
+                };
+
+                vm.model.data.pageNumbers[0].class = 'current';
+
+                vm.model.data.listEachPage = filteredList.slice(0, itemsEachPage);
+
+                // When click to page number, will re-slice filteredList
+                if(index){
+                    vm.model.data.listEachPage = filteredList.slice((index-1)*itemsEachPage, index*itemsEachPage);
+                    vm.model.data.pageNumbers.map(function(item, ind, arr){
+                        if(ind == index - 1){
+                            arr[ind].class = 'current';
+                        }else{
+                            arr[ind].class = ''
+                        };
+                    });
+                };
+
+                // Check disable button
+                var ind = 0;
+
+                vm.model.data.pageNumbers.map(function(ele, index){
+                    if(ele.class == 'current'){
+                        ind = index
+                    };
+                });
+
+                if(ind+1 == vm.model.data.pageNumbers.length){
+                    vm.model.dom.nextClass = "pagination-next disabled";
+                    vm.model.dom.goNextText = 'Next'
                 }else{
-                    vm.model.report.cost += item.amount
+                    vm.model.dom.nextClass = "pagination-next";
+                    vm.model.dom.goNextText = ''
+                };
+
+                if(ind == 0){
+                    vm.model.dom.previousClass = "pagination-previous disabled";
+                    vm.model.dom.goPreviousText = 'Previous'
+                }else{
+                    vm.model.dom.previousClass = "pagination-previous";
+                    vm.model.dom.goPreviousText = ''
+                };
+            };
+        };
+
+        vm.ctrl.support.goNext = function(){
+            var ind = 0;
+            vm.model.data.pageNumbers.map(function(ele, index){
+                if(ele.class == 'current'){
+                    ind = index
                 }
-            })
-            vm.model.report.profit = vm.model.report.revenue + vm.model.report.cost;
-            vm.model.dom.report = true;
+            });
+            if(ind+2 <= vm.model.data.pageNumbers.length){
+                vm.ctrl.support.handlePagination(vm.model.data.itemsEachPage, vm.model.data.transList, ind+2)
+            }
         }
 
-        // Reset
-        vm.ctrl.reset = function(){
-            vm.model.dom.addTransaction = false;
-            vm.model.dom.editTransaction = false;
-            vm.model.dom.filterDiv = false;
-            vm.model.dom.report = false;
-            vm.model.trans = {};
-            vm.model.editTrans = {};
-            vm.model.temporary.trans = {};
-            vm.ctrl.getTransList()
+        vm.ctrl.support.goPrevious = function(){
+            var ind = 0;
+            vm.model.data.pageNumbers.map(function(ele, index){
+                if(ele.class == 'current'){
+                    ind = index
+                }
+            });
+            if(ind >= 1){
+                vm.ctrl.support.handlePagination(vm.model.data.itemsEachPage,vm.model.data.transList, ind)
+            }
         }
-    }
+
+        /*
+        Initial
+        */
+        angular.element(document.getElementById ('mainContentDiv')).ready(function () { // after page load
+            vm.ctrl.get.transList(); // get data to show transaction list
+        });
+
+    };
 })()

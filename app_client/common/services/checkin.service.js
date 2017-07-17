@@ -58,13 +58,11 @@ function CheckinService ($http, $q){
 		})
 	}
 	//Update new Order
-	this.updateOne = function(id, service, parent){
+	this.updateOne = function(update){
 		return $http({
 			method: 'POST',
-			url: '/checkin/customer/edit/'+id,
-			data: JSON.stringify({
-				$set: { service: service, parent:parent }
-			})
+			url: '/checkin/edit/' + update._id,
+			data: JSON.stringify({data: update})
 		})
 	};
 

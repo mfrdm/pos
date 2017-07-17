@@ -59,7 +59,7 @@ router.get('/checkin', CheckinCtrl.readCheckinList);
 router.post ('/checkin/cancel', CheckinCtrl.cancelCheckin);
 router.post('/checkin/customer/:cusId', CheckinCtrl.checkin);
 router.get ('/checkin/search-customers', CheckinCtrl.searchCheckingCustomers);
-router.post('/checkin/customer/edit/:occId', CheckinCtrl.updateCheckin);
+router.post ('/checkin/edit/:occId', CheckinCtrl.updateCheckin);
 router.get ('/checkin/validate-promotion-code', CheckinCtrl.validatePromocodes);
 
 router.get('/checkout/invoice/:occId', checkoutCtrl.createInvoice);

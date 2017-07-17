@@ -18,7 +18,7 @@ function getCodeContext (occ){
 		getTotal: function (){return this.total},
 		getPromocodes: function (){ return occ.promocodes },
 		setPromocodes: function (codes){ occ.promocodes = codes },
-		isStudent: function (){ return occ.customer.isStudent }
+		isStudent: function (){ return occ.customer.isStudent },
 	}
 } 
 
@@ -41,15 +41,18 @@ function getAccContext (){
 		},
 		genTotal: function (){
 			occ.getTotal ();
-		}
+		},
+		getCheckinTime: function (){
+			return occ.checkinTime
+		},
 	}
 }
 
 // method to calculate total usage time
 // below 6 mins, return as 0.
 function getUsageTime (){
-	var checkoutTime = moment (this.checkoutTime);
-	var checkinTime = moment(this.checkinTime);
+	var checkoutTime = this.checkoutTime ? moment (this.checkoutTime) : moment ();
+	var checkinTime = this.checkinTime ? moment (this.checkinTime) : moment ();
 	var diff = checkoutTime.diff (checkinTime, 'minutes');
 
 	return normalizeUsage (diff);
@@ -81,6 +84,7 @@ function normalizeUsage (diff){
 
 // get usage and total after applied codes
 function getTotal (){
+
 	var occ = this;
 	occ.oriUsage = occ.oriUsage || occ.oriUsage == 0 ? occ.oriUsage : occ.getUsageTime ();
 	occ.usage = occ.usage || occ.usage == 0 ? occ.usage : occ.oriUsage;
@@ -119,7 +123,6 @@ function getTotal (){
 		occ.total = normalizeTotal (occ.total);	
 		occ.price = context.price;
 		occ.usage = context.usage;
-
 	}	
 }
 

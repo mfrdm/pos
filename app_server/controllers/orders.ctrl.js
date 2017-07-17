@@ -55,7 +55,8 @@ function OrdersCtrl() {
 				if(err){
 					console.log(err)
 				}
-				console.log(newOrder)
+				
+				// Create transaction for order
 				MakeTransaction.makeTrans(2,'order trans',newOrder.total,newOrder._id, res)
 			})
 		})		

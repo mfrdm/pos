@@ -150,6 +150,29 @@ var getDefaultAccounts = function (){
 		grouponable: false,		
 	}
 
+	var morningGroupPrivate15 = {
+		name: 'morningSmallGroupPrivate',
+		price: 400000, // 
+		amount: 5,
+		formula: {
+			value: 1,
+			hourStart: 8,
+			minStart: 0,
+		},
+		unit: 'hour',
+		desc: "",
+		services: ['small group private'], // name of service applied
+		label: {
+			vn: "Combo buổi sáng - Private 15",
+			en: "",
+		},
+		recursive: {
+			isRecursive: false,
+		},
+		expireDateNum: 1,
+		grouponable: false,		
+	}
+
 	return {
 		oneDayCommon: oneDayCommon,
 		threeDaysCommon: threeDaysCommon,
@@ -157,6 +180,7 @@ var getDefaultAccounts = function (){
 		fiveHoursOneDayThirtyDaysCommon: fiveHoursOneDayThirtyDaysCommon,
 		twentyHoursCommon: twentyHoursCommon,
 		thirtyDaysCommon: thirtyDaysCommon,
+		morningGroupPrivate15: morningGroupPrivate15,
 		cash: cash
 	}
 }
@@ -204,6 +228,21 @@ var _withdraw = function (amount, acc){
 	return remain;
 }
 
+
+var applyFormula = function (context, acc){
+	var adjustedAmount = context.getUsage ();
+	if (acc.formula && acc.formula.value == 1){ // assume checkinTime is always greater than or equal expected on
+		checkinTime = moment (context.getCheckinTime ());
+		expectedCheckinTime = moment (checkinTime);
+		expectedCheckinTime.hour (acc.formula.hourStart);
+		expectedCheckinTime.minute (acc.formula.minStart);
+		adjustedAmount = adjustedAmount + (checkinTime.diff (expectedCheckinTime) / 3600000)
+	}
+	
+	return adjustedAmount
+}
+
+
 var withdraw = function (context){
 	var acc = this;
 
@@ -213,13 +252,14 @@ var withdraw = function (context){
 		context.setTotal (remain);
 	}
 	else if (acc.unit == 'hour'){
-		var usage = context.getUsage ();
+		// var usage = context.getUsage ();
+		var usage = applyFormula (context, acc);
 		var remain = _withdraw (usage, acc);
+
 		context.setUsage (remain);
 		context.genTotal ();
 	}
 }
-
 
 var initAccount = function (){
 	this.end = moment (this.start).add (this.expireDateNum - 1, 'day').hour (23).minute (59);
@@ -237,6 +277,7 @@ var AccountsSchema = new mongoose.Schema({
 		vn: String,
 		en: String,
 	},
+	formula: {},
 	recursive: {
 		isRecursive: {type: Boolean, default: false},
 		lastRenewDate: Date,

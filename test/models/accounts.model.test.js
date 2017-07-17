@@ -7,7 +7,7 @@ var Promocodes = require ('../../app_api/models/promocodes.model');
 var Occupancies = require ('../../app_api/models/occupancies.model');
 var moment = require ('moment');
 
-describe ('Renew a daily recursive account', function (){
+xdescribe ('Renew a daily recursive account', function (){
 	var accounts;
 	beforeEach(function (){
 		accounts = [
@@ -82,19 +82,19 @@ describe ('Renew a daily recursive account', function (){
 		newAcc.amount.should.to.not.equal (newAcc.recursive.baseAmount);
 		moment (newAcc.recursive.lastRenewDate).isBefore (now).should.to.equal (true) ;			
 	});
-
 });
 
 describe ('Withdraw an account', function (){
 	var account, occ, occContext;
 	beforeEach (function (){
-		occ = {
-			checkinTime: moment ().add (-3, 'hour'),
-			checkoutTime: moment (),
-			service: {name: 'Group common'},
-			price: 15000,
-			total: 45000
-		}
+		occ = 
+			{
+				checkinTime: moment ().add (-3, 'hour'),
+				checkoutTime: moment (),
+				service: {name: 'Group common'},
+				price: 15000,
+				total: 45000
+			}
 
 		occ = new Occupancies (occ);
 		context = occ.getAccContext ();
@@ -119,36 +119,80 @@ describe ('Withdraw an account', function (){
 				name: 'acc 4',
 				amount: 40000,
 				unit: 'vnd'		
-			},					
+			},
+			{
+				name: 'acc 5',
+				unit: 'hour',
+				amount: 5,
+				formula: {
+					value: 1,
+					hourStart: 8,
+					minStart: 0,
+				},	
+			},							
 		];
 	});
 
-	it ('should return amount = 0 when amount to be paid is less than or equal amount in the hour account', function (){
+	xit ('should return amount = 0 when amount to be paid is less than or equal amount in the hour account', function (){
 		var acc = new Accounts (accounts[0]);
 		acc.withdraw (context);
 		occ.usage.should.to.equal (0);
 		acc.amount.should.to.equal (1);
 	});
 
-	it ('should retunn amount > 0 when amount to be paid is greater than amount in the hour account', function (){
+	xit ('should retunn amount > 0 when amount to be paid is greater than amount in the hour account', function (){
 		var acc = new Accounts (accounts[1]);
 		acc.withdraw (context);
 		occ.usage.should.to.equal (2);
 		acc.amount.should.to.equal (0);	
 	});
 
-	it ('should retunn amount = 0 when amount to be paid is greater than amount in the cash account', function (){
+	xit ('should retunn amount = 0 when amount to be paid is greater than amount in the cash account', function (){
 		var acc = new Accounts (accounts[2]);
 		acc.withdraw (context);
 		occ.total.should.to.equal (0);
 		acc.amount.should.to.equal (5000);	
 	});
 
-	it ('should retunn amount > 0 when amount to be paid is greater than amount in the cash account', function (){
+	xit ('should retunn amount > 0 when amount to be paid is greater than amount in the cash account', function (){
 		var acc = new Accounts (accounts[3]);
 		acc.withdraw (context);
 		occ.total.should.to.equal (5000);
 		acc.amount.should.to.equal (0);	
+	});
+
+	it ('should return correct amount when applying formula 1 and amount is less than or equal account amount', function (){
+		var acc = new Accounts (accounts[4]);
+		var occ = {
+			checkinTime: moment ().hour (9).minute (0),
+			checkoutTime: moment ().hour (13).minute (0),
+			service: {name: 'Small group private', price: 150000},
+			total: 450000
+		}
+
+		occ = new Occupancies (occ);
+		context = occ.getAccContext ();		
+
+		acc.withdraw (context);
+		occ.total.should.to.equal (0);
+		acc.amount.should.to.equal (0);			
+	});
+
+	it ('should return correct amount when applying formula 1 and amount is greater than account amount', function (){
+		var acc = new Accounts (accounts[4]);
+		var occ = {
+			checkinTime: moment ().hour (9).minute (0),
+			checkoutTime: moment ().hour (14).minute (30),
+			service: {name: 'Small group private', price: 150000},
+		}
+
+		occ = new Occupancies (occ);
+		context = occ.getAccContext ();		
+
+		acc.withdraw (context);
+		occ.total.should.to.equal (225000);
+		acc.amount.should.to.equal (0);	
+		occ.usage.should.to.equal (1.5);		
 	});
 
 });
