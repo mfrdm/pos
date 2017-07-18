@@ -46,7 +46,7 @@ var getAccountDefaultCodes = function (){
 				value: 150000
 			}
 		}			
-	}
+	};
 
 	var studentGroup3Common1day = {
 		name: 'student_group3_common1d',
@@ -94,7 +94,7 @@ var getAccountDefaultCodes = function (){
 				value: 79000
 			}
 		}			
-	}
+	};
 
 	var group5Common1day = {
 		name: 'group5_common1d',
@@ -110,7 +110,7 @@ var getAccountDefaultCodes = function (){
 				value: 69000
 			}
 		}	
-	}
+	};
 
 	var studentCommon3h1d30d = {
 		name: 'student_common3h1d30d',
@@ -158,7 +158,71 @@ var getAccountDefaultCodes = function (){
 				value:  145000
 			}
 		}			
-	}
+	};
+
+	var studentGroup3Common20h14d = {
+		name: 'student_group3_common20h14d',
+		desc: {type: 'Price of 20-hour common for 3 students'},
+		label: {
+			vn: 'Combo 20 giờ / 7 ngày cho nhóm 3 sinh viên',
+		},	
+		codeType: 2,
+		accounts: ['20h14dCommon'],
+		priority: 1,
+		redeemData: {
+			price: {
+				value: 130000
+			}
+		}			
+	};
+
+	var studentGroup5Common20h14d = {
+		name: 'student_group5_common20h14d',
+		desc: {type: 'Price of 20-hour common for 5 students'},
+		label: {
+			vn: 'Combo 20 giờ / 7 ngày cho nhóm 5 sinh viên',
+		},	
+		codeType: 2,
+		accounts: ['20h14dCommon'],
+		priority: 1,
+		redeemData: {
+			price: {
+				value: 110000
+			}
+		}			
+	};
+
+	var group3Common20h14d = {
+		name: 'group3_common20h14d',
+		desc: {type: 'Price of 20-hour common for a group of 3'},
+		label: {
+			vn: 'Combo 20 giờ / 7 ngày cho nhóm 3',
+		},	
+		codeType: 2,
+		accounts: ['20h14dCommon'],
+		priority: 1,
+		redeemData: {
+			price: {
+				value: 200000
+			}
+		}			
+	};
+
+	var group5Common20h14d = {
+		name: 'group5_common20h14d',
+		desc: {type: 'Price of 20-hour common for a group of 5'},
+		label: {
+			vn: 'Combo 20 giờ / 7 ngày cho nhóm 5',
+		},	
+		codeType: 2,
+		accounts: ['20h14dCommon'],
+		priority: 1,
+		redeemData: {
+			price: {
+				value: 180000
+			}
+		}			
+	};
 
 	var studentCommon30d = {
 		name: 'student_common30d',
@@ -174,7 +238,7 @@ var getAccountDefaultCodes = function (){
 				value:  899000
 			}
 		}			
-	}
+	};
 
 	return {
 		studentCommon1day: studentCommon1day,
@@ -186,7 +250,11 @@ var getAccountDefaultCodes = function (){
 		studentCommon3h1d30d: studentCommon3h1d30d,
 		studentCommon5h1d30d: studentCommon5h1d30d,
 		studentCommon20h14d: studentCommon20h14d,
-		studentCommon30d: studentCommon30d
+		studentCommon30d: studentCommon30d,
+		studentGroup3Common20h14d: studentGroup3Common20h14d,
+		studentGroup5Common20h14d: studentGroup5Common20h14d,
+		group3Common20h14d: group3Common20h14d,
+		group5Common20h14d: group5Common20h14d
 	}
 }
 
@@ -278,7 +346,7 @@ var getServiceDefaultCodes = function (){
 		'mediumprivatediscountprice': mediumPrivateDiscountPrice,
 		'largeprivatediscountprice': largePrivateDiscountPrice
 	};
-}
+};
 
 var getDefaultCodes = function (productName){
 	if (productName == 'service'){
@@ -290,7 +358,7 @@ var getDefaultCodes = function (productName){
 	else if (productName == 'account'){
 		return getAccountDefaultCodes ();
 	}
-}
+};
 
 var addDefaultCodes = function (context){
 	if (context.productName == 'service'){
@@ -302,7 +370,7 @@ var addDefaultCodes = function (context){
 	else if (context.productName == 'account'){
 		addAccountDefaultCodes (context);
 	}	
-}
+};
 
 var addAccountDefaultCodes = function (context){
 
@@ -347,23 +415,29 @@ var addAccountDefaultCodes = function (context){
 		}
 	} 
 
-	if (!higherType2 && isStudent){
+	// Remove later if no problems occur
+	// if (!higherType2 && isStudent){
+	// 	var targetCodes = [
+	// 		defaultCodes ['studentCommon1day'],
+	// 		defaultCodes ['studentCommon3days'],
+	// 		defaultCodes ['studentCommon3h1d30d'],
+	// 		defaultCodes ['studentCommon5h1d30d'],
+	// 		defaultCodes ['studentCommon20h14d'],
+	// 	];
+
+	// 	targetCodes.map (function (x, i, arr){
+	// 		_addDefaultCode (x);
+	// 	});		
+	// }
+
+
+	if (!higherType2 && isStudent && !isGroupon){
 		var targetCodes = [
+			defaultCodes ['studentCommon1day'],
 			defaultCodes ['studentCommon3days'],
 			defaultCodes ['studentCommon3h1d30d'],
 			defaultCodes ['studentCommon5h1d30d'],
 			defaultCodes ['studentCommon20h14d'],
-			defaultCodes ['studentCommon30d']
-		];
-
-		targetCodes.map (function (x, i, arr){
-			_addDefaultCode (x);
-		});		
-	}
-
-	if (!higherType2 && isStudent && !isGroupon){
-		var targetCodes = [
-			defaultCodes ['studentCommon1day']
 		];
 
 		targetCodes.map (function (x, i, arr){
@@ -371,25 +445,50 @@ var addAccountDefaultCodes = function (context){
 		});
 	}
 	else if (!higherType2 && isStudent && isGroupon && groupMemberNumber >= 3 && groupMemberNumber <= 4){
-		var targetCode = defaultCodes ['studentGroup3Common1day'];
-		_addDefaultCode (targetCode);
+		var targetCodes = [
+			defaultCodes ['studentGroup3Common1day'],
+			defaultCodes['studentGroup3Common20h14d'],
+		];
+
+		targetCodes.map (function (x, i, arr){
+			_addDefaultCode (x);
+		});		
+
 	}
 	else if (!higherType2 && isStudent && isGroupon && groupMemberNumber >= 5){
-		var targetCode = defaultCodes ['studentGroup5Common1day'];
-		_addDefaultCode (targetCode);
+		var targetCodes = [
+			defaultCodes ['studentGroup5Common1day'],
+			defaultCodes['studentGroup5Common20h14d'],
+		];
+
+		targetCodes.map (function (x, i, arr){
+			_addDefaultCode (x);
+		});	
+
 	}		
 	else if (!higherType2 && !isStudent && isGroupon && groupMemberNumber >= 3 && groupMemberNumber <= 4){
-		var targetCode = defaultCodes ['group3Common1day'];
-		_addDefaultCode (targetCode);
+		var targetCodes = [
+			defaultCodes ['group3Common1day'],
+			defaultCodes ['group3Common20h14d'],
+		];
+
+		targetCodes.map (function (x, i, arr){
+			_addDefaultCode (x);
+		});	
 	}	
 	else if (!higherType2 && !isStudent && isGroupon && groupMemberNumber >= 5){
-		var targetCode = defaultCodes ['group5Common1day'];
-		_addDefaultCode (targetCode);
+		var targetCodes = [
+			defaultCodes ['group5Common1day'],
+			defaultCodes ['group5Common20h14d'],
+		];
 
+		targetCodes.map (function (x, i, arr){
+			_addDefaultCode (x);
+		});
 	}
 
 	context.setPromocodes (resolveConflict (promocodes));
-}
+};
 
 var addServiceDefaultCodes = function (context){
 	var occ = this;
@@ -469,8 +568,7 @@ var addServiceDefaultCodes = function (context){
 	// }
 
 	context.setPromocodes (promocodes);
-
-}
+};
 
 var redeemPrice = function (context){
 	var result = {};
@@ -526,7 +624,7 @@ var redeemQuantity = function (context){
 	}
 
 	return result;
-}
+};
 
 // FIX: the first formula does not have proper attribute. change from total value to price value
 // Mixin: price, usage, and total can be set by default

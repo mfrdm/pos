@@ -195,4 +195,21 @@ describe ('Withdraw an account', function (){
 		occ.usage.should.to.equal (1.5);		
 	});
 
+	it ('should return correct amount when applying formula 1 and checkin hour is less than start hour', function (){
+		var acc = new Accounts (accounts[4]);
+		var occ = {
+			checkinTime: moment ().hour (7).minute (0),
+			checkoutTime: moment ().hour (14).minute (30),
+			service: {name: 'Small group private', price: 150000},
+		}
+
+		occ = new Occupancies (occ);
+		context = occ.getAccContext ();		
+
+		acc.withdraw (context);
+		occ.total.should.to.equal (375000);
+		acc.amount.should.to.equal (0);	
+		occ.usage.should.to.equal (2.5);		
+	});	
+
 });
