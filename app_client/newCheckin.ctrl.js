@@ -418,6 +418,14 @@
 
             };
 
+            this.inputChangeHandler = function (){
+                if(!this.model.customer.username){
+                    this.model.dom.resultdiv = false;
+                    this.model.dom.message.notFound = false;
+                    this.model.customer = {};
+                }                
+            };
+
             this.selectCustomer = function (index){
                 var selectedCustomer = this.model.customerList [index];
                 var customer = {
@@ -497,10 +505,17 @@
                 ],
             };
 
+            this.resetProducts = function (){
+                this.model.items = [];
+                this.model.services = [];
+            }
+
             this.get = function (){
                 var thisObj = this;
+                thisObj.resetProducts ();
                 CheckinService.readSomeProducts()
                     .then(function success(res){
+                        console.log (res.data.data)
                         res.data.data.map(function(x, i, arr){
                             if(x.category == 1){
                                 thisObj.model.services.push(x);
@@ -528,6 +543,9 @@
 
                         vm.model.dom.data.selected.services = vm.model.services;
                         vm.model.dom.data.selected.items = vm.model.items;
+
+                        console.log (vm.model.services)
+
                     },
                     function error (err){
                         console.log (err);
@@ -614,31 +632,48 @@
             this.model = {
                 occupancy: {},
                 order: [],
-                dom: {
-                    container: false,
-                    submitBtn: false,
-                    item: {
-                        select: false,
-                        quantInput: false,
-                        addBtn: false
-                    },
-                    service: {
-                        select: false,
-                    },
-                    code:{
-                        select: false
-                    }
-                },
+                dom: {},
                 temporary: {
                     order: {},
                     occupany: {},
                 }
             };
 
+            this.initServiceSection = function (){
+                this.model.dom.service = {
+                    select: false,
+                };
+            };
+
+            this.initItemSection = function (){
+                this.model.dom.item = {
+                    select: false,
+                    quantInput: false,
+                    addBtn: false
+                };
+            };
+
+            this.initCodeSection = function (){
+                this.model.dom.code = {
+                    select: false,
+                };
+            };
+
+            this.initButton = function (){
+                this.model.dom.submitBtn = false;
+            }
+
             this.init = function (){
                 this.model.dom.container = true;
+
+                this.initServiceSection ();
+                this.initItemSection ();
+                this.initCodeSection ();
+                this.initButton ();
+
                 vm.ctrl.checkin.getGroupPrivateLeader (); // FIX
                 vm.ctrl.checkin.getPromocodes(); // FIX
+
             };
 
             this.openCheckinDiv = function (){
@@ -665,9 +700,7 @@
             };
 
             this.getItems = function (){
-                if(this.model.occupancy.customer && this.model.occupancy.customer.fullname){
-                    vm.products.get ();     
-                }
+                vm.products.get ();     
             }; 
 
             this.selectCustomer = function (index){
@@ -678,7 +711,22 @@
                 this.getItems ();
             };
 
+            this.customerChangeHandler = function (){
+                vm.search.inputChangeHandler ();
+                this.initServiceSection ();
+                this.initItemSection ();
+                this.initCodeSection ();
+                this.initButton ();
+            }
+
             this.serviceChangeHandler = function (){
+                var targetService = vm.model.checkingin.occupancy.service;
+
+                if (vm.products.serviceChangeHandler (targetService)){
+                    vm.model.dom.data.selected.checkin.promoteCode.codes = vm.promocodes.getCodesByServices (targetService.name);   
+                }
+
+                vm.ctrl.disablePromocodes();              
             };
 
             this.orderChangeHandler = function (){

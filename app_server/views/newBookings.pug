@@ -148,7 +148,9 @@ div(class="row columns")
 						th {{ vm.model.dom.data.selected.bookingList.fullname }}
 						th {{ vm.model.dom.data.selected.bookingList.service }}
 						th {{ vm.model.dom.data.selected.bookingList.checkin }}
-						th(colspan=3) {{ vm.model.dom.data.selected.bookingList.note }}
+						th {{ vm.model.dom.data.selected.bookingList.note }}
+						th
+						th
 				tbody
 					tr(ng-repeat='booking in vm.model.bookingList.data')
 						td {{ $index + 1 }}
@@ -156,10 +158,8 @@ div(class="row columns")
 						td {{ booking.service.label }}
 						td {{ booking.checkinTime | date:'dd/MM/yyyy'}} {{ booking.checkinTime | date:'shortTime'}}
 						td {{ booking.note }}
-						td(ng-if="booking.status == 3"): a(class="button" ng-click="vm.ctrl.bookingList.checkin($index)") Check-in
-						td(ng-if="booking.status == 5"): a(class="button disabled") Check-in
-						td(ng-if="booking.status == 5"): a(class="button secondary disabled") Cancel
-						td(ng-if="booking.status == 3"): a(class="button secondary" ng-click="vm.ctrl.bookingList.confirmCancel ($index)") Cancel
+						td(ng-if="booking.status == 3"): a(class="button" ng-click="vm.ctrl.bookingList.checkin($index)" ng-disabled='booking.status == 5') Checkin
+						td(ng-if="booking.status == 3"): a(class="button secondary" ng-click="vm.ctrl.bookingList.confirmCancel ($index)" ng-disabled='booking.status == 5') Cancel
 
 		div(class='emptyResult text-center' ng-if='vm.model.bookingList.data.length == 0')
 			p {{vm.model.dom.data.selected.noResult}}

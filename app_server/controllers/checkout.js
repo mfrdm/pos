@@ -6,7 +6,6 @@ var Customers = mongoose.model ('customers');
 var Occupancies = mongoose.model ('Occupancies');
 var Accounts = mongoose.model ('Accounts');
 var request = require ('request');
-var MakeTransaction = require('../../tools/node/makeTransaction.tool');
 
 module.exports = new Checkout();
 
@@ -38,7 +37,7 @@ function Checkout() {
 						match: 	{
 							start: {$lte: new Date ()},
 							end: {$gte: new Date ()},
-							$or: [{services: foundOcc.service.name.toLowerCase ()}, {services: 'all'}], 
+							services: foundOcc.service.name.toLowerCase (), 
 							$or: [{amount: {$gt: 0}}, {$and: [{'recursive.isRecursive': true}, {amount: {$lte: 0}}]}]
 							
 						},
@@ -248,7 +247,6 @@ function Checkout() {
 								res.json ({data: {message: 'success'}});
 							}
 						}
-						MakeTransaction.makeTrans(1,'occ trans',occ.total,occ._id, res, cb)
 					}
 					else{
 						next ();

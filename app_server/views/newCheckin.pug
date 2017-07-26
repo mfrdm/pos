@@ -43,10 +43,10 @@ div(class="columns row")
 					form(ng-submit="vm.search.searchCustomers ()")
 						div(class="row column")
 							label {{vm.model.dom.data.selected.checkin.search.label}}
-								input(type="text" placeholder="{{ vm.model.dom.data.selected.checkin.search.placeholder }}" ng-model='vm.search.model.customer.username' required="true" ng-change='vm.ctrl.checkin.validateSearchInput()')
-						div(ng-show='vm.model.dom.checkin.search.message.notFound' class='marginB15')
+								input(type="text" placeholder="{{ vm.model.dom.data.selected.checkin.search.placeholder }}" ng-model='vm.search.model.customer.username' required="true" ng-change='vm.checkin.customerChangeHandler ()')
+						div(ng-show='vm.search.model.dom.message.notFound' class='marginB15')
 							div(class='callout alert')
-								p {{ vm.model.dom.data.selected.checkin.search.message.notFound + ' "' + vm.model.search.checkin.username + '". ' }}
+								p {{ vm.model.dom.data.selected.checkin.search.message.notFound + ' "' + vm.search.model.customer.username + '". ' }}
 									span: a(href='/#!/customers') {{ vm.model.dom.data.selected.createCustomer}}			
 						//div(ng-show='vm.model.dom.messageSearchAlreadyCheckin' class='marginB15')
 							div(class='callout alert')
@@ -77,7 +77,7 @@ div(class="columns row")
 						// SERVICE
 						div(class="column small-12")
 							label {{ vm.model.dom.data.selected.fieldService }}
-								select(ng-change='vm.ctrl.checkin.serviceChangeHandler ()' ng-model="vm.model.checkingin.occupancy.service" ng-options="s as s.label for s in vm.products.model.services track by s.name" ng-disabled='!vm.checkin.model.dom.service.select')
+								select(ng-change='vm.checkin.serviceChangeHandler ()' ng-model="vm.model.checkingin.occupancy.service" ng-options="s as s.label for s in vm.products.model.services track by s.name" ng-disabled='!vm.checkin.model.dom.service.select')
 
 						// PICK GROUP
 						div(class="column small-12" ng-if="vm.privateGroups.model.privateGroupLeaderDiv && vm.model.temporary.groupPrivateLeaders && vm.model.temporary.groupPrivateLeaders.length > 1")

@@ -8,11 +8,19 @@ function BookingCtrl() {
 
 	 // get only checked-in and pendding of all day
 	this.readAllBookings = function (req, res, next){
-
-		var q = Bookings.find ({
+		var stmt = {
 			status: {$in: req.query.status},
 			'location._id': req.query.storeId,
-		});
+		};
+
+		// default
+		if (!req.query.checkinTime) {
+			stmt.checkinTime = {
+				$gte: moment ().hour (0).minute (0)
+			}
+		}	
+
+		var q = Bookings.find (stmt);	
 
 		q.exec(function (err, bk){
 				if (err){

@@ -108,7 +108,7 @@ function getTotal (){
 				Object.assign (context, discountedResult);
 			});
 
-			if (context.total){
+			if (context.total || context.total == 0){
 				occ.total = context.total;
 			}
 			else{
