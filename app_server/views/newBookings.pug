@@ -158,8 +158,8 @@ div(class="row columns")
 						td {{ booking.service.label }}
 						td {{ booking.checkinTime | date:'dd/MM/yyyy'}} {{ booking.checkinTime | date:'shortTime'}}
 						td {{ booking.note }}
-						td(ng-if="booking.status == 3"): a(class="button" ng-click="vm.ctrl.bookingList.checkin($index)" ng-disabled='booking.status == 5') Checkin
-						td(ng-if="booking.status == 3"): a(class="button secondary" ng-click="vm.ctrl.bookingList.confirmCancel ($index)" ng-disabled='booking.status == 5') Cancel
+						td: a(class="button" ng-click="vm.ctrl.bookingList.checkin($index)" ng-disabled='booking.status == 5') Checkin
+						td: a(class="button secondary" ng-click="vm.ctrl.bookingList.confirmCancel ($index)" ng-disabled='booking.status == 5') Cancel
 
 		div(class='emptyResult text-center' ng-if='vm.model.bookingList.data.length == 0')
 			p {{vm.model.dom.data.selected.noResult}}

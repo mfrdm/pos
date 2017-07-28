@@ -39,7 +39,6 @@ function Checkout() {
 							end: {$gte: new Date ()},
 							services: foundOcc.service.name.toLowerCase (), 
 							$or: [{amount: {$gt: 0}}, {$and: [{'recursive.isRecursive': true}, {amount: {$lte: 0}}]}]
-							
 						},
 						// select: 'amount service unit label'
 					}) 
@@ -50,10 +49,17 @@ function Checkout() {
 						}
 
 						if (cus.accounts.length){
+							
 							cus.accounts = cus.accounts.filter (function (acc, i, arr){
 								acc.renew ();
 								if (acc.amount > 0){
-									return acc;
+									if (acc.recursive.isRecursive && acc.recursive.renewNum >= acc.recursive.maxRenewNum){
+										return false
+									}
+									else{
+										return acc;
+									}
+									
 								}
 
 								return false
