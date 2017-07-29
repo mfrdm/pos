@@ -154,19 +154,28 @@ function Checkin() {
 		var input = req.query.input; // email, phone, fullname
 		if (!input){
 			next (); // 
+			return;
+		}
+
+		// Temporary not check. Need to figure out better solution.
+		var stmt = {
+			// checkinStatus: false, 
 		}
 
 		input = validator.trim (input);
 		var projections = {fullname: 1, phone: {$slice: [0,1]}, email: {$slice: [0,1]}, checkinStatus: 1, isStudent: 1, edu: 1, birthday: 1};
 
 		if (validator.isEmail (input)){
-			query = Customers.find ({email: input, checkinStatus: false}, projections);
+			stmt.email = input;
+			query = Customers.find (stmt, projections);
 		}
 		else if (validator.isMobilePhone (input, 'vi-VN')){
-			query = Customers.find ({phone: input, checkinStatus: false}, projections);
+			stmt.phone = input;
+			query = Customers.find (stmt, projections);
 		}
 		else { 
-			query = Customers.find ({fullname: {$regex: input.toUpperCase ()}, checkinStatus: false}, projections);
+			stmt.fullname = {$regex: input.toUpperCase ()}
+			query = Customers.find (stmt, projections);
 		}		
 
 		// get non-expired accounts
@@ -186,7 +195,55 @@ function Checkin() {
 				return
 			}
 
-			res.json ({data: cus});
+			// Check if the service used by the customers who has been checked in is private 
+			var notCheckedinCustomers = [];
+			var checkedinCustomerIds = [];
+			var checkedinCustomers = cus.filter (function (x, i, arr){
+				if (x.checkinStatus){
+					checkedinCustomerIds.push (x._id);
+					return true;
+				}
+				else{
+					notCheckedinCustomers.push (x);
+					return false;
+				}
+			});
+
+			if (checkedinCustomerIds.length){
+				Occupancies.find ({'customer._id': {$in: checkedinCustomerIds}, 'service.name': /private/i}, {'customer._id': 1}, function (err, foundOcc){
+
+					if (err){
+						console.log (err);
+						next (err);
+						return;
+					}
+
+					if (foundOcc.length){
+						var validCheckedinCustomerId = foundOcc.map (function (x, i, arr){
+							return x.customer._id.toString ();
+						});
+
+						var validCheckedinCustomers = checkedinCustomers.filter (function (x, i, arr){
+							if (validCheckedinCustomerId.indexOf (x._id.toString ()) >= 0){
+								return true;
+							}
+							else{	
+								return false;
+							}
+						});
+
+						res.json ({data: notCheckedinCustomers.concat (validCheckedinCustomers)});
+						return;					
+					}
+					else{
+						res.json ({data: notCheckedinCustomers});
+						return;
+					}
+				});
+			}
+			else{
+				res.json ({data: cus});
+			}
 		});
 	};
 

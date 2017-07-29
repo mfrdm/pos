@@ -216,46 +216,47 @@ function Checkout() {
 						next (err)
 						return
 					}
+
 					if (occ){
 						// update acc if being used
 						// At this moment. Only one method is used at a time
-						function cb(){
-							if (occ.paymentMethod && occ.paymentMethod.length){
-								var acc;
-								occ.paymentMethod.map (function (x, i, arr){
-									if (x.name == 'account'){
-										acc = x;
-									}
-								});
-
-								if (acc){
-									Accounts.findOneAndUpdate ({_id: acc._id}, {$inc: {amount: - acc.paidAmount}}, function (err, foundAcc){
-										if (err){
-											console.log (err);
-											next (err);
-											return
-										}
-
-										if (foundAcc){
-											res.json ({data: {message: 'success'}});
-										}
-										else{
-											next ();
-										}
-
-										return
-
-									});
+						if (occ.paymentMethod && occ.paymentMethod.length){
+							var acc;
+							occ.paymentMethod.map (function (x, i, arr){
+								if (x.name == 'account'){
+									acc = x;
 								}
+							});
 
+							if (acc){
+								Accounts.findOneAndUpdate ({_id: acc._id}, {$inc: {amount: - acc.paidAmount}}, function (err, foundAcc){
+									if (err){
+										console.log (err);
+										next (err);
+										return
+									}
+
+									if (foundAcc){
+										res.json ({data: {message: 'success'}});
+									}
+									else{
+										next ();
+									}
+
+									return
+
+								});
 							}
-							else{
-								res.json ({data: {message: 'success'}});
-							}
+
+						}
+						else{
+							res.json ({data: {message: 'success'}});
+							return
 						}
 					}
 					else{
 						next ();
+						return
 					}
 
 				})
