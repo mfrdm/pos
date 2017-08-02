@@ -133,10 +133,7 @@ function Checkout() {
 									unit: updatedAcc.unit,
 									paidTotal: beforeTotal - occ.total,
 									paidAmount: beforeAccAmount - updatedAcc.amount,
-									remain: updatedAcc.amount,
-									activate: updatedAcc.activate,
-									start: updatedAcc.start,
-									end: updatedAcc.end,
+									remain: updatedAcc.amount
 								}
 							}
 						});
@@ -161,10 +158,7 @@ function Checkout() {
 								unit: foundAcc.unit,
 								paidTotal: beforeTotal - occ.total,
 								paidAmount: beforeAccAmount - foundAcc.amount, // already paid hours
-								remain: foundAcc.amount,
-								activate: foundAcc.activate,
-								start: foundAcc.start,
-								end: foundAcc.end,							
+								remain: foundAcc.amount							
 							}
 						}
 					});
