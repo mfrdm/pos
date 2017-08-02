@@ -77,7 +77,7 @@ div(class="columns row")
 						// SERVICE
 						div(class="column small-12")
 							label {{ vm.model.dom.data.selected.fieldService }}
-								select(ng-change='vm.checkin.serviceChangeHandler ()' ng-model="vm.model.checkingin.occupancy.service" ng-options="s as s.label for s in vm.products.model.services track by s.name" ng-disabled='!vm.checkin.model.dom.service.select')
+								select(ng-change='vm.checkin.serviceChangeHandler ()' ng-model="vm.checkin.model.occupancy.service" ng-options="s as s.label for s in vm.products.model.services track by s.name" ng-disabled='!vm.checkin.model.dom.service.select')
 
 						// PICK GROUP
 						div(class="column small-12" ng-if="vm.privateGroups.model.privateGroupLeaderDiv && vm.model.temporary.groupPrivateLeaders && vm.model.temporary.groupPrivateLeaders.length > 1")
@@ -126,25 +126,25 @@ div(class="columns row")
 						div(class="column row")
 							div(class='column small-12')
 								label {{vm.model.dom.data.selected.checkin.promoteCode.label}}
-									select(ng-model="vm.model.temporary.checkin.codeName" ng-options="code.name as code.selectedLabel disable when code.disabled for code in vm.model.dom.data.selected.checkin.promoteCode.codes track by code._id" ng-change='vm.ctrl.checkin.addCode()' ng-disabled='!vm.checkin.model.dom.codeSelect')
+									select(ng-model="vm.checkin.model.temporary.occupancy.promocodes.name" ng-options="code.name as code.selectedLabel disable when code.disabled for code in vm.checkin.model.dom.codes track by code._id" ng-change='vm.checkin.addCode()' ng-disabled='!vm.checkin.model.dom.code.select')
 
 						div(class="column row")
 							div(class='column small-12 large-10')
-								table(ng-if='vm.model.checkingin.occupancy.promocodes.length > 0')
+								table(ng-if='vm.checkin.model.occupancy.promocodes.length')
 									thead
 										tr
 											th Code
 											th Trạng thái
 									tbody
-										tr(ng-repeat='code in vm.model.checkingin.occupancy.promocodes track by code.name')
+										tr(ng-repeat='code in vm.checkin.model.occupancy.promocodes track by code.name')
 											td {{ code.name }}
-											td(class='{{vm.model.temporary.checkin.statusCode[code.status]}}') {{ vm.model.temporary.checkin.statusCode[code.status] }}
+											td(ng-class='vm.promocodes.model.codeStatus[code.status]') {{ vm.promocodes.model.codeStatus[code.status] }}
 											td(class='text-center deleteIcon')
-												i(class="material-icons customIcon" ng-click='vm.ctrl.checkin.removeCode ()') close
+												i(class="material-icons customIcon" ng-click='vm.checkin.removeCode ()') close
 
 					div(class="row column")
-						button(class="button primary" ng-click='vm.ctrl.checkin.confirm ()' ng-disabled='!vm.checkin.model.dom.submitBtn') Submit
-						button(class="button float-right secondary" ng-click='vm.ctrl.checkin.cancel ()') Cancel
+						button(class="button primary" ng-click='vm.checkin.confirm ()' ng-disabled='!vm.checkin.model.dom.confirmBtn') Confirm
+						button(class="button float-right secondary" ng-click='vm.checkin.cancelConfirm ()') Cancel
 	
 	// EDIT FORM. DISABLE UNTIL IMPLEMENT PERMISSION
 	div(class="column" ng-show="vm.edit.model.dom.editdiv")

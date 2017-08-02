@@ -669,7 +669,14 @@ var withdraw = function (context){
 }
 
 var initAccount = function (){
-	this.end = moment (this.start).add (this.expireDateNum - 1, 'day').hour (23).minute (59);
+	if (!this.activate){
+		max_waiting_days = 60
+		this.end = moment (this.start).add (max_waiting_days - 1, 'day').hour (23).minute (59);
+	}
+	else{
+		this.start = moment ().hour (0).minute (0);
+		this.end = moment (this.start).add (this.expireDateNum - 1, 'day').hour (23).minute (59);		
+	}
 }
 
 // Represent a pre paid amount of cash or hour usage number. Can be used later to pay for service usage
@@ -704,6 +711,7 @@ var AccountsSchema = new mongoose.Schema({
 		explain: {type: Number},
 		by: {type: mongoose.Schema.Types.ObjectId}, // staff id
 	}],
+	activate: {type: Boolean, default: false},
 });	
 
 AccountsSchema.methods.renew = renew;

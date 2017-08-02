@@ -172,46 +172,7 @@
             }
         }; // Everything about model
 
-        // Reference for model, ctrl
 
-        // vm.model.dom.checkin.checkinDiv: checkin div dom
-        // vm.model.dom.checkInEditDiv: edit form dom
-        // vm.model.dom.filterDiv: filter dom
-        // vm.model.dom.checkin.confirmDiv: confirm checkin div
-        // vm.model.dom.checkOutDiv: checkout div
-        // vm.model.dom.checkInEditDiv: edit div
-
-        // vm.model.temporary.groupPrivateLeaders: group leader, contain array of {_id: '', groupName: '', leader: '', service:''}
-
-        // vm.model.search.checkin.username: search input
-        // vm.model.search.checkin.customers: search results
-        // vm.model.dom.checkin.search.message.notFound: not found message div
-        // vm.model.dom.checkin.customerSearchResultDiv: customer result div
-        // vm.model.checkingin.occupancy.customer: customer info of occupancy will be sent to server
-
-        // vm.model.checkingin.occupancy.service.name: selected service
-        // vm.model.dom.checkin.privateGroupLeaderDiv: group leader div, only visible if select private group
-        // vm.model.temporary.selectedGroupPrivate: contain selected private group, use when select parent for a service
-
-        // vm.model.temporary.checkin.codeName: model contain code name of selected promocodes
-        // vm.model.temporary.checkin.codeNames: use to check valid code or not
-
-        // vm.model.temporary.checkin.item.quantity: order quantity selected in dom
-        // vm.model.temporary.checkin.item.name: order name selected in dom
-        // vm.model.temporary.checkin.selectedItems: names of all selected items
-        // vm.model.checkingin.order.orderline: array all selected items, to show in dom
-
-        // vm.model.temporary.justCheckedin: returned customer after checkin
-
-        // vm.model.edit: model used to sent to server to edit
-
-        // vm.model.checkingin: data will be sent to checkin
-        // vm.model.checkingin.occupancy: occupancy data
-        // vm.model.checkingin.order: order data
-
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////
-        /////////////////////////////////// Selected Dom /////////////////////////////////////////////////////
-        
         vm.model.dom.data.selected = {}; // Select dom vietnamese or english
 
         // English version
@@ -515,7 +476,6 @@
                 thisObj.resetProducts ();
                 CheckinService.readSomeProducts()
                     .then(function success(res){
-                        console.log (res.data.data)
                         res.data.data.map(function(x, i, arr){
                             if(x.category == 1){
                                 thisObj.model.services.push(x);
@@ -543,8 +503,6 @@
 
                         vm.model.dom.data.selected.services = vm.model.services;
                         vm.model.dom.data.selected.items = vm.model.items;
-
-                        console.log (vm.model.services)
 
                     },
                     function error (err){
@@ -579,9 +537,20 @@
         vm.promocodes = new function (){
             this.model = {
                 codes: [],
+                codeStatus: {
+                    1: 'unchecked',
+                    2: 'invalid',
+                    3: 'valid'
+                },
             };
 
             this.get = function (){
+                if (this.model.codes.length){
+                    var deferred = $q.defer ();
+                    deferred.resolve ({data: 'success'});
+                    return deferred.promise;
+                }
+
                 var thisObj = this;
                 vm.ctrl.showLoader ();
                 return CheckinService.getPromocodes ()
@@ -591,7 +560,7 @@
 
                         if (codes.length){
                             vm.ctrl.checkin.addCodeLabels (codes);
-                            thisObj.codes = codes.sort (function (a, b){
+                            thisObj.model.codes = codes.sort (function (a, b){
                                 return a.selectedLabel > b.selectedLabel;
                             })
 
@@ -611,11 +580,27 @@
 
             this.getCodesByServices = function (selectedServiceName){
                 selectedServiceName = selectedServiceName ? selectedServiceName.toLowerCase () : selectedServiceName;
-                return this.codes.filter(function(ele){
+                return this.model.codes.filter(function(ele){
                     return (ele.services.indexOf(selectedServiceName) > -1 || ele.services[0] == 'all')
                 });
-
             };
+
+            // After selecting code, validate it
+            this.validate = function (query){
+                return CheckinService.validatePromoteCode(query).then(
+                    function success(res){
+                        var data = res.data.data ? res.data.data : []; // review server
+                        var deferred = $q.defer ();
+                        deferred.resolve ({message: 'success', data: data});
+                        return deferred.promise;
+                    },
+                    function failure (err){
+                        var deferred = $q.defer ();
+                        deferred.reject ({message: 'falure', error: err});
+                        return deferred.promise;                        
+                    }
+                );   
+            }            
         }();
 
         vm.privateGroups = new function (){
@@ -631,12 +616,27 @@
         vm.checkin = new function (){
             this.model = {
                 occupancy: {},
-                order: [],
+                order: {},
                 dom: {},
                 temporary: {
                     order: {},
-                    occupany: {},
+                    occupancy: {
+                        promocodes: {}
+                    },
                 }
+            };
+
+            this.init = function (){
+                this.model.dom.container = true;
+
+                this.initServiceSection ();
+                this.initItemSection ();
+                this.initCodeSection ();
+                this.initConfirmBtn ();
+
+                vm.ctrl.checkin.getGroupPrivateLeader (); // FIX
+                vm.ctrl.checkin.getPromocodes(); // FIX
+
             };
 
             this.initServiceSection = function (){
@@ -659,41 +659,37 @@
                 };
             };
 
-            this.initButton = function (){
-                this.model.dom.submitBtn = false;
-            }
+            this.initConfirmBtn = function (){
+                this.model.dom.confirmBtn = false;
+            };
 
-            this.init = function (){
-                this.model.dom.container = true;
+            this.enableConfirmBtn = function (){
+                this.model.dom.confirmBtn = true;
+            };
 
-                this.initServiceSection ();
-                this.initItemSection ();
-                this.initCodeSection ();
-                this.initButton ();
-
-                vm.ctrl.checkin.getGroupPrivateLeader (); // FIX
-                vm.ctrl.checkin.getPromocodes(); // FIX
-
+            this.enableCodeSection = function (){
+                this.model.dom.code = {
+                    select: true,
+                };                
             };
 
             this.openCheckinDiv = function (){
                 vm.edit.model.dom.editDiv = false; // turn off
                 vm.checkinList.dom.filterDiv = false; // turn off             
-                vm.checkin.init (); // Trigger get group of leaders
+                this.init (); // Trigger get group of leaders
             };
 
             this.getPromocodes = function (){
-                if (vm.promocodes.model.codes.length){
-                    return;
-                }
-
+                var thisObj = this;
                 vm.promocodes.get ().then (function success (data){
-                    // FIX: used when checkin a booking. Move to booking object
-                    // var customer = vm.model.checkingin.occupancy.customer;
-                    // var service = vm.model.checkingin.occupancy.service;
-                    // if (customer && service.name){
-                    //     vm.model.dom.data.selected.checkin.promoteCode.codes = vm.promocodes.getCodesByServices (service.name); 
-                    // }
+
+                    var customer = thisObj.model.occupancy.customer;
+                    var service = thisObj.model.occupancy.service;
+
+                    if (customer && service.name){
+                        thisObj.model.dom.codes = vm.promocodes.getCodesByServices (service.name);
+                    }
+
                 }, function error (err){
                     console.log (err);
                 });                
@@ -716,17 +712,21 @@
                 this.initServiceSection ();
                 this.initItemSection ();
                 this.initCodeSection ();
-                this.initButton ();
+                this.initConfirmBtn ();
             }
 
+            // FIX
+            // STOP here. Need to initialize code value and other things
             this.serviceChangeHandler = function (){
-                var targetService = vm.model.checkingin.occupancy.service;
-
-                if (vm.products.serviceChangeHandler (targetService)){
+                var targetService = this.model.occupancy.service; // FIX
+                if (targetService && vm.products.serviceChangeHandler (targetService)){
                     vm.model.dom.data.selected.checkin.promoteCode.codes = vm.promocodes.getCodesByServices (targetService.name);   
                 }
 
-                vm.ctrl.disablePromocodes();              
+                this.enableConfirmBtn ();
+                this.enableCodeSection ();
+                this.getPromocodes ();
+                // vm.ctrl.disablePromocodes();              
             };
 
             this.orderChangeHandler = function (){
@@ -786,6 +786,84 @@
                     vm.model.temporary.checkin.selectedItems.splice (index, 1);
                 }
             };            
+
+            // Select and add code
+            this.addCode = function (){
+                var thisObj = this;
+                if(thisObj.model.occupancy.customer && thisObj.model.occupancy.customer.fullname){
+                    thisObj.model.occupancy.promocodes = [{name: thisObj.model.temporary.occupancy.promocodes.name, status: 1}]; // used to display whether code status
+                    thisObj.model.temporary.occupancy.promocodes.nameList = [thisObj.model.temporary.occupancy.promocodes.name]; // ? may not needed
+                    thisObj.validateCodes ();
+                }
+            };
+
+            // After selecting code, validate it
+            this.validateCodes = function (){
+                var addedCodes = [];
+                var thisObj = this;
+
+                if (thisObj.model.occupancy.promocodes && thisObj.model.occupancy.promocodes.length){
+                    addedCodes = thisObj.model.occupancy.promocodes.map (function(x, i, arr){
+                        return x.name;
+                    });
+                }
+
+                var query = {
+                    codes: addedCodes,
+                    isStudent: thisObj.model.occupancy.customer.isStudent,
+                    service: thisObj.model.occupancy.service.name,
+                };
+
+                vm.ctrl.showLoader ();
+
+                vm.promocodes.validate (query)
+                .then (function success (data){
+                    vm.ctrl.hideLoader ();
+                    var foundCodes = data.data;
+                    thisObj.model.occupancy.promocodes = foundCodes;
+                    thisObj.model.temporary.occupancy.promocodes.nameList = []; // ?
+                    foundCodes.map (function (code, i, arr){
+                        thisObj.model.temporary.occupancy.promocodes.nameList.push (code.name);
+                    });
+
+                    if(thisObj.model.occupancy.promocodes.length){ // assign status
+                        vm.checkin.model.occupancy.promocodes.map(function(code, i, arr){
+                            if(thisObj.model.temporary.occupancy.promocodes.nameList.indexOf(code.name) != -1){
+                                code.status = 3; // valid code
+                            }else{
+                                code.status = 2; // invalid code
+                            }
+                        });
+                    }
+
+                }, function error (err){
+                    vm.ctrl.hideLoader ();
+                    console.log (err.error);
+                });
+            };
+
+            // Remove code
+            this.removeCode = function(){
+                this.model.occupancy.promocodes = []
+                this.model.temporary.occupancy.promocodes.name = ''
+            };
+
+            this.confirm = function (){
+                // STOP here
+            };
+
+            this.submit = function (){
+
+            };
+
+            this.cancelConfirm = function (){
+
+            };
+
+            // back to check-in form when on submit
+            this.backSubmit = function (){
+
+            };
 
         }();
 

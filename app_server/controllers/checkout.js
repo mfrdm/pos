@@ -134,6 +134,9 @@ function Checkout() {
 									paidTotal: beforeTotal - occ.total,
 									paidAmount: beforeAccAmount - updatedAcc.amount,
 									remain: updatedAcc.amount,
+									activate: updatedAcc.activate,
+									start: updatedAcc.start,
+									end: updatedAcc.end,
 								}
 							}
 						});
@@ -159,7 +162,9 @@ function Checkout() {
 								paidTotal: beforeTotal - occ.total,
 								paidAmount: beforeAccAmount - foundAcc.amount, // already paid hours
 								remain: foundAcc.amount,
-
+								activate: foundAcc.activate,
+								start: foundAcc.start,
+								end: foundAcc.end,							
 							}
 						}
 					});
@@ -229,7 +234,8 @@ function Checkout() {
 							});
 
 							if (acc){
-								Accounts.findOneAndUpdate ({_id: acc._id}, {$inc: {amount: - acc.paidAmount}}, function (err, foundAcc){
+								var updateStmt = {$inc: {amount: - acc.paidAmount}}
+								Accounts.findOneAndUpdate ({_id: acc._id}, updateStmt, function (err, foundAcc){
 									if (err){
 										console.log (err);
 										next (err);
@@ -237,13 +243,30 @@ function Checkout() {
 									}
 
 									if (foundAcc){
-										res.json ({data: {message: 'success'}});
+										if (!foundAcc.activate){
+											foundAcc.activate = true;
+											foundAcc.initAccount ();
+											Accounts.update ({_id: foundAcc._id}, {$set: {end: foundAcc.end, start: foundAcc.start,activate: foundAcc.activate}}, function (err, result){
+												if (err){
+													console.log (err);
+													next (err);
+													return
+												}
+
+												res.json ({data: {message: 'success'}});
+												return;
+											});
+										}
+										else{
+											res.json ({data: {message: 'success'}});
+											return;
+										}
 									}
 									else{
 										next ();
 									}
 
-									return
+									return;
 
 								});
 							}
