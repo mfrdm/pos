@@ -47,9 +47,8 @@ function Checkout() {
 							console.log (err);
 							next (err);
 						}
-
+						
 						if (cus.accounts.length){
-							
 							cus.accounts = cus.accounts.filter (function (acc, i, arr){
 								acc.renew ();
 								if (acc.amount > 0){

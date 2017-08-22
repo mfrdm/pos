@@ -240,6 +240,134 @@ var getAccountDefaultCodes = function (){
 		}			
 	};
 
+	var studentGroup3Common3h1d30d = {
+		name: 'student_group3_common3h1d30d',
+		desc: '',
+		label: {
+			vn: 'Combo 30 ngày / 3 giờ mỗi ngày cho nhóm 3 sinh viên',
+		},	
+		codeType: 2,
+		accounts: ['3h1d30dCommon'],
+		priority: 1,
+		redeemData: {
+			price: {
+				value: 240000
+			}
+		}	
+	};
+
+	var studentGroup5Common3h1d30d = {
+		name: 'student_group5_common3h1d30d',
+		desc: '',
+		label: {
+			vn: 'Combo 30 ngày / 3 giờ mỗi ngày cho nhóm 5 sinh viên',
+		},	
+		codeType: 2,
+		accounts: ['3h1d30dCommon'],
+		priority: 1,
+		redeemData: {
+			price: {
+				value: 200000
+			}
+		}
+	};
+
+	var group3Common3h1d30d = {
+		name: 'group3_common3h1d30d',
+		desc: '',
+		label: {
+			vn: 'Combo 30 ngày / 3 giờ mỗi ngày cho nhóm 3',
+		},	
+		codeType: 2,
+		accounts: ['3h1d30dCommon'],
+		priority: 1,
+		redeemData: {
+			price: {
+				value: 340000
+			}
+		}	
+	};
+
+	var group5Common3h1d30d = {
+		name: 'group5_common3h1d30d',
+		desc: '',
+		label: {
+			vn: 'Combo 30 ngày / 3 giờ mỗi ngày cho nhóm 5',
+		},	
+		codeType: 2,
+		accounts: ['3h1d30dCommon'],
+		priority: 1,
+		redeemData: {
+			price: {
+				value: 300000
+			}
+		}
+	};
+
+	var studentGroup3Common5h1d30d = {
+		name: 'student_group3_common5h1d30d',
+		desc: '',
+		label: {
+			vn: 'Combo 30 ngày / 5 giờ mỗi ngày cho nhóm 3 sinh viên',
+		},	
+		codeType: 2,
+		accounts: ['5h1d30dCommon'],
+		priority: 1,
+		redeemData: {
+			price: {
+				value: 340000
+			}
+		}
+	};
+
+	var studentGroup5Common5h1d30d = {
+		name: 'student_group5_common5h1d30d',
+		desc: '',
+		label: {
+			vn: 'Combo 30 ngày / 5 giờ mỗi ngày cho nhóm 5 sinh viên',
+		},	
+		codeType: 2,
+		accounts: ['5h1d30dCommon'],
+		priority: 1,
+		redeemData: {
+			price: {
+				value: 300000
+			}
+		}
+	};
+
+	var group3Common5h1d30d = {
+		name: 'group3_common5h1d30d',
+		desc: '',
+		label: {
+			vn: 'Combo 30 ngày / 5 giờ mỗi ngày cho nhóm 3',
+		},	
+		codeType: 2,
+		accounts: ['5h1d30dCommon'],
+		priority: 1,
+		redeemData: {
+			price: {
+				value: 440000
+			}
+		}
+	};
+
+	var group5Common5h1d30d = {
+		name: 'group5_common5h1d30d',
+		desc: '',
+		label: {
+			vn: 'Combo 30 ngày / 5 giờ mỗi ngày cho nhóm 5',
+		},	
+		codeType: 2,
+		accounts: ['5h1d30dCommon'],
+		priority: 1,
+		redeemData: {
+			price: {
+				value: 400000
+			}
+		}
+	};	
+
 	return {
 		studentCommon1day: studentCommon1day,
 		studentCommon3days: studentCommon3days,
@@ -254,7 +382,15 @@ var getAccountDefaultCodes = function (){
 		studentGroup3Common20h14d: studentGroup3Common20h14d,
 		studentGroup5Common20h14d: studentGroup5Common20h14d,
 		group3Common20h14d: group3Common20h14d,
-		group5Common20h14d: group5Common20h14d
+		group5Common20h14d: group5Common20h14d,
+		studentGroup3Common3h1d30d: studentGroup3Common3h1d30d,
+		studentGroup5Common3h1d30d: studentGroup5Common3h1d30d,
+		group3Common3h1d30d: group3Common3h1d30d,
+		group5Common3h1d30d: group5Common3h1d30d,
+		studentGroup3Common5h1d30d: studentGroup3Common5h1d30d,
+		studentGroup5Common5h1d30d: studentGroup5Common5h1d30d,
+		group3Common5h1d30d: group3Common5h1d30d,
+		group5Common5h1d30d: group5Common5h1d30d,			
 	}
 }
 
@@ -415,22 +551,6 @@ var addAccountDefaultCodes = function (context){
 		}
 	} 
 
-	// Remove later if no problems occur
-	// if (!higherType2 && isStudent){
-	// 	var targetCodes = [
-	// 		defaultCodes ['studentCommon1day'],
-	// 		defaultCodes ['studentCommon3days'],
-	// 		defaultCodes ['studentCommon3h1d30d'],
-	// 		defaultCodes ['studentCommon5h1d30d'],
-	// 		defaultCodes ['studentCommon20h14d'],
-	// 	];
-
-	// 	targetCodes.map (function (x, i, arr){
-	// 		_addDefaultCode (x);
-	// 	});		
-	// }
-
-
 	if (!higherType2 && isStudent && !isGroupon){
 		var targetCodes = [
 			defaultCodes ['studentCommon1day'],
@@ -447,7 +567,9 @@ var addAccountDefaultCodes = function (context){
 	else if (!higherType2 && isStudent && isGroupon && groupMemberNumber >= 3 && groupMemberNumber <= 4){
 		var targetCodes = [
 			defaultCodes ['studentGroup3Common1day'],
-			defaultCodes['studentGroup3Common20h14d'],
+			defaultCodes ['studentGroup3Common20h14d'],
+			defaultCodes ['studentGroup3Common3h1d30d'],
+			defaultCodes ['studentGroup3Common5h1d30d'],
 		];
 
 		targetCodes.map (function (x, i, arr){
@@ -458,7 +580,9 @@ var addAccountDefaultCodes = function (context){
 	else if (!higherType2 && isStudent && isGroupon && groupMemberNumber >= 5){
 		var targetCodes = [
 			defaultCodes ['studentGroup5Common1day'],
-			defaultCodes['studentGroup5Common20h14d'],
+			defaultCodes ['studentGroup5Common20h14d'],
+			defaultCodes ['studentGroup5Common3h1d30d'],
+			defaultCodes ['studentGroup5Common5h1d30d'],			
 		];
 
 		targetCodes.map (function (x, i, arr){
@@ -470,6 +594,8 @@ var addAccountDefaultCodes = function (context){
 		var targetCodes = [
 			defaultCodes ['group3Common1day'],
 			defaultCodes ['group3Common20h14d'],
+			defaultCodes ['group3Common3h1d30d'],
+			defaultCodes ['group3Common5h1d30d'],
 		];
 
 		targetCodes.map (function (x, i, arr){
@@ -480,6 +606,8 @@ var addAccountDefaultCodes = function (context){
 		var targetCodes = [
 			defaultCodes ['group5Common1day'],
 			defaultCodes ['group5Common20h14d'],
+			defaultCodes ['group5Common3h1d30d'],
+			defaultCodes ['group5Common5h1d30d'],			
 		];
 
 		targetCodes.map (function (x, i, arr){

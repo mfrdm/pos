@@ -11,7 +11,6 @@ var Promise = require ('bluebird')
 module.exports = new Checkin();
 
 function Checkin() {
-
 	// FIX: encapsulate validate into Promocode
 	// only validate one code at a time
 	// codes is an array of strings of code names
@@ -37,8 +36,6 @@ function Checkin() {
 			// if (pc.length){
 			// 	pc = Promocodes.validateCodes (pc);
 			// }
-
-			console.log (pc)
 
 			res.json ({data: pc});
 

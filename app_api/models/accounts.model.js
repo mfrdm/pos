@@ -82,7 +82,7 @@ var getDefaultAccounts = function (){
 			baseAmount: 3
 		},
 		expireDateNum: 30,
-		grouponable: false,
+		grouponable: true,
 	};	
 
 	var fiveHoursOneDayThirtyDaysCommon = {
@@ -105,7 +105,7 @@ var getDefaultAccounts = function (){
 			baseAmount: 5
 		},
 		expireDateNum: 30,
-		grouponable: false,
+		grouponable: true,
 	};
 
 	var twentyHoursCommon = {
@@ -298,7 +298,7 @@ var getDefaultAccounts = function (){
 		},
 		unit: 'hour',
 		desc: "",
-		services: ['Large group private'], // name of service applied
+		services: ['large group private'], // name of service applied
 		label: {
 			vn: "Combo buổi sáng - Private 40",
 			en: "",
@@ -321,7 +321,7 @@ var getDefaultAccounts = function (){
 		},
 		unit: 'hour',
 		desc: "",
-		services: ['Large group private'], // name of service applied
+		services: ['large group private'], // name of service applied
 		label: {
 			vn: "Combo buổi chiều - Private 40",
 			en: "",
@@ -629,7 +629,7 @@ var _withdraw = function (amount, acc){
 	}
 	else if (amount <= acc.amount){
 		remain = 0;
-		acc.amount = acc.amount - amount >= 0 ? acc.amount - amount : 0;
+		acc.amount = acc.amount - amount > 0 ? acc.amount - amount : 0;
 	}
 
 	return remain;
@@ -640,11 +640,11 @@ var applyFormula = function (context, acc){
 	var adjustedAmount = context.getUsage ();
 	if (acc.formula && acc.formula.value == 1){ // assume checkinTime is always greater than or equal expected on
 		checkinTime = moment (context.getCheckinTime ());
-		expectedCheckinTime = moment (checkinTime);
+		expectedCheckinTime = moment (checkinTime); // assume must be the same date
 		expectedCheckinTime.hour (acc.formula.hourStart);
 		expectedCheckinTime.minute (acc.formula.minStart);
 		hourDiff = (checkinTime.diff (expectedCheckinTime) / 3600000);
-		adjustedAmount = hourDiff > 0 ? adjustedAmount + hourDiff : adjustedAmount;
+		adjustedAmount = hourDiff > 0 ? adjustedAmount + hourDiff : adjustedAmount; // account for only case of checking-in late than expected check-in time
 	}
 
 	return adjustedAmount;

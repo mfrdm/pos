@@ -70,7 +70,7 @@ function CustomersCtrl() {
 			query.$or.push ({phone: searchedPhone});
 		}
 
-		Customers.find (query, {email: 1, phone: 1, fullname: 1, birthday: 1}, function (err, foundCustomers){
+		Customers.find (query, {email: 1, phone: 1, fullname: 1, birthday: 1, isStudent: 1}, function (err, foundCustomers){
 			if (err){
 				console.log (err);
 				next (err);

@@ -327,6 +327,26 @@
         //////////////////////////// Implement data from booking and customer page to checkin//////////////////
 
         // Display info of selected customer on search input bar
+        vm.store = new function (){
+            this.model = {
+                location: {
+                   _id: LayoutCtrl.model.dept._id,
+                    name: LayoutCtrl.model.dept.name,                    
+                },              
+                staff: {
+                    _id: LayoutCtrl.model.user._id,
+                }
+            };
+
+            this.getLocationInfo = function (){
+                return this.model.location;
+            };
+
+            this.getStaffInfo = function (){
+                return this.model.staff;
+            };
+        };
+
         vm.customers = new function (){
             this.createUsername = function (customer){
                 customer.email = typeof customer.email == 'string' ? customer.email : customer.email[0];
@@ -494,7 +514,7 @@
 
                         // push data into dom.data objects
                         thisObj.model.services.map (function (x, i, arr){
-                            vm.ctrl.addServiceLabel (x);
+                            thisObj.addServiceLabel (x);
                         });
                         
                         vm.model.services = vm.model.services.sort (function (a, b){
@@ -531,6 +551,29 @@
                 else{
                     return false; // should never happen!
                 }
+            };
+
+            this.addServiceLabel = function (service){
+                if (service.name.toLowerCase () == 'group common'){
+                    if (vm.model.dom.data.selected.modelLanguage == 'vn') service.label = 'Nhóm chung';
+                    else service.label = service.name;
+                }
+                else if (service.name.toLowerCase () == 'individual common'){
+                    if (vm.model.dom.data.selected.modelLanguage == 'vn') service.label = 'Cá nhân';
+                    else service.label = service.name;
+                }
+                else if (service.name.toLowerCase () == 'small group private'){
+                    if (vm.model.dom.data.selected.modelLanguage == 'vn') service.label = 'Nhóm riêng 15';
+                    else service.label = service.name;
+                }
+                else if (service.name.toLowerCase () == 'medium group private'){
+                    if (vm.model.dom.data.selected.modelLanguage == 'vn') service.label = 'Nhóm riêng 30';
+                    else service.label = service.name;
+                }   
+                else if (service.name.toLowerCase () == 'large group private'){
+                    if (vm.model.dom.data.selected.modelLanguage == 'vn') service.label = 'Nhóm riêng 40';
+                    else service.label = service.name;
+                }                                                           
             };
         }();
 
@@ -640,6 +683,7 @@
             };
 
             this.initServiceSection = function (){
+                this.model.occupancy.service = {};
                 this.model.dom.service = {
                     select: false,
                 };
@@ -654,6 +698,7 @@
             };
 
             this.initCodeSection = function (){
+                this.removeCode ();
                 this.model.dom.code = {
                     select: false,
                 };
@@ -718,6 +763,10 @@
             // FIX
             // STOP here. Need to initialize code value and other things
             this.serviceChangeHandler = function (){
+                if (!vm.checkin.model.occupancy.service){
+                    return;
+                }
+
                 var targetService = this.model.occupancy.service; // FIX
                 if (targetService && vm.products.serviceChangeHandler (targetService)){
                     vm.model.dom.data.selected.checkin.promoteCode.codes = vm.promocodes.getCodesByServices (targetService.name);   
@@ -728,64 +777,6 @@
                 this.getPromocodes ();
                 // vm.ctrl.disablePromocodes();              
             };
-
-            this.orderChangeHandler = function (){
-                if (this.model.temporary.order.name && this.model.temporary.order.quantity){
-                    this.model.dom.item.addBtn = true;
-                }
-                else{
-                    this.model.dom.item.addBtn = false;
-                }
-            };
-
-            this.hideOrderMessage = function(){
-                vm.model.dom.checkin.order.message.notEnough = false;
-            }
-            
-            // Add item to order
-            this.addItem = function (){
-                if (vm.model.temporary.checkin.item.quantity && vm.model.temporary.checkin.item.name && vm.model.checkingin.occupancy.customer){
-                    // check if store has enough products for making order
-                    //vm.model.temporary.checkin.item.name and vm.model.temporary.checkin.item.quantity
-                    var end = new Date();
-                    StorageService.readProductsQuantity(0, end).then(function(res){
-                        var selectedProduct = res.data.data.filter(function(ele){
-                            return ele.name == vm.model.temporary.checkin.item.name
-                        })[0]
-                        if(selectedProduct.totalQuantity < vm.model.temporary.checkin.item.quantity){
-                            vm.model.dom.checkin.order.message.notEnough = true;
-                        }else{
-                            vm.model.dom.checkin.order.message.notEnough = false;
-                            vm.model.items.map (function (x, i, arr){
-                                if (x.name == vm.model.temporary.checkin.item.name && vm.model.temporary.checkin.selectedItems.indexOf (x.name) == -1){
-                                    var obj = Object.assign({},{
-                                        quantity: vm.model.temporary.checkin.item.quantity,
-                                        _id: x._id,
-                                        productName: x.name,
-                                        price: x.price
-                                    });
-                                    vm.model.checkingin.order.orderline.push (obj);
-                                    vm.model.temporary.checkin.item = {};
-                                    vm.model.temporary.checkin.selectedItems.push (x.name);
-                                    return;
-                                }
-                                else{
-                                    // display message
-                                }
-                            });
-                        }
-                    })
-                    
-                }
-            };
-
-            // Remove item from order
-            this.removeItem = function (index){
-                if (vm.model.checkingin.order.orderline && vm.model.checkingin.order.orderline.length){
-                    vm.model.checkingin.order.orderline.splice (index, 1);
-                    vm.model.temporary.checkin.selectedItems.splice (index, 1);
-                }
-            };            
 
             // Select and add code
             this.addCode = function (){
@@ -827,7 +818,7 @@
                     });
 
                     if(thisObj.model.occupancy.promocodes.length){ // assign status
-                        vm.checkin.model.occupancy.promocodes.map(function(code, i, arr){
+                        thisObj.model.occupancy.promocodes.map(function(code, i, arr){
                             if(thisObj.model.temporary.occupancy.promocodes.nameList.indexOf(code.name) != -1){
                                 code.status = 3; // valid code
                             }else{
@@ -846,25 +837,121 @@
             this.removeCode = function(){
                 this.model.occupancy.promocodes = []
                 this.model.temporary.occupancy.promocodes.name = ''
+                this.model.temporary.occupancy.promocodes.nameList = [];
+            };
+
+            this.setStoreInfo = function (){
+                this.model.occupancy.location = vm.store.getLocationInfo ();
+                this.model.occupancy.staffId = vm.store.getStaffInfo ()._id;
+                
+                // set infor for order too!!                
             };
 
             this.confirm = function (){
-                // STOP here
+                if(this.model.occupancy.customer._id){ // if have all data
+                    this.setStoreInfo ();
+                    this.model.occupancy.checkinTime = new Date();
+                    this.model.dom.confirmDiv = true;
+                }
             };
 
-            this.submit = function (){
+            this.checkin = function (){
+                var thisObj = this;
+                var customerId = thisObj.model.occupancy.customer._id;
+                var data = {
+                    occupancy: this.model.occupancy,
+                    order: this.model.order 
+                };
 
+                vm.ctrl.showLoader ();
+                CheckinService.createOne (customerId, data).then(
+                    function success(res){
+                        vm.ctrl.hideLoader ();
+                        thisObj.model.temporary.justCheckedin = res.data.data;
+                        if (thisObj.model.temporary.justCheckedin.order && thisObj.model.temporary.justCheckedin.order.orderline && thisObj.model.temporary.justCheckedin.order.orderline.length){
+                            thisObj.model.order.occupancyId = vm.model.temporary.justCheckedin.occupancy._id;
+                        }
+                        else{
+                            vm.ctrl.reset ();
+                        }
+                    }, 
+                    function error(err){
+                        vm.ctrl.hideLoader ();
+                        console.log(err);
+                    }
+                ); 
             };
 
-            this.cancelConfirm = function (){
-
+            this.cancelCheckin = function (){
+                vm.ctrl.reset ()
             };
 
             // back to check-in form when on submit
-            this.backSubmit = function (){
-
+            this.back = function (){
+                this.model.dom.confirmDiv = false;
             };
 
+            // STOP here
+            this.order = {
+                cancel: function (){
+
+                },
+                purchase: function (){
+
+                },
+                orderChangeHandler: function (){
+                    if (this.model.temporary.order.name && this.model.temporary.order.quantity){
+                        this.model.dom.item.addBtn = true;
+                    }
+                    else{
+                        this.model.dom.item.addBtn = false;
+                    }
+                },
+                hideOrderMessage: function(){
+                    vm.model.dom.checkin.order.message.notEnough = false;
+                },
+                addItem: function (){
+                    if (vm.model.temporary.checkin.item.quantity && vm.model.temporary.checkin.item.name && vm.model.checkingin.occupancy.customer){
+                        // check if store has enough products for making order
+                        //vm.model.temporary.checkin.item.name and vm.model.temporary.checkin.item.quantity
+                        var end = new Date();
+                        StorageService.readProductsQuantity(0, end).then(function(res){
+                            var selectedProduct = res.data.data.filter(function(ele){
+                                return ele.name == vm.model.temporary.checkin.item.name
+                            })[0]
+                            if(selectedProduct.totalQuantity < vm.model.temporary.checkin.item.quantity){
+                                vm.model.dom.checkin.order.message.notEnough = true;
+                            }else{
+                                vm.model.dom.checkin.order.message.notEnough = false;
+                                vm.model.items.map (function (x, i, arr){
+                                    if (x.name == vm.model.temporary.checkin.item.name && vm.model.temporary.checkin.selectedItems.indexOf (x.name) == -1){
+                                        var obj = Object.assign({},{
+                                            quantity: vm.model.temporary.checkin.item.quantity,
+                                            _id: x._id,
+                                            productName: x.name,
+                                            price: x.price
+                                        });
+                                        vm.model.checkingin.order.orderline.push (obj);
+                                        vm.model.temporary.checkin.item = {};
+                                        vm.model.temporary.checkin.selectedItems.push (x.name);
+                                        return;
+                                    }
+                                    else{
+                                        // display message
+                                    }
+                                });
+                            }
+                        })
+                        
+                    }
+                },
+                removeItem: function (index){
+                    if (vm.model.checkingin.order.orderline && vm.model.checkingin.order.orderline.length){
+                        vm.model.checkingin.order.orderline.splice (index, 1);
+                        vm.model.temporary.checkin.selectedItems.splice (index, 1);
+                    }
+                }                  
+            };
         }();
 
         vm.edit = new function (){
@@ -942,45 +1029,37 @@
 
         }();
 
-        vm.checkinList = new function (){
+        vm.checkinedList = new function (){
             this.model = {
                 dom: {
                     listDiv: true,
                     filterDiv: false,
                 },
-                checkedinList: {data: []},
+                list: {data: []},
             }
 
             this.get = function (){
                 var thisObj = this;
                 var query = {
                     status: 4, // get both checked out and checked in
-                    storeId: LayoutCtrl.model.dept._id,
+                    storeId: vm.store.getLocationInfo ()._id,
                 }
-
-                vm.ctrl.showLoader ();
 
                 return CheckinService.getCheckedinList(query)
                     .then(function success(res){
-                        vm.ctrl.hideLoader ();
-                        thisObj.model.checkedinList.data = res.data.data;
-                        thisObj.model.checkedinList.data.map (function (x, i, arr){
-                            vm.ctrl.addServiceLabel (x.service);
-                        }); // add service label to service
+                        thisObj.model.list.data = res.data.data;
+                        thisObj.model.list.data.map (function (x, i, arr){
+                            vm.products.addServiceLabel (x.service);
+                        });
 
                         var deferred = $q.defer ();
                         deferred.resolve ({data: 'success'});
                         return deferred.promise;
-
-                        // vm.ctrl.filterPaginate();// make pagination
-                        // vm.ctrl.checkinBooking ();// implement data from booking
-                        // vm.ctrl.checkinNewCustomer ();// implement data from customer
                     }, 
                     function error(err){
-                        vm.ctrl.hideLoader ();
                         console.log(err);
                     });
-            }
+            };
         }();
 
 
@@ -2020,12 +2099,15 @@
         angular.element(document.getElementById ('mainContentDiv')).ready(function () {// after page load
             vm.model.temporary.occMembers = []
             // vm.ctrl.getCheckedinList ();// get checkin list
-            vm.checkinList.get ()
+            vm.ctrl.showLoader ();
+            vm.checkinedList.get ()
                 .then (function success (data){
+                    vm.ctrl.hideLoader ();
                     // vm.ctrl.filterPaginate();// make pagination
-                    // vm.ctrl.checkinBooking ();// implement data from booking
-                    // vm.ctrl.checkinNewCustomer ();// implement data from customer
+                    vm.ctrl.checkinBooking ();// implement data from booking
+                    vm.ctrl.checkinNewCustomer ();// implement data from customer
                 }, function error (err){
+                    vm.ctrl.hideLoader ();
                     console.log (err);
                 });
 
