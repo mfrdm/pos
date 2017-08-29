@@ -52,9 +52,9 @@ class Report:
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Report Greenspace activities')
-	parser.add_argument ('--trans', help='Display transaction in a given day')
-	parser.add_argument ('--newcustomernumber', help='Display new customer number in a given day')
-	parser.add_argument ('--costs', help='Display costs in a given day')
+	parser.add_argument ('-t', '--trans', help='Display transaction in a given day')
+	parser.add_argument ('-ncn', '--newcustomernumber', help='Display new customer number in a given day')
+	parser.add_argument ('-c', '--costs', help='Display costs in a given day')
 	args = parser.parse_args ()
 
 	report = Report ()

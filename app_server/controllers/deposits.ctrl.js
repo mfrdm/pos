@@ -41,7 +41,29 @@ function DepositsCtrl (){
 						return
 					}
 
-					res.json ({data: {message: 'success', _id: newDeposit._id}})
+					// Expecte to find at most one cash account available
+					Accounts.findOneAndUpdate ({'label.en': 'Cash', 'amount': {$gt: 0}, end: {$gte: moment()}, _id: {$not: {$in: [newAcc._id]}}, 'customer._id': deposit.customer._id}, {$set: {amount: 0}}, {new: false, fields: {'amount': 1}}, function (err, previousAccount){
+						if (err){
+							next (err);
+							return;
+						}
+
+						if (previousAccount){
+							Accounts.update ({_id: newAcc._id}, {$inc: {amount: previousAccount.amount}}, function (){
+								if (err){
+									next (err);
+									return;
+								};
+
+								res.json ({data: {message: 'success', _id: newDeposit._id}})
+							});
+						}
+						else{
+							res.json ({data: {message: 'success', _id: newDeposit._id}})
+						}
+
+
+					});
 				});
 
 			})
