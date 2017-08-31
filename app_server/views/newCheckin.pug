@@ -267,7 +267,7 @@ div(class="columns row")
 						
 						td
 							a(ng-if='occupancy.status == 1' class="primary button" ng-click="vm.ctrl.checkout.getInvoice (occupancy)") Checkout
-							a(ng-if='occupancy.status == 2' class="disabled button") Checkout
+							a(ng-if='occupancy.status == 2' class="primary button" ng-click="vm.ctrl.checkout.getInvoice (occupancy)") View
 						td
 							a(class="primary button" ng-click="vm.edit.readCheckin (occupancy)" ng-disabled='!vm.ctrl.layout.ctrl.hasPermission ("editCheckedin")') Edit
 						td(ng-if='occupancy.status != 1') {{occupancy.note}}
@@ -316,7 +316,6 @@ div(class="fullBox row column" ng-show='vm.checkin.model.dom.confirmDiv')
 			div(class="row column marginT30 paddingLR10")
 				a(class="paddingL15 button primary" ng-click="vm.checkin.checkin ()") Check-in			
 				a(class="paddingR15 button float-right secondary" ng-click="vm.checkin.back ()") Back
-
 
 // ORDER INVOICE
 div(class="fullBox row column" ng-show='vm.checkin.model.temporary.justCheckedin.order.orderline.length')
@@ -445,4 +444,4 @@ div(id='checkoutDiv' ng-show='vm.model.dom.checkOutDiv' class="row column")
 								textarea(type='text' ng-model='vm.model.checkingout.occupancy.note' placeholder="Ghi chú")
 			div(class="row column marginT30 paddingLR10")
 				a(class="paddingL15 button primary" ng-click="vm.ctrl.checkout.checkout()") Checkout
-				a(class="paddingR15 button float-right secondary" ng-click='vm.ctrl.reset()') Cancel
+				a(class="paddingR15 button float-right secondary" ng-click="vm.ctrl.reset()") Cancel
