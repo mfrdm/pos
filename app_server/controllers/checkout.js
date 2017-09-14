@@ -35,7 +35,7 @@ function Checkout() {
 					.populate ({
 						path: 'accounts',
 						match: 	{
-							start: {$lte: new Date ()},
+							// start: {$lte: new Date ()}, // No longer require.
 							end: {$gte: new Date ()},
 							services: foundOcc.service.name.toLowerCase (), 
 							$or: [{amount: {$gt: 0}}, {$and: [{'recursive.isRecursive': true}, {amount: {$lte: 0}}]}]

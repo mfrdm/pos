@@ -86,7 +86,7 @@ div(class="columns row")
 									//select(ng-change='vm.ctrl.deposit.accountChangeHandler ()' ng-model="vm.model.temporary.depositing.account.amount" ng-options="(amount | number) for amount in vm.model.dom.data.vn.deposit.defaultCashAmount" ng-disabled="!vm.model.temporary.depositing.account.label")							
 							div(class="column small-12 large-3")
 								label Ngày sử dụng
-									input( ng-change="vm.ctrl.deposit.accountChangeHandler ()" ng-model="vm.model.temporary.depositing.account.start" type="date" ng-disabled="!vm.model.temporary.depositing.account.label")
+									input(ng-change="vm.ctrl.deposit.accountChangeHandler ()" ng-model="vm.model.temporary.depositing.account.start" type="date" ng-disabled="!vm.model.temporary.depositing.account.label")
 
 						// SELECTED ACCOUNT
 						div(class="row column")
