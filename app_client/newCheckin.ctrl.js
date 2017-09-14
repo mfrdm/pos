@@ -649,10 +649,31 @@
         vm.privateGroups = new function (){
             this.model = {
                 privateGroupLeaderDiv: false,
+                temporary: {},
             };
 
             this.getLeaders = function (){
+                var thisObj = this;
+                thisObj.model.temporary.leaders = [{_id: '', groupName: '', leader: ''}]; // Default empty leader
+                vm.checkinedList.model.list.data.map (function (x, i, arr){
+                    var targetService = x.service.name.toLowerCase ();
+                    if (vm.products.model.serviceNames.indexOf (targetService) != -1 &&targetService.indexOf ('private') != -1 && !x.parent && x.status == 1){
 
+                        thisObj.model.temporary.leaders.push ({
+                            _id: x._id, // occupancy id
+                            groupName: x.service.label + ' / ' + x.customer.fullname + (' / ' + x.customer.email[0] ? ' / ' + x.customer.email : '') + (x.customer.phone? ' / ' + x.customer.phone : ''),
+                            leader: x.customer.fullname,
+                            service: x.service
+                        });
+                    }
+                });
+
+                if (thisObj.model.temporary.leaders.length){
+                    return true;
+                }
+                else{
+                    return false;
+                }
             }
         }();
 
@@ -708,6 +729,12 @@
                 this.model.dom.confirmBtn = false;
             };
 
+            this.resetLeader = function (){
+                this.model.dom.leaderSelect = false;
+                this.model.temporary.occupancy.parent = null;
+                this.model.occupancy.parent = null;
+            }
+
             this.enableConfirmBtn = function (){
                 this.model.dom.confirmBtn = true;
             };
@@ -758,7 +785,25 @@
                 this.initItemSection ();
                 this.initCodeSection ();
                 this.initConfirmBtn ();
-            }
+            };
+
+            this.getLeaders = function (){
+                this.resetLeader ();
+                var hasLeaders = vm.privateGroups.getLeaders ();
+                if (hasLeaders){
+                    this.model.dom.leaderSelect = true;
+                }
+                else{
+                    this.model.dom.leaderSelect = false;
+                }
+            };
+
+            this.leaderChangeHandler = function (){
+                if (this.model.temporary.occupancy.parent._id){// if select a parent
+                    this.model.occupancy.parent = this.model.temporary.occupancy.parent._id;
+                    this.model.occupancy.service = this.model.temporary.occupancy.parent.service;
+                }   
+            };
 
             // FIX
             // STOP here. Need to initialize code value and other things
@@ -775,6 +820,7 @@
                 this.enableConfirmBtn ();
                 this.enableCodeSection ();
                 this.getPromocodes ();
+                this.getLeaders ();
                 // vm.ctrl.disablePromocodes();              
             };
 
@@ -1036,7 +1082,7 @@
                     filterDiv: false,
                 },
                 list: {data: []},
-            }
+            };
 
             this.get = function (){
                 var thisObj = this;

@@ -192,11 +192,14 @@ class Transactions:
 	    return df.groupby (orderdays)['total'].sum () 
 
 	def get_order_revenue_by_shift_in_day (self, df):
-	    middleHours = [12, 18]
-	    hours = df['createdAt'].dt.hour
-	    shifts = hours.map (lambda x: 'Shift 1' if (x < middleHours[0]) else ('Shift 2' if x >= middleHours[0] and x < middleHours[1] else 'Shift 3'))
-	    grouped = df.groupby (shifts)
-	    return grouped['total'].sum ()
+		if df.empty:
+			return df
+
+		middleHours = [12, 18]
+		hours = df['createdAt'].dt.hour
+		shifts = hours.map (lambda x: 'Shift 1' if (x < middleHours[0]) else ('Shift 2' if x >= middleHours[0] and x < middleHours[1] else 'Shift 3'))
+		grouped = df.groupby (shifts)
+		return grouped['total'].sum ()
 
 	###### Deposit
 	def get_deposit_revenue_by_month (self, df):
