@@ -290,7 +290,6 @@
 		}
 
 
-
 		// FIX: reset amount when change cash amount several time
 		vm.ctrl.deposit.accountChangeHandler = function (){
 			if (vm.model.temporary.depositing.account.start || vm.model.temporary.depositing.account.label || (vm.model.temporary.depositing.account.amount && vm.model.temporary.depositing.name == 'cash')){		

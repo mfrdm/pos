@@ -30,7 +30,9 @@
 		};
 
 		vm.ctrl.submitLogin = function (){
-			authentication.login (vm.model.user, vm.ctrl.loginSuccessAction, vm.ctrl.loginFailAction);
+			// var query = $location.search();
+			// var allowed = query ['allowed']
+			authentication.login (vm.model.user, vm.ctrl.loginSuccessAction, vm.ctrl.loginFailAction, allowed);
 		};
 	}
 
