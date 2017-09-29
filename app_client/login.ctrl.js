@@ -30,8 +30,8 @@
 		};
 
 		vm.ctrl.submitLogin = function (){
-			// var query = $location.search();
-			// var allowed = query ['allowed']
+			var query = $location.search();
+			var allowed = query ['allowed']
 			authentication.login (vm.model.user, vm.ctrl.loginSuccessAction, vm.ctrl.loginFailAction, allowed);
 		};
 	}

@@ -161,6 +161,8 @@
 			}
 		}
 
+		console.log ('test')
+
 		// $scope.layout.notiAlert = function(msg){
 		// 	console.log(msg)
 		// 	$scope.layout.notifications.push(msg)
@@ -185,7 +187,7 @@
 		if (authentication.isLoggedIn ()){
 			$scope.layout.ctrl.addUser (authentication.getCurUser());
 			$scope.layout.ctrl.updateAfterLogin ();
-		}		
+		};	
 
 		angular.element(document).ready(function () {
 			$scope.layout.ctrl.hideLoader ();

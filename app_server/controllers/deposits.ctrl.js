@@ -41,6 +41,12 @@ function DepositsCtrl (){
 						return
 					}
 
+					// Don't add up if not cash account
+					if (newAcc['label']['en'] != 'Cash'){
+						res.json ({data: {message: 'success', _id: newDeposit._id}});
+						return;
+					}
+
 					// Expecte to find at most one cash account available
 					Accounts.findOneAndUpdate ({'label.en': 'Cash', 'amount': {$gt: 0}, end: {$gte: moment()}, _id: {$not: {$in: [newAcc._id]}}, 'customer._id': deposit.customer._id}, {$set: {amount: 0}}, {new: false, fields: {'amount': 1}}, function (err, previousAccount){
 						if (err){

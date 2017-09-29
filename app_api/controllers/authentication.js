@@ -57,10 +57,10 @@ function Authentication () {
 	};
 
 	this.login = function (req, res, next) {
-		// if (!req.query['allowed'] == 'true'){
-		// 	next ();
-		// 	return;
-		// }
+		if (req.query['allowed'] != 'true'){
+			next ();
+			return;
+		}
 
 		passport.authenticate ('local', function (err, user, info){
 			var token;

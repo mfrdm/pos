@@ -28,9 +28,9 @@
 			)
 		};
 
-		this.login = function (user, successAction, failAction){
+		this.login = function (user, successAction, failAction, allowed){
 			var auth = this;
-			return $http.post ('/api/login', user).then (
+			return $http.post ('/api/login?allowed=' + allowed, user).then (
 				function (data){
 					auth.saveToken (data.data.token);
 					successAction (data);

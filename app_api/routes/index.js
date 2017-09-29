@@ -66,7 +66,7 @@ router.get('/orders/transactions', ordersCtrl.readTransactions);
 
 router.get ('/occupancies/total', OccupanciesCtrl.readTotal);
 router.get ('/occupancies/transactions', OccupanciesCtrl.readTransactions);
-router.get ('/occupancies/transactions/customer', OccupanciesCtrl.readTransactionsOneCustomer);
+router.get ('/occupancies/customer', OccupanciesCtrl.readSomeByOneCustomer);
 
 router.get('/bookings/', bookingCtrl.readSomeBookings);
 router.get('/bookings/booking/:bookingId', bookingCtrl.readOneBookingById);

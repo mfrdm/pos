@@ -50,9 +50,9 @@ router.get('/template/newOrders', OthersCtrl.getNewOrdersTemplate);
 router.get('/template/newCustomers', OthersCtrl.getNewCustomersTemplate);
 router.get('/template/newBookings', OthersCtrl.getNewBookingTemplate);
 router.get('/template/deposit', OthersCtrl.getDepositTemplate);
-router.get('/template/storage', OthersCtrl.getStorageTemplate);
-router.get('/template/promocodes', OthersCtrl.getPromocodesTemplate);
-router.get('/template/transaction', OthersCtrl.getTransactionTemplate);
+// router.get('/template/storage', OthersCtrl.getStorageTemplate);
+// router.get('/template/promocodes', OthersCtrl.getPromocodesTemplate);
+// router.get('/template/transaction', OthersCtrl.getTransactionTemplate);
 
 // Checkin
 router.get('/checkin', CheckinCtrl.readCheckinList);
@@ -110,9 +110,9 @@ router.get('/customers/exist', CustomersCtrl.checkExist);
 // router.get('/fin/costs/cost/:costId', finCtrl.readOneCostById);
 // router.post('/fin/costs/cost/:costId/edit', finCtrl.updateOneCost);
 
-router.post ('/transactions/create', TransactionCtrl.createTrans);
-router.get ('/transactions', TransactionCtrl.readTrans);
-router.post ('/transactions/edit/:transId', TransactionCtrl.editTrans);
+// router.post ('/transactions/create', TransactionCtrl.createTrans);
+// router.get ('/transactions', TransactionCtrl.readTrans);
+// router.post ('/transactions/edit/:transId', TransactionCtrl.editTrans);
 
 router.get('/company', companiesCtrl.readOneCompById);
 router.get('/company/depts', deptsCtrl.readSomeDepts);
@@ -156,7 +156,7 @@ router.post ('/storages/storage/:storageId/edit', StorageCtrl.editStorage);// Ed
 router.get ('/storages', StorageCtrl.readSomeStorages);
 router.get ('/storages/storage', StorageCtrl.readOneStorage);// get closest storage with given time
 router.get ('/storages/total', StorageCtrl.totalStorage);// calculate how many products between 2 time point
-///////////////////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////////////////
 // Others
 router.get ('/components/template/message', OthersCtrl.getMessageTemplate);
 router.get ('/components/template/asset', OthersCtrl.getAssetTemplate);

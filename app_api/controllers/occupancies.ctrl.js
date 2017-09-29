@@ -103,7 +103,7 @@ function OccupanciesCtrl (){
 		); 			
 	};
 
-	this.readTransactionsOneCustomer = function (req, res, next){
+	this.readSomeByOneCustomer = function (req, res, next){
 		var startHasMin = req.query.start ? (req.query.start.split (' ').length > 1 ? true : false) : false;
 		var endHasMin = req.query.end ? (req.query.end.split (' ').length > 1 ? true : false) : false;
 
@@ -113,14 +113,16 @@ function OccupanciesCtrl (){
 		// fix timezone problems
 		start = new Date (start);
 		end = new Date (end);
-		var customerName = req.query.customerName;
+		var fullname = req.query.fullname;
+		var service = req.query.service ? req.query.service : 'private';
 
 		var conditions = {
 			checkoutTime: {
 				$gte: start, 
 				$lte: end,
 			},
-			'customer.fullname': '/' + customerName +'/i',
+			'customer.fullname': {$regex: fullname.toUpperCase ()},
+			'service.name': {$regex: service},
 			status: 2,
 		};
 
@@ -128,14 +130,7 @@ function OccupanciesCtrl (){
 			conditions['location._id'] = req.query.storeId;
 		}
 
-		if (req.query.service){
-			conditions['service.name'] = {$in: []};
-			req.query.service.map (function (x, i, arr){
-				conditions['service.name'].$in.push (x.toLowerCase ());
-			})
-		}
-
-		var q = Occupancy.find (conditions, {total: 1, checkinTime: 1, checkoutTime: 1, 'customer.fullname': 1, 'service.name': 1});
+		var q = Occupancy.find (conditions, {total: 1, checkinTime: 1, checkoutTime: 1, 'customer.fullname': 1, 'service.name': 1, paid: 1});
 
 		q.exec(function (err, occ){
 			if (err){
