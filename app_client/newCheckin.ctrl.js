@@ -1179,10 +1179,15 @@
         ////////////////////////////////////////// Paginate ///////////////////////////////////////////////////
         
         // Slice list after filter
+        // FIX later
         vm.ctrl.getFilteredCheckinList = function (){
             var cleanStr = function(str){
-                return LayoutCtrl.ctrl.removeDiacritics(str).trim().split(' ').join('').toLowerCase()
+                if (str){
+                    return LayoutCtrl.ctrl.removeDiacritics(str).trim().split(' ').join('').toLowerCase()
+                }
+                return '' // Still return error, but work
             }
+
             vm.ctrl.showNoteColumn();
 
             // Input

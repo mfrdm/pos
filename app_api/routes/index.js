@@ -15,6 +15,7 @@ var assetsCtrl = require("../controllers/assets");
 var attendancesCtrl = require("../controllers/attendances");
 var OccupanciesCtrl = require ("../controllers/occupancies.ctrl");
 var depositCtrl = require ('../controllers/deposits.ctrl');
+var accountCtrl = require ('../controllers/accounts');
 
 router.post ('/register', authCtrl.register);
 router.post ('/login', authCtrl.login);
@@ -79,5 +80,8 @@ router.post('/assets/create', assetsCtrl.createOneAsset);
 router.post('/assets/asset/:assetId/edit', assetsCtrl.updateOneAssetById);
 
 router.get ('/deposit/total', depositCtrl.readTotal);
+
+router.get ('/accounts/customer', accountCtrl.readSomeByOneCustomer);
+
 
 module.exports = router;
