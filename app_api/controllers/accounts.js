@@ -8,8 +8,14 @@ module.exports = new AccountCtrl ();
 function AccountCtrl (){
 	this.readSomeByOneCustomer = function (req, res, next){
 		var fullname = req.query.fullname;
+		fullname = req.query.fullname.split ('/');
+		var customerCond = []	
+		fullname.map (function (x, i, arr){
+			name = x.toUpperCase ();
+			customerCond.push (new RegExp (name))
+		});
 
-		Customers.find ({fullname: {$regex: fullname.toUpperCase ()}}, {accounts: 1, fullname: 1}, function (err, foundCustomers){
+		Customers.find ({fullname: {$in: customerCond}}, {accounts: 1, fullname: 1}, function (err, foundCustomers){
 			if (err){
 				next (err);
 				return;
@@ -52,6 +58,8 @@ function AccountCtrl (){
 								_id: x['customer']['_id'],
 							},
 							amount: x['amount'],
+							createdAt: x['createdAt'],
+							start: x['start'],
 							end: x['end'],
 							name: x['name']
 						};
@@ -64,7 +72,7 @@ function AccountCtrl (){
 				});
 			}
 			else{
-				res.json ({});
+				res.json ({data: []});
 			}
 		});		
 	};	

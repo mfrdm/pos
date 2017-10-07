@@ -43,6 +43,20 @@ function DepositsCtrl (){
 
 					// Don't add up if not cash account
 					if (newAcc['label']['en'] != 'Cash'){
+						if (deposit.paymentMethod.length){
+							Accounts.update ({_id: deposit.paymentMethod[0]._id}, {$inc: {amount: - deposit.paymentMethod[0].paidAmount}}, function (err, result){
+								if (err){ // FIX: this should undo everything
+									next (err);
+									return
+								}
+
+								res.json ({data: {message: 'success', _id: newDeposit._id}});
+								return;															
+							});
+
+							return;
+						}
+
 						res.json ({data: {message: 'success', _id: newDeposit._id}});
 						return;
 					}
@@ -61,14 +75,42 @@ function DepositsCtrl (){
 									return;
 								};
 
+								if (deposit.paymentMethod.length){
+									Accounts.update ({_id: deposit.paymentMethod[0]._id}, {$inc: {amount: - deposit.paymentMethod[0].paidAmount}}, function (err, result){
+										if (err){ // FIX: this should undo everything
+											next (err);
+											return
+										}
+
+										res.json ({data: {message: 'success', _id: newDeposit._id}});
+										return;															
+									});
+
+									return;
+								}
+
 								res.json ({data: {message: 'success', _id: newDeposit._id}})
+								return;
 							});
 						}
 						else{
+							if (deposit.paymentMethod.length){
+								Accounts.update ({_id: deposit.paymentMethod[0]._id}, {$inc: {amount: - deposit.paymentMethod[0].paidAmount}}, function (err, result){
+									if (err){ // FIX: this should undo everything
+										next (err);
+										return
+									}
+
+									res.json ({data: {message: 'success', _id: newDeposit._id}});
+									return;															
+								});
+
+								return;
+							}
+
 							res.json ({data: {message: 'success', _id: newDeposit._id}})
+							return;
 						}
-
-
 					});
 				});
 
@@ -83,7 +125,20 @@ function DepositsCtrl (){
 		deposit.prepare ();
 		deposit.getTotal ();
 
-		res.json ({data: deposit});
+		Accounts.find ({
+			'customer._id': deposit.customer._id,
+			name: 'cash',
+			amount: {$gt: 0}
+		}, function (err, foundAccount){
+			if (err){
+				next (err);
+				return;
+			}
+
+			deposit = deposit.toObject (); // convert to add data
+			deposit.curAccounts = foundAccount;			
+			res.json ({data: deposit});
+		});
 	}
 
 	this.updateOneDeposit = function (req, res, next){
@@ -160,6 +215,45 @@ function DepositsCtrl (){
 
 		});
 
+	}
+
+	this.withdrawCash = function (req, res, next){
+		var deposit = JSON.parse(req.query.data);
+		var accId = deposit.selectedAccount._id; 
+		Accounts.findOne ({_id: accId}, function (err, foundAcc){
+			if (err) {
+				console.log (err);
+				next (err);
+			}
+			if (foundAcc){
+				deposit = new Deposits (deposit);
+				var beforeAccAmount = foundAcc.amount;
+				var beforeTotal = deposit.total;
+				var context = deposit.getContext ();
+
+				foundAcc.withdraw (context);
+
+				res.json ({
+					data: {
+						deposit:{
+							total: deposit.total,
+						},
+						acc: {
+							_id: foundAcc._id,
+							name: 'account',
+							unit: foundAcc.unit,
+							paidTotal: beforeTotal - deposit.total,
+							paidAmount: beforeAccAmount - foundAcc.amount, // already paid hours
+							remain: foundAcc.amount							
+						}
+					}
+				});
+			}
+			else{
+				res.json (); // may not the best way to indicate 
+			}
+			
+		});		
 	}
 
 }

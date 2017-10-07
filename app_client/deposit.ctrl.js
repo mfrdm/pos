@@ -8,7 +8,8 @@
 		var vm = this;
 
 		vm.ctrl = {
-			deposit: {}
+			deposit: {},
+			depositing: {},
 		};
 
 		vm.model = {
@@ -56,6 +57,7 @@
 			temporary: {
 				depositing: {
 					account: {},
+					selectedAccount: {_id: null},
 					groupon: {
 						selectedBlank: true,
 					}
@@ -425,7 +427,6 @@
 			if (vm.model.depositing.account && vm.model.depositing.account.start && vm.model.depositing.account.label && vm.model.depositing.customer && vm.model.depositing.customer.fullname){
 
 				vm.ctrl.showLoader ();
-				console.log(vm.model.depositing)
 				DepositService.readInvoice (vm.model.depositing).then (
 					function success (res){
 						vm.ctrl.hideLoader ();
@@ -437,18 +438,44 @@
 					function error (err){
 						vm.ctrl.hideLoader ();
 						console.log (err);
-
 					}					
 				)
 
 			}
 		}
 
+
+		vm.ctrl.depositing.accountChangeHandler	= function (){
+			vm.model.depositing.selectedAccount = {_id: vm.model.temporary.depositing.selectedAccount._id};
+			vm.ctrl.showLoader ();
+			DepositService.withdrawFromAccount (vm.model.depositing).then (
+				function success (res){
+					vm.ctrl.hideLoader ();
+					vm.model.depositing.prepaidTotal = res.data.data;
+				},
+				function failure (err){
+					vm.ctrl.hideLoader ();
+					console.log (err);
+				}
+			);
+		}		
+
 		vm.ctrl.deposit.invoiceBackDepositForm = function (){
 			vm.model.dom.deposit.confirmDiv = false;
 		}		
 
 		vm.ctrl.deposit.submit = function (){
+			if (vm.model.depositing.prepaidTotal){
+				vm.model.depositing.paymentMethod = [{
+					_id: vm.model.depositing.prepaidTotal.acc._id,
+					name: 'account', // actually cash account
+					paidTotal: vm.model.depositing.prepaidTotal.acc.paidTotal, 
+					paidAmount: vm.model.depositing.prepaidTotal.acc.paidAmount, 
+				}];
+
+				vm.model.depositing.total = vm.model.depositing.prepaidTotal.deposit.total;
+			}
+
 			vm.ctrl.showLoader ();
 			DepositService.createOneDeposit (vm.model.depositing).then (
 				function success (res){

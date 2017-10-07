@@ -12,6 +12,7 @@ function getCodeContext (occ){
 		price: occ.price,
 		usage: occ.usage,
 		total: null,
+		getCheckinTime: function () {return occ.checkinTime},
 		getService: function (){ return occ.service.name.toLowerCase() },
 		getUsage: function (){ return this.usage },
 		getPrice: function (){return this.price},
@@ -100,7 +101,6 @@ function getTotal (){
 		Promocodes.preprocessCodes (context);
 
 		// assume, at this point codes are validate and good to use
-
 		if (occ.promocodes && occ.promocodes.length){
 			occ.promocodes.map (function (code, k, t){
 				var pc = new Promocodes (code);

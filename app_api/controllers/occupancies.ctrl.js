@@ -130,7 +130,7 @@ function OccupanciesCtrl (){
 			conditions['location._id'] = req.query.storeId;
 		}
 
-		var q = Occupancy.find (conditions, {total: 1, checkinTime: 1, checkoutTime: 1, 'customer.fullname': 1, 'service.name': 1, paid: 1});
+		var q = Occupancy.find (conditions, {total: 1, checkinTime: 1, checkoutTime: 1, 'customer.fullname': 1, 'service.name': 1, paid: 1, 'promocodes': 1});
 
 		q.exec(function (err, occ){
 			if (err){

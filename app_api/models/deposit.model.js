@@ -22,8 +22,9 @@ function getContext (){
 		isGroupon: function (){ return deposit.groupon && deposit.groupon.quantity && deposit.groupon.quantity >= minGrouponNumber ? true : false },	
 		getGroupMemberNumber: function (){ return this.isGroupon () ? deposit.groupon.quantity : 0},
 		getPrice: function (){return this.price},
-		getTotal: function (){return this.total},
+		getTotal: function (){return deposit.total},
 		getQuantity: function (){return this.quantity},
+		setTotal: function (total){deposit.total = total},
 	}	
 } 
 
@@ -84,9 +85,12 @@ var DepositsSchema = new mongoose.Schema({
 		priority: Number,
 		redeemData: mongoose.Schema.Types.Mixed
 	}],
-	paymentMethod: {
-		name: {type: String, default: 'cash'}
-	},
+	paymentMethod: [{
+		_id: mongoose.Schema.Types.ObjectId, // for account and other methods. Not cash
+		name: {type: String}, // cash, card, account, ...
+		paidTotal: Number, // total paid using the account
+		paidAmount: Number, // amount withdraw from an account
+	}],
 	customer: { // the person make purchase
 		_id: {type: mongoose.Schema.Types.ObjectId},
 		isStudent: Boolean,

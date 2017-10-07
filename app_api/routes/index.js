@@ -79,7 +79,8 @@ router.get('/assets/asset/:assetId', assetsCtrl.readOneAssetById);
 router.post('/assets/create', assetsCtrl.createOneAsset);
 router.post('/assets/asset/:assetId/edit', assetsCtrl.updateOneAssetById);
 
-router.get ('/deposit/total', depositCtrl.readTotal);
+router.get ('/deposit/total', depositCtrl.readTotal); // FIX later. Should be "/deposits/total"
+router.get ('/deposits/customer', depositCtrl.readSomeByOneCustomer);
 
 router.get ('/accounts/customer', accountCtrl.readSomeByOneCustomer);
 

@@ -164,6 +164,10 @@ div(class="fullBox row column" ng-show='vm.model.dom.deposit.confirmDiv')
 					tr
 						th Khách hàng
 						td {{ vm.model.depositing.customer.fullname }}
+					tr(ng-if="vm.model.depositing.curAccounts.length && vm.model.depositing.account.name != 'cash'" )
+						th Tài khoản tiền mặt đang có
+						td
+							select(ng-model="vm.model.temporary.depositing.selectedAccount._id" ng-options="acc._id as (!acc.activate ? acc.label.vn + ' - Chưa kích hoạt' :  acc.label.vn + ' - Ngày hết hạn: ' + (acc.end | date:'dd/MM/yyyy') + ' ' + (acc.end | date:'shortTime')) for acc in vm.model.depositing.curAccounts" ng-change="vm.ctrl.depositing.accountChangeHandler ()")
 					tr
 						th Email
 						td {{ vm.model.depositing.customer.email }}
@@ -184,7 +188,17 @@ div(class="fullBox row column" ng-show='vm.model.dom.deposit.confirmDiv')
 						td {{ code.name | uppercase }}						
 					tr
 						th Tổng
-						td {{ vm.model.depositing.total | number }}	VNĐ				
+						td {{ vm.model.depositing.total | number }}	VNĐ
+					tr(ng-if="vm.model.depositing.prepaidTotal.acc.paidAmount")
+						th Tài khoản đã dùng
+						td(ng-if="vm.model.depositing.prepaidTotal.acc.unit == 'vnd'") {{ vm.model.depositing.prepaidTotal.acc.paidAmount | number }} VNĐ
+					tr(ng-if="vm.model.depositing.prepaidTotal.acc.remain || vm.model.depositing.prepaidTotal.acc.remain == 0")
+						th() Tài khoản còn
+						td(ng-if="vm.model.depositing.prepaidTotal.acc.unit == 'vnd'") {{ vm.model.depositing.prepaidTotal.acc.remain | number}} VNĐ						
+					tr(ng-if="vm.model.depositing.prepaidTotal.deposit.total || vm.model.depositing.prepaidTotal.deposit.total == 0")
+						th Tổng trừ trả trước
+						td {{ vm.model.depositing.prepaidTotal.deposit.total | number}} VNĐ
+
 	div(class="row column")
 		div(class="column small-12 large-6 large-push-3")
 			a(class="paddingL15 button primary" ng-click="vm.ctrl.deposit.submit ()") Confirm

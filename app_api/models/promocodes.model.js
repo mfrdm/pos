@@ -760,6 +760,7 @@ var redeemTotal = function (context){
 	var result = {};
 	var price = context.getPrice ? context.getPrice () : null;
 	var usage = context.getUsage ? context.getUsage () : null;
+	var checkinTime = context.getCheckinTime ? context.getCheckinTime () : null;
 
 	// apply a new price after first item
 	if (this.redeemData.total.formula == 1){
@@ -768,7 +769,29 @@ var redeemTotal = function (context){
 	}
 	// multiple total with x % 
 	else if (this.redeemData.total.formula == 2){
-		result.total = price * usage * this.redeemData.total.value;
+		if (this.redeemData.checkoutTime){
+			checkinTime = moment (checkinTime);
+			var expectedcheckoutTime = moment ();
+			expectedcheckoutTime.hour (this.redeemData.checkoutTime.hour);
+			expectedcheckoutTime.minute (this.redeemData.checkoutTime.min);		
+			var expectedUsage = (checkinTime.diff (expectedcheckoutTime) / 3600000);
+
+			var remainUsage = usage - expectedUsage;
+
+			console.log (remainUsage, checkinTime)
+
+			if (remainUsage <= 0){
+				result.total = price * usage * this.redeemData.total.value;
+			}
+			else{
+				result.total = price * expectedUsage * this.redeemData.total.value;
+				result.total += price * remainUsage * this.redeemData.checkoutTime.total;
+			}
+		}
+		else{
+			result.total = price * usage * this.redeemData.total.value;
+		}
+
 	}
 	else if (this.redeemData.total.formula == 3){
 		if (usage <= this.redeemData.usage.min){
@@ -808,7 +831,7 @@ var redeemTotal = function (context){
 			remainUsage = usage - this.redeemData.usage.max;
 			result.total = this.redeemData.total.min + remainUsage * price;
 		}
-	}	
+	}
 	else{
 		result.total = this.redeemData.total.value;
 	}
@@ -912,6 +935,7 @@ var PromocodesSchema = mongoose.Schema ({
 	start: {type: Date, required: true},
 	end: {type: Date, required: true},
 	redeemData: {
+		checkoutTime: mongoose.Schema.Types.Mixed,
 		price: {
 			value: Number,
 			min: Number,

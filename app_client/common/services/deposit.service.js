@@ -40,4 +40,13 @@ function DepositService ($http, $q){
 			params: query
 		});			
 	}
+
+	this.withdrawFromAccount = function (deposit){
+		var query = {data: JSON.stringify (deposit)};		
+		return $http({
+			method:'GET',
+			url:'/deposits/withdrawCash',
+			params: query
+		});		
+	}
 }

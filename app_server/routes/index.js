@@ -143,6 +143,7 @@ router.post ('/deposits/deposit/:depositId/edit', DepositsCtrl.updateOneDeposit)
 router.get ('/deposits/account/default', DepositsCtrl.readDefaultAccounts);
 router.get ('/deposits/invoice', DepositsCtrl.readInvoice);
 router.get ('/deposits/groupon', DepositsCtrl.readGroupon);
+router.get ('/deposits/withdrawCash', DepositsCtrl.withdrawCash);
 
 // Deal with product and storage
 // Product
