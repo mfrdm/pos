@@ -774,18 +774,21 @@ var redeemTotal = function (context){
 			var expectedcheckoutTime = moment ();
 			expectedcheckoutTime.hour (this.redeemData.checkoutTime.hour);
 			expectedcheckoutTime.minute (this.redeemData.checkoutTime.min);		
-			var expectedUsage = (checkinTime.diff (expectedcheckoutTime) / 3600000);
+			var expectedUsage = (expectedcheckoutTime.diff (checkinTime) / 3600000); 
+			var remainUsage = 0
 
-			var remainUsage = usage - expectedUsage;
-
-			console.log (remainUsage, checkinTime)
-
-			if (remainUsage <= 0){
-				result.total = price * usage * this.redeemData.total.value;
+			if (expectedUsage <= 0){ // checkin after the max hour
+				result.total = price * usage * this.redeemData.checkoutTime.total;
 			}
-			else{
-				result.total = price * expectedUsage * this.redeemData.total.value;
-				result.total += price * remainUsage * this.redeemData.checkoutTime.total;
+			else{ // checkin before the max hour
+				var remainUsage = usage - expectedUsage;
+				if (remainUsage <= 0){ // checkout before the max hour too
+					result.total = price * usage * this.redeemData.total.value;
+				}
+				else{ // checkout after it
+					result.total = price * expectedUsage * this.redeemData.total.value;
+					result.total += price * remainUsage * this.redeemData.checkoutTime.total;	
+				}			
 			}
 		}
 		else{

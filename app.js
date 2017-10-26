@@ -21,6 +21,8 @@ var routes = require('./app_server/routes/index'),
 
 var http = require('http');
 
+// app.use(require('helmet')()); // secure Express servers through setting HTTP headers
+
 // View engine setup
 app.set('views', path.join(__dirname, 'app_server', 'views'));
 app.set('view engine', 'pug');

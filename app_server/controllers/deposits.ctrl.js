@@ -43,7 +43,7 @@ function DepositsCtrl (){
 
 					// Don't add up if not cash account
 					if (newAcc['label']['en'] != 'Cash'){
-						if (deposit.paymentMethod.length){
+						if (deposit.paymentMethod.length){ // reduce amount if cash account is used as payment method
 							Accounts.update ({_id: deposit.paymentMethod[0]._id}, {$inc: {amount: - deposit.paymentMethod[0].paidAmount}}, function (err, result){
 								if (err){ // FIX: this should undo everything
 									next (err);
@@ -62,14 +62,19 @@ function DepositsCtrl (){
 					}
 
 					// Expecte to find at most one cash account available
-					Accounts.findOneAndUpdate ({'label.en': 'Cash', 'amount': {$gt: 0}, end: {$gte: moment()}, _id: {$not: {$in: [newAcc._id]}}, 'customer._id': deposit.customer._id}, {$set: {amount: 0}}, {new: false, fields: {'amount': 1}}, function (err, previousAccount){
+					Accounts.findOneAndUpdate ({'label.en': 'Cash', 'amount': {$gt: 0}, end: {$gte: moment()}, _id: {$not: {$in: [newAcc._id]}}, 'customer._id': deposit.customer._id}, {$set: {amount: 0}}, {new: false, fields: {'amount': 1, end: 1, start: 1}}, function (err, previousAccount){
 						if (err){
 							next (err);
 							return;
 						}
 
 						if (previousAccount){
-							Accounts.update ({_id: newAcc._id}, {$inc: {amount: previousAccount.amount}}, function (){
+							var update = {$inc: {amount: previousAccount.amount}};
+							if (newAcc.amount < 0){
+								update = {$inc: {amount: previousAccount.amount}, $set: {end: previousAccount.end, start: previousAccount.start}};
+							}
+
+							Accounts.update ({_id: newAcc._id}, update, function (){
 								if (err){
 									next (err);
 									return;

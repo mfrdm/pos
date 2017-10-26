@@ -2,26 +2,34 @@ var helper = require('../../libs/node/helper')
 var dbHelper = require('../../libs/node/dbHelper')
 var requestHelper = require('../../libs/node/requestHelper')
 var mongoose = require('mongoose');
-var UserModel = mongoose.model('users');
+var Users = mongoose.model('users');
 
-module.exports = new Users();
+module.exports = new UserCtrl();
 
-function Users() {
+function UserCtrl() {
 
 	this.readSomeUsers = function(req, res) {
-		dbHelper.findSome(req, res, UserModel)
+		dbHelper.findSome(req, res, Users)
 	};
 
 	this.readOneUserById = function(req, res) {
-		dbHelper.findOneById(req, res, UserModel, 'uId')
+		dbHelper.findOneById(req, res, Users, 'uId')
 	};
 
 	this.createOneUser = function(req, res) {
-		dbHelper.insertOne(req, res, UserModel);
+		dbHelper.insertOne(req, res, Users);
 	};
 
 	this.updateOneUserById = function(req, res) {
-		dbHelper.updateOneById(req, res, UserModel, 'uId')
+		dbHelper.updateOneById(req, res, Users, 'uId')
+	};
+
+	this.deactivate = function (req, res, next){
+
+	};
+
+	this.activate = function (req, res, next){
+
 	};
 
 };

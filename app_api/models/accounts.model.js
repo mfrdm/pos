@@ -17,7 +17,7 @@ var getDefaultAccounts = function (){
 		recursive: {
 			isRecursive: false
 		},		
-		expireDateNum: 30,
+		expireDateNum: 60,
 		grouponable: false,
 	};
 
@@ -162,7 +162,7 @@ var getDefaultAccounts = function (){
 		desc: "",
 		services: ['small group private'], // name of service applied
 		label: {
-			vn: "Combo buổi sáng - Private 15",
+			vn: "Combo sáng - Private 15",
 			en: "",
 		},
 		recursive: {
@@ -185,7 +185,7 @@ var getDefaultAccounts = function (){
 		desc: "",
 		services: ['small group private'], // name of service applied
 		label: {
-			vn: "Combo buổi chiều - Private 15",
+			vn: "Combo chiều - Private 15",
 			en: "",
 		},
 		recursive: {
@@ -208,7 +208,7 @@ var getDefaultAccounts = function (){
 		desc: "",
 		services: ['small group private'], // name of service applied
 		label: {
-			vn: "Combo buổi tối - Private 15",
+			vn: "Combo tối - Private 15",
 			en: "",
 		},
 		recursive: {
@@ -231,7 +231,7 @@ var getDefaultAccounts = function (){
 		desc: "",
 		services: ['medium group private'], // name of service applied
 		label: {
-			vn: "Combo buổi sáng - Private 30",
+			vn: "Combo sáng - Private 30",
 			en: "",
 		},
 		recursive: {
@@ -254,7 +254,7 @@ var getDefaultAccounts = function (){
 		desc: "",
 		services: ['medium group private'], // name of service applied
 		label: {
-			vn: "Combo buổi chiều - Private 30",
+			vn: "Combo chiều - Private 30",
 			en: "",
 		},
 		recursive: {
@@ -277,7 +277,7 @@ var getDefaultAccounts = function (){
 		desc: "",
 		services: ['medium group private'], // name of service applied
 		label: {
-			vn: "Combo buổi tối - Private 30",
+			vn: "Combo tối - Private 30",
 			en: "",
 		},
 		recursive: {
@@ -300,7 +300,7 @@ var getDefaultAccounts = function (){
 		desc: "",
 		services: ['large group private'], // name of service applied
 		label: {
-			vn: "Combo buổi sáng - Private 40",
+			vn: "Combo sáng - Private 40",
 			en: "",
 		},
 		recursive: {
@@ -323,7 +323,7 @@ var getDefaultAccounts = function (){
 		desc: "",
 		services: ['large group private'], // name of service applied
 		label: {
-			vn: "Combo buổi chiều - Private 40",
+			vn: "Combo chiều - Private 40",
 			en: "",
 		},
 		recursive: {
@@ -346,7 +346,7 @@ var getDefaultAccounts = function (){
 		desc: "",
 		services: ['large group private'], // name of service applied
 		label: {
-			vn: "Combo buổi tối - Private 40",
+			vn: "Combo tối - Private 40",
 			en: "",
 		},
 		recursive: {
@@ -392,7 +392,7 @@ var getDefaultAccounts = function (){
 		desc: "",
 		services: ['small group private'], // name of service applied
 		label: {
-			vn: "Combo sáng và chiều - Private 15",
+			vn: "Combo chiều và tối - Private 15",
 			en: "",
 		},
 		recursive: {
@@ -461,7 +461,7 @@ var getDefaultAccounts = function (){
 		desc: "",
 		services: ['medium group private'], // name of service applied
 		label: {
-			vn: "Combo sáng và chiều - Private 30",
+			vn: "Combo chiều và tối - Private 30",
 			en: "",
 		},
 		recursive: {
@@ -530,7 +530,7 @@ var getDefaultAccounts = function (){
 		desc: "",
 		services: ['large group private'], // name of service applied
 		label: {
-			vn: "Combo sáng và chiều - Private 40",
+			vn: "Combo chiều và tối - Private 40",
 			en: "",
 		},
 		recursive: {

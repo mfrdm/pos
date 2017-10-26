@@ -6,7 +6,14 @@
 var app = require('../app');
 var debug = require('debug')('erp:server');
 var http = require('http');
-// var socketApp = require('./socket');
+// var fs = require('fs');
+// var https = require('https');
+
+// const options = {
+//     cert: fs.readFileSync('./sslcert/fullchain.pem'),
+//     key: fs.readFileSync('./sslcert/privkey.pem')
+// };
+
 
 /**
  * Get port from environment and store in Express.
@@ -29,10 +36,7 @@ var server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-
-console.log ('listening on port ' + port)
-
-// socketApp(server);
+// https.createServer(options, app).listen(443);
 
 /**
  * Normalize a port into a number, string, or false.

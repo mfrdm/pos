@@ -49,7 +49,7 @@ function OccupanciesCtrl (){
 		}); 
 	};
 
-	this.readTotal = function (req, res, next){
+	this.readTotalCash = function (req, res, next){
 		var startHasMin = req.query.start ? (req.query.start.split (' ').length > 1 ? true : false) : false;
 		var endHasMin = req.query.end ? (req.query.end.split (' ').length > 1 ? true : false) : false;
 
@@ -103,6 +103,10 @@ function OccupanciesCtrl (){
 		); 			
 	};
 
+	this.readTotalRevenue = function (req, res, next){
+		// later
+	}
+
 	this.readSomeByOneCustomer = function (req, res, next){
 		var startHasMin = req.query.start ? (req.query.start.split (' ').length > 1 ? true : false) : false;
 		var endHasMin = req.query.end ? (req.query.end.split (' ').length > 1 ? true : false) : false;
@@ -130,7 +134,7 @@ function OccupanciesCtrl (){
 			conditions['location._id'] = req.query.storeId;
 		}
 
-		var q = Occupancy.find (conditions, {total: 1, checkinTime: 1, checkoutTime: 1, 'customer.fullname': 1, 'service.name': 1, paid: 1, 'promocodes': 1});
+		var q = Occupancy.find (conditions, {total: 1, checkinTime: 1, checkoutTime: 1, 'customer.fullname': 1, 'service.name': 1, paid: 1, 'promocodes': 1, oriUsage: 1, price: 1});
 
 		q.exec(function (err, occ){
 			if (err){

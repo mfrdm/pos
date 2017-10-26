@@ -16,6 +16,8 @@ var attendancesCtrl = require("../controllers/attendances");
 var OccupanciesCtrl = require ("../controllers/occupancies.ctrl");
 var depositCtrl = require ('../controllers/deposits.ctrl');
 var accountCtrl = require ('../controllers/accounts');
+var checkinCtrl = require ('../controllers/checkin');
+var promocodeCtrl = require ('../controllers/promocodes');
 
 router.post ('/register', authCtrl.register);
 router.post ('/login', authCtrl.login);
@@ -65,7 +67,7 @@ router.get('/orders/transactions', ordersCtrl.readTransactions);
 // router.post('/transs/trans/:transId/edit', transCtrl.updateOneTransById);
 
 
-router.get ('/occupancies/total', OccupanciesCtrl.readTotal);
+router.get ('/occupancies/totalCash', OccupanciesCtrl.readTotalCash);
 router.get ('/occupancies/transactions', OccupanciesCtrl.readTransactions);
 router.get ('/occupancies/customer', OccupanciesCtrl.readSomeByOneCustomer);
 
@@ -79,10 +81,15 @@ router.get('/assets/asset/:assetId', assetsCtrl.readOneAssetById);
 router.post('/assets/create', assetsCtrl.createOneAsset);
 router.post('/assets/asset/:assetId/edit', assetsCtrl.updateOneAssetById);
 
-router.get ('/deposit/total', depositCtrl.readTotal); // FIX later. Should be "/deposits/total"
+router.get ('/deposit/totalDeposit', depositCtrl.readTotalDeposit); // FIX later. Should be "/deposits/total"
+router.get ('/deposits/totalCost', depositCtrl.readTotalCost);
 router.get ('/deposits/customer', depositCtrl.readSomeByOneCustomer);
 
 router.get ('/accounts/customer', accountCtrl.readSomeByOneCustomer);
 
+router.post ('/checkin', checkinCtrl.checkin);
+router.get ('/checkin', checkinCtrl.readSome);
+
+router.get ('/promocodes/create', promocodeCtrl.createOne);
 
 module.exports = router;

@@ -4,7 +4,7 @@
   "description": "POS",
   "scripts": {
     "start": "node ./bin/www",
-    "test": "mocha"
+    "test": "mocha --ui tdd --recursive"
   },
   "author": "Hiep Pham <phammanhhiep89@gmail.com>",
   "contributors": [
@@ -28,6 +28,7 @@
     "express-session": "^1.15.1",
     "google-auth-library": "^0.10.0",
     "googleapis": "^19.0.0",
+    "helmet": "^3.8.2",
     "jsonwebtoken": "^7.3.0",
     "moment": "^2.18.1",
     "mongoose": "^4.9.1",
@@ -47,7 +48,6 @@
     "angular-route": "^1.6.4",
     "angular-ui-router": "^0.4.2",
     "async": "^2.4.1",
-    "bluebird": "^3.5.0",
     "chai": "^3.5.0",
     "chai-http": "^3.0.0",
     "dotenv": "^4.0.0",
