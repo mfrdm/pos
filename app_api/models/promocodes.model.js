@@ -832,6 +832,7 @@ var redeemTotal = function (context){
 		}
 		else{
 			remainUsage = usage - this.redeemData.usage.max;
+			price = this.redeemData.price && this.redeemData.price.value ? this.redeemData.price.value : price; // use the new price if exist otherwise use original price
 			result.total = this.redeemData.total.min + remainUsage * price;
 		}
 	}

@@ -24,7 +24,7 @@ var promoCodesCtrl = require ('../controllers/promoCodes.ctrl');
 var OrdersCtrl = require ('../controllers/orders.ctrl'); 
 var TransactionCtrl = require ('../controllers/transactions.ctrl');
 var DepositsCtrl = require ('../controllers/deposits.ctrl');
-
+var RewardsCtrl = require ('../controllers/rewards.ctrl');
 var StorageCtrl = require ('../controllers/storage.ctrl');
 
 router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
@@ -161,5 +161,11 @@ router.get ('/storages/total', StorageCtrl.totalStorage);// calculate how many p
 // Others
 router.get ('/components/template/message', OthersCtrl.getMessageTemplate);
 router.get ('/components/template/asset', OthersCtrl.getAssetTemplate);
+
+router.post ('/rewards/init', RewardsCtrl.initReward);
+router.post ('/rewards/setReward', RewardsCtrl.setReward);
+router.post ('/rewards/withdraw', RewardsCtrl.withdraw);
+router.get ('/rewards/getReward', RewardsCtrl.getReward);
+router.get ('/rewards/prepareWithdraw', RewardsCtrl.prepareWithdraw);
 
 module.exports = router;

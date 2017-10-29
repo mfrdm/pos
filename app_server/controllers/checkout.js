@@ -5,6 +5,7 @@ var Orders = mongoose.model ('orders');
 var Customers = mongoose.model ('customers');
 var Occupancies = mongoose.model ('Occupancies');
 var Accounts = mongoose.model ('Accounts');
+
 var request = require ('request');
 
 module.exports = new Checkout();
@@ -22,7 +23,6 @@ function Checkout() {
 
 			if (foundOcc){
 				foundOcc.checkoutTime = foundOcc.checkoutTime ? foundOcc.checkoutTime : moment ();
-				
 				try{
 					foundOcc.getTotal ();
 				}

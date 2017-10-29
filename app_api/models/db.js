@@ -41,3 +41,4 @@ require('./attendances');
 require('./accounts.model');
 require('./deposit.model');
 require('./checkin');
+require('./rewards');

@@ -675,7 +675,7 @@ var initAccount = function (){
 	}
 	else{
 		this.start = moment ().hour (0).minute (0);
-		this.end = moment (this.start).add (this.expireDateNum - 1, 'day').hour (23).minute (59);		
+		this.end = moment (this.start).add (this.expireDateNum - 1, 'day').hour (23).minute (59);	
 	}
 }
 
