@@ -1,12 +1,14 @@
 var moment = require ('moment');
 var mongoose = require ('mongoose');
+var request = require ('request');
 var Promocodes = mongoose.model ('Promocodes');
 var Orders = mongoose.model ('orders');
 var Customers = mongoose.model ('customers');
 var Occupancies = mongoose.model ('Occupancies');
 var Accounts = mongoose.model ('Accounts');
 
-var request = require ('request');
+var AccountsCtrl = require ('./accounts.ctrl');
+var RewardsCtrl = require ('./rewards.ctrl');
 
 module.exports = new Checkout();
 
@@ -31,45 +33,19 @@ function Checkout() {
 					return;
 				}
 
-				Customers.findOne ({_id: foundOcc.customer._id})
-					.populate ({
-						path: 'accounts',
-						match: 	{
-							// start: {$lte: new Date ()}, // No longer require.
-							end: {$gte: new Date ()},
-							services: foundOcc.service.name.toLowerCase (), 
-							$or: [{amount: {$gt: 0}}, {$and: [{'recursive.isRecursive': true}, {amount: {$lte: 0}}]}]
-						},
-						// select: 'amount service unit label'
-					}) 
-					.exec (function (err, cus){
-						if (err){
-							console.log (err);
-							next (err);
-						}
-						
-						if (cus.accounts.length){
-							cus.accounts = cus.accounts.filter (function (acc, i, arr){
-								acc.renew ();
-								if (acc.amount > 0){
-									if (acc.recursive.isRecursive && acc.recursive.renewNum >= acc.recursive.maxRenewNum){
-										return false
-									}
-									else{
-										return acc;
-									}
-									
-								}
+				req.query = {
+					customerId: foundOcc.customer._id,
+					service: foundOcc.service.name.toLowerCase (),
+				};
 
-								return false
-							});
-						}
+				function acc_cb (acc){
+					function rw_cb (reward){
+						res.json ({occ: foundOcc, acc: acc, reward: reward});	
+					}
+					RewardsCtrl.getReward (req, res, next, rw_cb)			
+				}				
 
-						foundOcc = foundOcc.toObject (); // convert to add data
-						foundOcc.accounts = cus.accounts ? cus.accounts : [];
-						res.json ({data: foundOcc});
-					});
-
+				AccountsCtrl.getAccounts (req, res, next, acc_cb);
 			}
 			else{
 				next ();
@@ -81,7 +57,7 @@ function Checkout() {
 	// assume call createInvoice beforehand, and an account passed is valid
 	// at this moment only allow paid by one account at a checkout time
 	// Apply only usage account, whose unit is hour
-	this.withdrawUsageHourAccount = function (req, res, next){
+	this.preparWithdraw = function (req, res, next){
 		var accId = req.params.accId;
 		var occ = JSON.parse (req.query.occ);
 		occ = new Occupancies (occ);

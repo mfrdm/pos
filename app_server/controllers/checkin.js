@@ -248,7 +248,7 @@ function Checkin() {
 		var startHasMin = req.query.start ? (req.query.start.split (' ').length > 1 ? true : false) : false;
 		var endHasMin = req.query.end ? (req.query.end.split (' ').length > 1 ? true : false) : false;
 
-		var start = req.query.start ? (startHasMin ? moment (req.query.start) : moment (req.query.start).hour(0).minute(0)) : moment().hour(0).minute(0);
+		var start = req.query.start ? (startHasMin ? moment (req.query.start) : moment (req.query.start).hour(0).minute(0)) : moment().add(-1, 'day').hour(0).minute(0);
 		var end = req.query.end ? (endHasMin ? moment (req.query.end) : moment (req.query.end).hour(23).minute(59)) : moment().hour(23).minute(59);
 
 		// fix timezone problems

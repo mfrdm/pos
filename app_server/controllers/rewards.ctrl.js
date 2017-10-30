@@ -26,12 +26,11 @@ function RewardsCtrl (){
 		});
 	};
 
-	this.getReward = function (req, res, next){
+	this.getReward = function (req, res, next, cb){
 		// the first step before update reward. So if reward expired, it should be detect here.
-		var data = JSON.parse (req.query.data);
 		var condition = {
-			'customer._id': data.customerId,
-			'services': data.service
+			'customer._id': req.query.customerId,
+			'services': req.query.service
 		}
 
 		Rewards.findOne (condition, function (err, foundReward){
@@ -53,11 +52,25 @@ function RewardsCtrl (){
 						next (err);
 						return;
 					}
-					res.json ({data: {amount: 0, _id: foundReward._id, end: foundReward.end}});
+
+					var rwd = [{amount: 0, _id: foundReward._id, end: foundReward.end}];
+					if (cb){
+						cb (rwd);
+					}
+					else{
+						res.json ({data: rwd});
+					}
+					
 				});
 			}
 			else{
-				res.json ({data: {amount: foundReward.amount, _id: foundReward._id, end: foundReward.end}});
+				var rwd = [{amount: beforeResetAmount, _id: foundReward._id, end: foundReward.end}];
+				if (cb){
+					cb (rwd);
+				}
+				else{
+					res.json ({data: rwd});
+				}
 			}
 			
 		});
@@ -67,6 +80,8 @@ function RewardsCtrl (){
 		// call get reward first
 		// assume the reward is still valid
 		var condition = {_id: req.query.rewardId};
+		var total = req.query.total;
+
 		Rewards.findOne (condition, function (err, foundReward){
 			if (err){
 				console.log (err);
@@ -79,9 +94,19 @@ function RewardsCtrl (){
 				return;			
 			}
 			else{
-				var total = req.query.total;
-				remain = foundReward.withdraw (total)
-				res.json ({data: {remain: remain, total: total, remainAmount: foundReward.amount}});
+				var remain = foundReward.withdraw (total);
+				var used = total - remain;
+				redeem = used > 0 ? used : total;
+				data = {
+					_id:foundReward._id, 
+					remain: remain,
+					total: total,
+					paidAmount: used, 
+					paidTotal: used,
+					name: 'reward'
+				};
+
+				res.json ({data: data});
 			}			
 		})
 	};

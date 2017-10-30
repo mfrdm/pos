@@ -54,7 +54,7 @@ var getDefaultAccounts = function (){
 			isRecursive: true,
 			lastRenewDate: new Date (),
 			renewNum: 0, // number of renew
-			maxRenewNum: 3, // 
+			maxRenewNum: 2, // 
 			recursiveType: 1, // daily: 1, monthly: 2, annually: 3
 			baseAmount: 24
 		},
@@ -141,7 +141,7 @@ var getDefaultAccounts = function (){
 			isRecursive: true,
 			lastRenewDate: new Date (),
 			renewNum: 0, // number of renew
-			maxRenewNum: 30, // 
+			maxRenewNum: 29, // 
 			recursiveType: 1, // daily: 1, monthly: 2, annually: 3
 			baseAmount: 24
 		},
@@ -593,13 +593,19 @@ var getDefaultAccounts = function (){
 }
 
 var renew = function (){
+	// renew number = number of usage days - 1, because the first day is not renewed. For example, with combo 30 days the number of renew day is only 29. However, if consider the first day, which is not renewed, customer still get 30 days.
 	var acc = this;
 	var today = moment ().hour (0).minute (0); // Review and remove later
 	var renewable = acc.isRenewable ();
-	if (renewable && acc.recursive.recursiveType == 1){
-		acc.amount = acc.recursive.baseAmount;
-		acc.recursive.lastRenewDate = moment ();
-		acc.recursive.renewNum++;
+	if (acc.recursive.recursiveType == 1){
+		if (renewable){
+			acc.amount = acc.recursive.baseAmount;
+			acc.recursive.lastRenewDate = moment ();
+			acc.recursive.renewNum++;
+		}
+		else{ // already expired
+			acc.amount = 0;
+		}
 	}
 	else{
 		//
@@ -607,10 +613,10 @@ var renew = function (){
 }
 
 var isRenewable = function (){
+	// Only renewing daily being allowed
 	var acc = this;
 	var today = moment ().hour (0).minute (0);
-
-	if (acc.recursive.recursiveType == 1){
+	if (acc.recursive.recursiveType == 1){ 
 		if (acc.recursive && acc.recursive.isRecursive && (acc.recursive.renewNum < acc.recursive.maxRenewNum) && moment (acc.recursive.lastRenewDate).isBefore (today)){
 			return true;
 		}		
