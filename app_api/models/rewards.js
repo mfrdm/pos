@@ -38,6 +38,7 @@ var RewardSchema = mongoose.Schema ({
 	start: {type: Date},
 	end: {type: Date},
 	amount: Number,
+	services: ['group common', 'individual common'],
 	source: [{
 		_id: mongoose.Schema.Types.ObjectId,
 		amount: Number,

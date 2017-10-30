@@ -40,6 +40,20 @@ var checkoutService = function($http){
 			url:'/checkout/account/withdraw/' + accId,
 			params: query,
 		});	
+	};
+
+	this.getReward = function (data){
+		var query = {data: JSON.stringify (data)};
+
+		return $http({
+			method:'GET',
+			url:'/rewards/getReward',
+			params: query,
+		});	
+	};
+
+	this.setReward = function (data){
+
 	}
 
 }

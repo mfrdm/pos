@@ -28,8 +28,10 @@ function RewardsCtrl (){
 
 	this.getReward = function (req, res, next){
 		// the first step before update reward. So if reward expired, it should be detect here.
+		var data = JSON.parse (req.query.data);
 		var condition = {
-			'customer._id': req.query.customerId
+			'customer._id': data.customerId,
+			'services': data.service
 		}
 
 		Rewards.findOne (condition, function (err, foundReward){

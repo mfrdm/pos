@@ -11,7 +11,7 @@ html(ng-app='posApp')
 		link(rel="stylesheet", href='/vendor/css/foundation.min.css')
 		link(type="text/css" media="screen" rel="stylesheet" href='/vendor/css/responsive-tables.css')
 		link(rel="stylesheet", href="https://fonts.googleapis.com/icon?family=Material+Icons")
-		//link(rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css")
+		link(rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css")
 		link(rel="stylesheet" href="/vendor/css/angularjs-datetime-picker.min.css")
 		if (data.look.css && data.look.css[0])
 			- var cssFileNum = data.look.css.length
@@ -57,10 +57,8 @@ html(ng-app='posApp')
 					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/bookings') Booking
 					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/customers') Customer
 					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/deposit') Deposit
-					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/promocodes') Promocodes
-					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/storage') Storage
-					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/transaction') Transaction
-					li(ng-click='layout.ctrl.logout()'): a(href='') Logout
+					//li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/promocodes') Promocodes
+					//li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/storage') Storage
 
 		div(class="row marginLR0 relative")
 			div(class="large-2 columns show-for-large" id="alternativeMenu" ng-show="layout.model.dom.sideBarMenu")
@@ -70,9 +68,8 @@ html(ng-app='posApp')
 					li: a(href="/#!/bookings") Booking
 					li: a(href="/#!/customers") Customer
 					li: a(href="/#!/deposit") Deposit
-					li: a(href="/#!/promocodes") Promocodes
-					li: a(href="/#!/storage") Storage
-					li: a(href="/#!/transaction") Transaction
+					//li: a(href="/#!/promocodes") Promocodes
+					//li: a(href="/#!/storage") Storage
 			div(class="large-10 small-12 columns" id="mainContentDiv")
 				//- div(class="row medium-up-3 show-for-medium colorGrey" ng-show="layout.commonStatisticBar")
 					div(class="column column-block text-center")
@@ -102,8 +99,6 @@ html(ng-app='posApp')
 		script(src="/vendor/js/what-input.js")
 		script(src="/vendor/js/foundation.min.js")
 		script(src='/vendor/js/angularjs-datetime-picker.js')
-		script(src='/vendor/js/moment.min.js')
-		script(src='/vendor/js/angular-moment.min.js')
 		script(type="text/javascript" src="/vendor/js/responsive-tables.js")
 		//- script(src="/socket.io/socket.io.js")
 		if (data.look.js && data.look.js[0])

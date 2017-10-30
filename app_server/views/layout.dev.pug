@@ -1,0 +1,112 @@
+doctype html
+html(ng-app='posApp')
+	// pug mixin library
+	include ../../libs/pug/libs
+	head
+		meta(charset="utf-8")
+		// Let browser know website is optimized for mobile
+		meta(name='viewport', content='width=device-width, initial-scale=1.0')
+		base(href="/")
+		title= data.look.title
+		link(rel="stylesheet", href='/vendor/css/foundation.min.css')
+		link(type="text/css" media="screen" rel="stylesheet" href='/vendor/css/responsive-tables.css')
+		link(rel="stylesheet", href="https://fonts.googleapis.com/icon?family=Material+Icons")
+		//link(rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css")
+		link(rel="stylesheet" href="/vendor/css/angularjs-datetime-picker.min.css")
+		if (data.look.css && data.look.css[0])
+			- var cssFileNum = data.look.css.length
+			- for (var i = 0; i < cssFileNum; i++)
+				link(rel="stylesheet", href='/css/' + data.look.css[i] + '.css')
+
+	body(ng-controller="LayoutCtrl")
+		<div class="loader"></div>
+		<div class="loader-trans"></div>
+		nav(class="show-for-large top-bar paddingLR0" id="topNavBar")
+			div(class="medium-2 columns")
+				a(href="#!/" class="paddingLR0")
+					<span class="show-for-large title"> {{ layout.model.dom.pageTitle }}						
+			div(class="medium-10 columns")
+				ul(class="menu float-left")
+					li(class="menu-text") {{ layout.model.dept.name }}
+				ul(class="menu dropdown float-right paddingLR15" data-dropdown-menu)
+					li: a(class="button" href="#!/login" ng-show="layout.model.dom.loginBtn") Login
+					li(ng-show="layout.model.dom.notiBtn")
+						a(ng-style='layout.style' class="dropDownNoIcon paddingLR0"): i(class="material-icons") notifications
+						ul(class="menu noti" )
+							li(ng-repeat='noti in layout.notifications')
+								p {{noti.firstname}}
+								p {{noti.msg}}
+
+					li(ng-show="layout.model.dom.accountBtn" class="paddingT0")
+						a(class="dropDownNoIcon paddingAll0" ng-click='layout.ctrl.toggleProfile()'): i(class="material-icons paddingT5") account_circle
+						ul(class="menu")
+							li: a Profile
+							li: a Setting
+							li(ng-click='layout.ctrl.logout()'): a Logout
+
+
+		div(class="title-bar" data-hide-for="large")
+			button(class="menu-icon" type="button" id="top-menu-btn" ng-click='layout.ctrl.toggleTopMenu()')
+			div(class="title-bar-title paddingLR30")
+				a(href="#!/" class="title-bar-title title") GS POS
+		div(class='top-bar hide-for-large' id='mainMenu' ng-show='layout.model.dom.topMenu')
+			div
+				ul(class="menu vertical")
+					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/checkin') Checkin
+					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/orders') Order
+					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/bookings') Booking
+					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/customers') Customer
+					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/deposit') Deposit
+					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/promocodes') Promocodes
+					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/storage') Storage
+					li(ng-click='layout.ctrl.topMenu()'): a(href='/#!/transaction') Transaction
+					li(ng-click='layout.ctrl.logout()'): a(href='') Logout
+
+		div(class="row marginLR0 relative")
+			div(class="large-2 columns show-for-large" id="alternativeMenu" ng-show="layout.model.dom.sideBarMenu")
+				ul(class="menu vertical")
+					li: a(href="/#!/checkin") Checkin
+					li: a(href="/#!/orders") Order
+					li: a(href="/#!/bookings") Booking
+					li: a(href="/#!/customers") Customer
+					li: a(href="/#!/deposit") Deposit
+					li: a(href="/#!/promocodes") Promocodes
+					li: a(href="/#!/storage") Storage
+					li: a(href="/#!/transaction") Transaction
+			div(class="large-10 small-12 columns" id="mainContentDiv")
+				//- div(class="row medium-up-3 show-for-medium colorGrey" ng-show="layout.commonStatisticBar")
+					div(class="column column-block text-center")
+						div(class="newBox")
+							span {{ layout.customerNumber }} Customers
+					div(class="column column-block text-center")
+						div(class="newBox")
+							span {{ layout.bookingNumber }} Bookings
+					div(class="column column-block text-center")
+						div(class="newBox")
+							span {{ layout.parkingLotNumber }} Parking lots
+				//- div(class="newBox callout {{ layout.messageMode }}" ng-show="layout.messageDiv" )
+					p {{ layout.message }}
+					button(class="close-button" type="button" ng-click="layout.closeMessageDiv ()")
+						<span aria-hidden="true">&times;</span>
+				div(class="stdBox")
+					ng-view
+		div(class="footer0")
+		div(class="footer1")
+		div(class="footer2")
+
+		script(src="/vendor/js/angular.min.js")
+		script(src='/vendor/js/angular-route.min.js')
+		script(src='/vendor/js/checklist-model.min.js')
+		script(type="text/javascript" src="/vendor/js/jquery-2.1.0.min.js")
+		script(src="/js/test.js")
+		script(src="/vendor/js/what-input.js")
+		script(src="/vendor/js/foundation.min.js")
+		script(src='/vendor/js/angularjs-datetime-picker.js')
+		script(src='/vendor/js/moment.min.js')
+		script(src='/vendor/js/angular-moment.min.js')
+		script(type="text/javascript" src="/vendor/js/responsive-tables.js")
+		//- script(src="/socket.io/socket.io.js")
+		if (data.look.js && data.look.js[0])
+			- var jsFileNum = data.look.js.length
+			- for (var i = 0; i < jsFileNum; i++)
+				script(src="/app_client/" + data.look.js[i])

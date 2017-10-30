@@ -1,4 +1,4 @@
-var app = angular.module ('posApp', ['ngRoute', 'checklist-model']);
+var app = angular.module ('posApp', ['ngRoute', 'checklist-model', 'angularMoment']);
 
 app
 	.config (['$locationProvider', '$routeProvider', config])
@@ -83,7 +83,18 @@ function config ($locationProvider, $routeProvider){
 			},			
 			controller: "StorageCtrl",
 			controllerAs: 'vm'
-		})			
+		})
+		.when('/transaction', {
+			templateUrl: "/template/transaction",
+			resolve: {
+				'checkAuth': ['$q', 'authentication', '$location', '$rootScope', checkAuth]
+			},			
+			controller: "TransactionCtrl",
+			controllerAs: 'vm'
+		})
+		.when ('/404', {
+			template: '<h2>Ooop! Permission denied!</h2>'
+		})		
 		// .when ('/assets', {
 		// 	templateUrl: '/assets',
 		// 	resolve: {
@@ -148,15 +159,22 @@ function checkAuth ($q, authentication, $location, $rootScope) {
 		if ($location.path() != '/login' && $location.path() != '/register'){
 			Layout.model.dom.returnPage = $location.path();
 			$location.path ('/login');
-		}
-		
+		}		
 	}
 	else{
 		if ($location.path() == '/login' || $location.path() == '/register'){
 			$location.path (Layout.model.dom.returnPage);
 		}
 		else {
-			Layout.model.dom.returnPage = $location.path();
+			var returnPage = $location.path();
+			Layout.ctrl.setCurrentController ({id: returnPage.split ('/')[1]});
+			if (Layout.ctrl.hasPermission  ('show')){
+				Layout.model.dom.returnPage = returnPage;	
+			}
+			else{
+				$location.path ('/404');
+			}
+			
 		}	
 	}
 
