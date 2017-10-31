@@ -606,8 +606,7 @@
                                 return a.selectedLabel > b.selectedLabel;
                             })
 
-                            vm.ctrl.disablePromocodes() // check disable
-                           
+                           thisPromocodesObj.disablePromocodes() // check disable
                         }
 
                         var deferred = $q.defer ();
@@ -644,7 +643,6 @@
                 );   
             };
 
-
             this.addCodeLabels = function (codes){// codes: array of all codes
                 if (vm.model.dom.data.selected.modelLanguage == 'vn'){
                     codes.map (function (x, i, arr){
@@ -657,6 +655,10 @@
                     }); 
                 }       
             };
+
+            this.disablePromocodes = function (){
+                // for what?
+            }
 
         }();
 
@@ -709,7 +711,6 @@
 
             this.init = function (){
                 this.model.dom.container = true;
-
                 this.initServiceSection ();
                 this.initItemSection ();
                 this.initCodeSection ();
@@ -761,8 +762,8 @@
             };
 
             this.openCheckinDiv = function (){
-                vm.edit.model.dom.editDiv = false; // turn off
-                vm.checkinList.dom.filterDiv = false; // turn off             
+                vm.model.dom.checkInEditDiv = false; // turn off
+                vm.model.dom.filterDiv = false; // turn off                               
                 this.init (); // Trigger get group of leaders
             };
 
@@ -788,11 +789,15 @@
 
             this.selectCustomer = function (index){
                 this.model.occupancy.customer = this.model.order.customer = vm.search.selectCustomer (index);
+                this.afterSelectCustomer ();
+            };
+
+            this.afterSelectCustomer = function (){
                 this.model.dom.service.select = true;
                 this.model.dom.item.select = true;
                 this.model.dom.item.quantInput = true;
-                this.getItems ();
-            };
+                this.getItems ();                
+            }
 
             this.customerChangeHandler = function (){
                 vm.search.inputChangeHandler ();
@@ -1008,9 +1013,46 @@
                     checkinObj.model.order.orderline.splice (index, 1);
                 }                  
             };
+
+            this.checkinFromBooking = function (){
+                var b = DataPassingService.get ('booking');
+                if (b){
+                    var tempCustomer = {
+                        email: [b.customer.email],
+                        phone: [b.customer.phone],
+                        fullname: b.customer.fullname,
+                    }
+
+                    checkinObj.openCheckinDiv ();
+                    this.model.occupancy.customer = tempCustomer;
+                    vm.search.model.customer.username = vm.customers.createUsername (tempCustomer);
+                    this.afterSelectCustomer ();
+                    this.model.occupancy.service = b.service;
+                    this.model.occupancy.bookingId = b.bookingId;
+                    this.serviceChangeHandler ();
+                    DataPassingService.reset ('booking');
+                }
+            };
+
+            this.checkinNewCustomer = function (){
+                var c = DataPassingService.get ('customer');
+                if (c){
+                    var tempCustomer = {
+                        email: [c.email],
+                        phone: [c.phone],
+                        fullname: c.fullname,
+                    }
+
+                    checkinObj.openCheckinDiv ();
+                    this.model.occupancy.customer = tempCustomer;
+                    vm.search.model.customer.username = vm.customers.createUsername (tempCustomer);
+                    this.afterSelectCustomer ();
+                    DataPassingService.reset ('customer');
+                }           
+            }
+
         }();
 
-        // STOP here
         vm.checkout = new function (){
             var checkoutObj = this;
             this.model = {
@@ -1020,11 +1062,11 @@
                 checkingout:{
                 },
                 temporary: {
-                    invoice: {total: -1},
+                    invoice: {total: 0},
                     selectedReward: null,
                     selectedAccount: {},
                 }
-            }
+            };
 
             this.getPromocodeNames = function (occ){
                 var codeNames = "";
@@ -1033,7 +1075,6 @@
                 });
                 return codeNames;
             };
-
 
             this.getInvoice = function (occ){
                 checkoutObj.model.dom.checkoutDiv = true;
@@ -1242,72 +1283,19 @@
             };
         }();
 
+        vm.pagination = function (){
+            this.model = {
+                currItems: [],
+                currIndex: [],
+                pageNumber: 0,
+                maxItemPerPage: 10,
+            };
 
-        vm.ctrl.checkinBooking = function (){
-            var b = DataPassingService.get ('booking');
-            
-            if (b){
-                Object.assign (vm.model.checkingin.occupancy, b);
-                vm.ctrl.openCheckinDiv ();
+            this.jump = function (){
 
-                var tempCustomer = {
-                    email: [b.customer.email],
-                    phone: [b.customer.phone],
-                    fullname: b.customer.fullname,
-                }
-
-                vm.model.search.checkin.username = vm.ctrl.checkin.createUsername (tempCustomer);
-
-                DataPassingService.reset ('booking');
-            }
-        };
-
-        vm.ctrl.checkinNewCustomer = function (){
-            var c = DataPassingService.get ('customer');
-            if (c){
-                
-                vm.model.checkingin.occupancy.customer = vm.model.checkingin.order.customer = c;
-                var tempCustomer = {
-                    email: [c.email],
-                    phone: [c.phone],
-                    fullname: c.fullname,
-                }
-
-                vm.model.search.checkin.username = vm.ctrl.checkin.createUsername (tempCustomer);
-
-                vm.ctrl.openCheckinDiv ();
-                DataPassingService.reset ('customer');
-            }           
+            };
         }
 
-        // Get checkin list when load page
-        // vm.model.checkedinList.data: array contains all occs today
-
-        vm.ctrl.getCheckedinList = function (){
-            var query = {
-                status: 4, // get both checked out and checked in
-                storeId: LayoutCtrl.model.dept._id,
-            }
-
-            vm.ctrl.showLoader ();
-            CheckinService.getCheckedinList(query).then(
-                function success(res){
-                    vm.ctrl.hideLoader ();
-                    vm.model.checkedinList.data = res.data.data;
-                    vm.model.checkedinList.data.map (function (x, i, arr){
-                        vm.ctrl.addServiceLabel (x.service);
-                    });// add service label to service
-
-                    vm.ctrl.filterPaginate();// make pagination
-                    vm.ctrl.checkinBooking ();// implement data from booking
-                    vm.ctrl.checkinNewCustomer ();// implement data from customer
-                }, 
-                function error(err){
-                    vm.ctrl.hideLoader ();
-                    console.log(err);
-                }
-            );
-        };
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////// Paginate ///////////////////////////////////////////////////
@@ -1445,12 +1433,6 @@
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////// Toggle ////////////////////////////////////////////////////
 
-        vm.ctrl.openCheckinDiv = function(){
-            vm.model.dom.checkInEditDiv = false; // turn off
-            vm.model.dom.filterDiv = false; // turn off             
-            vm.checkin.init (); // Trigger get group of leaders
-        };
-
         vm.ctrl.toggleFilterDiv = function (){
             if (!vm.model.dom.filterDiv) {
                 vm.model.dom.filterDiv = true;
@@ -1459,61 +1441,6 @@
             }
             else vm.model.dom.filterDiv = false;
         };
-
-        ///////////// Get group leaders /////////////
-
-
-
-        /////// Select services //////////////
-
-        // Handle when select sevice
-        vm.ctrl.checkin.serviceChangeHandler = function (){
-            if(vm.model.checkingin.occupancy.customer.fullname){
-                var targetService = vm.model.checkingin.occupancy.service;
-
-                if (vm.products.serviceChangeHandler (targetService)){
-                    vm.model.dom.data.selected.checkin.promoteCode.codes = vm.promocodes.getCodesByServices (targetService.name);   
-                }
-
-                vm.ctrl.disablePromocodes();
-
-            }else{
-
-            }
-        };
-
-        vm.ctrl.selectCodesForService = function(selectedService, original){
-                // edit code depends on services
-                selectedService = selectedService ? selectedService.toLowerCase () : selectedService;
-                var subCodes = original.filter(function(ele){
-                    return (ele.services.indexOf(selectedService) > -1 || ele.services[0] == 'all')
-                })
-
-                return subCodes
-            }
-
-            // If select private group service
-            vm.ctrl.checkin.selectedGroupChangeHandler = function (){
-                if (vm.model.temporary.selectedGroupPrivate._id){// if select a parent
-                    vm.model.checkingin.occupancy.parent = vm.model.temporary.selectedGroupPrivate._id;
-                    vm.model.checkingin.occupancy.service = vm.model.temporary.selectedGroupPrivate.service;
-                }
-            };
-
-
-            // After checkin occ, create order if have one
-            vm.ctrl.order.confirm = function (){
-                OrderService.confirmOrder (vm.model.temporary.justCheckedin.order).then(
-                    function success (res){
-                        // display confirm message and reset route
-                        vm.ctrl.reset ();
-                    },
-                    function failure (err){
-
-                    }
-                )
-            };
-
 
 
         ////////////////////////////////////////////// Others /////////////////////////////////////////////////
@@ -1572,14 +1499,13 @@
         vm.model.dom.data.selected = vm.model.dom.data.vn;
         angular.element(document.getElementById ('mainContentDiv')).ready(function () {// after page load
             vm.model.temporary.occMembers = []
-            // vm.ctrl.getCheckedinList ();// get checkin list
             vm.ctrl.showLoader ();
             vm.checkinedList.get ()
                 .then (function success (data){
                     vm.ctrl.hideLoader ();
                     // vm.ctrl.filterPaginate();// make pagination
-                    vm.ctrl.checkinBooking ();// implement data from booking
-                    vm.ctrl.checkinNewCustomer ();// implement data from customer
+                    vm.checkin.checkinFromBooking ();// implement data from booking
+                    vm.checkin.checkinNewCustomer ();// implement data from customer
                 }, function error (err){
                     vm.ctrl.hideLoader ();
                     console.log (err);

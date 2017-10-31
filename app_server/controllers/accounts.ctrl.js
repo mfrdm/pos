@@ -22,6 +22,7 @@ function AccountsCtrl() {
 			if (err){
 				console.log (err);
 				next (err);
+				return;
 			}
 
 			foundAcc.map (function (x, i, arr){
@@ -36,7 +37,7 @@ function AccountsCtrl() {
 			else{
 				res.json ({data: foundAcc});
 			}
-		})
+		});
 	}
 
 	this.prepareWithdraw = function (){
@@ -44,7 +45,47 @@ function AccountsCtrl() {
 	}
 
 	this.withdraw = function (req, res, next, cb){
+		var acc = req.body.acc;
 
-	}
+		if (!acc){
+			if (cb){
+				cb (null);
+			}
+			else{
+				next ();
+			}
+			return;
+		}
+
+		var condition = {_id: acc._id};
+		var update = {
+			$set: {
+				amount: acc.amount,
+				recursive: acc.recursive,
+			}
+		};
+
+		if (!acc.activate){
+			update.$set.activate = true;
+			update.$set.start = acc.start;
+			update.$set.end = acc.end;
+		}
+
+		Accounts.update (condition, update, function (err, result){
+			if (err){
+				console.log (err);
+				next (err);
+				return;
+			}
+
+			if (cb){
+				cb (result);
+			}
+			else{
+				res.json ({data: result});
+			}
+
+		});
+	};
 
 }

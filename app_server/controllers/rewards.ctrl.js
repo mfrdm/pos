@@ -6,7 +6,7 @@ var request = require ('request');
 module.exports = new RewardsCtrl();
 
 function RewardsCtrl (){
-	this.initReward = function (req, res, next){
+	this.initReward = function (req, res, next, cb){
 		var rwd = new Rewards ({
 			customer: req.body.customer,
 			amount: req.body.amount ? req.body.amount : 0,
@@ -40,9 +40,15 @@ function RewardsCtrl (){
 				return;
 			}
 			if (!foundReward){
-				next ();
-				return;			
+				if (cb){
+					cb ([]);
+				}
+				else{
+					res.json ({data: []});
+				}
+				return;	
 			}
+
 			var beforeResetAmount = foundReward.amount;
 			foundReward.reset ();
 			if (beforeResetAmount != foundReward.amount && foundReward.amount == 0){
@@ -94,16 +100,21 @@ function RewardsCtrl (){
 				return;			
 			}
 			else{
-				var remain = foundReward.withdraw (total);
-				var used = total - remain;
-				redeem = used > 0 ? used : total;
+				var remainTotal = foundReward.withdraw (total);
+				var used = total - remainTotal;
+				used = used > 0 ? used : total;
 				data = {
-					_id:foundReward._id, 
-					remain: remain,
-					total: total,
-					paidAmount: used, 
-					paidTotal: used,
-					name: 'reward'
+					occ: {
+						total: remainTotal
+					},
+					rwd:{
+						_id: foundReward._id, 
+						amount: foundReward.amount,
+						paidAmount: used, 
+						paidTotal: used,
+						name: 'reward'						
+					}
+
 				};
 
 				res.json ({data: data});
@@ -112,75 +123,28 @@ function RewardsCtrl (){
 	};
 
 	this.withdraw = function (req, res, next, cb){
-		// call prepareWithdraw first
-		// Assume that if can go to the function, reward must be valid, i.e. amount > 0 and not expired.
-		var condition = {
-			'_id': req.body._id
-		};
-
-		Rewards.findOne (condition, function (err, foundReward){
-			if (err){
-				console.log (err);
-				next (err);
-				return;
-			}
-
-			if (!foundReward){
-				next ();
-				return;			
-			}
-
-			var total = req.body.total;
-			var remain = foundReward.withdraw (total);
-			var update = {
-				$set: {
-					amount: foundReward.amount
-				},
-				$push: {
-					source: {
-						_id: req.body.sourceId,
-						amount: total - remain < 0 ? -total : -(total - remain),
-						createAt: moment (),				
-					}
-				}				
-			};
-
-			Rewards.update (condition, update, function (err, result){
-				if (err){
-					console.log (err);
-					next (err);
-					return;
-				}
-
-				if (!result){
-					next ();
-					return;			
-				}
-
-				res.json ({data: result});				
-			})
-		});
-	};
-
-	this.setReward = function (req, res, next){
-		var condition = {
-			'_id': req.body._id
-		};
-
+		var rwd = req.body.rwd;
+		var cashback = Rewards.cashback (req.body.occ.total, rwd);
+		var amount = rwd.amount + cashback.amount;
+		var condition = {_id: rwd._id};
 		var update = {
-			$inc: {amount: req.body.amount},
-			$set: {
+			$set:{
+				amount: amount,
 				start: moment (),
-				end: Rewards.setExpireDate (),
-			},
-			$push: {
-				source: {
-					_id: req.body.sourceId,
-					amount: req.body.amount,
-					createAt: moment (),				
-				}
+				end: Rewards.setExpireDate ()
 			}
 		};
+
+		if (rwd.source){
+			update.$push = {
+				source:{
+					$each: [rwd.source, cashback]
+				}
+			}
+		}
+		else{
+			update.$push = {source: cashback}			
+		}
 
 		Rewards.update (condition, update, function (err, result){
 			if (err){
@@ -189,12 +153,17 @@ function RewardsCtrl (){
 				return;
 			}
 
-			if (!result){
-				next ();
-				return;			
+			if (cb){
+				cb (result);
 			}
-
-			res.json ({data: result})
+			else{
+				res.json ({data: result});
+			}						
 		});
+	};
+
+	// not use
+	this.setReward = function (req, res, next){
+		//
 	};	
 }

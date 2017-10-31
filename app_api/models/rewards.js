@@ -16,15 +16,23 @@ var setExpireDate = function (start){
 }
 
 var _withdraw = function (amount, rwd){
+	// only use reward with value of 1000, 2000, ...
+	// not use 1500, 1300, ... Remove move the additional value like below first.
 	var remain = amount;
-	if (amount > rwd.amount){
-		remain = amount - rwd.amount;
-		rwd.amount = 0;
+	var lowestAmount = 1000;
+	var usedReward = rwd.amount;
+	usedReward = Math.floor(usedReward / 1000) * 1000;
+	nonUsedReward = rwd.amount - usedReward;
+
+	if (amount > usedReward){
+		remain = amount - usedReward;
+		usedReward = 0;
 	}
-	else if (amount <= rwd.amount){
+	else if (amount <= usedReward){
 		remain = 0;
-		rwd.amount = rwd.amount - amount;
+		usedReward = usedReward - amount;
 	}
+	rwd.amount = usedReward + nonUsedReward;
 	return remain;
 }
 
@@ -32,7 +40,17 @@ var withdraw = function (total){
 	var rwd = this;
 	var remain = _withdraw (total, rwd);
 	return remain
-}
+};
+
+var cashback = function (total, rwd){
+	var cashback_pct = 0.05;
+	if (rwd.promocodes && rwd.promocodes.length){
+		//
+	}
+	else{
+		return {amount: total * cashback_pct, name: 'cashback', promocodes: [], createdAt: moment ()};
+	}
+};
 
 var RewardSchema = mongoose.Schema ({
 	start: {type: Date},
@@ -42,8 +60,9 @@ var RewardSchema = mongoose.Schema ({
 	source: [{
 		_id: mongoose.Schema.Types.ObjectId,
 		amount: Number,
-		sourceName: {type: String, default: 'gs_occ'},
+		name: {type: String, default: 'gsocc'},
 		createdAt: {type: Date},
+		promocodes: [{name: String}],
 	}],
 	customer: {_id: mongoose.Schema.Types.ObjectId},
 	createdAt: {type: Date, default: Date.now},
@@ -58,4 +77,5 @@ var RewardSchema = mongoose.Schema ({
 RewardSchema.methods.reset = reset;
 RewardSchema.methods.withdraw = withdraw;
 RewardSchema.statics.setExpireDate = setExpireDate;
+RewardSchema.statics.cashback = cashback;
 module.exports = mongoose.model ('Rewards', RewardSchema);

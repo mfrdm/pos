@@ -23,16 +23,9 @@ function Checkout() {
 				next (err);
 				return
 			}
-
 			if (foundOcc){
 				foundOcc.checkoutTime = foundOcc.checkoutTime ? foundOcc.checkoutTime : moment ();
-				try{
-					foundOcc.getTotal ();
-				}
-				catch (err){
-					next (err);
-					return;
-				}
+				foundOcc.getTotal ();
 
 				req.query = {
 					customerId: foundOcc.customer._id,
@@ -44,13 +37,13 @@ function Checkout() {
 						res.json ({occ: foundOcc, acc: acc, reward: reward});	
 					}
 					RewardsCtrl.getReward (req, res, next, rw_cb)			
-				}				
+				}
+
 				AccountsCtrl.getAccounts (req, res, next, acc_cb);
 			}
 			else{
 				next ();
 			}
-
 		});
 	};
 

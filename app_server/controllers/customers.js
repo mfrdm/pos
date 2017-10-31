@@ -1,6 +1,7 @@
 var validator = require ('validator')
 var mongoose = require ('mongoose');
 var Customers = mongoose.model ('customers');
+var RewardsCtrl = require ('./rewards.ctrl');
 
 module.exports = new CustomersCtrl();
 
@@ -158,8 +159,11 @@ function CustomersCtrl() {
 				return 
 			}
 			else{
-				res.json ({data: cus});
-				return
+				function cb (){
+					res.json ({data: cus});
+				}
+				req.body.customer = cus;
+				RewardsCtrl.initReward (req, res, next, cb)
 			}
 		});
 
