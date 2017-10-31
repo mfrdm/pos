@@ -367,14 +367,14 @@ div(id='checkoutDiv' ng-show='vm.checkout.model.dom.checkoutDiv' class="row colu
 						th(colspan=3) Khách hàng
 						td(colspan=2) {{ vm.checkout.model.checkingout.occupancy.customer.fullname }}
 					tr(ng-if="vm.checkout.model.checkingout.accounts.length")
-						th(colspan=3) Tài khoản trả trước
+						th(colspan=3) Tài khoản
 						td(colspan=2)
-							select(ng-model="vm.checkout.model.temporary.selectedAccount._id" ng-options="acc._id as (!acc.activate ? acc.label.vn + ' - Chưa kích hoạt' :  acc.label.vn + ' - Ngày hết hạn: ' + (acc.end | date:'dd/MM/yyyy') + ' ' + (acc.end | date:'shortTime')) for acc in vm.checkout.model.checkingout.accounts" ng-change="vm.checkout.accChangeHandler ()")
+							select(ng-model="vm.checkout.model.temporary.selectedAccount._id" ng-options="acc._id as (!acc.activate ? acc.label.vn + ' - Chưa kích hoạt' :  acc.label.vn + ' - Hết hạn: ' + (acc.end | date:'dd/MM/yyyy') + ' ' + (acc.end | date:'shortTime')) for acc in vm.checkout.model.checkingout.accounts" ng-change="vm.checkout.accChangeHandler ()")
 								option(value="")
-					tr(ng-if="vm.checkout.model.checkingout.reward.length")
-						th(colspan=3) Tài khoản thưởng
+					tr(ng-if="vm.checkout.model.checkingout.occupancy.reward.length")
+						th(colspan=3) Điểm thưởng
 						td(colspan=2)
-							select(ng-model="vm.checkout.model.temporary.selectedReward._id" ng-options="rwd._id as ((rwd.amount | number) + ' Điểm' + ' - Ngày hết hạn: ' + (rwd.end | date:'dd/MM/yyyy') + ' ' + (rwd.end | date:'shortTime')) for rwd in vm.checkout.model.checkingout.reward" ng-change="vm.checkout.rewardChangeHandler ()")
+							select(ng-model="vm.checkout.model.temporary.selectedReward" ng-options="rwd as ((rwd.amount | number) + ' GCoint' + ' - Hết hạn: ' + (rwd.end | date:'dd/MM/yyyy') + ' ' + (rwd.end | date:'shortTime')) for rwd in vm.checkout.model.checkingout.occupancy.reward" ng-change="vm.checkout.rewardChangeHandler ()")
 								option(value="")
 					tr
 						th(colspan=3) Dịch vụ
@@ -401,16 +401,19 @@ div(id='checkoutDiv' ng-show='vm.checkout.model.dom.checkoutDiv' class="row colu
 						th(colspan=3) Tài khoản đã dùng
 						td(colspan='2' ng-if="vm.checkout.model.temporary.accWithdrawDetail.acc.unit == 'hour'") {{ vm.checkout.model.temporary.accWithdrawDetail.acc.paidAmount | number: 1}} Giờ
 						td(colspan='2' ng-if="vm.checkout.model.temporary.accWithdrawDetail.acc.unit == 'vnd'") {{ vm.checkout.model.temporary.accWithdrawDetail.acc.paidAmount | number }} VNĐ
-					tr(ng-if="vm.checkout.model.temporary.accWithdrawDetail.acc.remain || vm.checkout.model.temporary.accWithdrawDetail.acc.remain == 0")
+					tr(ng-if="vm.checkout.model.temporary.accWithdrawDetail.acc.amount || vm.checkout.model.temporary.accWithdrawDetail.acc.amount == 0")
 						th(colspan=3) Tài khoản còn
-						td(colspan='2' ng-if="vm.checkout.model.temporary.accWithdrawDetail.acc.unit == 'hour'") {{ vm.checkout.model.temporary.accWithdrawDetail.acc.remain | number: 1}} Giờ
-						td(colspan='2' ng-if="vm.checkout.model.temporary.accWithdrawDetail.acc.unit == 'vnd'") {{ vm.checkout.model.temporary.accWithdrawDetail.acc.remain | number}} VNĐ						
+						td(colspan='2' ng-if="vm.checkout.model.temporary.accWithdrawDetail.acc.unit == 'hour'") {{ vm.checkout.model.temporary.accWithdrawDetail.acc.amount | number: 1}} Giờ
+						td(colspan='2' ng-if="vm.checkout.model.temporary.accWithdrawDetail.acc.unit == 'vnd'") {{ vm.checkout.model.temporary.accWithdrawDetail.acc.amount | number}} VNĐ
+					tr(ng-if="vm.checkout.model.temporary.rwdWithdrawDetail.rwd.amount || vm.checkout.model.temporary.rwdWithdrawDetail.rwd.amount == 0")
+						th(colspan=3) Điểm thưởng còn
+						td(colspan='2') {{ vm.checkout.model.temporary.rwdWithdrawDetail.rwd.amount | number}} GCoint											
 					tr(ng-if="vm.checkout.model.temporary.accWithdrawDetail.occ.total || vm.checkout.model.temporary.accWithdrawDetail.occ.total == 0")
 						th(colspan=3) Tổng trừ trả trước
 						td(colspan=2) {{ vm.checkout.model.temporary.accWithdrawDetail.occ.total | number}} VNĐ
-					tr(ng-if="vm.checkout.model.temporary.rwdWithdrawDetail._id")
-						th(colspan=3) Tổng sau trừ điểm thưởng
-						td(colspan=2) {{ vm.checkout.model.temporary.rwdWithdrawDetail.remain | number }} VNĐ
+					tr(ng-if="vm.checkout.model.temporary.rwdWithdrawDetail.rwd._id")
+						th(colspan=3) Tổng trừ điểm thưởng
+						td(colspan=2) {{ vm.checkout.model.temporary.rwdWithdrawDetail.occ.total | number }} VNĐ
 					tr
 						td(colspan=5)
 							textarea(type='text' ng-model='vm.checkout.model.checkingout.occupancy.note' placeholder="Ghi chú")

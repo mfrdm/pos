@@ -6,6 +6,7 @@ var Orders = mongoose.model ('orders');
 var Customers = mongoose.model ('customers');
 var Occupancies = mongoose.model ('Occupancies');
 var Accounts = mongoose.model ('Accounts');
+var Rewards = mongoose.model ('Rewards');
 
 var AccountsCtrl = require ('./accounts.ctrl');
 var RewardsCtrl = require ('./rewards.ctrl');
@@ -44,7 +45,6 @@ function Checkout() {
 					}
 					RewardsCtrl.getReward (req, res, next, rw_cb)			
 				}				
-
 				AccountsCtrl.getAccounts (req, res, next, acc_cb);
 			}
 			else{
@@ -57,6 +57,7 @@ function Checkout() {
 	// assume call createInvoice beforehand, and an account passed is valid
 	// at this moment only allow paid by one account at a checkout time
 	// Apply only usage account, whose unit is hour
+	// move to account.ctrl
 	this.preparWithdraw = function (req, res, next){
 		var accId = req.params.accId;
 		var occ = JSON.parse (req.query.occ);
@@ -69,85 +70,46 @@ function Checkout() {
 			}
  			
 			if (foundAcc){
-
+				foundAcc.initAccount ();
 				if (foundAcc.isRenewable ()){
 					foundAcc.renew ();
-
-					var accUpdate = {
-						amount: foundAcc.amount,
-						'recursive.lastRenewDate': foundAcc.recursive.lastRenewDate,
-						'recursive.renewNum': foundAcc.recursive.renewNum,
-					}
-
-					Accounts.findOneAndUpdate ({_id: foundAcc._id}, {$set: accUpdate}, {new: true}, function (err, updatedAcc){
-						if (err){
-							console.log (err);
-							next (err);
-							return
-						}
-
-						if (!updatedAcc){
-							next ();
-							return
-						}
-
-						var beforeAccAmount = updatedAcc.amount;
-						var beforeTotal = occ.total;
-						var context = occ.getAccContext ();
-
-						updatedAcc.withdraw (context);
-
-						res.json ({
-							data: {
-								occ:{
-									total: occ.total,
-								},
-								acc: {
-									_id: updatedAcc._id,
-									name: 'account',
-									unit: updatedAcc.unit,
-									paidTotal: beforeTotal - occ.total,
-									paidAmount: beforeAccAmount - updatedAcc.amount,
-									remain: updatedAcc.amount
-								}
-							}
-						});
-					});
-
 				}
-				else{
-					var beforeAccAmount = foundAcc.amount;
-					var beforeTotal = occ.total;
-					var context = occ.getAccContext ();
 
-					foundAcc.withdraw (context);
+				var beforeAccAmount = foundAcc.amount;
+				var beforeTotal = occ.total;
+				var context = occ.getAccContext ();
+				foundAcc.withdraw (context);
+				var data = {
+					occ:{
+						total: occ.total,
+					},
+					acc: {
+						_id: foundAcc._id,
+						name: 'account',
+						unit: foundAcc.unit,
+						paidTotal: beforeTotal - occ.total,
+						paidAmount: beforeAccAmount - foundAcc.amount, // already paid hours
+						amount: foundAcc.amount, // remain of account
+						start: foundAcc.start,
+						end: foundAcc.end,
+						activate: foundAcc.activate,
+						recursive: foundAcc.recursive,							
+					}						
+				};
 
-					res.json ({
-						data: {
-							occ:{
-								total: occ.total,
-							},
-							acc: {
-								_id: foundAcc._id,
-								name: 'account',
-								unit: foundAcc.unit,
-								paidTotal: beforeTotal - occ.total,
-								paidAmount: beforeAccAmount - foundAcc.amount, // already paid hours
-								remain: foundAcc.amount							
-							}
-						}
-					});
-				}
+				res.json ({data: data});
 
 			}
 			else{
-				res.json (); // may not the best way to indicate 
+				res.json ({data: []});
 			}
 			
 		});
 	};
 
 	this.confirmCheckout = function(req, res, next) {
+		// only one account is used at a time
+		// reward is accepted as a payment method. reward and account can be used together
 		var paid = req.body.data.total;
 		var total = req.body.data.total;
 		var usage = req.body.data.usage;
@@ -169,90 +131,62 @@ function Checkout() {
 				next (err)
 				return
 			}
-			else{
 
-				var updateOcc = {
-					status: status, 
-					total: total, 
-					paid: paid,
-					usage: usage, 
-					oriUsage: oriUsage,
-					price: price,
-					promocodes: promocodes,
-					checkoutTime: checkoutTime,
-					paymentMethod: paymentMethod,
-					note: note
+			var updateOcc = {
+				status: status, 
+				total: total, 
+				paid: paid,
+				usage: usage, 
+				oriUsage: oriUsage,
+				price: price,
+				promocodes: promocodes,
+				checkoutTime: checkoutTime,
+				paymentMethod: paymentMethod,
+				note: note
+			}
+
+			Occupancies.findOneAndUpdate ({_id: req.body.data._id}, {$set: updateOcc}, {new: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function (err, occ){
+				if (err){
+					console.log (err)
+					next (err)
+					return
 				}
 
-				Occupancies.findOneAndUpdate ({_id: req.body.data._id}, {$set: updateOcc}, {new: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function (err, occ){
-					if (err){
-						console.log (err)
-						next (err)
-						return
-					}
-
-					if (occ){
-						// update acc if being used
-						// At this moment. Only one method is used at a time
-						if (occ.paymentMethod && occ.paymentMethod.length){
-							var acc;
-							occ.paymentMethod.map (function (x, i, arr){
-								if (x.name == 'account'){
-									acc = x;
+				if (occ){
+					if (paymentMethod && paymentMethod.length){
+						paymentMethod.map (function (x, i, arr){
+							if (x.name == 'reward'){
+								req.body.rwd = x;
+								req.body.rwd.source = {
+									_id: occ._id,
+									amount: -x.paidAmount,
 								}
-							});
-
-							if (acc){
-								var updateStmt = {$inc: {amount: - acc.paidAmount}}
-								Accounts.findOneAndUpdate ({_id: acc._id}, updateStmt, function (err, foundAcc){
-									if (err){
-										console.log (err);
-										next (err);
-										return
-									}
-
-									if (foundAcc){
-										if (!foundAcc.activate){
-											foundAcc.activate = true;
-											foundAcc.initAccount ();
-											Accounts.update ({_id: foundAcc._id}, {$set: {end: foundAcc.end, start: foundAcc.start,activate: foundAcc.activate}}, function (err, result){
-												if (err){
-													console.log (err);
-													next (err);
-													return
-												}
-
-												res.json ({data: {message: 'success'}});
-												return;
-											});
-										}
-										else{
-											res.json ({data: {message: 'success'}});
-											return;
-										}
-									}
-									else{
-										next ();
-									}
-
-									return;
-
-								});
 							}
+							else if (x.name == 'account'){
+								req.body.acc = x;
+							}
+						});
+					}
 
-						}
-						else{
+					// to reward
+					req.body.occ = {total: req.body.data.total};
+					req.body.rwd = req.body.rwd ? req.body.rwd : {_id: req.body.data.reward[0]._id, amount: req.body.data.reward[0].amount};
+
+					function _acc_cb (updatedAcc){
+						function _rwd_cb (rwd){
 							res.json ({data: {message: 'success'}});
-							return
 						}
-					}
-					else{
-						next ();
-						return
+						RewardsCtrl.withdraw (req, res, next, _rwd_cb);
 					}
 
-				})
-			}
+					AccountsCtrl.withdraw (req, res, next, _acc_cb);
+				}
+				else{
+					next ();
+					return
+				}
+
+			});
 		})
 	};
 
@@ -290,141 +224,8 @@ function Checkout() {
 		})
 	}
 
+	// checkout customer using group common
 	this.checkoutGroup = function(req, res, next){
-		var leader = req.body.data[0]
-		var members = req.body.data.slice(1)
-		var membersId = members.map(function(ele){
-			return ele._id
-		})
-		var memberCusId = members.map(function(ele){
-			return ele.customer._id
-		})
-		
-		var total = leader.total;
-		var paid = leader.total;
-		var usage = leader.usage;
-		var oriUsage = leader.oriUsage;
-		var price = leader.price;
-		var checkoutTime = leader.checkoutTime;
-		var promocodes = leader.promocodes;
-		var paymentMethod = leader.paymentMethod ? leader.paymentMethod : [];
-		var note = leader.note ? leader.note : ''; // optional
-		var status = 2;
-
-		paymentMethod.map (function (x, i, arr){
-			paid = paid - x.paidTotal;
-		});
-
-		Customers.findOneAndUpdate({_id:leader.customer._id}, {$set:{checkinStatus:false}}, function(err, cus){
-			if (err){
-				next (err)
-				return
-			}
-			else{
-				var updateOcc = {
-					status: status, 
-					total: total, 
-					paid: paid,
-					usage: usage, 
-					oriUsage: oriUsage,
-					price: price,
-					promocodes: promocodes,
-					checkoutTime: checkoutTime,
-					paymentMethod: paymentMethod,
-					note: note
-				}
-				
-				Occupancies.findOneAndUpdate ({_id: leader._id}, {$set: updateOcc}, {new: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function (err, occ){
-					if (err){
-						next (err)
-						return
-					}
-
-					if (occ){
-						// update acc if being used
-						// At this moment. Only one method is used at a time
-						if (occ.paymentMethod && occ.paymentMethod.length){
-							var acc;
-							occ.paymentMethod.map (function (x, i, arr){
-								if (x.name == 'account'){
-									acc = x;
-								}
-							});
-
-							if (acc){
-								Accounts.findOneAndUpdate ({_id: acc._id}, {$inc: {amount: - acc.paidAmount}}, function (err, foundAcc){
-									if (err){
-										console.log (err);
-										next (err);
-										return
-									}
-
-									Customers.update({'_id':{$in:memberCusId}}, {$set:{checkinStatus:false}}, {multi: true},function(err, cus){
-										if(err){
-											next(err)
-											return
-										}else{
-
-											var updateOccMember = {
-												status:status,
-												total: 0, 
-												paid: 0,
-												usage: usage, 
-												oriUsage: oriUsage,
-												price: price,
-												checkoutTime: checkoutTime,
-												note: note
-											}
-											Occupancies.update({'_id':{$in:membersId}}, {$set: updateOccMember}, {new: true, multi: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function(err, occ){
-												if(err){
-													next(err)
-													return
-												}else{
-													res.json ({data: {message: 'success'}});
-												}
-											})
-										}
-									})
-								});
-							}
-						}
-						else{
-							Customers.update({'_id':{$in:memberCusId}}, {$set:{checkinStatus:false}},{multi: true}, function(err, cus){
-								if(err){
-									next(err)
-									return
-								}else{
-
-									var updateOccMember = {
-										status:status,
-										total: 0, 
-										paid: 0,
-										usage: usage, 
-										oriUsage: oriUsage,
-										price: price,
-										// promocodes: promocodes,
-										checkoutTime: checkoutTime,
-										// paymentMethod: paymentMethod,
-										note: note
-									}
-									Occupancies.update({'_id':{$in:membersId}}, {$set: updateOccMember}, {new: true, multi: true, fields: {updatedAt: 0, orders: 0, staffId: 0, location: 0, createdAt: 0, bookingId: 0}}, function(err, occ){
-										if(err){
-											next(err)
-											return
-										}else{
-											res.json ({data: {message: 'success'}});
-										}
-									})
-								}
-							})
-						}
-					}
-					else{
-						next ();
-					}
-
-				})
-			}
-		})
+		//
 	}
 };

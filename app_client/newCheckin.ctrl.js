@@ -577,6 +577,7 @@
         }();
 
         vm.promocodes = new function (){
+            var thisPromocodesObj = this;
             this.model = {
                 codes: [],
                 codeStatus: {
@@ -593,7 +594,6 @@
                     return deferred.promise;
                 }
 
-                var thisObj = this;
                 vm.ctrl.showLoader ();
                 return CheckinService.getPromocodes ()
                     .then (function success (res){
@@ -601,8 +601,8 @@
                         var codes = res.data.data;
 
                         if (codes.length){
-                            vm.ctrl.checkin.addCodeLabels (codes);
-                            thisObj.model.codes = codes.sort (function (a, b){
+                            thisPromocodesObj.addCodeLabels (codes);
+                            thisPromocodesObj.model.codes = codes.sort (function (a, b){
                                 return a.selectedLabel > b.selectedLabel;
                             })
 
@@ -642,7 +642,22 @@
                         return deferred.promise;                        
                     }
                 );   
-            }            
+            };
+
+
+            this.addCodeLabels = function (codes){// codes: array of all codes
+                if (vm.model.dom.data.selected.modelLanguage == 'vn'){
+                    codes.map (function (x, i, arr){
+                        x.selectedLabel = x.label.vn;
+                    });             
+                }
+                else if (vm.model.dom.data.selected.modelLanguage == 'en'){
+                    codes.map (function (x, i, arr){
+                        x.selectedLabel = x.label.en;
+                    }); 
+                }       
+            };
+
         }();
 
         vm.privateGroups = new function (){
@@ -699,9 +714,7 @@
                 this.initItemSection ();
                 this.initCodeSection ();
                 this.initConfirmBtn ();
-
-                vm.ctrl.checkin.getGroupPrivateLeader (); // FIX
-                vm.ctrl.checkin.getPromocodes(); // FIX
+                vm.promocodes.get(); // FIX
 
             };
 
@@ -1005,11 +1018,10 @@
                     checkoutDiv: false,
                 },
                 checkingout:{
-
                 },
                 temporary: {
                     invoice: {total: -1},
-                    selectedReward: {},
+                    selectedReward: null,
                     selectedAccount: {},
                 }
             }
@@ -1031,7 +1043,7 @@
                         vm.ctrl.hideLoader ();
                         checkoutObj.model.checkingout.occupancy = res.data.occ;
                         checkoutObj.model.checkingout.accounts = res.data.acc;
-                        checkoutObj.model.checkingout.reward = res.data.reward;
+                        checkoutObj.model.checkingout.occupancy.reward = res.data.reward;
                         checkoutObj.model.temporary.invoice.codeNames = checkoutObj.getPromocodeNames (checkoutObj.model.checkingout.occupancy);
                         vm.products.addServiceLabel (checkoutObj.model.checkingout.occupancy.service);
                     }, 
@@ -1048,7 +1060,8 @@
                 checkoutObj._resetReward ();
 
                 if (!checkoutObj.model.temporary.selectedAccount._id){
-                    checkoutObj.model.temporary.accWithdrawDetail = {acc: {}, occ: {}}
+                    checkoutObj.model.temporary.accWithdrawDetail = {acc: {}, occ: {}};
+                    checkoutObj.model.temporary.selectedAccount = {};
                     return;
                 }
 
@@ -1070,23 +1083,25 @@
 
             this._resetReward = function (){
                 checkoutObj.model.temporary.rwdWithdrawDetail = {rwd: {}, occ: {}};
-                checkoutObj.model.temporary.selectedReward._id = "";
+                checkoutObj.model.temporary.selectedReward = null;
             }
 
             this.rewardChangeHandler = function (){
-                if (!checkoutObj.model.temporary.selectedReward._id || (checkoutObj.model.temporary.accWithdrawDetail && checkoutObj.model.temporary.accWithdrawDetail.occ && checkoutObj.model.temporary.accWithdrawDetail.occ.total == 0) || (checkoutObj.model.checkingout.occupancy.total == 0)){
+                var lowestRewardAmount = 1000;
+                if ((!checkoutObj.model.temporary.selectedReward) || (checkoutObj.model.temporary.accWithdrawDetail && checkoutObj.model.temporary.accWithdrawDetail.occ && checkoutObj.model.temporary.accWithdrawDetail.occ.total == 0) || (checkoutObj.model.checkingout.occupancy.total == 0) || (checkoutObj.model.temporary.selectedReward.amount < lowestRewardAmount)){
                     checkoutObj._resetReward ();
                     return;
-                }
+                };
 
                 var total = checkoutObj.model.temporary.accWithdrawDetail && checkoutObj.model.temporary.accWithdrawDetail.acc._id ? checkoutObj.model.temporary.accWithdrawDetail.occ.total : checkoutObj.model.checkingout.occupancy.total;
                 var rwdid = checkoutObj.model.temporary.selectedReward._id;
+                var occId = checkoutObj.model.checkingout.occupancy._id;
+
                 vm.ctrl.showLoader ();
                 RewardService.prepareWithdraw (rwdid, total).then (
                     function success (res){
                         vm.ctrl.hideLoader ();
                         checkoutObj.model.temporary.rwdWithdrawDetail = res.data.data;
-                        checkoutObj.model.temporary.selectedReward = res.data.data;
                     },
                     function failure (err){
                         vm.ctrl.hideLoader ();
@@ -1101,12 +1116,9 @@
                     checkoutObj.model.checkingout.occupancy.paymentMethod.push (checkoutObj.model.temporary.selectedAccount);
                 }
 
-                if (checkoutObj.model.temporary.selectedReward._id){
-                    checkoutObj.model.checkingout.occupancy.paymentMethod.push (checkoutObj.model.temporary.selectedReward);
+                if (checkoutObj.model.temporary.selectedReward){
+                    checkoutObj.model.checkingout.occupancy.paymentMethod.push (checkoutObj.model.temporary.rwdWithdrawDetail.rwd);
                 }
-
-                console.log (checkoutObj.model.checkingout.occupancy)
-                return
 
                 vm.ctrl.showLoader ();
                 CheckinService.checkout(checkoutObj.model.checkingout.occupancy).then(

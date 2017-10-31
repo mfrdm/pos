@@ -43,7 +43,7 @@ function AccountsCtrl() {
 
 	}
 
-	this.withdraw = function (){
+	this.withdraw = function (req, res, next, cb){
 
 	}
 

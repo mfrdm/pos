@@ -111,7 +111,7 @@ function RewardsCtrl (){
 		})
 	};
 
-	this.withdraw = function (req, res, next){
+	this.withdraw = function (req, res, next, cb){
 		// call prepareWithdraw first
 		// Assume that if can go to the function, reward must be valid, i.e. amount > 0 and not expired.
 		var condition = {
