@@ -27,10 +27,10 @@ div(class="columns row")
 		div(class="borderT newBox row column")
 			div(class='marginB15 column small-12 large-9 paddingLR0 large-paddingR15')
 				legend {{ vm.model.dom.data.selected.filter.username}}
-				input(type='text' ng-model='vm.model.filter.others.customer.username' ng-change='vm.ctrl.filterPaginate()')
+				input(type='text' ng-model='vm.filter.model.dom.username' ng-change='vm.filter.filterChangeHandler ()')
 			div(class="marginB15 column small-12 large-3 paddingLR0 large-paddingL15")
 				legend {{ vm.model.dom.data.selected.filter.status}}
-				select(ng-model='vm.model.filter.myfilter.status' ng-options='status.value as status.label for status in vm.model.filter.statusOptions' ng-init='vm.model.filter.myfilter.status="1"' ng-change='vm.ctrl.filterPaginate()' name="filterStatus")
+				select(ng-model='vm.filter.model.dom.status' ng-options='status.value as status.label for status in vm.model.filter.statusOptions' ng-init='vm.filter.model.dom.status="1"' ng-change='vm.filter.filterChangeHandler ()' name="filterStatus")
 	
 	// CHECK-IN
 	div(class="column")
@@ -238,7 +238,7 @@ div(class="columns row")
 						button(class="button float-right primary" ng-click='vm.ctrl.edit.close()') Cancel
 
 	// CHECKED-IN LIST 
-	div(class="column" ng-show="vm.checkinedList.model.list.data.length")
+	div(class="column")
 		div(class="table-scroll paddingT15 marginT15")
 			table(class="borderAll unstriped")
 				thead
@@ -256,8 +256,8 @@ div(class="columns row")
 						th(ng-if='vm.model.dom.note') Note
 						th {{vm.model.dom.data.selected.headerEdit}}
 				tbody
-					tr(ng-repeat='occ in vm.checkinedList.model.list.data | myfilter:vm.model.filter.myfilter.status | orderBy: [vm.model.filter.orderBy] | filterName:vm.model.filter.others.customer.username')
-						td {{ $index + 1 }}
+					tr(ng-repeat='occ in vm.pagination.model.currItems')
+						td {{ $index + 1 + 10 * vm.pagination.model.currIndex}}
 						td {{ occ.customer.fullname }}
 						td(ng-if='vm.model.dom.seeMore == true')  {{ occ.checkinTime | date:'dd/MM/yyyy' }}
 						td {{ occ.checkinTime | date: 'shortTime' }}
@@ -271,21 +271,18 @@ div(class="columns row")
 						td
 							a(class="primary button" ng-disabled='!vm.ctrl.layout.ctrl.hasPermission ("editCheckedin")') Edit
 						td(ng-if='occ.status != 1') {{occ.note}}
-			// PAGINATE. FIX later
-			//div(ng-if='vm.model.temporary.displayedList.data.length > vm.model.checkedinList.pagination.itemsEachPages')
+			// PAGINATE.
+			div(ng-if='vm.filter.model.currItems.length > vm.pagination.model.maxItems')
 				ul(class="pagination text-center" role="navigation" aria-label="Pagination")
-					li(ng-class='vm.model.previousClass' ng-click='vm.ctrl.goPrevious()') {{vm.model.goPreviousText}}
+					//li(ng-class='vm.model.previousClass' ng-click='vm.ctrl.goPrevious()') {{vm.model.goPreviousText}}
 						a(aria-label="Previous page" ng-if='vm.model.goPreviousText != "Previous"') Previous
 							span(class="show-for-sr") page
-					li(ng-repeat="item in vm.model.temporary.displayedList.number track by $index" class='{{item.class}}')
-						a(href ='' ng-click='vm.ctrl.sliceCheckinList(item.number)') {{item.number}}
-					li(ng-class='vm.model.nextClass' ng-click='vm.ctrl.goNext()') {{vm.model.goNextText}}
+					li(ng-repeat="i in vm.pagination.getIndexList (vm.pagination.model.pageNumber) track by $index" class='{{$index + 1}}')
+						a(ng-click='vm.pagination.jump ($index)') {{$index + 1}}
+					//li(ng-class='vm.model.nextClass' ng-click='vm.ctrl.goNext()') {{vm.model.goNextText}}
 						a(aria-label="Next page" ng-if='vm.model.goNextText != "Next"') Next
 							span(class="show-for-sr") page
-		// OLD. Review when build paginate.
-		div(class='emptyResult text-center' ng-if='vm.model.checkinListEachPage.data.length == 0 || vm.model.temporary.displayedList.data.length == 0')
-			p {{vm.model.dom.data.selected.checkinList.body.message.notFound}}
-		div(class='emptyResult text-center' ng-if=' vm.checkedinList.model.list.data.length == 0')
+		div(class='emptyResult text-center' ng-if='vm.filter.model.currItems.length == 0')
 			p {{vm.model.dom.data.selected.checkinList.body.message.notFound}}
 
 // CHECK-IN CONFIRM

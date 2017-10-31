@@ -1255,6 +1255,7 @@
                 dom: {
                     listDiv: true,
                     filterDiv: false,
+                    status: 1,
                 },
                 list: {data: []},
             };
@@ -1283,18 +1284,85 @@
             };
         }();
 
-        vm.pagination = function (){
+        vm.filter = new function (){
+            var filterObj = this;
             this.model = {
                 currItems: [],
-                currIndex: [],
-                pageNumber: 0,
-                maxItemPerPage: 10,
+                dom: {
+                    status: 1,
+                }
             };
 
-            this.jump = function (){
+            this.filter = function (){
+                function to_ascci_string (str){ // Still return error, but work
+                    if (str) return LayoutCtrl.ctrl.removeDiacritics(str).trim().split(' ').join('').toLowerCase()
+                    else return ''
+                }
 
+                var input = to_ascci_string (vm.filter.model.dom.username);
+                filterObj.model.currItems = vm.checkinedList.model.list.data
+                    .filter(function(x, i, arr){
+                        if(filterObj.model.dom.status == 3){
+                            return true
+                        }else{
+                            return x.status == vm.filter.model.dom.status;
+                        }
+                    }).filter(function(item){
+                        var fullname = to_ascci_string(item.customer.fullname);
+                        var phone = to_ascci_string(item.customer.phone);
+                        return fullname.includes(input) || phone.includes(input);
+                    });
+
+                return vm.filter.model.currItems;
+            }
+
+            this.filterChangeHandler = function (){
+                var items = this.filter ();
+                vm.pagination.paginate(items);
+                vm.ctrl.showNoteColumn();
             };
-        }
+        }();
+
+        vm.pagination = new function (){
+            this.model = {
+                currItems: [],
+                currIndex: 0, // index of current page
+                pageNumber: 0, // number of pages
+                maxItems: 10, // max number of items per page
+            };
+
+            this.displayItems = function (){
+                var startIndex = this.model.currIndex * this.model.maxItems;
+                var endIndex = startIndex + this.model.maxItems - 1;
+                if (this.model.currIndex == (this.model.pageNumber - 1)){
+                    var itemNum = vm.filter.model.currItems.length;
+                    if (startIndex >= itemNum){
+                        this.model.currItems = [];
+                        return;
+                    }
+                    else{
+                        endIndex = itemNum - 1;
+                    }
+                }
+
+                this.model.currItems = vm.filter.model.currItems.slice (startIndex, endIndex + 1);
+            };
+
+            this.paginate = function (items){
+                // collect inital value
+                this.model.pageNumber = Math.ceil(items.length / vm.pagination.model.maxItems);
+                this.displayItems ();
+            };
+
+            this.getIndexList = function (num){
+                return new Array (num);
+            }
+
+            this.jump = function (i){
+                this.model.currIndex = i;
+                this.displayItems ()
+            };
+        }();
 
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1303,44 +1371,23 @@
         // Slice list after filter
         // FIX later
         vm.ctrl.getFilteredCheckinList = function (){
-            var cleanStr = function(str){
-                if (str){
-                    return LayoutCtrl.ctrl.removeDiacritics(str).trim().split(' ').join('').toLowerCase()
-                }
-                return '' // Still return error, but work
-            }
-
-            vm.ctrl.showNoteColumn();
-
-            // Input
-            var input = cleanStr(vm.model.filter.others.customer.username)
-
-            vm.model.temporary.displayedList.data = vm.model.checkedinList.data.filter(function(ele){
-                    if(vm.model.filter.myfilter.status == 3){
-                        return ele
-                    }else{
-                        return ele.status == vm.model.filter.myfilter.status
-                    }
-                }).filter(function(item){
-                    return (cleanStr(item.customer.fullname).includes(input) || cleanStr(item.customer.phone).includes(input))
-                })
-            return vm.model.temporary.displayedList.data
         }
 
         function checkDisabledButton(){
+            // disable next- and previous- button
             var ind = 0;
-            vm.model.temporary.displayedList.number.map(function(ele, index){
-                if(ele.class == 'current'){
-                    ind = index
-                }
+            vm.pagination.model.indexList.map(function(x, i, arr){
+                if(x.class == 'current') ind = i;
             });
-            if(ind+1 == vm.model.temporary.displayedList.number.length){
+
+            if(ind+1 == vm.pagination.model.indexList.length){
                 vm.model.nextClass = "pagination-next disabled";
                 vm.model.goNextText = 'Next'
             }else{
                 vm.model.nextClass = "pagination-next";
                 vm.model.goNextText = ''
             };
+
             if(ind == 0){
                 vm.model.previousClass = "pagination-previous disabled";
                 vm.model.goPreviousText = 'Previous'
@@ -1374,56 +1421,10 @@
             }
         }
 
-        // Paginate
-        vm.ctrl.paginate = function (afterFilterList){
-            vm.model.temporary.displayedList.number = []
-            vm.model.checkedinList.pagination.numberOfPages = Math.ceil(
-                afterFilterList.length/vm.model.checkedinList.pagination.itemsEachPages)
-            
-            for(var i = 1; i<vm.model.checkedinList.pagination.numberOfPages+1; i++){
-                vm.model.temporary.displayedList.number.push({number:i, class:''})
-            }
-            vm.model.temporary.displayedList.number.map(function(ele, index, array){
-                array[0].class = 'current'
-            })
-            
-            checkDisabledButton()
-            
-            vm.model.checkinListEachPage.data = afterFilterList.slice(0, vm.model.checkedinList.pagination.itemsEachPages)
-            vm.ctrl.sliceCheckinList = function(i){
-                vm.model.checkinListEachPage.data = afterFilterList.slice((i-1)*vm.model.checkedinList.pagination.itemsEachPages,i*vm.model.checkedinList.pagination.itemsEachPages)
-                vm.model.temporary.displayedList.number.map(function(ele, index, array){
-                    if(index == i-1){
-                        array[index].class = 'current'
-                    }else{
-                        array[index].class = ''
-                    }
-                });
-                
-                checkDisabledButton()
-            }
-
-            vm.ctrl.showInPage = function(occ){
-                var testArr = vm.model.checkinListEachPage.data.filter(function(ele){
-                    return ele.customer.phone == occ.customer.phone && ele.checkinTime == occ.checkinTime
-                })
-                if(testArr.length > 0){
-                    return true
-                }else{
-                    return false
-                }
-            }
-        }
-
-        // Paginate after filter
-        vm.ctrl.filterPaginate = function (){
-            var afterFilterList = vm.ctrl.getFilteredCheckinList();
-            vm.ctrl.paginate(afterFilterList)
-        }
-
         //Show note column
         vm.ctrl.showNoteColumn = function (){
-            if(vm.model.filter.myfilter.status == 1){
+            // not show when see checking-in customers
+            if(vm.filter.model.dom.status == 1){
                 vm.model.dom.note = false
             }else{
                 vm.model.dom.note = true
@@ -1447,7 +1448,7 @@
 
         //Show note column
         vm.ctrl.showNoteColumn = function (){
-            if(vm.model.filter.myfilter.status == 1){
+            if(vm.filter.model.dom.status == 1){
                 vm.model.dom.note = false
             }else{
                 vm.model.dom.note = true
@@ -1503,9 +1504,9 @@
             vm.checkinedList.get ()
                 .then (function success (data){
                     vm.ctrl.hideLoader ();
-                    // vm.ctrl.filterPaginate();// make pagination
-                    vm.checkin.checkinFromBooking ();// implement data from booking
-                    vm.checkin.checkinNewCustomer ();// implement data from customer
+                    vm.filter.filterChangeHandler ();
+                    vm.checkin.checkinFromBooking ();// get data from booking page
+                    vm.checkin.checkinNewCustomer ();// get data from customer page
                 }, function error (err){
                     vm.ctrl.hideLoader ();
                     console.log (err);
