@@ -1024,7 +1024,7 @@
                     }
 
                     checkinObj.openCheckinDiv ();
-                    this.model.occupancy.customer = tempCustomer;
+                    this.model.occupancy.customer = b.customer;
                     vm.search.model.customer.username = vm.customers.createUsername (tempCustomer);
                     this.afterSelectCustomer ();
                     this.model.occupancy.service = b.service;
@@ -1044,7 +1044,7 @@
                     }
 
                     checkinObj.openCheckinDiv ();
-                    this.model.occupancy.customer = tempCustomer;
+                    this.model.occupancy.customer = c;
                     vm.search.model.customer.username = vm.customers.createUsername (tempCustomer);
                     this.afterSelectCustomer ();
                     DataPassingService.reset ('customer');

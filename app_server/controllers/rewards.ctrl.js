@@ -11,18 +11,23 @@ function RewardsCtrl (){
 			customer: req.body.customer,
 			amount: req.body.amount ? req.body.amount : 0,
 			start: moment (),
-			end: Rewards.setExpireDate (),			
+			end: Rewards.setExpireDate (),	
+			services: ['group common', 'individual common']		
 		});
 
 		rwd.save (function (err, newRwd){
 			if (err){
 				console.log (err);
 				next (err);
+				return;
+			}
+			
+			if (cb){
+				cb (newRwd)
 			}
 			else{
 				res.json ({data: newRwd});
-				return
-			}						
+			}					
 		});
 	};
 

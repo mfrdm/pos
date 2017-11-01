@@ -173,7 +173,7 @@ function CustomersCtrl() {
 				return 
 			}
 			else{
-				function cb (){
+				function cb (rwd){
 					res.json ({data: cus});
 				}
 				req.body.customer = cus;
