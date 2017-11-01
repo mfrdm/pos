@@ -38,10 +38,10 @@ function CustomersCtrl() {
 			return;
 		}
 
-		var conditions = {}
+		var conditions = {};
 
 		input = validator.trim (input);
-		var projections = {fullname: 1, phone: {$slice: [0,1]}, email: {$slice: [0,1]}, checkinStatus: 1, isStudent: 1, edu: 1, birthday: 1};
+		var projections = {fullname: 1, phone: {$slice: [0,1]}, email: {$slice: [0,1]}, checkinStatus: 1, isStudent: 1, edu: 1, birthday: 1, occupancy: 1};
 
 		if (validator.isEmail (input)){
 			conditions.email = input;
@@ -180,11 +180,47 @@ function CustomersCtrl() {
 				RewardsCtrl.initReward (req, res, next, cb)
 			}
 		});
-
 	};
 
 	this.updateOneCustomer = function(req, res) {
-		//
 	};
+
+	this.addAccount = function (req, res, next, cb){
+		var cusId = req.body.acc.customer._id;
+		var accId = req.body.acc._id;
+		Customers.findOneAndUpdate ({_id: cusId}, {$push: {accounts: accId}}, {new: true}, function (err, cus){
+			if (err){
+				console.log (err);
+				next (err);
+				return
+			}
+
+			if (cb){
+				cb (cus)
+			}
+			else{
+				res.json ({data: cus});
+			}				
+
+		});
+	};
+
+	this.findOne = function (req, res, next, cb){
+		var cusId = req.body.cus._id;
+		Customers.findOne ({_id: cusId}, function (err, foundCus){
+			if (err){
+				console.log (err);
+				next (err);
+				return
+			}
+
+			if (cb){
+				cb (foundCus)
+			}
+			else{
+				res.json ({data: foundCus});
+			}				
+		})
+	}
 
 };

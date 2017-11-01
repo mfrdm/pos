@@ -5,122 +5,97 @@ var Accounts = mongoose.model ('Accounts');
 var Customers = mongoose.model ('customers');
 var moment = require ('moment');
 
+var AccountsCtrl = require ('./accounts.ctrl');
+var CustomersCtrl = require ('./customers');
+var RewardsCtrl = require ('./rewards.ctrl');
+
 module.exports = new DepositsCtrl();
 
 function DepositsCtrl (){
+	var thisDepositCtrl = this;
 	this.createOneDeposit = function (req, res, next){
-		var deposit = req.body.data;
-		var account = new Accounts (deposit.account);
-		account.customer = {
-			_id: deposit.customer._id
+		function reward_cb (){
+			function _cb (){
+				res.json ({data: {message: 'success'}});
+			}
+
+			req.body.rwd = null;
+			req.query.customerId = req.body.cus._id;
+			req.body.context = {
+				getTotal: function (){return req.body.dep.total},
+				cus: req.body.cus,
+			};
+
+			RewardsCtrl.withdraw (req, res, next, _cb);
+		};
+
+		function after_create_dep_cb (dep){
+			req.body.dep = dep;
+			if (req.body.acc['label']['en'] != 'Cash' && deposit.paymentMethod.length){ // not cash account and paid by cash account
+				req.body.acc = deposit.paymentMethod[0];
+				AccountsCtrl.withdraw (req, res, next, reward_cb);
+			}
+			else{
+				reward_cb ();
+			}
+		};
+
+		function after_update_cus_cb (cus){
+			deposit.account = req.body.acc;
+			deposit.status = 1; // paid
+			req.body.deposit = deposit;
+			req.body.cus = cus;
+			thisDepositCtrl.insertOne (req, res, next, after_create_dep_cb);
+		};
+
+		function after_withdraw_cb (acc){
+			req.body.acc = acc;
+			req.body.cus = deposit.customer;
+			CustomersCtrl.findOne (req, res, next, after_update_cus_cb); // replace the step by get customer infor beforehand
 		}
 
-		account.initAccount ();
+		function after_find_cash_acc_cb (foundAcc){
+			if (foundAcc){
+				req.body.acc = foundAcc;
+				req.body.deposit = deposit;
+				AccountsCtrl.depositCash (req, res, next, after_withdraw_cb);
+			}
+			else{
+				AccountsCtrl.createAccount (req, res, next, after_create_acc_cb);
+			}
+		}
 
-		account.save (function (err, newAcc){
+		function after_create_acc_cb (acc){
+			req.body.acc = acc;
+			CustomersCtrl.addAccount (req, res, next, after_update_cus_cb);
+		}
+
+		var deposit = req.body.data;
+		req.body.acc = deposit.account;
+		req.body.acc.customer = deposit.customer;
+		if (deposit.account.name == 'cash'){
+			AccountsCtrl.findCashAccount (req, res, next, after_find_cash_acc_cb);
+		}
+		else{
+			AccountsCtrl.createAccount (req, res, next, after_create_acc_cb);
+		}
+	}
+
+	this.insertOne = function (req, res, next, cb){
+		var deposit = req.body.deposit;
+		Deposits.create (deposit, function (err, newDeposit){
 			if (err){
 				console.log (err);
 				next (err);
-				return
+				return;
 			}
 
-			Customers.update ({_id: deposit.customer._id}, {$push: {accounts: newAcc._id}}, function (err, result){
-				if (err){
-					console.log (err);
-					next (err);
-					return
-				}
-
-				deposit.account = newAcc;
-				deposit.status = 1; // paid
-
-				Deposits.create (deposit, function (err, newDeposit){
-					if (err){
-						console.log (err);
-						next (err);
-						return
-					}
-
-					// Don't add up if not cash account
-					if (newAcc['label']['en'] != 'Cash'){
-						if (deposit.paymentMethod.length){ // reduce amount if cash account is used as payment method
-							Accounts.update ({_id: deposit.paymentMethod[0]._id}, {$inc: {amount: - deposit.paymentMethod[0].paidAmount}}, function (err, result){
-								if (err){ // FIX: this should undo everything
-									next (err);
-									return
-								}
-
-								res.json ({data: {message: 'success', _id: newDeposit._id}});
-								return;															
-							});
-
-							return;
-						}
-
-						res.json ({data: {message: 'success', _id: newDeposit._id}});
-						return;
-					}
-
-					// Expecte to find at most one cash account available
-					Accounts.findOneAndUpdate ({'label.en': 'Cash', 'amount': {$gt: 0}, end: {$gte: moment()}, _id: {$not: {$in: [newAcc._id]}}, 'customer._id': deposit.customer._id}, {$set: {amount: 0}}, {new: false, fields: {'amount': 1, end: 1, start: 1}}, function (err, previousAccount){
-						if (err){
-							next (err);
-							return;
-						}
-
-						if (previousAccount){
-							var update = {$inc: {amount: previousAccount.amount}};
-							if (newAcc.amount < 0){
-								update = {$inc: {amount: previousAccount.amount}, $set: {end: previousAccount.end, start: previousAccount.start}};
-							}
-
-							Accounts.update ({_id: newAcc._id}, update, function (){
-								if (err){
-									next (err);
-									return;
-								};
-
-								if (deposit.paymentMethod.length){
-									Accounts.update ({_id: deposit.paymentMethod[0]._id}, {$inc: {amount: - deposit.paymentMethod[0].paidAmount}}, function (err, result){
-										if (err){ // FIX: this should undo everything
-											next (err);
-											return
-										}
-
-										res.json ({data: {message: 'success', _id: newDeposit._id}});
-										return;															
-									});
-
-									return;
-								}
-
-								res.json ({data: {message: 'success', _id: newDeposit._id}})
-								return;
-							});
-						}
-						else{
-							if (deposit.paymentMethod.length){
-								Accounts.update ({_id: deposit.paymentMethod[0]._id}, {$inc: {amount: - deposit.paymentMethod[0].paidAmount}}, function (err, result){
-									if (err){ // FIX: this should undo everything
-										next (err);
-										return
-									}
-
-									res.json ({data: {message: 'success', _id: newDeposit._id}});
-									return;															
-								});
-
-								return;
-							}
-
-							res.json ({data: {message: 'success', _id: newDeposit._id}})
-							return;
-						}
-					});
-				});
-
-			})
-
+			if (cb){
+				cb (newDeposit)
+			}
+			else{
+				res.json ({data: newDeposit});
+			}	
 		});
 	}
 
@@ -231,6 +206,7 @@ function DepositsCtrl (){
 				next (err);
 			}
 			if (foundAcc){
+				foundAcc.initAccount ();
 				deposit = new Deposits (deposit);
 				var beforeAccAmount = foundAcc.amount;
 				var beforeTotal = deposit.total;
@@ -249,7 +225,10 @@ function DepositsCtrl (){
 							unit: foundAcc.unit,
 							paidTotal: beforeTotal - deposit.total,
 							paidAmount: beforeAccAmount - foundAcc.amount, // already paid hours
-							remain: foundAcc.amount							
+							amount: foundAcc.amount,
+							start: foundAcc.start,
+							end: foundAcc.end,
+							activate: foundAcc.activate,
 						}
 					}
 				});

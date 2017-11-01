@@ -466,13 +466,7 @@
 
 		vm.ctrl.deposit.submit = function (){
 			if (vm.model.depositing.prepaidTotal){
-				vm.model.depositing.paymentMethod = [{
-					_id: vm.model.depositing.prepaidTotal.acc._id,
-					name: 'account', // actually cash account
-					paidTotal: vm.model.depositing.prepaidTotal.acc.paidTotal, 
-					paidAmount: vm.model.depositing.prepaidTotal.acc.paidAmount, 
-				}];
-
+				vm.model.depositing.paymentMethod = [vm.model.depositing.prepaidTotal.acc];
 				vm.model.depositing.total = vm.model.depositing.prepaidTotal.deposit.total;
 			}
 

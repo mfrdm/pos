@@ -192,9 +192,9 @@ div(class="fullBox row column" ng-show='vm.model.dom.deposit.confirmDiv')
 					tr(ng-if="vm.model.depositing.prepaidTotal.acc.paidAmount")
 						th Tài khoản tiền mặt đã dùng
 						td(ng-if="vm.model.depositing.prepaidTotal.acc.unit == 'vnd'") {{ vm.model.depositing.prepaidTotal.acc.paidAmount | number }} VNĐ
-					tr(ng-if="vm.model.depositing.prepaidTotal.acc.remain || vm.model.depositing.prepaidTotal.acc.remain == 0")
+					tr(ng-if="vm.model.depositing.prepaidTotal.acc.amount || vm.model.depositing.prepaidTotal.acc.amount == 0")
 						th() Tài khoản tiền mặt còn
-						td(ng-if="vm.model.depositing.prepaidTotal.acc.unit == 'vnd'") {{ vm.model.depositing.prepaidTotal.acc.remain | number}} VNĐ						
+						td(ng-if="vm.model.depositing.prepaidTotal.acc.unit == 'vnd'") {{ vm.model.depositing.prepaidTotal.acc.amount | number}} VNĐ						
 					tr(ng-if="vm.model.depositing.prepaidTotal.deposit.total || vm.model.depositing.prepaidTotal.deposit.total == 0")
 						th Tổng trừ trả trước
 						td {{ vm.model.depositing.prepaidTotal.deposit.total | number}} VNĐ

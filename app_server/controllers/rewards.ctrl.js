@@ -6,6 +6,7 @@ var request = require ('request');
 module.exports = new RewardsCtrl();
 
 function RewardsCtrl (){
+	var thisRwd = this;
 	this.initReward = function (req, res, next, cb){
 		var rwd = new Rewards ({
 			customer: req.body.customer,
@@ -35,7 +36,7 @@ function RewardsCtrl (){
 		// the first step before update reward. So if reward expired, it should be detect here.
 		var condition = {
 			'customer._id': req.query.customerId,
-			'services': req.query.service
+			// 'services': req.query.service
 		}
 
 		Rewards.findOne (condition, function (err, foundReward){
@@ -129,44 +130,60 @@ function RewardsCtrl (){
 
 	this.withdraw = function (req, res, next, cb){
 		var rwd = req.body.rwd;
-		var occ = req.body.occ;
-		var cus = req.body.cus;
-		var cashback = Rewards.cashback (occ, rwd, cus);
-		var amount = rwd.amount + cashback.amount;
-		var condition = {_id: rwd._id};
-		var update = {
-			$set:{
-				amount: amount,
-				start: moment (),
-				end: Rewards.setExpireDate ()
-			}
-		};
+		var context = req.body.context;
 
-		if (rwd.source){
-			update.$push = {
-				source:{
-					$each: [rwd.source, cashback]
+		function _cb (rwd){
+			rwd = rwd[0] ? rwd[0] : rwd;
+			var cashback = Rewards.cashback (context, rwd);
+			console.log (context.getTotal ())
+			console.log (rwd)
+			console.log (cashback)
+
+			var amount = rwd.amount + cashback.amount;
+			var condition = {_id: rwd._id};
+			var update = {
+				$set:{
+					amount: amount,
+					start: moment (),
+					end: Rewards.setExpireDate ()
+				}
+			};
+
+			if (rwd.source){
+				update.$push = {
+					source:{
+						$each: [rwd.source, cashback]
+					}
 				}
 			}
-		}
-		else{
-			update.$push = {source: cashback}			
-		}
-
-		Rewards.update (condition, update, function (err, result){
-			if (err){
-				console.log (err);
-				next (err);
-				return;
-			}
-
-			if (cb){
-				cb (result);
-			}
 			else{
-				res.json ({data: result});
-			}						
-		});
+				update.$push = {source: cashback}			
+			}
+
+			Rewards.update (condition, update, function (err, result){
+				if (err){
+					console.log (err);
+					next (err);
+					return;
+				}
+
+				if (cb){
+					cb (result);
+				}
+				else{
+					res.json ({data: result});
+				}						
+			});				
+		}
+
+		if (!rwd){
+			// assume customer id is embedded
+			thisRwd.getReward (req, res, next, _cb);
+		}else{
+			_cb (rwd);
+		}
+
+		
 	};
 
 	// not use

@@ -1293,6 +1293,15 @@
                 }
             };
 
+            this.showNoteColumn = function (){
+                // not show when see checking-in customers
+                if(this.model.dom.status == 1){
+                    vm.model.dom.note = false
+                }else{
+                    vm.model.dom.note = true
+                }
+            };         
+
             this.filter = function (){
                 function to_ascci_string (str){ // Still return error, but work
                     if (str) return LayoutCtrl.ctrl.removeDiacritics(str).trim().split(' ').join('').toLowerCase()
@@ -1319,7 +1328,7 @@
             this.filterChangeHandler = function (){
                 var items = this.filter ();
                 vm.pagination.paginate(items);
-                vm.ctrl.showNoteColumn();
+                this.showNoteColumn();
             };
         }();
 
@@ -1331,7 +1340,7 @@
                 maxItems: 10, // max number of items per page
             };
 
-            this.displayItems = function (){
+            this.getIems = function (){
                 var startIndex = this.model.currIndex * this.model.maxItems;
                 var endIndex = startIndex + this.model.maxItems - 1;
                 if (this.model.currIndex == (this.model.pageNumber - 1)){
@@ -1350,8 +1359,9 @@
 
             this.paginate = function (items){
                 // collect inital value
+                this.model.currIndex = 0;
                 this.model.pageNumber = Math.ceil(items.length / vm.pagination.model.maxItems);
-                this.displayItems ();
+                this.getIems ();
             };
 
             this.getIndexList = function (num){
@@ -1360,76 +1370,22 @@
 
             this.jump = function (i){
                 this.model.currIndex = i;
-                this.displayItems ()
+                this.getIems ()
             };
+
+            this.next = function (i){
+                if (this.model.currIndex < this.model.pageNumber - 1){
+                    this.jump (this.model.currIndex+1);
+                }
+            };
+
+            this.prev = function (){
+                if (this.model.currIndex > 0){
+                    this.jump (this.model.currIndex-1);
+                }
+            }
+
         }();
-
-
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////// Paginate ///////////////////////////////////////////////////
-        
-        // Slice list after filter
-        // FIX later
-        vm.ctrl.getFilteredCheckinList = function (){
-        }
-
-        function checkDisabledButton(){
-            // disable next- and previous- button
-            var ind = 0;
-            vm.pagination.model.indexList.map(function(x, i, arr){
-                if(x.class == 'current') ind = i;
-            });
-
-            if(ind+1 == vm.pagination.model.indexList.length){
-                vm.model.nextClass = "pagination-next disabled";
-                vm.model.goNextText = 'Next'
-            }else{
-                vm.model.nextClass = "pagination-next";
-                vm.model.goNextText = ''
-            };
-
-            if(ind == 0){
-                vm.model.previousClass = "pagination-previous disabled";
-                vm.model.goPreviousText = 'Previous'
-            }else{
-                vm.model.previousClass = "pagination-previous";
-                vm.model.goPreviousText = ''
-            }
-        }
-
-        vm.ctrl.goNext = function(){
-            var ind = 0;
-            vm.model.temporary.displayedList.number.map(function(ele, index){
-                if(ele.class == 'current'){
-                    ind = index
-                }
-            });
-            if(ind+2 <= vm.model.temporary.displayedList.number.length){
-                vm.ctrl.sliceCheckinList(ind+2)
-            }
-        }
-
-        vm.ctrl.goPrevious = function(){
-            var ind = 0;
-            vm.model.temporary.displayedList.number.map(function(ele, index){
-                if(ele.class == 'current'){
-                    ind = index
-                }
-            });
-            if(ind >= 1){
-                vm.ctrl.sliceCheckinList(ind)
-            }
-        }
-
-        //Show note column
-        vm.ctrl.showNoteColumn = function (){
-            // not show when see checking-in customers
-            if(vm.filter.model.dom.status == 1){
-                vm.model.dom.note = false
-            }else{
-                vm.model.dom.note = true
-            }
-        }
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////// Toggle ////////////////////////////////////////////////////
@@ -1445,15 +1401,6 @@
 
 
         ////////////////////////////////////////////// Others /////////////////////////////////////////////////
-
-        //Show note column
-        vm.ctrl.showNoteColumn = function (){
-            if(vm.filter.model.dom.status == 1){
-                vm.model.dom.note = false
-            }else{
-                vm.model.dom.note = true
-            }
-        }
 
         vm.ctrl.seeMore = function(){
             if(vm.model.dom.seeMore == true){

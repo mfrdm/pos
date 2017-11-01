@@ -40,19 +40,21 @@ var _withdraw = function (amount, rwd){
 var withdraw = function (total){
 	var rwd = this;
 	var remain = _withdraw (total, rwd);
-	return remain
+	return remain;
 };
 
-var cashback = function (occ, rwd, cus){
-	if (Customers.isHerBirthday (cus)){
+var cashback = function (context, rwd){
+	var cashback_pct = context.cashback_pct ? context.cashback_pct : 0.05;
+	var total = context.getTotal ();
+	if (Customers.isHerBirthday (context.cus)){
 		cashback_pct = 0.15;
-		return {amount: occ.total * cashback_pct, name: 'cashback-birthday', promocodes: [], createdAt: moment ()};
+		return {amount: total * cashback_pct, name: 'cashback-birthday', promocodes: [], createdAt: moment ()};
 	}
 	else if (rwd.promocodes && rwd.promocodes.length){
 		//
 	}
 	else{
-		return {amount: occ.total * cashback_pct, name: 'cashback', promocodes: [], createdAt: moment ()};
+		return {amount: total * cashback_pct, name: 'cashback', promocodes: [], createdAt: moment ()};
 	}
 };
 

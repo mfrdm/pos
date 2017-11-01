@@ -103,7 +103,7 @@ customersSchema.statics.isHerBirthday = function (cus){
 	if (cus.birthday){
 		var today = moment ();
 		var birthday = moment (cus.birthday);
-		if (birthday.month () > today.month() || (birthday.month () == today.month() && birthday.date () >= today.date ())){
+		if (birthday.month () == today.month() && birthday.date () == today.date ()){
 			return true;
 		}
 		else{

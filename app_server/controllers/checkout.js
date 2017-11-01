@@ -34,6 +34,10 @@ function Checkout() {
 
 				function acc_cb (acc){
 					function rw_cb (reward){
+						if (foundOcc.service.name.indexOf ('private') != -1 && reward.length > 0){
+							reward = []; // not return reward with private service
+						}
+
 						res.json ({occ: foundOcc, acc: acc, reward: reward});	
 					}
 					RewardsCtrl.getReward (req, res, next, rw_cb)			
@@ -162,14 +166,18 @@ function Checkout() {
 					}
 
 					// to reward
-					req.body.occ = {total: req.body.data.total};
-					req.body.cus = {birthday: cus.birthday};
-					req.body.rwd = req.body.rwd ? req.body.rwd : {_id: req.body.data.reward[0]._id, amount: req.body.data.reward[0].amount};
+					req.body.context = {
+						getTotal: function (){return occ.paid},
+						cus: cus,
+					}
+					req.body.rwd = req.body.rwd ? req.body.rwd : null;
+					req.query.customerId = cus._id;
 
 					function _acc_cb (updatedAcc){
 						function _rwd_cb (rwd){
 							res.json ({data: {message: 'success'}});
 						}
+
 						RewardsCtrl.withdraw (req, res, next, _rwd_cb);
 					}
 

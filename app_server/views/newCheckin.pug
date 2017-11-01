@@ -274,14 +274,12 @@ div(class="columns row")
 			// PAGINATE.
 			div(ng-if='vm.filter.model.currItems.length > vm.pagination.model.maxItems')
 				ul(class="pagination text-center" role="navigation" aria-label="Pagination")
-					//li(ng-class='vm.model.previousClass' ng-click='vm.ctrl.goPrevious()') {{vm.model.goPreviousText}}
-						a(aria-label="Previous page" ng-if='vm.model.goPreviousText != "Previous"') Previous
-							span(class="show-for-sr") page
+					li(class="pagination-previous" ng-click='vm.pagination.prev ()')
+						a(aria-label="Previous page") Previous
 					li(ng-repeat="i in vm.pagination.getIndexList (vm.pagination.model.pageNumber) track by $index" class='{{$index + 1}}')
 						a(ng-click='vm.pagination.jump ($index)') {{$index + 1}}
-					//li(ng-class='vm.model.nextClass' ng-click='vm.ctrl.goNext()') {{vm.model.goNextText}}
-						a(aria-label="Next page" ng-if='vm.model.goNextText != "Next"') Next
-							span(class="show-for-sr") page
+					li(class="pagination-next" ng-click='vm.pagination.next ()')
+						a(aria-label="Next page") Next
 		div(class='emptyResult text-center' ng-if='vm.filter.model.currItems.length == 0')
 			p {{vm.model.dom.data.selected.checkinList.body.message.notFound}}
 

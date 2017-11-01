@@ -6,6 +6,25 @@ var Accounts = mongoose.model ('Accounts');
 module.exports = new AccountsCtrl();
 
 function AccountsCtrl() {
+	this.createAccount = function (req, res, next, cb){
+		var acc = new Accounts (req.body.acc);
+		acc.initAccount ();
+		acc.save (function (err, newAcc){
+			if (err){
+				console.log (err);
+				next (err);
+				return
+			}
+
+			if (cb){
+				cb (newAcc);
+			}
+			else{
+				res.json ({data: newAcc});
+			}						
+		});
+	};
+
 	this.getAccounts = function (req, res, next, cb){
 		var condition = {
 			'customer._id': req.query.customerId,
@@ -41,7 +60,6 @@ function AccountsCtrl() {
 	}
 
 	this.prepareWithdraw = function (){
-
 	}
 
 	this.withdraw = function (req, res, next, cb){
@@ -61,9 +79,10 @@ function AccountsCtrl() {
 		var update = {
 			$set: {
 				amount: acc.amount,
-				recursive: acc.recursive,
 			}
 		};
+
+		if (acc.recursive) update.$set.recursive = acc.recursive;
 
 		if (!acc.activate){
 			update.$set.activate = true;
@@ -87,5 +106,103 @@ function AccountsCtrl() {
 
 		});
 	};
+
+	this.withdrawCash = function (req, res, next, cb){
+		var acc = req.body.acc;
+		var deposit = req.body.deposit;
+		if (!acc){
+			if (cb){
+				cb (null);
+			}
+			else{
+				next ();
+			}
+			return;
+		}
+
+		var condition = {_id: acc._id};
+		var update = {$inc: {amount: deposit.account.amount}};
+
+		if (!acc.activate){
+			update.$set = {
+				activate: true,
+				start: deposit.account.start,
+				end: deposit.account.end,
+			}
+		}
+
+		Accounts.findOneAndUpdate (condition, update, function (err, updatedAcc){
+			if (err){
+				console.log (err);
+				next (err);
+				return;
+			}
+
+			if (cb){
+				cb (updatedAcc);
+			}
+			else{
+				res.json ({data: updatedAcc});
+			}
+
+		});		
+	}
+
+	this.depositCash = function (req, res, next, cb){
+		var acc = req.body.acc;
+		var deposit = req.body.deposit;
+		if (!acc){
+			if (cb){
+				cb (null);
+			}
+			else{
+				next ();
+			}
+			return;
+		}
+
+		var condition = {_id: acc._id};
+		var update = {$inc: {amount: deposit.account.amount}};
+
+		Accounts.findOneAndUpdate (condition, update, function (err, updatedAcc){
+			if (err){
+				console.log (err);
+				next (err);
+				return;
+			}
+
+			if (cb){
+				cb (updatedAcc);
+			}
+			else{
+				res.json ({data: updatedAcc});
+			}
+
+		});			
+	}
+
+	this.findCashAccount = function (req, res, next, cb){
+		var condition = {
+			'customer._id': req.body.acc.customer._id,
+			name: 'cash',
+			end: {$gte: new Date ()},
+		}
+
+		Accounts.findOne (condition, function (err, foundAcc){
+			if (err){
+				console.log (err);
+				next (err);
+				return;
+			}
+
+			if (cb){
+				cb (foundAcc);
+			}
+			else{
+				res.json ({data: foundAcc});
+			}						
+		})
+
+	}
 
 }

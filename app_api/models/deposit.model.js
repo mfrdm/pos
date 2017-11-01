@@ -66,6 +66,7 @@ var getTotal = function (){
 // Represent a pre paid amount of cash or hour usage number. Can be used later to pay for service usage
 var DepositsSchema = new mongoose.Schema({
 	total: Number,
+	paid: Number,
 	quantity: {type: Number, default: 1}, // not use yet. Default is one
 	groupon:{
 		isLeader: {type: Boolean, default: false},
@@ -116,7 +117,6 @@ var DepositsSchema = new mongoose.Schema({
 DepositsSchema.methods.getTotal = getTotal;
 DepositsSchema.methods.getContext = getContext;
 DepositsSchema.methods.prepare = prepare;
-
 module.exports = mongoose.model ('Deposits', DepositsSchema);
 
 

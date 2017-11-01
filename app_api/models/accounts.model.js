@@ -590,7 +590,7 @@ var getDefaultAccounts = function (){
 		dayFullGroupPrivate40: dayFullGroupPrivate40,						
 		cash: cash
 	}
-}
+};
 
 var renew = function (){
 	// renew number = number of usage days - 1, because the first day is not renewed. For example, with combo 30 days the number of renew day is only 29. However, if consider the first day, which is not renewed, customer still get 30 days.
@@ -610,7 +610,7 @@ var renew = function (){
 	else{
 		//
 	}
-}
+};
 
 var isRenewable = function (){
 	// Only renewing daily being allowed
