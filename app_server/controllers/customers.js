@@ -6,7 +6,7 @@ var RewardsCtrl = require ('./rewards.ctrl');
 module.exports = new CustomersCtrl();
 
 function CustomersCtrl() {
-
+	var thisObj = this;
 	this.readOverview = function(req, res) {
 		var data = {
 			user: {
@@ -17,37 +17,51 @@ function CustomersCtrl() {
 				css:['']
 			}
 		};
+
 		res.render('layout', {data:data})
 	};
 
-	this.readSomeCustomers = function(req, res) {
+	this.readSomeCustomers = function (req, res, next){
+		function cb (cus){
+			res.json ({data: cus});
+		}
+
+		thisObj.find (req, res, next, cb);
+	}
+
+	this.find = function(req, res, next, cb) {
 		var query;
+		var maxReturnedItem = 100;
 		var input = req.query.input; // email, phone, fullname
 		if (!input){
 			next (); // 
+			return;
 		}
+
+		var conditions = {}
 
 		input = validator.trim (input);
-		var projections = {fullname: 1, phone: {$slice: [0,1]}, email: {$slice: [0,1]}, checkinStatus: 1, isStudent: 1, edu: 1, birthday: 1, occupancy: 1};
+		var projections = {fullname: 1, phone: {$slice: [0,1]}, email: {$slice: [0,1]}, checkinStatus: 1, isStudent: 1, edu: 1, birthday: 1};
 
 		if (validator.isEmail (input)){
-			query = Customers.find ({email: input}, projections);
+			conditions.email = input;
 		}
-
 		else if (validator.isMobilePhone (input, 'vi-VN')){
-			query = Customers.find ({phone: input}, projections);
+			conditions.phone = input;
 		}
 		else { 
-			query = Customers.find ({fullname: {$regex: input.toUpperCase ()}}, projections);
-		}		
+			conditions.fullname = {$regex: input.toUpperCase ()};
+		}
 
-		query.exec (function (err, cus){
+		query = Customers.find (conditions, projections, function (err, cus){
 			if (err){
 				next (err);
 				return
 			}
-
-			res.json ({data: cus});
+			if (cus.length){
+				cus = cus.slice (0, maxReturnedItem); // get the first maxReturnedItem customers
+			}
+			cb (cus);		
 		});
 	};
 

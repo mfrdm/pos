@@ -124,7 +124,9 @@ function RewardsCtrl (){
 
 	this.withdraw = function (req, res, next, cb){
 		var rwd = req.body.rwd;
-		var cashback = Rewards.cashback (req.body.occ.total, rwd);
+		var occ = req.body.occ;
+		var cus = req.body.cus;
+		var cashback = Rewards.cashback (occ, rwd, cus);
 		var amount = rwd.amount + cashback.amount;
 		var condition = {_id: rwd._id};
 		var update = {

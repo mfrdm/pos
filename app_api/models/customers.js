@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var moment = require ('moment');
 var crypto = require('crypto');
 var jwt = require('jsonwebtoken');
 
@@ -8,7 +9,6 @@ var eduSchema = new mongoose.Schema({
 	start: {type: Date},
 	end: {type: Date}, // max = start + 6 years
 });	
-
 
 var customersSchema = mongoose.Schema({
 	firstname: {type:String},
@@ -86,7 +86,6 @@ customersSchema.methods.generateJwt = function (passwd, dayNum){
 	);
 };
 
-
 customersSchema.methods.getPublicFields = function (){
 	return {
 		_id: this._id,
@@ -97,6 +96,22 @@ customersSchema.methods.getPublicFields = function (){
 		phone: this.phone[0],
 		birthday: this.birthday,
 		isStudent: this.isStudent,
+	}
+}
+
+customersSchema.statics.isHerBirthday = function (cus){
+	if (cus.birthday){
+		var today = moment ();
+		var birthday = moment (cus.birthday);
+		if (birthday.month () > today.month() || (birthday.month () == today.month() && birthday.date () >= today.date ())){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	else {
+		return false;
 	}
 }
 

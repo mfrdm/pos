@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var moment = require ('moment');
+var Customers = mongoose.model ('customers');
 
 var reset = function (){
 	var today = moment ();
@@ -42,13 +43,16 @@ var withdraw = function (total){
 	return remain
 };
 
-var cashback = function (total, rwd){
-	var cashback_pct = 0.05;
-	if (rwd.promocodes && rwd.promocodes.length){
+var cashback = function (occ, rwd, cus){
+	if (Customers.isHerBirthday (cus)){
+		cashback_pct = 0.15;
+		return {amount: occ.total * cashback_pct, name: 'cashback-birthday', promocodes: [], createdAt: moment ()};
+	}
+	else if (rwd.promocodes && rwd.promocodes.length){
 		//
 	}
 	else{
-		return {amount: total * cashback_pct, name: 'cashback', promocodes: [], createdAt: moment ()};
+		return {amount: occ.total * cashback_pct, name: 'cashback', promocodes: [], createdAt: moment ()};
 	}
 };
 

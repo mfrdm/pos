@@ -163,6 +163,7 @@ function Checkout() {
 
 					// to reward
 					req.body.occ = {total: req.body.data.total};
+					req.body.cus = {birthday: cus.birthday};
 					req.body.rwd = req.body.rwd ? req.body.rwd : {_id: req.body.data.reward[0]._id, amount: req.body.data.reward[0].amount};
 
 					function _acc_cb (updatedAcc){

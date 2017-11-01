@@ -8,6 +8,7 @@ var Bookings = mongoose.model ('bookings');
 var moment = require ('moment');
 var Promise = require ('bluebird')
 
+var CustomerCtrl = require ('./customers');
 module.exports = new Checkin();
 
 function Checkin() {
@@ -146,102 +147,11 @@ function Checkin() {
 	};
 
 	// Only return non-checked-in customers
-	this.searchCheckingCustomers = function (req, res, next){
-		var query;
-		var input = req.query.input; // email, phone, fullname
-		if (!input){
-			next (); // 
-			return;
+	this.searchCustomers = function (req, res, next){
+		function cb (cus){
+			res.json ({data: cus});
 		}
-
-		// Temporary not check. Need to figure out better solution.
-		var stmt = {
-			// checkinStatus: false, 
-		}
-
-		input = validator.trim (input);
-		var projections = {fullname: 1, phone: {$slice: [0,1]}, email: {$slice: [0,1]}, checkinStatus: 1, isStudent: 1, edu: 1, birthday: 1};
-
-		if (validator.isEmail (input)){
-			stmt.email = input;
-			query = Customers.find (stmt, projections);
-		}
-		else if (validator.isMobilePhone (input, 'vi-VN')){
-			stmt.phone = input;
-			query = Customers.find (stmt, projections);
-		}
-		else { 
-			stmt.fullname = {$regex: input.toUpperCase ()}
-			query = Customers.find (stmt, projections);
-		}		
-
-		// get non-expired accounts
-		query.populate ({
-			path: 'accounts',
-			match: {
-				start: {$lte: new Date ()},
-				end: {$gte: new Date ()},
-				amount: {$gt: 0}				
-			},
-			select: 'amount service unit',
-		})
-
-		query.exec (function (err, cus){
-			if (err){
-				next (err);
-				return
-			}
-
-			// Check if the service used by the customers who has been checked in is private 
-			var notCheckedinCustomers = [];
-			var checkedinCustomerIds = [];
-			var checkedinCustomers = cus.filter (function (x, i, arr){
-				if (x.checkinStatus){
-					checkedinCustomerIds.push (x._id);
-					return true;
-				}
-				else{
-					notCheckedinCustomers.push (x);
-					return false;
-				}
-			});
-
-			if (checkedinCustomerIds.length){
-				Occupancies.find ({'customer._id': {$in: checkedinCustomerIds}, 'service.name': /private/i}, {'customer._id': 1}, function (err, foundOcc){
-
-					if (err){
-						console.log (err);
-						next (err);
-						return;
-					}
-
-					if (foundOcc.length){
-						var validCheckedinCustomerId = foundOcc.map (function (x, i, arr){
-							return x.customer._id.toString ();
-						});
-
-						var validCheckedinCustomers = checkedinCustomers.filter (function (x, i, arr){
-							if (validCheckedinCustomerId.indexOf (x._id.toString ()) >= 0){
-								return true;
-							}
-							else{	
-								return false;
-							}
-						});
-
-						res.json ({data: notCheckedinCustomers.concat (validCheckedinCustomers)});
-						return;					
-					}
-					else{
-						res.json ({data: notCheckedinCustomers});
-						return;
-					}
-				});
-			}
-			else{
-				res.json ({data: cus});
-			}
-		});
+		CustomerCtrl.find (req, res, next, cb);
 	};
 
 	this.readCheckinList = function (req, res, next) {

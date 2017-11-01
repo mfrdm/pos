@@ -58,7 +58,7 @@ router.get('/template/deposit', OthersCtrl.getDepositTemplate);
 router.get('/checkin', CheckinCtrl.readCheckinList);
 router.post ('/checkin/cancel', CheckinCtrl.cancelCheckin);
 router.post('/checkin/customer/:cusId', CheckinCtrl.checkin);
-router.get ('/checkin/search-customers', CheckinCtrl.searchCheckingCustomers);
+router.get ('/checkin/search-customers', CheckinCtrl.searchCustomers);
 router.post ('/checkin/edit/:occId', CheckinCtrl.updateCheckin);
 router.get ('/checkin/validate-promotion-code', CheckinCtrl.validatePromocodes);
 

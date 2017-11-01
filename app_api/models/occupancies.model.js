@@ -161,6 +161,7 @@ var OccupanciesSchema = new mongoose.Schema({
 		fullname: {type: String},
 		phone: {type: String},
 		email: {type: String}, // optional. added if exists
+		birthday: {type: Date}, // optional
 		isStudent: {type: Boolean},
 	},
 	location: {
