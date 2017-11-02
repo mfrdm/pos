@@ -44,7 +44,7 @@ var withdraw = function (total){
 };
 
 var cashback = function (context, rwd){
-	var cashback_pct = context.cashback_pct ? context.cashback_pct : 0.05;
+	var cashback_pct = context.cashback_pct ? context.cashback_pct : 0.10; // temporary. should be 0.05 
 	var total = context.getTotal ();
 	if (Customers.isHerBirthday (context.cus)){
 		cashback_pct = 0.15;

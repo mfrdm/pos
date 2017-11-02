@@ -135,10 +135,6 @@ function RewardsCtrl (){
 		function _cb (rwd){
 			rwd = rwd[0] ? rwd[0] : rwd;
 			var cashback = Rewards.cashback (context, rwd);
-			console.log (context.getTotal ())
-			console.log (rwd)
-			console.log (cashback)
-
 			var amount = rwd.amount + cashback.amount;
 			var condition = {_id: rwd._id};
 			var update = {

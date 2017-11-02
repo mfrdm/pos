@@ -223,4 +223,36 @@ function CustomersCtrl() {
 		})
 	}
 
+	this.findOneByContact = function (req, res, next, cb){
+		var fullname = req.query.fullname;
+		var phone = req.query.phone;
+		var email = req.query.email;
+
+		if (!fullname && !phone && !email){
+			if (cb) cb (null);
+			else next ();
+			return;
+		}
+
+		var conditions = {};
+		if (fullname) conditions.fullname = {$regex: fullname.toUpperCase ()};
+		if (phone) conditions.phone = phone;
+		if (email) conditions.email = email;
+
+		Customers.find (conditions, function (err, foundCus){
+			if (err){
+				console.log (err);
+				next (err);
+				return
+			}
+
+			if (cb){
+				cb (foundCus[0])
+			}
+			else{
+				res.json ({data: foundCus[0]});
+			}				
+		})		
+	}
+
 };

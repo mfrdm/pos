@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Accounts = mongoose.model ('Accounts');
 var Customers = mongoose.model ('customers');
 var moment = require ('moment');
+var CustomersCtrl = require ('../../app_server/controllers/customers');
 
 module.exports = new AccountCtrl ();
 
@@ -75,5 +76,30 @@ function AccountCtrl (){
 				res.json ({data: []});
 			}
 		});		
-	};	
+	};
+
+	this.depositCash = function (req, res, next){
+		// both deposit and withdraw cash
+		function cb (cus){
+			if (!cus){
+				next ();
+			}else{
+				var conditions = {'customer._id': cus._id, 'name': 'cash'};
+				var update = {$inc: {amount: req.body.acc.amount}};
+				Accounts.update (conditions, update, function (err, result){
+					if (err){
+						next (err);
+						return;
+					}
+					res.sendStatus (200);
+				});			
+			}
+		}
+
+		req.query.fullname = req.body.cus.fullname;
+		req.query.email = req.body.cus.email;
+		req.query.phone = req.body.cus.phone;
+		CustomersCtrl.findOneByContact (req, res, next, cb);
+	}
+
 };

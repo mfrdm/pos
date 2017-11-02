@@ -86,6 +86,7 @@ router.get ('/deposits/totalCost', depositCtrl.readTotalCost);
 router.get ('/deposits/customer', depositCtrl.readSomeByOneCustomer);
 
 router.get ('/accounts/customer', accountCtrl.readSomeByOneCustomer);
+router.post ('/accounts/depositCash', accountCtrl.depositCash);
 
 router.post ('/checkin', checkinCtrl.checkin);
 router.get ('/checkin', checkinCtrl.readSome);

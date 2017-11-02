@@ -276,7 +276,7 @@ div(class="columns row")
 				ul(class="pagination text-center" role="navigation" aria-label="Pagination")
 					li(class="pagination-previous" ng-click='vm.pagination.prev ()')
 						a(aria-label="Previous page") Previous
-					li(ng-repeat="i in vm.pagination.getIndexList (vm.pagination.model.pageNumber) track by $index" class='{{$index + 1}}')
+					li(ng-repeat="i in vm.pagination.getIndexList (vm.pagination.model.pageNumber) track by $index" class='{{vm.pagination.model.pageClasses[$index]}}')
 						a(ng-click='vm.pagination.jump ($index)') {{$index + 1}}
 					li(class="pagination-next" ng-click='vm.pagination.next ()')
 						a(aria-label="Next page") Next

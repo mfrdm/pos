@@ -1335,6 +1335,7 @@
         vm.pagination = new function (){
             this.model = {
                 currItems: [],
+                pageClasses: [], 
                 currIndex: 0, // index of current page
                 pageNumber: 0, // number of pages
                 maxItems: 10, // max number of items per page
@@ -1362,15 +1363,22 @@
                 this.model.currIndex = 0;
                 this.model.pageNumber = Math.ceil(items.length / vm.pagination.model.maxItems);
                 this.getIems ();
+                this.setPageClass (this.model.currIndex);
             };
 
-            this.getIndexList = function (num){
+            this.setPageClass = function (i){
+                this.model.pageClasses = [];
+                this.model.pageClasses[i] = 'current';
+            }
+
+            this.getIndexList = function (num){ // ?
                 return new Array (num);
             }
 
             this.jump = function (i){
                 this.model.currIndex = i;
-                this.getIems ()
+                this.getIems ();
+                this.setPageClass (this.model.currIndex);
             };
 
             this.next = function (i){
