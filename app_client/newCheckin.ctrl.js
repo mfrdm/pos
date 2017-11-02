@@ -1024,9 +1024,9 @@
                     }
 
                     checkinObj.openCheckinDiv ();
-                    this.model.occupancy.customer = b.customer;
+                    vm.search.model.customerList = [b.customer]; 
+                    this.selectCustomer (0); // only one customer to select                    
                     vm.search.model.customer.username = vm.customers.createUsername (tempCustomer);
-                    this.afterSelectCustomer ();
                     this.model.occupancy.service = b.service;
                     this.model.occupancy.bookingId = b.bookingId;
                     this.serviceChangeHandler ();
@@ -1044,9 +1044,9 @@
                     }
 
                     checkinObj.openCheckinDiv ();
-                    this.model.occupancy.customer = c;
+                    vm.search.model.customerList = [c]; 
+                    this.selectCustomer (0); // only one customer to select
                     vm.search.model.customer.username = vm.customers.createUsername (tempCustomer);
-                    this.afterSelectCustomer ();
                     DataPassingService.reset ('customer');
                 }           
             }

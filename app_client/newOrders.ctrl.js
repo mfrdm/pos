@@ -197,8 +197,7 @@
 			var adjusted = [];
 			orderList.map (function (x, i, arr){
 				x.orderline.map (function (y, t, z){
-					y.customer = {fullname: x.customer.fullname, phone:x.customer.phone};
-
+					y.customer = x.customer ? {fullname: x.customer.fullname, phone:x.customer.phone} : {fullname: 'N/A', phone: 'N/A'}; // should never occur
 					y.createdAt = x.createdAt;
 					y.orderIndex = i;
 					y.note = x.note;
