@@ -162,9 +162,18 @@ function AccountsCtrl() {
 		}
 
 		var condition = {_id: acc._id};
-		var update = {$inc: {amount: deposit.account.amount}};
+		var update = {
+			$inc: {amount: deposit.account.amount},
+			$set:{
+				price: deposit.account.price,
+				services: deposit.account.services,
+				start: deposit.account.start, 
+				end: deposit.account.end,
+				expireDateNum: deposit.account.expireDateNum
+			}
+		};
 
-		Accounts.findOneAndUpdate (condition, update, function (err, updatedAcc){
+		Accounts.findOneAndUpdate (condition, update, {new: true}, function (err, updatedAcc){
 			if (err){
 				console.log (err);
 				next (err);
