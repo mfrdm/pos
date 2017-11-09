@@ -99,11 +99,13 @@ customersSchema.methods.getPublicFields = function (){
 	}
 }
 
-customersSchema.statics.isHerBirthday = function (cus){
+customersSchema.statics.isHerBirthday = function (cus, bound){
+	bound = bound ? bound : 0;
 	if (cus.birthday){
-		var today = moment ();
+		var now = moment ();
 		var birthday = moment (cus.birthday);
-		if (birthday.month () == today.month() && birthday.date () == today.date ()){
+		birthday.year (now.year ());
+		if (birthday.isSameOrBefore (now) && birthday.add(bound, 'day').hour(23).minute(59).isSameOrAfter (now)){
 			return true;
 		}
 		else{

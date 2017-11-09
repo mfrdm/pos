@@ -31,7 +31,7 @@ function CustomersCtrl() {
 
 	this.find = function(req, res, next, cb) {
 		var query;
-		var maxReturnedItem = 100;
+		var maxReturnedItem = 30;
 		var input = req.query.input; // email, phone, fullname
 		if (!input){
 			next (); // 

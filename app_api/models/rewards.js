@@ -46,7 +46,8 @@ var withdraw = function (total){
 var cashback = function (context, rwd){
 	var cashback_pct = context.cashback_pct ? context.cashback_pct : 0.10; // temporary. should be 0.05 
 	var total = context.getTotal ();
-	if (Customers.isHerBirthday (context.cus)){
+	var bday_bound = 3; // max day number from the birthday to receive special reward
+	if (Customers.isHerBirthday (context.cus, bday_bound)){
 		cashback_pct = 0.15;
 		return {amount: total * cashback_pct, name: 'cashback-birthday', promocodes: [], createdAt: moment ()};
 	}
