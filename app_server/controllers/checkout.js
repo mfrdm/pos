@@ -67,7 +67,6 @@ function Checkout() {
 			}
  			
 			if (foundAcc){
-				foundAcc.initAccount ();
 				if (foundAcc.isRenewable ()){
 					foundAcc.renew ();
 				}
@@ -87,13 +86,9 @@ function Checkout() {
 						paidTotal: beforeTotal - occ.total,
 						paidAmount: beforeAccAmount - foundAcc.amount, // already paid hours
 						amount: foundAcc.amount, // remain of account
-						start: foundAcc.start,
-						end: foundAcc.end,
-						activate: foundAcc.activate,
 						recursive: foundAcc.recursive,							
 					}						
 				};
-
 				res.json ({data: data});
 
 			}

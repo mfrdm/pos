@@ -64,7 +64,7 @@ function AccountsCtrl() {
 
 	this.withdraw = function (req, res, next, cb){
 		var acc = req.body.acc;
-
+		acc = new Accounts (acc);
 		if (!acc){
 			if (cb){
 				cb (null);
@@ -85,6 +85,8 @@ function AccountsCtrl() {
 		if (acc.recursive) update.$set.recursive = acc.recursive;
 
 		if (!acc.activate){
+			acc.activate = true;
+			acc.initAccount ();
 			update.$set.activate = true;
 			update.$set.start = acc.start;
 			update.$set.end = acc.end;

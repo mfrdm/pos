@@ -764,7 +764,7 @@ var redeemTotal = function (context){
 
 	// apply a new price after first item
 	if (this.redeemData.total.formula == 1){
-		var remain = usage - 1;
+		var remain = usage - 1;	
 		result.total = price + (remain > 0 ? this.redeemData.total.value * Math.abs (remain) : 0);
 	}
 	// multiple total with x % 
@@ -826,7 +826,7 @@ var redeemTotal = function (context){
 			result.total = this.redeemData.usage.max * this.redeemData.price.value + remainUsage * price;
 		}
 	}
-	else if (this.redeemData.total.formula == 6){
+	else if (this.redeemData.total.formula == 6){ // same total for max usage. after that normal price.
 		if (usage <= this.redeemData.usage.max){
 			result.total = this.redeemData.total.min;
 		}

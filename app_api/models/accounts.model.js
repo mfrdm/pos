@@ -126,6 +126,25 @@ var getDefaultAccounts = function (){
 		grouponable: true,
 	}
 
+	// Rewarded account. No price. Not for sales.
+	var twelveHoursCommon = {
+		name: '12h30dCommon',
+		price: 0, // 
+		amount: 12,
+		unit: 'hour',
+		desc: "",
+		services: ['group common', 'individual common'], // name of service applied
+		label: {
+			vn: "Combo 12 giờ / 30 ngày",
+			en: "Combo 12 hours / 30 day",
+		},
+		recursive: {
+			isRecursive: false,
+		},
+		expireDateNum: 30,
+		grouponable: true,
+	}
+
 	var thirtyDaysCommon = {
 		name: '30dCommon',
 		price: 1299000, // 
@@ -588,7 +607,8 @@ var getDefaultAccounts = function (){
 		dayPart12GroupPrivate40: dayPart12GroupPrivate40,
 		dayPart23GroupPrivate40: dayPart23GroupPrivate40,
 		dayFullGroupPrivate40: dayFullGroupPrivate40,						
-		cash: cash
+		cash: cash,
+		// twelveHoursCommon: twelveHoursCommon,
 	}
 };
 
@@ -644,7 +664,7 @@ var _withdraw = function (amount, acc){
 
 var applyFormula = function (context, acc){
 	var adjustedAmount = context.getUsage ();
-	if (acc.formula && acc.formula.value == 1){ // assume checkinTime is always greater than or equal expected on
+	if (acc.formula && acc.formula.value == 1){ // assume checkinTime is always greater than or equal expected
 		checkinTime = moment (context.getCheckinTime ());
 		expectedCheckinTime = moment (checkinTime); // assume must be the same date
 		expectedCheckinTime.hour (acc.formula.hourStart);
@@ -676,7 +696,7 @@ var withdraw = function (context){
 
 var initAccount = function (){
 	if (!this.activate){
-		max_waiting_days = 60
+		max_waiting_days = 120;
 		this.end = moment (this.start).add (max_waiting_days - 1, 'day').hour (23).minute (59);
 	}
 	else{
