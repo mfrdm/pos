@@ -64,7 +64,6 @@ function AccountsCtrl() {
 
 	this.withdraw = function (req, res, next, cb){
 		var acc = req.body.acc;
-		acc = new Accounts (acc);
 		if (!acc){
 			if (cb){
 				cb (null);
@@ -75,6 +74,7 @@ function AccountsCtrl() {
 			return;
 		}
 
+		acc = new Accounts (acc);
 		var condition = {_id: acc._id};
 		var update = {
 			$set: {
