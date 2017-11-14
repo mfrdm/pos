@@ -73,8 +73,7 @@ function AccountsCtrl() {
 			}
 			return;
 		}
-
-		acc = new Accounts (acc);
+		
 		var condition = {_id: acc._id};
 		var update = {
 			$set: {

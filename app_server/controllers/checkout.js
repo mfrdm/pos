@@ -86,7 +86,8 @@ function Checkout() {
 						paidTotal: beforeTotal - occ.total,
 						paidAmount: beforeAccAmount - foundAcc.amount, // already paid hours
 						amount: foundAcc.amount, // remain of account
-						recursive: foundAcc.recursive,							
+						recursive: foundAcc.recursive,
+						activate: foundAcc.activate					
 					}						
 				};
 				res.json ({data: data});
