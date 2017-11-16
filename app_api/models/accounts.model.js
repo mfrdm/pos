@@ -696,7 +696,7 @@ var withdraw = function (context){
 
 var initAccount = function (){
 	if (!this.activate){
-		max_waiting_days = 120;
+		var max_waiting_days = 120;
 		this.end = moment (this.start).add (max_waiting_days - 1, 'day').hour (23).minute (59);
 	}
 	else{

@@ -84,11 +84,12 @@ function AccountsCtrl() {
 		if (acc.recursive) update.$set.recursive = acc.recursive;
 
 		if (!acc.activate){
-			acc.activate = true;
-			acc.initAccount ();
+			var newAcc = new Accounts (acc)
+			newAcc.activate = true;
+			newAcc.initAccount ();			
 			update.$set.activate = true;
-			update.$set.start = acc.start;
-			update.$set.end = acc.end;
+			update.$set.start = newAcc.start;
+			update.$set.end = newAcc.end;
 		}
 
 		Accounts.update (condition, update, function (err, result){

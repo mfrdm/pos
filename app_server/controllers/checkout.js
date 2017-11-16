@@ -87,7 +87,8 @@ function Checkout() {
 						paidAmount: beforeAccAmount - foundAcc.amount, // already paid hours
 						amount: foundAcc.amount, // remain of account
 						recursive: foundAcc.recursive,
-						activate: foundAcc.activate					
+						activate: foundAcc.activate,
+						expireDateNum: foundAcc.expireDateNum,					
 					}						
 				};
 				res.json ({data: data});
