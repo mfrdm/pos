@@ -1251,11 +1251,19 @@
         }();
 
         vm.checkinedList = new function (){
+            var thisObj = this;
             this.model = {
                 dom: {
                     listDiv: true,
                     filterDiv: false,
                     status: 1,
+                    review: {
+                        open: false,
+                    },
+                },
+                review: {
+                    occupancy: null,
+                    temporary: {}
                 },
                 list: {data: []},
             };
@@ -1281,6 +1289,18 @@
                     function error(err){
                         console.log(err);
                     });
+            };
+
+            this.review = {
+                open: function (occ){
+                    thisObj.model.review.occupancy = occ;
+                    thisObj.model.dom.review.open = true;
+                    thisObj.model.review.temporary.codeNames = vm.checkout.getPromocodeNames(thisObj.model.review.occupancy);
+                },
+                close: function (){
+                    thisObj.model.review.occupancy = null;
+                    thisObj.model.dom.review.open = false;
+                }
             };
         }();
 

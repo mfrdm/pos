@@ -245,7 +245,7 @@ div(class="columns row")
 					tr
 						th {{vm.model.dom.data.selected.checkinList.header.number}}
 						th {{vm.model.dom.data.selected.checkinList.header.fullname}}
-						//- th {{vm.model.dom.data.selected.checkinList.header.headerBirthday}}
+						th {{ "Phone" }}
 						th(ng-if='vm.model.dom.seeMore == true') {{vm.model.dom.data.selected.checkinList.header.checkinDate}}
 						th {{vm.model.dom.data.selected.checkinList.header.checkinHour}}
 						th(ng-if='vm.model.dom.seeMore == true')  {{vm.model.dom.data.selected.checkinList.header.checkoutDate}}
@@ -259,6 +259,7 @@ div(class="columns row")
 					tr(ng-repeat='occ in vm.pagination.model.currItems')
 						td {{ $index + 1 + 10 * vm.pagination.model.currIndex}}
 						td {{ occ.customer.fullname }}
+						td(ng-if='occ.customer.phone') {{ '*******' + occ.customer.phone.slice (-4) }}
 						td(ng-if='vm.model.dom.seeMore == true')  {{ occ.checkinTime | date:'dd/MM/yyyy' }}
 						td {{ occ.checkinTime | date: 'shortTime' }}
 						td(ng-if='vm.model.dom.seeMore == true')  {{ occ.checkoutTime | date:'dd/MM/yyyy' }}
@@ -267,7 +268,7 @@ div(class="columns row")
 						
 						td
 							a(ng-if='occ.status == 1' class="primary button" ng-click="vm.checkout.getInvoice (occ)") Checkout
-							a(ng-if='occ.status == 2' class="primary button") View
+							a(ng-if='occ.status == 2' class="primary button" ng-click="vm.checkinedList.review.open (occ)") Review
 						td
 							a(class="primary button" ng-disabled='!vm.ctrl.layout.ctrl.hasPermission ("editCheckedin")') Edit
 						td(ng-if='occ.status != 1') {{occ.note}}
@@ -390,7 +391,7 @@ div(id='checkoutDiv' ng-show='vm.checkout.model.dom.checkoutDiv' class="row colu
 						th(colspan=3) Codes
 						td(colspan=2) {{ vm.checkout.model.temporary.invoice.codeNames }}
 					tr
-						th(colspan=3) Tổng
+						th(colspan=3) Phí dịch vụ
 						td(colspan=2) {{ vm.checkout.model.checkingout.occupancy.total | number }} VNĐ					
 					tr(ng-if="vm.checkout.model.temporary.accWithdrawDetail.acc.paidAmount")
 						th(colspan=3) Tài khoản đã dùng
@@ -404,14 +405,58 @@ div(id='checkoutDiv' ng-show='vm.checkout.model.dom.checkoutDiv' class="row colu
 						th(colspan=3) Điểm thưởng còn
 						td(colspan='2') {{ vm.checkout.model.temporary.rwdWithdrawDetail.rwd.amount | number}} GC											
 					tr(ng-if="vm.checkout.model.temporary.accWithdrawDetail.occ.total || vm.checkout.model.temporary.accWithdrawDetail.occ.total == 0")
-						th(colspan=3) Tổng trừ trả trước
+						th(colspan=3) Phí dịch vụ trừ trả trước
 						td(colspan=2) {{ vm.checkout.model.temporary.accWithdrawDetail.occ.total | number}} VNĐ
 					tr(ng-if="vm.checkout.model.temporary.rwdWithdrawDetail.rwd._id")
-						th(colspan=3) Tổng trừ điểm thưởng
+						th(colspan=3) Phí dịch vụ trừ điểm thưởng
 						td(colspan=2) {{ vm.checkout.model.temporary.rwdWithdrawDetail.occ.total | number }} VNĐ
 					tr
 						td(colspan=5)
 							textarea(type='text' ng-model='vm.checkout.model.checkingout.occupancy.note' placeholder="Ghi chú")
 			div(class="row column marginT30 paddingLR10")
 				a(class="paddingL15 button primary" ng-click="vm.checkout.checkout()") Checkout
+				a(class="paddingR15 button float-right secondary" ng-click="vm.ctrl.reset()") Cancel
+
+// VIEW INVOICE version 0.0.0
+div(id='checkoutDiv' ng-show='vm.checkinedList.model.dom.review.open' class="row column")
+	div(class="column small-12 text-center paddingTB20")
+		h2 GREEN SPACE
+		h3 Check-out confirmation
+	div(class="column small-12 paddingB20")
+		div(class="column small-12 large-8 large-push-2 table-scroll")
+			table(class="hover unstriped")
+				tbody
+					tr
+						th(colspan=3) Khách hàng
+						td(colspan=2) {{ vm.checkinedList.model.review.occupancy.customer.fullname }}
+					tr
+						th(colspan=3) Dịch vụ
+						td(colspan=2) {{ vm.checkinedList.model.review.occupancy.service.label }}
+					tr
+						th(colspan=3) Checkin
+						td(colspan=2) {{ vm.checkinedList.model.review.occupancy.checkinTime | date:'dd/MM/yyyy'}} {{ vm.checkinedList.model.review.occupancy.checkinTime | date:'shortTime'}}				
+					tr
+						th(colspan=3) Checkout
+						td(colspan=2) {{ vm.checkinedList.model.review.occupancy.checkoutTime | date:'dd/MM/yyyy'}} {{ vm.checkinedList.model.review.occupancy.checkoutTime | date:'shortTime'}}
+					tr
+						th(colspan=3) Thời gian
+						td(colspan=2) {{ vm.checkinedList.model.review.occupancy.oriUsage | number: 1 }} Giờ
+					tr
+						th(colspan=3) Giá
+						td(colspan=2) {{ vm.checkinedList.model.review.occupancy.price | number}} VNĐ
+					tr(ng-if="vm.checkinedList.model.review.occupancy.promocodes && vm.checkinedList.model.review.occupancy.promocodes.length")
+						th(colspan=3) Codes
+						td(colspan=2) {{ vm.checkinedList.model.review.temporary.codeNames }}
+					tr
+						th(colspan=3) Phí dịch vụ
+						td(colspan=2) {{ vm.checkinedList.model.review.occupancy.total | number }} VNĐ
+					tr(ng-if="vm.checkinedList.model.review.occupancy.paymentMethod && vm.checkinedList.model.review.occupancy.paymentMethod.length" ng-repeat=" account in vm.checkinedList.model.review.occupancy.paymentMethod")
+						th(colspan=3) {{ account.name == "account" ? "Tài khoản trả trước đã dùng" : "Tài khoản tích điểm đã dùng" }}
+						td(colspan='2' ng-if="account.paidAmount < 100 ") {{ account.paidAmount | number: 1}} Giờ
+						td(colspan='2' ng-if="account.paidAmount > 100 || account.name == 'reward'") {{ account.paidAmount | number }} VNĐ	
+					tr(ng-if="vm.checkinedList.model.review.occupancy.paymentMethod && vm.checkinedList.model.review.occupancy.paymentMethod.length")
+						th(colspan=3) Phí dịch vụ trừ trả trước (và điểm thưởng)
+						td(colspan=2) {{ vm.checkinedList.model.review.occupancy.paid | number}} VNĐ
+			div(class="row column marginT30 paddingLR10")
+				a(class="paddingL15 button primary" ng-click="vm.ctrl.reset()") Back
 				a(class="paddingR15 button float-right secondary" ng-click="vm.ctrl.reset()") Cancel

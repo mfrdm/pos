@@ -39,7 +39,6 @@ function AccountCtrl (){
 				return ''		
 			}
 
-
 			if (accids.length){
 				Accounts.find (
 					{_id: {$in: accids}, 
