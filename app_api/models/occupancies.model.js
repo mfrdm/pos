@@ -20,6 +20,7 @@ function getCodeContext (occ){
 		getPromocodes: function (){ return occ.promocodes },
 		setPromocodes: function (codes){ occ.promocodes = codes },
 		isStudent: function (){ return occ.customer.isStudent },
+		getSchool: function (){ return occ.customer.edu ? occ.customer.edu[0].school : null },
 	}
 } 
 
@@ -96,8 +97,7 @@ function getTotal (){
 	}
 	else{
 		// the context in strategy design
-		var context = getCodeContext (occ); 
-
+		var context = getCodeContext (occ);
 		Promocodes.preprocessCodes (context);
 
 		// assume, at this point codes are validate and good to use
@@ -163,6 +163,7 @@ var OccupanciesSchema = new mongoose.Schema({
 		email: {type: String}, // optional. added if exists
 		birthday: {type: Date}, // optional
 		isStudent: {type: Boolean},
+		edu: mongoose.Schema.Types.Mixed,
 	},
 	location: {
 		_id: {type: mongoose.Schema.Types.ObjectId},

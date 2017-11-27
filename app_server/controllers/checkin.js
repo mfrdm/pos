@@ -46,7 +46,7 @@ function Checkin() {
 	// assume promocode are validated
 	this.checkin = function(req, res, next) {
 		var occ = new Occupancies (req.body.data.occupancy);
-
+		console.log (occ)
 		if (req.body.data.order && req.body.data.order.orderline && req.body.data.order.orderline.length){
 			var order = new Orders (req.body.data.order);
 			order.getSubTotal ();

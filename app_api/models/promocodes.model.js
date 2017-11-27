@@ -476,11 +476,29 @@ var getServiceDefaultCodes = function (){
 		end: moment ('2017-06-30 23:59:00')					
 	};
 
+	var ftuStudents = { 
+		"name" : "PRIVATE/COMMON_VIP_FTU_STUDENTS", 
+		"start" : moment ("2017-11-26 17:00:00"), 
+		"end" : moment("2017-12-31 17:00:00Z"), 
+		"desc" : "", 
+		"codeType" : 3,
+		"label" : { "vn" : "Common/Private - Giá VIP - Sinh viên FTU" }, 
+		"priority" : 1, 
+		"services" : [ "small group private", "medium group private", "large group private", "group common", "individual common" ], 
+		"redeemData" : { 
+			"total" : { "formula" : 2, "value" : 0.8 }, 
+			"checkoutTime" : { "hour" : 16, "min" : 0, "total" : 1 }, 
+			"dayofweek": [1,3,5],
+			'other': {'school': 18} 
+		}
+	}
+
 	return {
 		'studentprice': studendPrice,
 		'smallprivatediscountprice': smallPrivateDiscountPrice,
 		'mediumprivatediscountprice': mediumPrivateDiscountPrice,
-		'largeprivatediscountprice': largePrivateDiscountPrice
+		'largeprivatediscountprice': largePrivateDiscountPrice,
+		'ftuStudents': ftuStudents,
 	};
 };
 
@@ -626,6 +644,7 @@ var addServiceDefaultCodes = function (context){
 	var productName = context.productName;
 	var promocodes = context.getPromocodes ();
 	var isStudent = context.isStudent ();
+	var school = context.getSchool ();
 	// var service = occ.service.name.toLowerCase ();
 	// var usage = occ.usage;
 	
@@ -638,6 +657,7 @@ var addServiceDefaultCodes = function (context){
 	var higherType3 = false;
 	var basePriority = 1;
 
+	// check if there is any code of the same type and has higher priority
 	promocodes.map (function (x, i, arr){
 		if (x.codeType == 1 && x.priority > basePriority){
 			higherType1 = true;
@@ -672,18 +692,22 @@ var addServiceDefaultCodes = function (context){
 		promocodes.push (defaultCodes ['studentprice']);
 	}
 
-	// discount price for small group private
-	if (!higherType1 && !higherType2 && !higherType3 && usage > 1){
-		var targetCodes = [
-			defaultCodes ['smallprivatediscountprice'],
-			defaultCodes ['mediumprivatediscountprice'],
-			defaultCodes ['largeprivatediscountprice'],
-		];		
+	if (!higherType3 && isStudent && school == defaultCodes['ftuStudents'].redeemData.other.school && moment().isSameOrAfter (defaultCodes ['ftuStudents'].start) && moment().isSameOrBefore (defaultCodes ['ftuStudents'].end) && (defaultCodes ['ftuStudents'].services.indexOf (service) != -1)){
+		promocodes.push (defaultCodes ['ftuStudents']);
+	}		
 
-		targetCodes.map (function (x, i, arr){
-			_addDefaultCodes (x)
-		});
-	}
+	// // discount price for small group private
+	// if (!higherType1 && !higherType2 && !higherType3 && usage > 1){
+	// 	var targetCodes = [
+	// 		defaultCodes ['smallprivatediscountprice'],
+	// 		defaultCodes ['mediumprivatediscountprice'],
+	// 		defaultCodes ['largeprivatediscountprice'],
+	// 	];		
+
+	// 	targetCodes.map (function (x, i, arr){
+	// 		_addDefaultCodes (x)
+	// 	});
+	// }
 
 	// // discount price for medium group private
 	// if (!higherType1 && !higherType2 && !higherType3 && usage > 1 && (defaultCodes ['mediumprivatediscountprice'].services.indexOf (service) != -1)){
@@ -768,8 +792,8 @@ var redeemTotal = function (context){
 		result.total = price + (remain > 0 ? this.redeemData.total.value * Math.abs (remain) : 0);
 	}
 	// multiple total with x % 
-	else if (this.redeemData.total.formula == 2){
-		if (this.redeemData.checkoutTime){
+	else if (this.redeemData.total.formula == 2 && ((!this.redeemData.dayofweek) || (this.redeemData.dayofweek && this.redeemData.dayofweek.indexOf(moment().day ()) != -1))){
+		if (this.redeemData.checkoutTime){ // depend on some period of time
 			checkinTime = moment (checkinTime);
 			var expectedcheckoutTime = moment ();
 			expectedcheckoutTime.hour (this.redeemData.checkoutTime.hour);
@@ -837,7 +861,7 @@ var redeemTotal = function (context){
 		}
 	}
 	else{
-		result.total = this.redeemData.total.value;
+		result.total = price * usage;
 	}
 
 	return result;
@@ -940,6 +964,8 @@ var PromocodesSchema = mongoose.Schema ({
 	end: {type: Date, required: true},
 	redeemData: {
 		checkoutTime: mongoose.Schema.Types.Mixed,
+		dayofweek: [Number],
+		other: mongoose.Schema.Types.Mixed,
 		price: {
 			value: Number,
 			min: Number,

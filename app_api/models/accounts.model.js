@@ -738,6 +738,7 @@ var AccountsSchema = new mongoose.Schema({
 		by: {type: mongoose.Schema.Types.ObjectId}, // staff id
 	}],
 	activate: {type: Boolean, default: false},
+	note: [{createdAt: Date, reason: String}],
 });	
 
 AccountsSchema.methods.renew = renew;

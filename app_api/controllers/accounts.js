@@ -77,14 +77,15 @@ function AccountCtrl (){
 		});		
 	};
 
+	// review
 	this.depositCash = function (req, res, next){
 		// both deposit and withdraw cash
 		function cb (cus){
 			if (!cus){
 				next ();
 			}else{
-				var conditions = {'customer._id': cus._id, 'name': 'cash'};
-				var update = {$inc: {amount: req.body.acc.amount}};
+				var conditions = {'customer._id': cus._id, 'name': 'cash', };
+				var update = {$inc: {amount: req.body.acc.amount}, $push: {note: {createdAt: new Date (), reason: req.body.acc.reason}}};
 				Accounts.update (conditions, update, function (err, result){
 					if (err){
 						next (err);

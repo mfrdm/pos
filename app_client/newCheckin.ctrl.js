@@ -414,6 +414,7 @@
                     phone: selectedCustomer.phone[0],
                     email: selectedCustomer.email[0],
                     isStudent: selectedCustomer.isStudent,
+                    edu: selectedCustomer.edu,
                 }
 
                 this.model.customer.username = vm.customers.createUsername(selectedCustomer);

@@ -93,7 +93,7 @@
 				    {'label':'Đại học Luật','value':15},
 				    {'label':'Đại học Mỏ địa chất','value':16},
 				    {'label':'Học viện Ngoại giao','value':17},
-				    {'label':'Đại học Ngoại thương','value':18},
+				    {'label':'Đại học Ngoại thương','value':18}, // SPECIAL
 				    {'label':'Đại học Quốc gia','value':19},
 				    {'label':'Đại học Thương mại','value':20},
 				    {'label':'Đại học Xây dựng','value':21},
