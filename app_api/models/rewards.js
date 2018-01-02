@@ -22,7 +22,7 @@ var _withdraw = function (amount, rwd){
 	var remain = amount;
 	var lowestAmount = 1000;
 	var usedReward = rwd.amount;
-	usedReward = Math.floor(usedReward / 1000) * 1000;
+	usedReward = Math.floor(usedReward / lowestAmount) * 1000;
 	nonUsedReward = rwd.amount - usedReward;
 
 	if (amount > usedReward){
@@ -44,7 +44,7 @@ var withdraw = function (total){
 };
 
 var cashback = function (context, rwd){
-	var cashback_pct = context.cashback_pct ? context.cashback_pct : 0.10; // temporary. should be 0.05 
+	var cashback_pct = context.cashback_pct ? context.cashback_pct : 0.05; // temporary. should be 0.05 
 	var total = context.getTotal ();
 	var bday_bound = 3; // max day number from the birthday to receive special reward
 	if (Customers.isHerBirthday (context.cus, bday_bound)){

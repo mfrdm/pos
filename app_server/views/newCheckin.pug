@@ -259,7 +259,7 @@ div(class="columns row")
 					tr(ng-repeat='occ in vm.pagination.model.currItems')
 						td {{ $index + 1 + 10 * vm.pagination.model.currIndex}}
 						td {{ occ.customer.fullname }}
-						td(ng-if='occ.customer.phone') {{ '*******' + occ.customer.phone.slice (-4) }}
+						td {{ occ.customer.phone ? '*******' + occ.customer.phone.slice (-4) : '***********' }}
 						td(ng-if='vm.model.dom.seeMore == true')  {{ occ.checkinTime | date:'dd/MM/yyyy' }}
 						td {{ occ.checkinTime | date: 'shortTime' }}
 						td(ng-if='vm.model.dom.seeMore == true')  {{ occ.checkoutTime | date:'dd/MM/yyyy' }}

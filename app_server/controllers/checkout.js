@@ -174,8 +174,12 @@ function Checkout() {
 						function _rwd_cb (rwd){
 							res.json ({data: {message: 'success'}});
 						}
-
-						RewardsCtrl.withdraw (req, res, next, _rwd_cb);
+						if (occ.paid > 0){
+							RewardsCtrl.withdraw (req, res, next, _rwd_cb);
+						}
+						else{
+							_rwd_cb ();
+						}
 					}
 
 					AccountsCtrl.withdraw (req, res, next, _acc_cb);

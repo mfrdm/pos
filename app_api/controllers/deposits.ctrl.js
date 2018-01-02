@@ -124,7 +124,7 @@ function DepositCtrl (){
 			}, 
 			{
 				$group: {
-					_id: null, total: {$sum: "$total"}
+					_id: '$account.name', total: {$sum: "$total"}
 				}
 			}
 		]);

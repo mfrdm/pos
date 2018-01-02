@@ -1129,7 +1129,7 @@
             }
 
             this.rewardChangeHandler = function (){
-                var lowestRewardAmount = 1000;
+                var lowestRewardAmount = 5000; // an important threshold.
                 if ((!checkoutObj.model.temporary.selectedReward) || (checkoutObj.model.temporary.accWithdrawDetail && checkoutObj.model.temporary.accWithdrawDetail.occ && checkoutObj.model.temporary.accWithdrawDetail.occ.total == 0) || (checkoutObj.model.checkingout.occupancy.total == 0) || (checkoutObj.model.temporary.selectedReward.amount < lowestRewardAmount)){
                     checkoutObj._resetReward ();
                     return;

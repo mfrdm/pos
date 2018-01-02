@@ -26,7 +26,12 @@ function DepositsCtrl (){
 				cus: req.body.cus,
 			};
 
-			RewardsCtrl.withdraw (req, res, next, _cb);
+			if (deposit.total > 0){
+				RewardsCtrl.withdraw (req, res, next, _cb);
+			}
+			else{
+				_cb ();
+			}
 		};
 
 		function after_create_dep_cb (dep){

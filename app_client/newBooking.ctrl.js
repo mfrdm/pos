@@ -401,8 +401,10 @@
 		};
 
 		vm.ctrl.bookingList.confirmCancel = function (index){
+			var curBooking = vm.model.bookingList.data [index];
+			if (curBooking.status == 5) return // booked already
 			vm.model.dom.bookingList.cancelConfirmDiv = true;
-			vm.model.temporary.canceledBooking = vm.model.bookingList.data [index];
+			vm.model.temporary.canceledBooking = curBooking
 		}
 
 		vm.ctrl.bookingList.closeCancel = function (){
@@ -412,6 +414,7 @@
 
 		vm.ctrl.bookingList.checkin = function (index){
 			var curBooking = vm.model.bookingList.data[index];
+			if (curBooking.status == 5) return // booked already
 			var data = {
 				service: curBooking.service,
 				customer: curBooking.customer,

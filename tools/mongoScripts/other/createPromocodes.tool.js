@@ -1,6 +1,5 @@
 createCode201707 ('gsanalysis')
 
-
 function connect (dbname){
 	var conn = new Mongo ();
 	var db = conn.getDB (dbname);
