@@ -14,8 +14,8 @@
 		vm.booking.all = {}
 		vm.customer.intime = {}
 		vm.customer.outtime = {}
-		vm.customer.intime.year = 2017;
-		vm.customer.outtime.year = 2017;
+		vm.customer.intime.year = 2018;
+		vm.customer.outtime.year = 2018;
 		vm.customer.intime.minute = 0;
 		vm.customer.outtime.minute = 0;
 

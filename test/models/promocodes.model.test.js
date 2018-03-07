@@ -2,6 +2,7 @@ process.env.NODE_ENV = 'test';
 var chai = require ('chai');
 var should = chai.should ();
 var mongoose = require ('mongoose');
+var moment = require ('moment');
 var Promocodes = require ('../../app_api/models/promocodes.model');
 var Occupancies = require ('../../app_api/models/occupancies.model');
 var Deposits = require ('../../app_api/models/deposit.model')
@@ -231,7 +232,7 @@ xdescribe ('Redeem usage', function (){
 	})
 });
 
-xdescribe ('Redeem total', function (){
+describe ('Redeem total', function (){
 	var codes, context;
 	beforeEach (function (){
 		context = {
@@ -243,6 +244,7 @@ xdescribe ('Redeem total', function (){
 			getUsage: function (){ return this.usage },
 			getPrice: function (){return this.price},
 			getTotal: function (){return this.total},
+			getCheckinTime: function (){return this.checkinTime},
 			getPromocodes: function (){ return occ.promocodes },
 			setPromocodes: function (codes){ occ.promocodes = codes },
 			isStudent: function (){ return occ.customer.isStudent }
@@ -358,12 +360,25 @@ xdescribe ('Redeem total', function (){
 						value: 100000
 					}
 				}				
-			},	
-
+			},
+			{ 
+				"name" : "code 9", 
+				"codeType" : 3, 
+				"priority" : 2, 
+				"services" : [ "small group private", "medium group private", "large group private" ], 
+				"redeemData" : { 
+					"total" : { "formula" : 8, "discount" : 0.2 }, 
+					"checkoutTime" : [
+						{ "hour" : 11, "min" : 0, "discount" : 0.5 }, 
+						{ "hour" : 13, "min" : 0, "discount" : 0.83 }, 
+						{ "hour" : 17, "min" : 0, "discount" : 0.5 }
+					]
+				} 
+			}
 		]
 	});
 
-	it ('should return a fix total when fix-total code is used', function (){
+	xit ('should return a fix total when fix-total code is used', function (){
 		var result = new Promocodes (codes[0]).redeemTotal (context);
 
 		result.total.should.to.equal (75000);
@@ -372,7 +387,7 @@ xdescribe ('Redeem total', function (){
 		result.should.not.to.have.property ('quantity');						
 	})
 
-	it ('should return a expected total when formula 1 is used and usage > 1', function (){
+	xit ('should return a expected total when formula 1 is used and usage > 1', function (){
 
 		var expectedTotal = 270000;
 
@@ -384,7 +399,7 @@ xdescribe ('Redeem total', function (){
 		result.should.not.to.have.property ('usage');
 	})
 
-	it ('should return a expected total when formula 1 is used and usage <= 1', function (){
+	xit ('should return a expected total when formula 1 is used and usage <= 1', function (){
 		context.usage = 1;						
 
 		var expectedTotal = 150000;
@@ -397,7 +412,7 @@ xdescribe ('Redeem total', function (){
 		result.should.not.to.have.property ('usage');		
 	});
 
-	it ('should return expected total when formula 2 is used', function (){
+	xit ('should return expected total when formula 2 is used', function (){
 
 		var result = new Promocodes (codes[4]).redeemTotal (context);
 
@@ -407,7 +422,7 @@ xdescribe ('Redeem total', function (){
 		result.should.not.to.have.property ('quantity');
 	});
 
-	it ('should return expected total when formula 3 is used', function (){
+	xit ('should return expected total when formula 3 is used', function (){
 		var result = new Promocodes (codes[5]).redeemTotal (context);
 
 		result.total.should.to.equal (150000 * 5);
@@ -419,7 +434,7 @@ xdescribe ('Redeem total', function (){
 		result.price.should.to.equal (150000);		
 	});
 
-	it ('should return expected total when formula 4 is used', function (){
+	xit ('should return expected total when formula 4 is used', function (){
 		var result = new Promocodes (codes[6]).redeemTotal (context);
 
 		result.total.should.to.equal (0);
@@ -431,7 +446,7 @@ xdescribe ('Redeem total', function (){
 		result.price.should.to.equal (0);		
 	});	
 
-	it ('should return expected total when formula 4 is used', function (){
+	xit ('should return expected total when formula 4 is used', function (){
 		context.usage = 10;
 		var result = new Promocodes (codes[6]).redeemTotal (context);
 
@@ -444,7 +459,7 @@ xdescribe ('Redeem total', function (){
 		result.price.should.to.equal (220000);		
 	});
 
-	it ('should return expected total when formula 5 is used', function (){
+	xit ('should return expected total when formula 5 is used', function (){
 		context.usage = 10;
 		context.price = 220000;
 		var result = new Promocodes (codes[7]).redeemTotal (context);
@@ -456,6 +471,44 @@ xdescribe ('Redeem total', function (){
 		result.should.not.to.have.property ('quantity');
 		
 	});
+
+	xit ('should return correct value when formula 8 is used: within expected checkout time', function (){
+		context.usage = 2;
+		context.price = 150000;
+		context.checkinTime = moment ().hour (8).minute (30);
+		var result = new Promocodes (codes[8]).redeemTotal (context);
+		result.total.should.to.equal (2 * 150000 * 0.5);		
+	})
+
+	it ('should return correct value when formula 8 is used: last more than 1 expected checkout time', function (){
+		context.usage = 3;
+		context.price = 150000;
+		context.checkinTime = moment ().hour (8).minute (30);
+		var result = new Promocodes (codes[8]).redeemTotal (context);
+		Math.round (result.total).should.to.equal (2.5 * 150000 * 0.5 + 0.5 * 150000 * 0.17);		
+	});
+
+	it ('should return correct value when formula 8 is used: last through all more expected checkout times', function (){
+		context.usage = 9;
+		context.price = 150000;
+		context.checkinTime = moment ().hour (8).minute (30);
+		var result = new Promocodes (codes[8]).redeemTotal (context);
+		Math.round (result.total).should.to.equal (
+			2.5 * 150000 * 0.5 + 
+			2 * 150000 * 0.17 + 
+			4 * 150000 * 0.5 + 
+			0.5 * 150000 * 0.8);		
+	});
+
+	it ('should return correct value when formula 8 is used: out of all expected checkout times', function (){
+		context.usage = 2;
+		context.price = 150000;
+		context.checkinTime = moment ().hour (18).minute (30);
+		var result = new Promocodes (codes[8]).redeemTotal (context);
+		Math.round (result.total).should.to.equal (
+			2 * 150000 * 0.8);		
+	});
+
 });
 
 xdescribe ('Add account default code', function (){
@@ -594,7 +647,7 @@ xdescribe ('Add account default code', function (){
 	})
 })
 
-describe ('Add service default code', function (){
+xdescribe ('Add service default code', function (){
 	var context, occ, newOcc;
 	beforeEach (function (){
 		occ = {

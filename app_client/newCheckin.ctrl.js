@@ -344,7 +344,7 @@
             this.getStaffInfo = function (){
                 return this.model.staff;
             };
-        };
+        }();
 
         vm.customers = new function (){
             this.createUsername = function (customer){
@@ -359,6 +359,7 @@
                 return Service.searchCustomers (username).then(
                     function success (res){
                         var deferred = $q.defer ();
+                        console.log (res.data)
                         if (!res.data){
                             // unexpected result. should never exist
                             deferred.reject ({message: 'Unknown error'});

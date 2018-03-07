@@ -113,6 +113,7 @@ function Checkout() {
 		var promocodes = req.body.data.promocodes;
 		var paymentMethod = req.body.data.paymentMethod ? req.body.data.paymentMethod : [];
 		var note = req.body.data.note ? req.body.data.note : ''; // optional
+		var service = req.body.data.service; 
 		var status = 2;
 
 		paymentMethod.map (function (x, i, arr){
@@ -163,10 +164,16 @@ function Checkout() {
 					}
 
 					// to reward
-					req.body.context = {
-						getTotal: function (){return occ.paid},
-						cus: cus,
+					if (service.name != 'Medium group private' && service.name != 'Large group private' && service.name != 'Small group private'){
+						req.body.context = {
+							getTotal: function (){return occ.paid},
+							cus: cus,
+						}
 					}
+					else{
+						req.body.context = null;
+					}
+
 					req.body.rwd = req.body.rwd ? req.body.rwd : null;
 					req.query.customerId = cus._id;
 

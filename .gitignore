@@ -11,3 +11,7 @@ nohup.out
 data/*
 
 tool/*
+
+*.ipynb
+
+.ipynb_checkpoints

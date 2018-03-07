@@ -129,13 +129,21 @@ function RewardsCtrl (){
 	};
 
 	this.withdraw = function (req, res, next, cb){
+		/*
+		Withdraw reward account and at the same time reward.
+		*/
+
 		var rwd = req.body.rwd;
 		var context = req.body.context;
 
 		function _cb (rwd){
 			rwd = rwd[0] ? rwd[0] : rwd;
-			var cashback = Rewards.cashback (context, rwd);
-			var amount = rwd.amount + cashback.amount;
+			var amount = rwd.amount;
+			if (context){
+				var cashback = Rewards.cashback (context, rwd);
+				amount = amount + cashback.amount;
+			}
+
 			var condition = {_id: rwd._id};
 			var update = {
 				$set:{
@@ -145,14 +153,14 @@ function RewardsCtrl (){
 				}
 			};
 
-			if (rwd.source){
+			if (rwd.source && cashback){
 				update.$push = {
 					source:{
 						$each: [rwd.source, cashback]
 					}
 				}
 			}
-			else{
+			else if (!rwd.source && cashback) {
 				update.$push = {source: cashback}			
 			}
 

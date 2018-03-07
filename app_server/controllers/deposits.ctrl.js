@@ -21,10 +21,14 @@ function DepositsCtrl (){
 
 			req.body.rwd = null;
 			req.query.customerId = req.body.cus._id;
-			req.body.context = {
-				getTotal: function (){return req.body.dep.total},
-				cus: req.body.cus,
-			};
+
+			// NOT reward from deposit any more.
+			// req.body.context = {
+			// 	getTotal: function (){return req.body.dep.total},
+			// 	cus: req.body.cus,
+			// };
+
+			req.body.context = null;
 
 			if (deposit.total > 0){
 				RewardsCtrl.withdraw (req, res, next, _cb);
