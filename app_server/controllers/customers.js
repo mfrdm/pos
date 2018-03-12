@@ -46,7 +46,7 @@ function CustomersCtrl() {
 		if (validator.isEmail (input)){
 			conditions.email = input;
 		}
-		else if (validator.isMobilePhone (input, 'vi-VN')){
+		else if (parseInt (input)){ // very trivial check.
 			conditions.phone = input;
 		}
 		else { 
