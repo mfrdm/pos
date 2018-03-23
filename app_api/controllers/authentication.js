@@ -1,6 +1,3 @@
-var helper = require('../../libs/node/helper');
-var dbHelper = require('../../libs/node/dbHelper');
-var requestHelper = require('../../libs/node/requestHelper');
 var mongoose = require('mongoose');
 var Users = mongoose.model ('users');
 var passport = require ('passport');
@@ -8,7 +5,6 @@ var passport = require ('passport');
 module.exports = new Authentication ();
 
 function Authentication () {
-
 	this.register = function (req, res, next){
 		// /////////// NOT ALLOW TO CREATE A NEW USER ////////////
 		// res.status (404);
@@ -29,11 +25,13 @@ function Authentication () {
 		}
 
 		if (!checkRequiredInput (req.body)) {
-			return requestHelper.sendJsonRes (res, 400, {message: 'Input required'});
+				res.status (400);
+				res.json ({message: 'Input required.'});
 		};
 
 		if (checkAccountCreated (req.body)){
-			return requestHelper.sendJsonRes (res, 400, {message: 'Created account'});
+				res.status (400);
+				res.json ({message: 'The account has been created.'});
 		}
 
 		try {
@@ -46,7 +44,7 @@ function Authentication () {
 				}
 				else {
 					var token = user.generateJwt ();
-					requestHelper.sendJsonRes (res, 200, {token: token})					
+					res.json ({token: token});
 				}
 			});
 		}
@@ -57,19 +55,36 @@ function Authentication () {
 	};
 
 	this.login = function (req, res, next) {
-		if (req.query['allowed'] != 'true'){
-			next ();
-			return;
-		}
+		// if (req.query['allowed'] != 'true'){ // should remove. 
+		// 	next ();
+		// 	return;
+		// }
 
 		passport.authenticate ('local', function (err, user, info){
 			var token;
-			if (err) throw new Error (err);
+			if (err) next (err);
 			if (user) 	{
 				token = user.generateJwt ();
-				return requestHelper.sendJsonRes (res, 200, {token: token});
+				res.json ({token: token});
 			}
-			else return requestHelper.sendJsonRes (res, 401, {message: info});
+			else {
+				res.status (401);
+				res.json ({message: info});
+			}
 		}) (req, res);
-	}
+	};
+
+	this.changePwd = function (req, res, next) {
+		var user = new Users (req.body);
+		user.setPassword (req.body.password);
+		Users.update ({_id: user._id}, {$set: {hash: user.hash, salt: user.salt}}, function (err, docs){
+			if (err){
+				next;
+				return
+			}
+
+			token = user.generateJwt ();
+			res.json ({token: token});
+		});
+	};
 }

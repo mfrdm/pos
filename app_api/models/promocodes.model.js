@@ -894,33 +894,34 @@ var redeemTotal = function (context){
 	else if (this.redeemData.total.formula == 8){
 		// can use with more than 1 period of time
 		// The periods of time must be in the correct ascending temporal order, i.e. from 0 to 24 hours.
-		
-		checkinTime = moment (checkinTime);
-		var formulanum = this.redeemData.checkoutTime.length;
 		result.total = 0;
-		for (var i = 0; i < formulanum; i++){
-			var checkoutTime = this.redeemData.checkoutTime[i];
-			var remain = 1 - checkoutTime.discount;
-			var expectedcheckoutTime = moment ();
-			expectedcheckoutTime.hour (checkoutTime.hour);
-			expectedcheckoutTime.minute (checkoutTime.min);		
-			var expectedUsage = (expectedcheckoutTime.diff (checkinTime) / 3600000); 
-			var remainUsage = 0
+		if (!this.redeemData.dayofweek || (this.redeemData.dayofweek && this.redeemData.dayofweek.indexOf(moment().day ()) == -1)){
+			checkinTime = moment (checkinTime);
+			var formulanum = this.redeemData.checkoutTime.length;
+			for (var i = 0; i < formulanum; i++){
+				var checkoutTime = this.redeemData.checkoutTime[i];
+				var remain = 1 - checkoutTime.discount;
+				var expectedcheckoutTime = moment ();
+				expectedcheckoutTime.hour (checkoutTime.hour);
+				expectedcheckoutTime.minute (checkoutTime.min);		
+				var expectedUsage = (expectedcheckoutTime.diff (checkinTime) / 3600000); 
+				var remainUsage = 0
 
-			if (expectedUsage <= 0){ // checkin after the max hour
-				continue;
-			}
-			else{ // checkin before the max hour
-				var remainUsage = usage - expectedUsage;
-				if (remainUsage <= 0){ // checkout before the max hour too
-					result.total += price * usage * remain;
-					usage = 0;
-					break;
+				if (expectedUsage <= 0){ // checkin after the max hour
+					continue;
 				}
-				else{ // checkout after it
-					result.total += price * expectedUsage * remain;
-					usage = usage - expectedUsage;
-					checkinTime = expectedcheckoutTime;
+				else{ // checkin before the max hour
+					var remainUsage = usage - expectedUsage;
+					if (remainUsage <= 0){ // checkout before the max hour too
+						result.total += price * usage * remain;
+						usage = 0;
+						break;
+					}
+					else{ // checkout after it
+						result.total += price * expectedUsage * remain;
+						usage = usage - expectedUsage;
+						checkinTime = expectedcheckoutTime;
+					}
 				}
 			}
 		}

@@ -21,6 +21,7 @@ var promocodeCtrl = require ('../controllers/promocodes');
 
 router.post ('/register', authCtrl.register);
 router.post ('/login', authCtrl.login);
+router.post ('/changePwd', authCtrl.changePwd);
 
 router.get('/users', usersCtrl.readSomeUsers);
 router.get('/users/user/:uId', usersCtrl.readOneUserById);
