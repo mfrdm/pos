@@ -110,6 +110,7 @@ function DepositCtrl (){
 				$gte: start, 
 				$lte: end,
 			},
+			total: {$gte: 0},
 			'customer.email': {$ne: 'phammanhhiep89@gmail.com'}, // Pham Manh Hiep
 			'customer.phone': {$ne: '0965284281'},			
 		};

