@@ -163,7 +163,7 @@ function Checkout() {
 						});
 					}
 
-					// to reward
+					// Only reward common services
 					if (service.name != 'Medium group private' && service.name != 'Large group private' && service.name != 'Small group private'){
 						req.body.context = {
 							getTotal: function (){return occ.paid},

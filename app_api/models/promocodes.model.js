@@ -895,7 +895,7 @@ var redeemTotal = function (context){
 		// can use with more than 1 period of time
 		// The periods of time must be in the correct ascending temporal order, i.e. from 0 to 24 hours.
 		result.total = 0;
-		if (!this.redeemData.dayofweek || (this.redeemData.dayofweek && this.redeemData.dayofweek.indexOf(moment().day ()) == -1)){
+		if (!this.redeemData.dayofweek || (this.redeemData.dayofweek && this.redeemData.dayofweek.indexOf(moment().day ()) != -1)){
 			checkinTime = moment (checkinTime);
 			var formulanum = this.redeemData.checkoutTime.length;
 			for (var i = 0; i < formulanum; i++){
