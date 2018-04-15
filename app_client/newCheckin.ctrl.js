@@ -1155,6 +1155,7 @@
 
             // FIX: allow more than one account being used. LATER
            this.checkout = function (){
+                vm.ctrl.showLoader ();
                 if (checkoutObj.model.temporary.selectedAccount._id){
                     checkoutObj.model.checkingout.occupancy.paymentMethod.push (checkoutObj.model.temporary.selectedAccount);
                 }
@@ -1163,7 +1164,6 @@
                     checkoutObj.model.checkingout.occupancy.paymentMethod.push (checkoutObj.model.temporary.rwdWithdrawDetail.rwd);
                 }
 
-                vm.ctrl.showLoader ();
                 CheckinService.checkout(checkoutObj.model.checkingout.occupancy).then(
                     function success(res){
                         vm.ctrl.hideLoader ();

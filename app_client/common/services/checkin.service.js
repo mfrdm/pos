@@ -5,8 +5,8 @@ function CheckinService ($http, $q){
 	this.searchCustomers = function(input){
 		return $http({
 			method:'GET',
-			// url:'/checkin/search-customers',
-			url: 'http://127.0.0.1:5000/api/search',
+			url:'/checkin/search-customers',
+			// url: 'http://127.0.0.1:5000/api/search',
 			params: {input: input}
 		});
 	}	

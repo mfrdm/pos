@@ -876,13 +876,14 @@ var redeemTotal = function (context){
 		}
 	}
 	// same total for max usage. after that normal price.
-	else if (this.redeemData.total.formula == 6){ 
-		if (usage <= this.redeemData.usage.max){
+	// use the new price if exist otherwise use original price
+	else if(this.redeemData.total.formula == 6){ 
+		if(usage <= this.redeemData.usage.max){
 			result.total = this.redeemData.total.min;
 		}
 		else{
 			remainUsage = usage - this.redeemData.usage.max;
-			price = this.redeemData.price && this.redeemData.price.value ? this.redeemData.price.value : price; // use the new price if exist otherwise use original price
+			price = this.redeemData.price && this.redeemData.price.value ? this.redeemData.price.value : price; 
 			result.total = this.redeemData.total.min + remainUsage * price;
 		}
 	}

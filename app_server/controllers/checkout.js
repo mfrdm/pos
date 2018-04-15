@@ -37,7 +37,6 @@ function Checkout() {
 						if (foundOcc.service.name.indexOf ('private') != -1 && reward.length > 0){
 							reward = []; // not return reward with private service
 						}
-
 						res.json ({occ: foundOcc, acc: acc, reward: reward});	
 					}
 					RewardsCtrl.getReward (req, res, next, rw_cb)			
