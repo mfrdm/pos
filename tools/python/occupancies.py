@@ -1,6 +1,5 @@
 '''
-Checkout again an occupancy with new data about any of checkintime, checkouttime, 
-    codes, and payment method 
+Modify an occupancy. The operations involve insert, modify, and delete data.
 '''
 import argparse
 import datetime
@@ -149,6 +148,7 @@ def checkout(db, occ):
     acc = invoice['acc']
     reward = invoice['reward']
 
+    # On going ...
 
 
 def set_checkinTime(db, occ):

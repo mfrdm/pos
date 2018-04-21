@@ -93,5 +93,7 @@ router.post ('/checkin', checkinCtrl.checkin);
 router.get ('/checkin', checkinCtrl.readSome);
 
 router.get ('/promocodes/create', promocodeCtrl.createOne);
+router.get ('/promocodes/create-private', promocodeCtrl.createPrivate);
+router.get ('/promocodes/create-common', promocodeCtrl.createCommon);
 
 module.exports = router;

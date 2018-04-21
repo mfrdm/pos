@@ -1158,10 +1158,12 @@
                 vm.ctrl.showLoader ();
                 if (checkoutObj.model.temporary.selectedAccount._id){
                     checkoutObj.model.checkingout.occupancy.paymentMethod.push (checkoutObj.model.temporary.selectedAccount);
+                    checkoutObj.model.temporary.selectedAccount = null; // reset
                 }
 
                 if (checkoutObj.model.temporary.selectedReward){
                     checkoutObj.model.checkingout.occupancy.paymentMethod.push (checkoutObj.model.temporary.rwdWithdrawDetail.rwd);
+                    checkoutObj.model.temporary.rwdWithdrawDetail.rwd = null; // reset
                 }
 
                 CheckinService.checkout(checkoutObj.model.checkingout.occupancy).then(

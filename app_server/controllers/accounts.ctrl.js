@@ -26,6 +26,7 @@ function AccountsCtrl() {
 	};
 
 	this.getAccounts = function (req, res, next, cb){
+		console.log (req.query.customerId, req.query.service)
 		var condition = {
 			'customer._id': req.query.customerId,
 			end: {$gte: new Date ()},
@@ -49,6 +50,8 @@ function AccountsCtrl() {
 					x.renew (); // No need to update yet. Only update after being used!
 				}
 			})
+
+			console.log (foundAcc)
 
 			if (cb){
 				cb (foundAcc);
