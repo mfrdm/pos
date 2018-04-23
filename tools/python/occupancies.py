@@ -8,7 +8,9 @@ from bson.objectid import ObjectId
 import pymongo
 import requests
 
-SERVER_URL = 'localhost'
+import promocodes
+
+SERVER_URL = 'http://localhost:3000'
 
 
 def handle_date_params(start_date, end_date):
@@ -42,25 +44,25 @@ def handle_mode(mode):
     return mode
 
 
-def find_occ(db, customername, start_date, end_date):
-    condition = {'customer.fullname': {'$regex': customername, '$options': 'i'},
-        'createdAt': {'$gte': start_date, '$lte': end_date}}
-    cursor = db.occupancies.find(condition)
-    foundOcc = [o for o in cursor]
-    num = len(foundOcc)
-    if num == 0:
-        msg = 'Not found occupancies with cusotmer {}, from {} to {}'.format(
-            customername, start_date, end_date)
-        raise Exception(msg)
-    elif num > 1:
-        for i, occ in enumerate (foundOcc):
-            print('{}.'.format(i), occ)
-            print('------------------')
-        occi = int(input('Pick one occ by index: '))
-        if not occi:
-            raise Exception('No index being specified.')
-        foundOcc = foundOcc[occi]
-    return foundOcc
+# def find_occ(db, customername, start_date, end_date):
+#     condition = {'customer.fullname': {'$regex': customername, '$options': 'i'},
+#         'createdAt': {'$gte': start_date, '$lte': end_date}}
+#     cursor = db.occupancies.find(condition)
+#     foundOcc = [o for o in cursor]
+#     num = len(foundOcc)
+#     if num == 0:
+#         msg = 'Not found occupancies with cusotmer {}, from {} to {}'.format(
+#             customername, start_date, end_date)
+#         raise Exception(msg)
+#     elif num > 1:
+#         for i, occ in enumerate (foundOcc):
+#             print('{}.'.format(i), occ)
+#             print('------------------')
+#         occi = int(input('Pick one occ by index: '))
+#         if not occi:
+#             raise Exception('No index being specified.')
+#         foundOcc = foundOcc[occi]
+#     return foundOcc
 
 
 def undo_checkout(db, occ):
@@ -169,6 +171,17 @@ def set_checkoutTime(db, occ):
     db.occupancies.update(condition, update)
 
 
+def find_occ(customername, start, end, service, status, verbose=None):
+    if status: status = 1
+    url = '{}/api/occupancies/customer2'.format(SERVER_URL)
+    r = requests.get(url, params={'start': start, 'end': end, 
+        'customername': customername, 'service': service, 'status': status})
+    # On going
+
+
+def add_promocode():
+    pass
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('customername', help='Name of customer associated with the occupancy')
@@ -185,29 +198,32 @@ if __name__ == '__main__':
         occurred. Format yyyy-mm-dd')
     parser.add_argument('-e', '--end_date', help='End date time at which occupancies occurred. \
         Format yyyy-mm-dd')
+    parser.add_argument('-S', '--service', help='Service name, c(ommon) or p(rivate)')
+    parser.add_argument('-n', '--status', help='Status of the occupancies. \
+        True for non-checkout.', action='store_true')
+    parser.add_argument('-v', '--verbose', help='Print more or not.', action='store_true')
+
     args = parser.parse_args()
 
     mode = handle_mode(args.mode)
     start_date, end_date = handle_date_params(args.start_date, args.end_date)
     customername = handle_customername_params(args.customername)
+    service = 'common' if args.service == 'c' else 'private' 
 
     ####### Processing ######
-    dbname = 'pos'
-    db = pymongo.MongoClient()[dbname]
-    occ = find_occ(db, customername, start_date, end_date)
+    occ = find_occ(customername, args.start_date, args.end_date, 
+        service, args.status, args.verbose)
 
     if '1' in mode:
         print('Add new checkin time.')
     if '2' in mode:
         print('Add new checkout time.')
     if '3' in mode:
-        print('Add a promocode.')	
+        add_promocode()
     if '4' in mode:
         print('Undo checkout.')
-        undo_checkout(db, occ)
     if '5' in mode:
         print('Checkout an occupancy. NOT implemented.')
-        checkout(db, occ)
 
 
 

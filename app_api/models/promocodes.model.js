@@ -806,102 +806,80 @@ var redeemTotal = function (context){
 	var price = context.getPrice ? context.getPrice () : null;
 	var usage = context.getUsage ? context.getUsage () : null;
 	var checkinTime = context.getCheckinTime ? context.getCheckinTime () : null;
+	var checkoutTime = context.getCheckoutTime ? context.getCheckoutTime () : null;
 
-	// apply a new price after first item
-	if (this.redeemData.total.formula == 1){
-		var remain = usage - 1;	
-		result.total = price + (remain > 0 ? this.redeemData.total.value * Math.abs (remain) : 0);
-	}
-	// multiple total with x % 
-	// Something may went wrong. Review. 
-	else if (this.redeemData.total.formula == 2 && ((this.redeemData.dayofweek.length == 0) || (this.redeemData.dayofweek && this.redeemData.dayofweek.indexOf(moment().day ()) != -1))){
-		if (this.redeemData.checkoutTime){ // depend on some period of time
-			checkinTime = moment (checkinTime);
-			var expectedcheckoutTime = moment ();
-			expectedcheckoutTime.hour (this.redeemData.checkoutTime.hour);
-			expectedcheckoutTime.minute (this.redeemData.checkoutTime.min);		
-			var expectedUsage = (expectedcheckoutTime.diff (checkinTime) / 3600000); 
-			var remainUsage = 0
-
-			if (expectedUsage <= 0){ // checkin after the max hour
-				result.total = price * usage * this.redeemData.checkoutTime.total;
+	if (!this.redeemData.dayofweek || !this.redeemData.dayofweek.length || this.redeemData.dayofweek.indexOf(moment().day ()) != -1){
+		// apply a new price after first item
+		if (this.redeemData.total.formula == 1){
+			var remain = usage - 1;	
+			result.total = price + (remain > 0 ? this.redeemData.total.value * Math.abs (remain) : 0);
+		}
+		// multiple total with x % 
+		// Something may went wrong. Review. 
+		else if (this.redeemData.total.formula == 2){
+			// NO longer used.
+			console.log('formula 2 is not longer used.')
+			throw new Error();
+		}
+		// usage of hours must at least equals a min usage.
+		else if (this.redeemData.total.formula == 3){
+			if (usage <= this.redeemData.usage.min){
+				usage = this.redeemData.usage.min;
 			}
-			else{ // checkin before the max hour
-				var remainUsage = usage - expectedUsage;
-				if (remainUsage <= 0){ // checkout before the max hour too
-					result.total = price * usage * this.redeemData.total.value;
-				}
-				else{ // checkout after it
-					result.total = price * expectedUsage * this.redeemData.total.value;
-					result.total += price * remainUsage * this.redeemData.checkoutTime.total;	
-				}			
+
+			result.total = this.redeemData.price.value * usage;
+			result.price = this.redeemData.price.value;
+		}
+		// free some hours of usage, only charge afterward.
+		else if (this.redeemData.total.formula == 4){
+			if (usage <= this.redeemData.usage.max){
+				price = 0;
+			}
+			else {
+				price = this.redeemData.price.value;
+				usage = usage - this.redeemData.usage.max;
+			}
+
+			result.total = price * usage ;
+			result.price = price;
+		}
+		// different price for a period of time. After that charge with normal price. Usage must at least equal the max value of usage for the special price.
+		else if (this.redeemData.total.formula == 5){
+			if (usage <= this.redeemData.usage.max){	
+				usage = this.redeemData.usage.max
+				result.total = usage * this.redeemData.price.value;
+			}
+			else{
+				remainUsage = usage - this.redeemData.usage.max;
+				result.total = this.redeemData.usage.max * this.redeemData.price.value + remainUsage * price;
 			}
 		}
-		else{
-			result.total = price * usage * this.redeemData.total.value;
+		// same total for max usage. after that normal price.
+		// use the new price if exist otherwise use original price
+		else if(this.redeemData.total.formula == 6){ 
+			if(usage <= this.redeemData.usage.max){
+				result.total = this.redeemData.total.min;
+			}
+			else{
+				remainUsage = usage - this.redeemData.usage.max;
+				price = this.redeemData.price && this.redeemData.price.value ? this.redeemData.price.value : price; 
+				result.total = this.redeemData.total.min + remainUsage * price;
+			}
 		}
-
-	}
-	// usage of hours must at least equals a min usage.
-	else if (this.redeemData.total.formula == 3){
-		if (usage <= this.redeemData.usage.min){
-			usage = this.redeemData.usage.min;
+		// charge with a fixed amount for whatever usage of hours
+		else if (this.redeemData.total.formula == 7){
+			result.total = this.redeemData.total.value;
 		}
-
-		result.total = this.redeemData.price.value * usage;
-		result.price = this.redeemData.price.value;
-	}
-	// free some hours of usage, only charge afterward.
-	else if (this.redeemData.total.formula == 4){
-		if (usage <= this.redeemData.usage.max){
-			price = 0;
-		}
-		else {
-			price = this.redeemData.price.value;
-			usage = usage - this.redeemData.usage.max;
-		}
-
-		result.total = price * usage ;
-		result.price = price;
-	}
-	// different price for a period of time. After that charge with normal price. Usage must at least equal the max value of usage for the special price.
-	else if (this.redeemData.total.formula == 5){
-		if (usage <= this.redeemData.usage.max){	
-			usage = this.redeemData.usage.max
-			result.total = usage * this.redeemData.price.value;
-		}
-		else{
-			remainUsage = usage - this.redeemData.usage.max;
-			result.total = this.redeemData.usage.max * this.redeemData.price.value + remainUsage * price;
-		}
-	}
-	// same total for max usage. after that normal price.
-	// use the new price if exist otherwise use original price
-	else if(this.redeemData.total.formula == 6){ 
-		if(usage <= this.redeemData.usage.max){
-			result.total = this.redeemData.total.min;
-		}
-		else{
-			remainUsage = usage - this.redeemData.usage.max;
-			price = this.redeemData.price && this.redeemData.price.value ? this.redeemData.price.value : price; 
-			result.total = this.redeemData.total.min + remainUsage * price;
-		}
-	}
-	// charge with a fixed amount for whatever usage of hours
-	else if (this.redeemData.total.formula == 7){
-		result.total = this.redeemData.total.value;
-	}
-	// Updated version of formula 2
-	else if (this.redeemData.total.formula == 8){
-		// can use with more than 1 period of time
-		// The periods of time must be in the correct ascending temporal order, i.e. from 0 to 24 hours.
-		result.total = 0;
-		if (!this.redeemData.dayofweek || (this.redeemData.dayofweek && this.redeemData.dayofweek.indexOf(moment().day ()) != -1)){
+		// Updated version of formula 2
+		else if (this.redeemData.total.formula == 8){
+			// can use with more than 1 period of time
+			// The periods of time must be in the correct ascending temporal order, i.e. from 0 to 24 hours.
+			result.total = 0;
 			checkinTime = moment (checkinTime);
 			var formulanum = this.redeemData.checkoutTime.length;
 			for (var i = 0; i < formulanum; i++){
 				var checkoutTime = this.redeemData.checkoutTime[i];
-				var remain = 1 - checkoutTime.discount;
+				var remainPrice = 1 - checkoutTime.discount;
 				var expectedcheckoutTime = moment ();
 				expectedcheckoutTime.hour (checkoutTime.hour);
 				expectedcheckoutTime.minute (checkoutTime.min);		
@@ -914,20 +892,20 @@ var redeemTotal = function (context){
 				else{ // checkin before the max hour
 					var remainUsage = usage - expectedUsage;
 					if (remainUsage <= 0){ // checkout before the max hour too
-						result.total += price * usage * remain;
+						result.total += price * usage * remainPrice;
 						usage = 0;
 						break;
 					}
 					else{ // checkout after it
-						result.total += price * expectedUsage * remain;
+						result.total += price * expectedUsage * remainPrice;
 						usage = usage - expectedUsage;
 						checkinTime = expectedcheckoutTime;
 					}
 				}
 			}
-		}
 
-		result.total += price * usage * (1 - this.redeemData.total.discount);
+			result.total += price * usage * (1 - this.redeemData.total.discount);
+		}
 	}
 	else{
 		result.total = price * usage;

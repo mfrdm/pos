@@ -278,15 +278,26 @@ function PromocodeCtrl (){
 		/*
         Query promocode given its name and period.
 		*/
-		var start = req.query.start ? moment (req.query.start) : moment().hour(0).minute(0);
-		var end = req.query.end ? moment (req.query.end).hour(23).minute(59) : 
-		    moment().hour(23).minute(59);
-		start = new Date (start); // fix timezone problems
-		end = new Date (end); // fix timezone problems			
+		var today = new Date (moment()); // fix timezone problems		
 		var codename = req.query.codename;
 
-		var condition = {}
+		var condition = {
+			'name': {'$regex': codename, '$options': 'i'}, 
+		    'end': {'$gte': today}
+		};
+		var projection = {'name': 1, 'start': 1, 'end': 1, 'label': 1, 
+		    'redeemData': 1, 'services': 1};
 
-		// Pending ...	
+		Promocodes.find(condition, projection, function(err, codes){
+		    if (err){
+		    	console.log(err);
+		    	next();
+		    	return
+		    }
+
+		    res.json({data: codes});
+		})
+
+		
 	}     
 }

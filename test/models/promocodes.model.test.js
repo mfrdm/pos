@@ -93,7 +93,6 @@ xdescribe ('redeem', function (){
 		result.should.not.to.have.property ('quantity');
 		result.should.not.to.have.property ('price');
 	});
-
 });
 
 xdescribe ('Redeem price', function (){
@@ -380,7 +379,10 @@ describe ('Redeem total', function (){
 			"codeType" : 3, 
 			"priority" : 2, 
 			"services" : [ "small group private", "medium group private", "large group private", "group common", "individual common" ], 
-			"redeemData" : { "dayofweek" : [ 0, 2, 4, 6 ], "total" : { "formula" : 8, "discount" : 0 }, "checkoutTime" : [ { "hour" : 12, "min" : 0, "discount" : 0.2 } ] } 
+			"redeemData" : { 
+				"dayofweek" : [], 
+				"total" : { "formula" : 8, "discount" : 0 }, 
+				"checkoutTime" : [ { "hour" : 12, "min" : 0, "discount" : 0.2 } ] } 
 			}
 		]
 	});
@@ -479,7 +481,7 @@ describe ('Redeem total', function (){
 		
 	});
 
-	xit ('should return correct value when formula 8 is used: within expected checkout time', function (){
+	it ('should return correct value. Formula 8. One period of checkout time being used', function (){
 		context.usage = 2;
 		context.price = 150000;
 		context.checkinTime = moment ().hour (8).minute (30);
@@ -487,7 +489,7 @@ describe ('Redeem total', function (){
 		result.total.should.to.equal (2 * 150000 * 0.5);		
 	})
 
-	xit ('should return correct value when formula 8 is used: last more than 1 expected checkout time', function (){
+	it ('should return correct value. Formula 8. More then one period of checkout time being used', function (){
 		context.usage = 3;
 		context.price = 150000;
 		context.checkinTime = moment ().hour (8).minute (30);
@@ -495,7 +497,7 @@ describe ('Redeem total', function (){
 		Math.round (result.total).should.to.equal (2.5 * 150000 * 0.5 + 0.5 * 150000 * 0.17);		
 	});
 
-	xit ('should return correct value when formula 8 is used: last through all more expected checkout times', function (){
+	it ('should return correct value. Formula 8. All periods of checkout time being used.', function (){
 		context.usage = 9;
 		context.price = 150000;
 		context.checkinTime = moment ().hour (8).minute (30);
@@ -507,7 +509,7 @@ describe ('Redeem total', function (){
 			0.5 * 150000 * 0.8);		
 	});
 
-	xit ('should return correct value when formula 8 is used: out of all expected checkout times', function (){
+	it ('should return correct value. Formula 8. None of periods of checkout time being used.', function (){
 		context.usage = 2;
 		context.price = 150000;
 		context.checkinTime = moment ().hour (18).minute (30);
@@ -515,6 +517,28 @@ describe ('Redeem total', function (){
 		Math.round (result.total).should.to.equal (
 			2 * 150000 * 0.8);		
 	});
+
+	it('should NOT use formula because dayofweek condition is false.', function (){
+		context.usage = 2;
+		context.price = 150000;
+		context.checkinTime = moment ().hour (10).minute (0);
+		dow = new Date().getDay ();
+		codes[9].redeemData.dayofweek.push (dow == 6 ? dow - 1 : dow + 1);
+		var result = new Promocodes (codes[9]).redeemTotal (context);
+		Math.round (result.total).should.to.equal (
+			2 * 150000);	
+	});
+
+	it('should use formula because dayofweek condition is true.', function (){
+		context.usage = 2;
+		context.price = 150000;
+		context.checkinTime = moment ().hour (10).minute (0);
+		dow = new Date().getDay ();
+		codes[9].redeemData.dayofweek.push (dow);
+		var result = new Promocodes (codes[9]).redeemTotal (context);
+		Math.round (result.total).should.to.equal (
+			2 * 150000 * 0.8);	
+	});	
 
 });
 

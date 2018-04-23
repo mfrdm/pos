@@ -71,6 +71,7 @@ router.get('/orders/transactions', ordersCtrl.readTransactions);
 router.get ('/occupancies/totalCash', OccupanciesCtrl.readTotalCash);
 router.get ('/occupancies/transactions', OccupanciesCtrl.readTransactions);
 router.get ('/occupancies/customer', OccupanciesCtrl.readSomeByOneCustomer);
+router.get('/occupancies/customer2', OccupanciesCtrl.searchByCustomer);
 
 router.get('/bookings/', bookingCtrl.readSomeBookings);
 router.get('/bookings/booking/:bookingId', bookingCtrl.readOneBookingById);
@@ -95,5 +96,6 @@ router.get ('/checkin', checkinCtrl.readSome);
 router.get ('/promocodes/create', promocodeCtrl.createOne);
 router.get ('/promocodes/create-private', promocodeCtrl.createPrivate);
 router.get ('/promocodes/create-common', promocodeCtrl.createCommon);
+router.get ('/promocodes/query', promocodeCtrl.query);
 
 module.exports = router;

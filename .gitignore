@@ -17,3 +17,5 @@ tool/*
 .ipynb_checkpoints
 
 sslcert/*
+
+__pycache__/

@@ -13,6 +13,7 @@ function getCodeContext (occ){
 		usage: occ.usage,
 		total: null,
 		getCheckinTime: function () {return occ.checkinTime},
+		getCheckoutTime: function(){return occ.checkoutTime ? occ.checkoutTime : moment()},
 		getService: function (){ return occ.service.name.toLowerCase() },
 		getUsage: function (){ return this.usage },
 		getPrice: function (){return this.price},

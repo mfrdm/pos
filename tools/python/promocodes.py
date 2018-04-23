@@ -11,16 +11,23 @@ import requests
 
 HOST = 'http://localhost:3000'
 
-def query():
-	print('Query a code')
+def query(codename, verbose=None):
+	url = '{}/api/promocodes/query'.format(HOST)
+	r = requests.get(url, params={'codename': codename})
+	if r.status_code != 200:
+		raise Exception('Something broken. Cannot query promocodes.')
+	codes = r.json()['data']
+	if verbose:
+		for k,v in enumerate(codes):
+			print('{}. {}'.format(k,v))
+	return codes
+
 
 def expire():
     print('Expire a code.')
 
 
 def create():
-    # code to give free x hours.
-
     private_create_url = '{}/api/promocodes/create-private'.format(HOST)
     common_create_url = '{}/api/promocodes/create-common'.format(HOST)
 
@@ -89,7 +96,8 @@ if __name__ == '__main__':
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-c', '--create', help="Create a new promocode.", action='store_true')
     group.add_argument('-e', '--expire', help="Expire an account.", action='store_true')
-    group.add_argument('-q', '--query', help="Query promocode given its name.", action='store_true')
+    group.add_argument('-q', '--query', help="Query promocode given its name.")
+    parser.add_argument('-v', '--verbose', help="Print out more information.", action='store_true')
     args = parser.parse_args()
     
     if args.create:
@@ -97,7 +105,7 @@ if __name__ == '__main__':
     elif args.expire:
     	expire()
     elif args.query:
-    	query()
+    	query(args.query, args.verbose)
     else:
     	print('Call command with option -h to get help.')
     
